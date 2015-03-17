@@ -1,5 +1,6 @@
-﻿// Author : Anthony John Ripa
-// Date : 2/24/2015
+﻿
+// Author : Anthony John Ripa
+// Date : 3/17/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -25,7 +26,6 @@ function placevalue(man, exp) {
         //var exp;
         //var pos = x.indexOf('.');
         //if (pos === -1) pos = 0;
-        //if (pos === -1) pos = 0;
         return x.indexOf('.') == -1 ? 0 : x.indexOf('.') - x.replace(new RegExp(String.fromCharCode(822), 'g'), '').length + 1;
     }
     function int2array(n) {
@@ -48,28 +48,34 @@ placevalue.prototype.toString = function () {
     // 185  189  822 8315   9321
     // ^1   1/2  -   ^-     10
     var ret = "";
-    for (var i = 0; i < this.mantisa.length; i++) {
+    for (var i = Math.min(0, this.exp) ; i < this.mantisa.length; i++) {
+        var digit = i < 0 ? 0 : this.mantisa[i];
         if (i == this.mantisa.length + this.exp) ret += '.';
-        if (isNaN(this.mantisa[i])) ret += '%';
-        if (this.mantisa[i] < -9) ret += '(' + Math.abs(this.mantisa[i]).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822) + ')';
-        if (-9 <= this.mantisa[i] && this.mantisa[i] <= -1) ret += Math.abs(this.mantisa[i]).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822);
-        if (-1 < this.mantisa[i] && this.mantisa[i] < 0) {
+        if (isNaN(digit)) ret += '%';
+        if (digit < -9) ret += '(' + Math.abs(digit).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822) + ')';
+        if (-9 <= digit && digit <= -1) ret += Math.abs(digit).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822);
+        if (-1 < digit && digit < 0) {
             //ret += '(1' + String.fromCharCode(822) + '/' + (1 / Math.abs(this.mantisa[i])) + ')';
-            ret += Math.abs(1 / this.mantisa[i]).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822) + String.fromCharCode(8315) + String.fromCharCode(185);
+            ret += Math.abs(1 / digit).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822) + String.fromCharCode(8315) + String.fromCharCode(185);
         }
-        if (this.mantisa[i] == 0) ret += 0;
-        if (0 < this.mantisa[i] && this.mantisa[i] < 1) {
-            if (false && this.mantisa[i] == .5)
+        if (digit == 0) ret += 0;
+        if (0 < digit && digit < 1) {
+            if (false && digit == .5)
                 ret += String.fromCharCode(189)
             else {
-                //ret += '(1/' + (1 / this.mantisa[i]) + ')';
-                ret += Math.abs(1 / this.mantisa[i]) + String.fromCharCode(8315) + String.fromCharCode(185);
+                //ret += '(1/' + (1 / digit) + ')';
+                ret += Math.abs(1 / digit) + String.fromCharCode(8315) + String.fromCharCode(185);
             }
         }
-        if (1 <= this.mantisa[i] && this.mantisa[i] <= 9) ret += this.mantisa[i];
-        if (9 < this.mantisa[i] && isFinite(this.mantisa[i])) ret += '(' + this.mantisa[i] + ')';
-        if (1 / this.mantisa[i] == 0) ret += '∞';
+        if (1 <= digit && digit <= 9) ret += digit;
+        if (9 < digit && isFinite(digit)) ret += '(' + digit + ')';
+        if (1 / digit == 0) ret += '∞';
     }
+    if (ret.indexOf('.') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
+    if (ret[ret.length - 1] == '.') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
+    while (ret[0] == 0) ret = ret.substring(1);                                                             // Remove leading zeros
+    if (ret[0] == '.') ret = '0' + ret;                                                                     // '.x' -> '0.x'
+    if (ret == '') ret = '0';                                                                               // ''   -> '0'
     //ret += 'E';
     //ret += this.exp;
     //console.log(ret);
@@ -167,10 +173,13 @@ placevalue.prototype.times = function (top) {
 
 placevalue.prototype.divide = function (denominator) {
     var sigfig = 5;
-    while (denominator.mantisa[0] === 0) {
-        denominator.mantisa.shift();
-        //denominator.exp--;
-        console.log(denominator);
+    while (denominator.mantisa[0] == 0) {  // while most significant digit is 0
+        denominator.mantisa.shift();            // pop root 
+        //console.log(denominator);
+    }
+    while (this.mantisa.length < denominator.mantisa.length) {
+        this.mantisa.push(0);
+        this.exp--;
     }
     var mandif = this.mantisa.length - denominator.mantisa.length;
     if (mandif < 0) mandif = 0;
@@ -178,7 +187,7 @@ placevalue.prototype.divide = function (denominator) {
     var dif = mandif + expdif;
     //console.log('mandif = ' + mandif + ', expdif = ' + expdif + ', dif = ' + dif);
     return new placevalue(divide(this.mantisa, denominator.mantisa, sigfig), dif - (sigfig - 1));
-    function divide(num, den, count) {              // 1 Call by divideprimative
+    function divide(num, den, count) {              // 1 Call by placevalue.prototype.divide
         //console.log('num=' + num + '; den=' + den + '; count=' + count);
         if (count == 0) return [];
         count--;

@@ -1,4 +1,12 @@
-﻿<html>
+﻿
+<!--
+   Author : Anthony John Ripa
+   Date : 3/17/2015
+   Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
 <head>
     <title>Base Calculator</title>
     <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
@@ -26,7 +34,7 @@
         function moveanswer(from, to) {
             var a = $(from).attr('data-val')
             $(to).attr('data-val', a);
-            $(to).val(new placevalue(a));
+            $(to).val($(from).val());
         }
         function calcgui() {                      // 1 Call by index.html
             var num = $('#a').val();
