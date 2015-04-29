@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 3/17/2015
+   Date : 4/28/2015
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,8 +13,10 @@
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <style>
+        output { margin: 150px; }
         body,input { font-family:"Arial Unicode MS"}
         table { border-spacing: 0; float: left; margin: 10px; }
         .line td { border-bottom: 1pt solid black; }
@@ -22,55 +24,40 @@
     </style>
 </head>
 <body>
-    <button onclick="calcgui()">Calculate</button>
+    <select onchange="clean()"><option onclick="f=placevalue">PlaceValue</option><option onclick="f=wholeplacevalue">WholePlaceValue</option></select>
     <br />
     <br />
     <table>
-        <tr><td></td><td><input id='a' value='1' /></td></tr>
-        <tr class="line"><td><select><option>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td></tr>
-        <tr><td><button onclick="calcgui()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td></tr>
+        <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td></td><td><output id="ao"></output></td></tr>
+        <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td><output id="bo"></output></td></tr>
+        <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td><output id="co"></output></td></tr>
     </table>
     <script type="text/javascript">
-        function moveanswer(from, to) {
-            var a = $(from).attr('data-val')
-            $(to).attr('data-val', a);
-            $(to).val($(from).val());
+        var f = placevalue;
+        function compute() {
+            var a = getinput('#a');
+            var b = getinput('#b');
+            var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+            output(a, b, c);
+            function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function output(a, b, c) {
+                $('#c').attr('data-val', JSON.stringify(c));
+                $('#c').val(c);
+                showInternal(a, '#ao');
+                showInternal(b, '#bo');
+                showInternal(c, '#co');
+                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.toStringInternal()); }
+            }
         }
-        function calcgui() {                      // 1 Call by index.html
-            var num = $('#a').val();
-            var den = $('#b').val();
-            var answer = $('select').val() == '+' ? addprimative(num, den) : $('select').val() == '-' ? subprimative(num, den) : $('select').val() == 'x' ? timesprimative(num, den) : $('select').val() == '/' ? divideprimative(num, den) : $('select').val() == '⊗' ? pointtimesprimative(num, den) : $('select').val() == '⊘' ? pointdivideprimative(num, den) : pointsubprimative(num, den);
-            var a = answer.toString()
-            $('#c').attr('data-val', JSON.stringify(answer));
-            $('#c').val(a);
-            function addprimative(addend, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(addend).add(new placevalue(arg2));
-            }
-            function subprimative(addend, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(addend).sub(new placevalue(arg2));
-            }
-            function timesprimative(num, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(arg2).times(new placevalue(num));
-            }
-            function divideprimative(num, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(num).divide(new placevalue(arg2));
-            }
-            function pointtimesprimative(num, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(num).pointtimes(new placevalue(arg2));
-            }
-            function pointdivideprimative(num, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(num).pointdivide(new placevalue(arg2));
-            }
-            function pointsubprimative(num, arg2) {
-                if ($('#b').attr('data-val')) arg2 = $('#b').attr('data-val');
-                return new placevalue(num).pointsub(new placevalue(arg2));
-            }
+        function moveanswer(from, to) {
+            $(to).val($(from).val());                           // move toString
+            $(to + 'o').text($(from + 'o').text());             // move toStringInternal
+            $(to).attr('data-val', $(from).attr('data-val'));   // move json
+        }
+        function clean() {
+            $('input').val('');
+            $('output').html('');
+            $('[data-val]').removeAttr('data-val');
         }
     </script>
 </body>
