@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 4/28/2015
+// Date : 5/25/2015
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -30,20 +30,26 @@ function wholeplacevalue(man) {
     function num2array(n) {
         var N = n.toString();
         var ret = [];
-        var num = '';
+        var numb = '';
         var inparen = false;
         for (var i = 0; i < N.length; i++) {
             var c = N[i];
             if (c == '(') { inparen = true; continue; }
-            if (c == ')') { ret.push(Number(num)); num = ''; inparen = false; continue; }
+            if (c == ')') { ret.push(Number(numb)); numb = ''; inparen = false; continue; }
             if (inparen)
-                num += c;
+                numb += c;
             else {
                 if (c == '.') break;
                 if (c == 0 || c == 1 | c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9) ret.push(c);
+                var frac = { '⅛': .125, '⅙': .167, '⅕': .2, '¼': .25, '⅓': .333, '½': .5, '⅔': .667, '¾': .75 }
+                if (frac[c]) ret.push(frac[c]);
+                if (c == 'τ') ret.push(6.28);
+                var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
+                if (num[c]) ret.push(num[c]);
                 if (c == '∞') ret.push(Infinity);
                 if (c == '%') ret.push(NaN);
                 if (c == String.fromCharCode(822)) ret[ret.length - 1] *= -1;
+                if (c == String.fromCharCode(8315)) ret[ret.length - 1] = 1 / ret[ret.length - 1];
             }
         }
         return ret;
@@ -63,18 +69,36 @@ wholeplacevalue.prototype.toString = function () {
 wholeplacevalue.prototype.digit = function (i) {
     // 185  189  822 8315   9321
     // ^1   1/2  -   ^-     10
-    var ret = "";
+    var NEGATIVE = String.fromCharCode(822);
+    var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
+    var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .5: '½', .667: '⅔', .75: '¾' }
+    var cons = { 0.159: 'τ' + INVERSE, 6.28: 'τ' }; cons[-.159] = 'τ' + NEGATIVE + INVERSE;
+    var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
     var digit = i < 0 ? 0 : this.mantisa[i];
-    digit = Math.round(digit * 1000) / 1000;
-    if (isNaN(digit)) ret += '%';
-    if (digit == -1 / 0) ret += '∞' + String.fromCharCode(822);
-    if (digit < -9 && isFinite(digit)) ret += '(' + digit + ')';
-    if (-9 <= digit && digit < 0)
-        ret += (digit == Math.round(digit)) ? Math.abs(digit).toString().split('').join(String.fromCharCode(822)) + String.fromCharCode(822) : '(' + digit + ')';
-    if (0 <= digit && digit <= 9) ret += (digit == Math.round(digit)) ? digit : '(' + digit + ')';
-    if (9 < digit && isFinite(digit)) ret += '(' + digit + ')';
-    if (digit == 1 / 0) ret += '∞';
-    return ret;
+    var rounddigit = Math.round(digit * 1000) / 1000;
+    if (isNaN(digit)) return '%';
+    if (digit == -1 / 0) return '∞' + NEGATIVE;
+    if (num[-digit]) return num[-digit] + NEGATIVE;
+    if (digit < -9 && isFinite(digit)) return '(' + rounddigit + ')';
+    if (-1 < digit && digit < 0) {
+        var flip = -1 / digit;
+        if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + NEGATIVE + INVERSE;
+        if (cons[rounddigit]) return cons[rounddigit];
+    }
+    if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? Math.abs(digit).toString().split('').join(NEGATIVE) + NEGATIVE : '(' + rounddigit + ')';
+    if (digit == 0) return '0';
+    if (0 < digit && digit < 1) {
+        if (frac[rounddigit]) return frac[rounddigit];
+        var flip = 1 / digit;
+        if (Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
+        if (cons[rounddigit]) return cons[rounddigit];
+    }
+    if (cons[rounddigit]) return cons[rounddigit];
+    if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? digit : '(' + rounddigit + ')';
+    if (num[digit]) return num[digit]
+    if (9 < digit && isFinite(digit)) return '(' + rounddigit + ')';
+    if (digit == 1 / 0) return '∞';
+    return 'x';
 }
 
 wholeplacevalue.prototype.tohtml = function () {
@@ -121,7 +145,15 @@ wholeplacevalue.prototype.sub = function (subtrahend) {
 wholeplacevalue.prototype.pointsub = function (subtrahend) {
     var man = [];
     for (var i = 0; i < this.mantisa.length; i++) {
-        man.push(Number(this.mantisa[i]) - Number(subtrahend.mantisa[0]));
+        man.push(Number(this.mantisa[i]) - Number(subtrahend.mantisa[subtrahend.mantisa.length - 1]));
+    }
+    return new wholeplacevalue(man);
+}
+
+wholeplacevalue.prototype.pointadd = function (addend) {
+    var man = [];
+    for (var i = 0; i < this.mantisa.length; i++) {
+        man.push(Number(this.mantisa[i]) + Number(addend.mantisa[addend.mantisa.length - 1]));
     }
     return new wholeplacevalue(man);
 }
@@ -204,7 +236,7 @@ wholeplacevalue.prototype.divide = function (denominator) {
     }
 }
 
-wholeplacevalue.prototype.clone = function() {
+wholeplacevalue.prototype.clone = function () {
     var copiedObject = {};
     if (Array.isArray(this)) copiedObject = [];
     jQuery.extend(true, copiedObject, this);

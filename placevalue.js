@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 4/28/2015
+// Date : 5/25/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -15,7 +15,8 @@ function placevalue(man, exp) {
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
         if (x instanceof wholeplacevalue) return 0;
-        x = x.toString().replace(new RegExp(String.fromCharCode(822), 'g'), '').replace(/\([^\(]*\)/g, 'm');
+        var NEGATIVE = String.fromCharCode(822); var MINUS = String.fromCharCode(8315); var ONE = String.fromCharCode(185);
+        x = x.toString().replace(new RegExp(NEGATIVE, 'g'), '').replace(new RegExp(MINUS, 'g'), '').replace(new RegExp(ONE, 'g'), '').replace(/\([^\(]*\)/g, 'm');
         return x.indexOf('.') == -1 ? 0 : x.indexOf('.') - x.length + 1;
     }
 }
@@ -83,6 +84,11 @@ placevalue.prototype.sub = function (subtrahend) {
 
 placevalue.prototype.pointsub = function (subtrahend) {
     var whole = this.whole.pointsub(subtrahend.whole);
+    return new placevalue(whole, this.exp);
+}
+
+placevalue.prototype.pointadd = function (addend) {
+    var whole = this.whole.pointadd(addend.whole);
     return new placevalue(whole, this.exp);
 }
 

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 4/28/2015
+   Date : 5/25/2015
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -29,7 +29,7 @@
     <br />
     <table>
         <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td></td><td><output id="ao"></output></td></tr>
-        <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td><output id="bo"></output></td></tr>
+        <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td><output id="bo"></output></td></tr>
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td><output id="co"></output></td></tr>
     </table>
     <script type="text/javascript">
@@ -37,7 +37,7 @@
         function compute() {
             var a = getinput('#a');
             var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+            var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
             function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c) {

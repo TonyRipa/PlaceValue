@@ -1,0 +1,122 @@
+﻿
+<!--
+   Author : Anthony John Ripa
+   Date : 5/25/2015
+   Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Base Calculator</title>
+    <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
+    </script>
+    <script type="text/javascript" src='wholeplacevalue.js'></script>
+    <script type="text/javascript" src='placevalue.js'></script>
+    <style>
+        output { margin: 50px; }
+        body,input { font-family:"Arial Unicode MS"}
+        table { border-spacing: 0; float: left; margin: 10px; }
+        .line td { border-bottom: 1pt solid black; }
+        input { text-align: right; }
+    </style>
+</head>
+<body>
+    <h1>PlaceValue Measure</h1>
+    <table border>
+        <tr>
+            <td>
+                <a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
+            </td>
+            <td>
+                <img style="float:right" src="sets.png" />
+            </td>
+            <td>
+                P(
+                <select id="top" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
+                |
+                <select id="bot" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
+                )
+                =
+                <p id="p" style="display:inline"></p>
+            </td>
+            <td rowspan="2">
+                <table>
+                    <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
+                    <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
+                    <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <a href="http://wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox">Borel<br />Paradox</a>
+            </td>
+            <td>
+                <img style="height:300px;float:right;clear:both" src="https://gandenberger.files.wordpress.com/2013/07/equator-and-prime-meridian-plus-circle.png" />
+            </td>
+            <td>
+                P(
+                <select id="top2" onchange="select2()"><option>Black Dot</option></select>
+                |
+                <select id="bot2" onchange="select2()"><option>Red Circle</option><option>Blue Circle</option></select>
+                )
+                =
+                <p id="p2" style="display:inline"></p>
+            </td>
+        </tr>
+    </table>
+    <script type="text/javascript">
+        var f = placevalue;
+        function select1() {
+            var shapes = [1, 10, 20, 400, 600];
+            var top = shapes[$('#top')[0].selectedIndex];
+            var bot = shapes[$('#bot')[0].selectedIndex];
+            top = Math.min(top, bot);
+            pop(top, bot);
+            $('#p').text($('#c').val())
+        }
+        function select2() {
+            var topshapes = [".0(.0796)"];
+            var botshapes = ["0.½", "0.½"];
+            var top = topshapes[$('#top2')[0].selectedIndex];
+            var bot = botshapes[$('#bot2')[0].selectedIndex];
+            pop(top, bot);
+            $('#p2').text($('#c').val())
+        }
+        function pop(top, bot) {
+            $('#a').val(top);
+            $('#b').val(bot);
+            compute();
+        }
+        function compute() {
+            var a = getinput('#a');
+            var b = getinput('#b');
+            var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+            output(a, b, c);
+            function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function getshape(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function output(a, b, c) {
+                $('#c').attr('data-val', JSON.stringify(c));
+                $('#c').val(c);
+                showInternal(a, '#ao');
+                showInternal(b, '#bo');
+                showInternal(c, '#co');
+                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.toStringInternal()); }
+            }
+        }
+        function moveanswer(from, to) {
+            $(to).val($(from).val());                           // move toString
+            $(to + 'o').text($(from + 'o').text());             // move toStringInternal
+            $(to).attr('data-val', $(from).attr('data-val'));   // move json
+        }
+        function clean() {
+            $('input').val('');
+            $('output').html('');
+            $('[data-val]').removeAttr('data-val');
+        }
+    </script>
+</body>
+</html>
