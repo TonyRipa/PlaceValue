@@ -1,20 +1,25 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 5/25/2015
+   Date : 6/17/2015
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Base Calculator</title>
+    <title>PlaceValue Calculator</title>
     <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+    <script type="text/javascript">
+        window.math || document.write("<script src='../../js/math.js'><" + "/script>")
+    </script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
+    <script type="text/javascript" src='polynomial.js'></script>
     <style>
         output { margin: 150px; }
         body,input { font-family:"Arial Unicode MS"}
@@ -24,7 +29,7 @@
     </style>
 </head>
 <body>
-    <select onchange="clean()"><option onclick="f=placevalue">PlaceValue</option><option onclick="f=wholeplacevalue">WholePlaceValue</option></select>
+    <select id='f' onchange="clean()"><option>PlaceValue</option><option>WholePlaceValue</option><option>Polynomial</option></select>
     <br />
     <br />
     <table>
@@ -33,8 +38,8 @@
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td><output id="co"></output></td></tr>
     </table>
     <script type="text/javascript">
-        var f = placevalue;
         function compute() {
+            var f = [placevalue, wholeplacevalue, polynomial][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
@@ -55,6 +60,7 @@
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
         function clean() {
+            //return;
             $('input').val('');
             $('output').html('');
             $('[data-val]').removeAttr('data-val');
