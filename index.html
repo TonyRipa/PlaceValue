@@ -1,11 +1,10 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 6/17/2015
+   Date : 7/31/2015
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
-<!DOCTYPE html>
 <html>
 <head>
     <title>PlaceValue Calculator</title>
@@ -20,26 +19,32 @@
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='polynomial.js'></script>
+    <script src='wholeplacevalue2.js'></script>
+    <script src='multinomial.js'></script>
     <style>
-        output { margin: 150px; }
-        body,input { font-family:"Arial Unicode MS"}
-        table { border-spacing: 0; float: left; margin: 10px; }
-        .line td { border-bottom: 1pt solid black; }
+        h1 { text-align: center; }
+        #f { position: absolute; top: 10px; left: 10px; }
+        body, input { font-family: "Arial Unicode MS" }
+        #main { border-spacing: 0; float: left; margin: 10px; }
+        #col3 { width: 150px }
+        #ao, #bo, #co { min-width: 150px; text-align: right }
+        #augend:nth-child(1) td { color: green; }
+        #base>td { border-bottom: 1pt solid black; color: blue; }
+        #base>td table { color: blue; }
         input { text-align: right; }
     </style>
 </head>
 <body>
-    <select id='f' onchange="clean()"><option>PlaceValue</option><option>WholePlaceValue</option><option>Polynomial</option></select>
-    <br />
-    <br />
-    <table>
-        <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td></td><td><output id="ao"></output></td></tr>
-        <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td><output id="bo"></output></td></tr>
-        <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td><output id="co"></output></td></tr>
+    <h1>PlaceValue Calculator</h1>
+    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option>Multinomial</option></select>
+    <table id="main">
+        <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
+        <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
+        <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
     </table>
     <script type="text/javascript">
         function compute() {
-            var f = [placevalue, wholeplacevalue, polynomial][$('#f')[0].selectedIndex];
+            var f = [wholeplacevalue, placevalue, polynomial, multinomial][$('#f')[0].selectedIndex];   // Add Multinomial  2015.7
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
@@ -51,18 +56,17 @@
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
                 showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.toStringInternal()); }
+                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
             }
         }
         function moveanswer(from, to) {
             $(to).val($(from).val());                           // move toString
-            $(to + 'o').text($(from + 'o').text());             // move toStringInternal
+            $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
         function clean() {
-            //return;
             $('input').val('');
-            $('output').html('');
+            $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');
         }
     </script>

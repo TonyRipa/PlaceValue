@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 6/17/2015
+// Date : 7/31/2015
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -23,8 +23,8 @@ function wholeplacevalue(man) {
     } else {
         this.mantisa = man.mantisa;
     }
-    while (this.mantisa[0] == 0)    // while most significant digit is 0
-        this.mantisa.shift();       //  pop root
+    while (this.get(this.mantisa.length - 1) == 0)  //  while most significant digit is 0  // get(this.mantisa.length - 1) 2015.7
+        this.mantisa.pop();                             //  pop root
     if (this.mantisa.length == 0) this.mantisa = [0];
     console.log('wpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
     function num2array(n) {
@@ -52,12 +52,17 @@ function wholeplacevalue(man) {
                 if (c == String.fromCharCode(8315)) ret[ret.length - 1] = 1 / ret[ret.length - 1];
             }
         }
-        return ret;
+        return ret.reverse();   // .reverse makes lower indices represent lower powers 2015.7
     }
 }
 
-wholeplacevalue.prototype.toStringInternal = function () {
-    return this.mantisa;
+wholeplacevalue.prototype.get = function (i) {
+    if (i >= this.mantisa.length) return 0;
+    return Number(this.mantisa[i]);
+}
+
+wholeplacevalue.prototype.tohtml = function () {    // Replaces toStringInternal 2015.7
+    return this.mantisa.reverse().toString();       // R2L
 }
 
 wholeplacevalue.prototype.toString = function () {
@@ -74,7 +79,7 @@ wholeplacevalue.prototype.digit = function (i) {
     var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
     var cons = { '-0.159': 'τ' + NEGATIVE + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
     var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
-    var digit = i < 0 ? 0 : this.mantisa[i];
+    var digit = i < 0 ? 0 : this.mantisa[this.mantisa.length - 1 - i]; // R2L  2015.7
     var rounddigit = Math.round(digit * 1000) / 1000;
     if (isNaN(digit)) return '%';
     if (digit == -1 / 0) return '∞' + NEGATIVE;
@@ -101,43 +106,25 @@ wholeplacevalue.prototype.digit = function (i) {
     return 'x';
 }
 
-wholeplacevalue.prototype.tohtml = function () {
-    var ret = "";
-    for (var i = 0; i < this.mantisa.length; i++) {
-        if (this.mantisa[i] >= 0)
-            ret += this.mantisa[i]
-        else
-            ret += '<s>' + Math.abs(this.mantisa[i]) + '</s>';
-    }
-    console.log(ret);
-    return ret;
-}
-
-wholeplacevalue.pad = function (a, b) {
+wholeplacevalue.pad = function (a, b) {     // 1 call by placevalue.pad
     while (a.mantisa.length > b.mantisa.length)
-        b.mantisa.unshift(0);
+        b.mantisa.push(0);   // change unshift to push because L2R  2015.7
     while (b.mantisa.length > a.mantisa.length)
-        a.mantisa.unshift(0);
+        a.mantisa.push(0);   // change unshift to push because L2R  2015.7
 }
 
 wholeplacevalue.prototype.add = function (addend) {
-    var me = this.clone();
-    var other = addend.clone();
     var man = [];
-    wholeplacevalue.pad(me, other);
-    for (var i = 0; i < me.mantisa.length; i++) {
-        man.push(Number(me.mantisa[i]) + Number(other.mantisa[i]));
+    for (var i = 0; i < Math.max(this.mantisa.length, addend.mantisa.length); i++) {
+        man.push(this.get(i) + addend.get(i));  // get obviates need to pad 2015.7
     }
     return new wholeplacevalue(man);
 }
 
 wholeplacevalue.prototype.sub = function (subtrahend) {
-    var me = this.clone();
-    var other = subtrahend.clone();
     var man = [];
-    wholeplacevalue.pad(me, other);
-    for (var i = 0; i < me.mantisa.length; i++) {
-        man.push(Number(me.mantisa[i]) - Number(other.mantisa[i]));
+    for (var i = 0; i < Math.max(this.mantisa.length, subtrahend.mantisa.length) ; i++) {
+        man.push(this.get(i) - subtrahend.get(i));  // get obviates need to pad 2015.7
     }
     return new wholeplacevalue(man);
 }
@@ -145,7 +132,7 @@ wholeplacevalue.prototype.sub = function (subtrahend) {
 wholeplacevalue.prototype.pointsub = function (subtrahend) {
     var man = [];
     for (var i = 0; i < this.mantisa.length; i++) {
-        man.push(Number(this.mantisa[i]) - Number(subtrahend.mantisa[subtrahend.mantisa.length - 1]));
+        man.push(this.get(i) - subtrahend.get(0));  // get(0) is the one's place 2015.7
     }
     return new wholeplacevalue(man);
 }
@@ -153,42 +140,38 @@ wholeplacevalue.prototype.pointsub = function (subtrahend) {
 wholeplacevalue.prototype.pointadd = function (addend) {
     var man = [];
     for (var i = 0; i < this.mantisa.length; i++) {
-        man.push(Number(this.mantisa[i]) + Number(addend.mantisa[addend.mantisa.length - 1]));
+        man.push(this.get(i) + addend.get(0));      // get(0) is the one's place 2015.7
     }
     return new wholeplacevalue(man);
 }
 
 wholeplacevalue.prototype.pointtimes = function (multiplier) {
-    var me = this.clone();
-    var other = multiplier.clone();
     var man = [];
-    wholeplacevalue.pad(me, other);
-    for (var i = 0; i < me.mantisa.length; i++) {
-        man.push(Number(me.mantisa[i]) * Number(other.mantisa[i]));
+    for (var i = 0; i < Math.max(this.mantisa.length, multiplier.mantisa.length) ; i++) {
+        man.push(this.get(i) * multiplier.get(i));  // get obviates need to pad 2015.7
     }
     return new wholeplacevalue(man);
 }
 
 wholeplacevalue.prototype.pointdivide = function (divisor) {
-    var me = this.clone();
-    var other = divisor.clone();
     var man = [];
-    wholeplacevalue.pad(me, other);
-    for (var i = 0; i < me.mantisa.length; i++) {
-        man.push(Number(me.mantisa[i]) / Number(other.mantisa[i]));
+    for (var i = 0; i < Math.max(this.mantisa.length, divisor.mantisa.length) ; i++) {
+        man.push(this.get(i) / divisor.get(i));     // get obviates need to pad 2015.7
     }
     return new wholeplacevalue(man);
 }
 
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);
-    if (power.mantisa.length > 1) { alert('>Bad Exponent = ' + power.toStringInternal()); return new wholeplacevalue('%') }
+    if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue('%') }   // tohtml supercedes to StringInternal
     if (this.mantisa.length == 1) return new wholeplacevalue([this.mantisa == 0 && power.mantisa == 0 ? '%' : Math.pow(this.mantisa, power.mantisa)]);
-    if (power.mantisa != Math.round(power.mantisa)) { alert('.Bad Exponent = ' + power.toStringInternal()); return new wholeplacevalue('%') }
+    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue('%') }
     if (power.mantisa < 0) return new wholeplacevalue(0);
     if (power.mantisa == 0) return new wholeplacevalue(1);
     return this.times(this.pow(power.mantisa - 1));
 }
+
+wholeplacevalue.prototype.times10 = function () { this.mantisa.unshift(0) } // Caller can pad w/out knowing L2R or R2L  2015.7
 
 wholeplacevalue.prototype.times = function (top) {
     if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue(top);
@@ -196,10 +179,10 @@ wholeplacevalue.prototype.times = function (top) {
     for (var b = 0; b < this.mantisa.length; b++) {
         var sum = [];
         for (var t = 0; t < top.mantisa.length; t++) {
-            sum.unshift(this.mantisa[this.mantisa.length - b - 1] == 0 || top.mantisa[top.mantisa.length - t - 1] == 0 ? 0 : this.mantisa[this.mantisa.length - b - 1] * top.mantisa[top.mantisa.length - t - 1]); // Check 0 so ∞*10=∞0 not ∞% 2015.6
-            console.log('this.mantisa=' + this.mantisa + ' , top.mantisa=' + top.mantisa + ' , this.mantisa[b] = ' + this.mantisa[this.mantisa.length - b - 1] + ' , top.mantisa[t] = ' + top.mantisa[top.mantisa.length - t - 1] + ' , sum = ' + sum);
+            sum.push(this.get(b) == 0 || top.get(t) == 0 ? 0 : this.get(b) * top.get(t)); // Check 0 so ∞*10=∞0 not ∞% 2015.6   // get() 2015.7
+            console.log('this.mantisa=' + this.mantisa + ' , top.mantisa=' + top.mantisa + ' , this.get(b) = ' + this.get(b) + ' , top.get(t) = ' + top.get(t) + ' , sum = ' + sum);
         }
-        for (var i = 0; i < b; i++) sum.push(0);
+        for (var i = 0; i < b; i++) sum.unshift(0); // change push to unshift because L2R   2015.7
         prod = prod.add(new wholeplacevalue(sum));
     }
     return prod;
@@ -208,14 +191,13 @@ wholeplacevalue.prototype.times = function (top) {
 wholeplacevalue.prototype.divide = function (denominator) {
     var me = this.clone();
     var other = denominator.clone();
-    while (other.mantisa[0] == 0) {  // while most significant digit is 0
-        other.mantisa.shift();            // pop root 
-    }
+    while (me.mantisa.length > 1 && me.get(me.mantisa.length - 1) == 0)  //  while most significant digit is 0  // get(this.mantisa.length - 1) 2015.7
+        me.mantisa.pop();                             //  pop root
     if (other.mantisa.length == 0) other.mantisa = [0];
     while (me.mantisa.length < other.mantisa.length) {
-        me.mantisa.unshift(0);
+        me.mantisa.push(0);  // Change unshift to push because L2R   2015.7
     }
-    return new wholeplacevalue(divide(me.mantisa, other.mantisa));
+    return new wholeplacevalue(divide(me.mantisa.reverse(), other.mantisa.reverse()).reverse());    // R2L to L2R   2015.7
     function divide(num, den) {
         console.log('num=' + num + '; den=' + den);
         var ret = [];   // need var here otherwise ret is global

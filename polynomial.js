@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 6/17/2015
+// Date : 7/31/2015
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
@@ -68,12 +68,12 @@ function polynomial(arg, pv) {
     }
 }
 
-polynomial.prototype.toStringInternal = function () {
-    return this.pv.toString() + ' Base ' + this.base;
+polynomial.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
+    return this.pv.toString() + ' base ' + this.base;
 }
 
 polynomial.prototype.toString = function () {
-    return toStringXbase(this.pv, this.base);
+    return polynomial.toStringXbase(this.pv, this.base);
 }
 
 polynomial.prototype.add = function (other) {
@@ -98,7 +98,6 @@ polynomial.prototype.times = function (other) {
 }
 
 polynomial.prototype.divide = function (other) {
-    //console.log('polynomial.prototype.divide');
     if (this.pv.mantisa.length == 1) this.base = other.base;
     if (other.pv.mantisa.length == 1) other.base = this.base;
     if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
@@ -127,7 +126,6 @@ polynomial.prototype.pointtimes = function (other) {
 }
 
 polynomial.prototype.pointdivide = function (other) {
-    //console.log('polynomial.prototype.divide');
     if (this.pv.mantisa.length == 1) this.base = other.base;
     if (other.pv.mantisa.length == 1) other.base = this.base;
     if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
@@ -136,28 +134,21 @@ polynomial.prototype.pointdivide = function (other) {
 
 polynomial.prototype.pow = function (other) { // 2015.6
     return new polynomial(this.base, this.pv.pow(other.pv));
-    //console.log('polynomial.prototype.pow: posint = ' + posint);
-    //if (isNaN(posint)) { alert('Bad Exponent'); return new polynomial('0/0') }  // Check isnan(exp) Return %. 2015.6
-    //if (this.pv.mantisa.length == 1) return new polynomial(this.base, new wholeplacevalue([Math.pow(this.pv, posint)]));
-    //if (posint < 0) return new polynomial(0);
-    //if (posint == 0) return new polynomial(this == 0 ? '0/0' : 1);              // Check this==0 Return %. 2015.6
-    //return this.times(this.pow(posint - 1));
 }
 
-function toStringXbase(pv, base) {
+polynomial.toStringXbase = function (pv, base) {                        // added namespace  2015.7
     console.log('polynomial: pv = ' + pv);
     var x = pv.mantisa;
     console.log('polynomial.toStringXbase: x=' + x);
-    if (x[0] == 0 && x.length > 1) {
-        x.shift();
-        return toStringXbase(new wholeplacevalue(x), base);
+    if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
+        x.pop();                                    // Replace shift with pop because L2R 2015.7
+        return polynomial.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
     var maxbase = x.length - 1// + exp;
-    for (var i = 0; i < str.length; i++) {
-        var power = maxbase - i;
-        var digit = Math.round(1000 * str[i]) / 1000;
+    for (var power = maxbase; power >= 0; power--) {        // power is index because whole is L2R  2015.7 
+        var digit = Math.round(1000 * str[power]) / 1000;   // power is index because whole is L2R  2015.7 
         if (digit != 0) {
             ret += '+';
             if (power == 0)
@@ -175,5 +166,3 @@ function toStringXbase(pv, base) {
     return ret;
     function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 }
-
-

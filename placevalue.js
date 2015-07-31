@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 6/17/2015
+// Date : 7/31/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -21,13 +21,11 @@ function placevalue(man, exp) {
     }
 }
 
-placevalue.prototype.toStringInternal = function () {
-    return this.whole + 'E' + this.exp;
+placevalue.prototype.tohtml = function () {     // Replaces toStringInternal 2015.7
+    return this.whole.toString() + 'E' + this.exp;
 }
 
 placevalue.prototype.toString = function () {
-    // 185  189  822 8315   9321
-    // ^1   1/2  -   ^-     10
     var ret = "";
     for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
         if (i == this.whole.mantisa.length + this.exp) ret += '.';
@@ -41,27 +39,15 @@ placevalue.prototype.toString = function () {
     return ret;
 }
 
-placevalue.prototype.tohtml = function () {
-    var ret = "";
-    for (var i = 0; i < this.mantisa.length; i++) {
-        if (this.mantisa[i] >= 0)
-            ret += this.mantisa[i]
-        else
-            ret += '<s>' + Math.abs(this.mantisa[i]) + '</s>';
-    }
-    console.log(ret);
-    return ret;
-}
-
 placevalue.pad = function (a, b) {
     if (arguments.length < 3) offset = 0;
     while (a.exp > b.exp) {
         a.exp--;
-        a.whole.mantisa.push(0);
+        a.whole = a.whole.times(10);    // Delegate Shift to Whole  2015.7
     }
     while (b.exp > a.exp) {
         b.exp--;
-        b.whole.mantisa.push(0);
+        b.whole = b.whole.times(10);    // Delegate Shift to Whole  2015.7
     }
     wholeplacevalue.pad(a.whole, b.whole);
 }
@@ -123,7 +109,7 @@ placevalue.prototype.divide = function (denominator) {
         while (a.whole.mantisa.length < sigfig + b.whole.mantisa.length) {
             console.log('placevalue.prototype.divide.padback : ' + a.whole.mantisa.length + ' < ' + sigfig + ' + ' + b.whole.mantisa.length);
             a.exp--;
-            a.whole.mantisa.push(0);
+            a.whole.times10();      // Delegate Shift to Whole  2015.7
         }
     }
 }

@@ -1,6 +1,6 @@
 Author : Anthony John Ripa
 
-Date : 6/17/2015
+Date : 7/31/2015
 
 Introduction
 ==========
@@ -24,9 +24,36 @@ The PlaceValue data-type is particularly well-suited to polynomial arithmetic. P
 
 <i>polynomial.html</i> is a demo for polynomial.js.
 
+Multinomial
+-------------
+<i>multinomial.js</i> is a datatype for representing multinomials; an application of the WholePlaceValue2 datatype.
+
+The PlaceValue data-type is particularly well-suited to multinomial arithmetic. Multinomial arithmetic uses placeholders like x & y. PlaceValue arithmetic dispenses with this placeholder.
+
+<i>multinomial.html</i> is a demo for multinomial.js.
+
+WholePlaceValue2
+------------------------
+<i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Multinomial</i>. If Multinomial wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
+<pre>
+     1    1
+10 + 0 = 10
+</pre>
+Multinomial then formats WholePlaceValue2's result as x+y.
+
+If Multinomial wants to calculate (x+y)^2, then it asks WholePlaceValue to calculate:
+<pre>
+            1
+ 1    1    20
+10 * 10 = 100
+</pre>
+Multinomial then formats WholePlaceValue2's result as x+2xy+y .
+
+Multinomial can be thought of as nothing more than an algebraic looking interface to an underlying arithmetic calculation in WholePlaceValue2. Multinomial can be thought of as merely aliasing the axes of WholePlaceValue2 with common names like x & y. Something similar can be said for polynomial.
+
 Calculator
 --------------
-<i>index.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , and polynomial mode (Polynomial).
+<i>index.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , and multinomial mode (Multinomial).
 
 Measure
 ------------
