@@ -1,4 +1,4 @@
-﻿
+
 // Author : Anthony John Ripa
 // Date : 7/31/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
@@ -116,4 +116,14 @@ placevalue.prototype.divide = function (denominator) {
 
 placevalue.prototype.clone = function () {
     return new placevalue(this.whole.clone(), this.exp);
+}
+
+placevalue.prototype.eval = function (base) {
+    var sum = 0;
+    for (var i = 0; i < this.whole.mantisa.length; i++) {
+        sum += this.whole.get(i) * Math.pow(base, i);
+    }
+    var scale = Math.pow(base, this.exp)
+    sum *= scale;
+    return new placevalue('(' + sum + ')');
 }

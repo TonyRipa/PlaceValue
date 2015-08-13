@@ -1,6 +1,6 @@
-﻿
+
 // Author : Anthony John Ripa
-// Date : 7/31/2015
+// Date : 8/7/2015
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
@@ -60,7 +60,7 @@ function polynomial(arg, pv) {
                 var c = new polynomial(0).add(a);
             } else {
                 var b = new polynomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : a.pow(b);
+                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             me.base = c.base;
             me.pv = c.pv;
@@ -165,4 +165,12 @@ polynomial.toStringXbase = function (pv, base) {                        // added
     if (ret == '') ret = '0';
     return ret;
     function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
+}
+
+polynomial.prototype.eval = function (base) {
+    var sum = 0;
+    for (var i = 0; i < this.pv.mantisa.length; i++) {
+        sum += this.pv.get(i) * Math.pow(base, i);
+    }
+    return new polynomial([sum]);
 }

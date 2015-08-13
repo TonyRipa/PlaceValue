@@ -1,0 +1,82 @@
+﻿
+<!--
+   Author : Anthony John Ripa
+   Date : 8/7/2015
+   Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
+-->
+
+<html>
+<head>
+    <title>Differentiator</title>
+    <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+    <script type="text/javascript">
+        window.math || document.write("<script src='../../js/math.js'><" + "/script>")
+    </script>
+    <script type="text/javascript" src='wholeplacevalue.js'></script>
+    <script type="text/javascript" src='placevalue.js'></script>
+    <script type="text/javascript" src='polynomial.js'></script>
+    <script src='wholeplacevalue2.js'></script>
+    <script src='multinomial.js'></script>
+    <style>
+        h1 { text-align: center; }
+        #f { position: absolute; top: 10px; left: 10px; }
+        body, input { font-family: "Arial Unicode MS" }
+        #main { border-spacing: 0; float: left; margin: 10px; }
+        #col3 { width: 150px }
+        #ao, #bo, #co { min-width: 150px; text-align: right }
+        #augend:nth-child(1) td { color: green; }
+        #base>td { border-bottom: 1pt solid black; color: blue; }
+        #base>td table { color: blue; }
+        input { text-align: right; }
+    </style>
+</head>
+<body>
+    <h1>Differentiator</h1>
+    <select id='f' onchange="clean()"><option>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option selected>Multinomial</option></select>
+	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
+    <table id="main">
+        <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
+        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
+        <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
+    </table>
+    <script type="text/javascript">
+	function differentiate() {
+		console.log('diff');
+		$('#a').val('('+$('#func').val().replace(/x/g,'(x+h)')+'-('+$('#func').val()+'))/h');
+		$('#b').val('0');
+		compute();
+	}
+        function compute() {
+            f = [wholeplacevalue, placevalue, polynomial, multinomial][$('#f')[0].selectedIndex];   // Add Multinomial  2015.7
+            var a = getinput('#a');
+            var b = getinput('#b');
+            var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
+            output(a, b, c);
+	    function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function output(a, b, c) {
+                $('#c').attr('data-val', JSON.stringify(c));
+                $('#c').val(c);
+                showInternal(a, '#ao');
+                showInternal(b, '#bo');
+                showInternal(c, '#co');
+                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
+            }
+            eval();
+        }
+        function moveanswer(from, to) {
+            $(to).val($(from).val());                           // move toString
+            $(to + 'o').html($(from + 'o').html());             // move toStringInternal
+            $(to).attr('data-val', $(from).attr('data-val'));   // move json
+        }
+        function clean() {return
+            $('input').val('');
+            $('td:nth-child(4)').html('&nbsp;');
+            $('[data-val]').removeAttr('data-val');
+        }
+    </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
-﻿
+
 // Author : Anthony John Ripa
-// Date : 7/31/2015
+// Date : 8/12/2015
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -94,9 +94,9 @@ wholeplacevalue.prototype.digit = function (i) {
     if (digit == 0) return '0';
     if (0 < digit && digit < 1) {
         if (frac[rounddigit]) return frac[rounddigit];
-        var flip = 1 / digit;
+        if (cons[rounddigit]) return cons[rounddigit];	// cons b4 flip prevents .159=6^-1	2015.8
+        var flip = Math.round(1 / digit);		// round prevents 1/24.99999		2015.8
         if (Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
-        if (cons[rounddigit]) return cons[rounddigit];
     }
     if (cons[rounddigit]) return cons[rounddigit];
     if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? digit : '(' + rounddigit + ')';
@@ -233,4 +233,12 @@ wholeplacevalue.prototype.clone = function () {
     if (Array.isArray(this)) copiedObject = [];
     jQuery.extend(true, copiedObject, this);
     return copiedObject;
+}
+
+wholeplacevalue.prototype.eval = function (base) {
+    var sum = 0;
+    for (var i = 0; i < this.mantisa.length; i++) {
+        sum += this.get(i) * Math.pow(base, i);
+    }
+    return new wholeplacevalue([sum]);
 }

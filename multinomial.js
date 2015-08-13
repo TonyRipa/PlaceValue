@@ -1,6 +1,6 @@
-﻿
+
 // Author : Anthony John Ripa
-// Date : 7/31/2015
+// Date : 8/9/2015
 // Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 
 function multinomial(arg, pv) {
@@ -64,7 +64,7 @@ function multinomial(arg, pv) {
                 var c = new multinomial(0).add(a);
             } else {
                 var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : a.pow(b);
+                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) :(node.op == '|') ? a.eval(b) : a.pow(b);
             }
             me.base = c.base;
             me.pv = c.pv;
@@ -127,8 +127,8 @@ multinomial.prototype.pointdivide = function (other) {
 
 multinomial.prototype.align = function (other) {    // obviate need for different kinds of addition 2015.7
     alignHelper(other, this);
-    alignHelper(this, other);
-    if (shouldFlip(this.pv.mantisa, other.pv.mantisa)) flip(this, other);
+    if (alignHelper(this, other)) flip(this,other);	// If (this flipped) flipback;	2015.8
+    //if (shouldFlip(this.pv.mantisa, other.pv.mantisa)) flip(this, other);
     if (this.base.toString() != other.base.toString()) alert('Different bases : ' + JSON.stringify(this) + ' & ' + JSON.stringify(other));
     function shouldFlip(matrix1, matrix2) { return matrix1.length + matrix2.length > matrix1[0].length + matrix2[0].length }
     function flip(me, it) {
@@ -148,16 +148,18 @@ multinomial.prototype.align = function (other) {    // obviate need for differen
             } else if (it.base[0] == me.base[1] && it.base[1] == me.base[0]) {
                 it.base = me.base;
                 it.pv.mantisa = math.transpose(it.pv.mantisa);  // mathjs transpose 2015.7
+		return true	// signal flip	2015.8
             } else if (isNaN(me.base[0]) && isnum(me.base[1]) && isnum(it.base[1])) {
                 me.base[1] = it.base[0];
                 it.base = me.base;
                 it.pv.mantisa = math.transpose(it.pv.mantisa);  // mathjs transpose 2015.7
+		return true	// signal flip	2015.8
             } else if (isNaN(me.base[0]) && isnum(me.base[1]) && it.base[1] == me.base[0]) {
                 me.base[1] = it.base[0];
                 it.base = me.base;
                 it.pv.mantisa = math.transpose(it.pv.mantisa);  // mathjs transpose 2015.7
+		return true	// signal flip	2015.8
             }
-
         } catch (e) { alert(e.stack); }
     }
 }
@@ -183,7 +185,7 @@ function toStringXbase2(pv, base) {
                 else {
                     ret += (digit != 1 ? (digit != -1 ? digit : '-') : '').toString();
                     if (powerx != 0) ret += base[0] + sup(powerx);
-                    //if (powerx == 1 && powery != 0) ret += '*';
+                    if (powerx == 1 && powery != 0) ret += '*';
                     if (powery != 0) ret += base[1] + sup(powery);
                     //console.log('multinomial.toStringXbase2: powerx=' + powerx + ', digit=' + digit + ', ret=' + ret);
                 }
@@ -195,11 +197,22 @@ function toStringXbase2(pv, base) {
     if (ret == '') ret = '0';
     return ret;
     function sup(x) {
-        return (x == 1) ? '' : pretty(x);
+	if (x == 1) return '';
+        return ugly(x);
         function ugly(x) { return (x != 1) ? '^' + x : ''; }
         function pretty(x) {
             return x.toString().split('').map(
                 function (x) { return { '0': '⁰', '1': '¹', '2': '²', '3': '³', '4': '⁴', '5': '⁵', '6': '⁶', '7': '⁷', '8': '⁸', '9': '⁹' }[x]; }).join('');
         }
+    }
+}
+
+multinomial.prototype.eval = function (base) {	// 2015.8
+    if (isNaN(this.base[1]))
+	return new multinomial([this.base[0], null], this.pv.eval(base));
+    else {
+	var me = new multinomial(0);
+	me.pv.mantisa = math.transpose(this.pv.mantisa);
+	return new multinomial([null, null], me.pv.eval(base));
     }
 }

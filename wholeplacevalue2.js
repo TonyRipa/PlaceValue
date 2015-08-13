@@ -1,6 +1,6 @@
-﻿
+
 // Author : Anthony John Ripa
-// Date : 7/31/2015
+// Date : 8/9/2015
 // WholePlaceValue2 : a 2D datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 function wholeplacevalue2(man, trace) {
@@ -325,4 +325,17 @@ wholeplacevalue2.prototype.divide = function (den) {
             return ret;
         }
     }
+}
+
+wholeplacevalue2.prototype.eval = function (base) {	// 2015.8
+    var ret = [];
+    for (var col = 0; col < this.mantisa[0].length; col++) {
+        var sum = 0;
+	for (var row = 0; row < this.mantisa.length; row++) {
+            sum += this.get(row, col) * Math.pow(base, row);
+        }
+        ret.push(sum);
+    }
+    //alert(ret);
+    return new wholeplacevalue2(ret);
 }
