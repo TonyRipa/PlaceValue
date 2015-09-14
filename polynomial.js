@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 8/7/2015
+// Date : 9/7/2015
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
@@ -29,7 +29,7 @@ function polynomial(arg, pv) {
         console.log("polynomial : this.pv=" + JSON.stringify(this.pv));
     } else {
         this.base = arg;
-        if (pv instanceof wholeplacevalue)
+        if (pv instanceof Object && JSON.stringify(pv).indexOf('mantisa') != -1)  // 2015.8
             this.pv = pv;
         else if (typeof pv == 'number') {
             console.log("polynomial: typeof pv == 'number'");
@@ -37,7 +37,7 @@ function polynomial(arg, pv) {
             console.log(this.pv.toString());
         }
         else
-            alert('polynomial: bad arg typeof(arg2)=' + typeof (pv));
+            alert('polynomial: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
     }
     function parse(me, strornode) {
         console.log('<strornode>')
@@ -77,59 +77,49 @@ polynomial.prototype.toString = function () {
 }
 
 polynomial.prototype.add = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.add(other.pv));
 }
 
 polynomial.prototype.sub = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.sub(other.pv));
 }
 
 polynomial.prototype.times = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.times(other.pv));
 }
 
 polynomial.prototype.divide = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.divide(other.pv));
 }
 
 polynomial.prototype.pointadd = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.pointadd(other.pv));
 }
 
 polynomial.prototype.pointsub = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.pointsub(other.pv));
 }
 
 polynomial.prototype.pointtimes = function (other) {
-    if (this.pv.mantisa.length == 1) this.base = other.base;
-    if (other.pv.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
+    this.align(other);
     return new polynomial(this.base, this.pv.pointtimes(other.pv));
 }
 
 polynomial.prototype.pointdivide = function (other) {
+    this.align(other);
+    return new polynomial(this.base, this.pv.pointdivide(other.pv));
+}
+
+polynomial.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.mantisa.length == 1) this.base = other.base;
     if (other.pv.mantisa.length == 1) other.base = this.base;
     if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial('0/0') }
-    return new polynomial(this.base, this.pv.pointdivide(other.pv));
 }
 
 polynomial.prototype.pow = function (other) { // 2015.6

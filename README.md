@@ -1,6 +1,6 @@
 ﻿Author : Anthony John Ripa
 
-Date : 8/12/2015
+Date : 9/14/2015
 
 Introduction
 ==========
@@ -50,6 +50,12 @@ If Multinomial wants to calculate (x+y)^2, then it asks WholePlaceValue to calcu
 Multinomial then formats WholePlaceValue2's result as x+2xy+y .
 
 Multinomial can be thought of as nothing more than an algebraic looking interface to an underlying arithmetic calculation in WholePlaceValue2. Multinomial can be thought of as merely aliasing the axes of WholePlaceValue2 with common names like x & y. Something similar can be said for polynomial.
+
+Laurent Polynomial
+-------------------
+<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomials.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is right for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to skins for PlaceValue.
+
+<i>CAS.html</i> which stands for either Computer Algebra System (for the algebraic looking UI) or Computer Arithmetic System (for the under the hood arithmetic implementation) is a demo for Laurent Polynomial & Multinomial.
 
 Calculator
 --------------
