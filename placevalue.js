@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 9/14/2015
+// Date : 9/23/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -20,7 +20,7 @@ function placevalue(man, exp) {
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
         if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
-        if (x instanceof wholeplacevalue) return 0;
+        if (x.mantisa) return 0;  // To check for wholeplacevalue-like objects, replace (x instanceof wholeplacevalue) with (x.mantisa)    2015.9
         if (x.toString().toUpperCase().indexOf('E') != -1) {    // Recognize 2e3    2015.9
             x = x.toString().toUpperCase();
             return Number(x.substr(1+x.indexOf('E'))) + getexp(x.substr(0,x.indexOf('E')))

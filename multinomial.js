@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 8/9/2015
+// Date : 9/27/2015
 // Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 
 function multinomial(arg, pv) {
@@ -82,7 +82,7 @@ multinomial.prototype.tohtml = function (trace) {    //  Replacement for toStrin
 
 multinomial.prototype.toString = function () {
     if (!Array.isArray(this.base)) alert('Array 1D : ' + JSON.stringify(this));
-    return toStringXbase2(this.pv, this.base);
+    return multinomial.toStringXbase2(this.pv, this.base);
 }
 
 multinomial.prototype.add = function (other) {
@@ -168,7 +168,7 @@ multinomial.prototype.pow = function (other) { // 2015.7
     return new multinomial(this.base, this.pv.pow(other.pv));
 }
 
-function toStringXbase2(pv, base) {
+multinomial.toStringXbase2 = function(pv, base) {   // Added namespace  2015.9
     var man = pv.mantisa;
     console.log('multinomial.toStringXbase2: man=' + man);
     var ret = '';
