@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 10/21/2015
+// Date : 11/30/2015
 // Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype
 
 function laurent2(arg, pv) {
@@ -57,14 +57,16 @@ function laurent2(arg, pv) {
         } else if (node.type == 'OperatorNode') {
             console.log('new laurent2 : OperatorNode')
             var kids = node.args;
-            var a = new laurent2(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            //var a = new laurent2(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            var a = new laurent2(kids[0]);      // laurent2 handles unpreprocessed kid  2015.11
             if (node.fn == 'unaryMinus') {
                 var c = new laurent2(0).sub(a);
             } else if (node.fn == 'unaryPlus') {
                 var c = new laurent2(0).add(a);
             } else {
-                var b = new laurent2(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) :(node.op == '|') ? a.eval(b) : a.pow(b);
+                //var b = new laurent2(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                var b = new laurent2(kids[1]);  // laurent2 handles unpreprocessed kid  2015.11
+                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             me.base = c.base;
             me.pv = c.pv;
@@ -222,6 +224,7 @@ laurent2.prototype.eval = function (base) {	// 2015.8
     else {
         var me = new laurent2(0);
         me.pv.whole.mantisa = math.transpose(this.pv.whole.mantisa);
+        me.pv.exp = this.pv.exp.slice(0);   //  Infuse me w/ this's exp 2015.11
         return new laurent2([null, null], me.pv.eval(base));
     }
 }

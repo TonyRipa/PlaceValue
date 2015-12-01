@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 9/27/2015
+// Date : 11/18/2015
 // Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 
 function multinomial(arg, pv) {
@@ -57,14 +57,16 @@ function multinomial(arg, pv) {
         } else if (node.type == 'OperatorNode') {
             console.log('new multinomial : OperatorNode')
             var kids = node.args;
-            var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            //var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            var a = new multinomial(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
             if (node.fn == 'unaryMinus') {
                 var c = new multinomial(0).sub(a);
             } else if (node.fn == 'unaryPlus') {
                 var c = new multinomial(0).add(a);
             } else {
-                var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) :(node.op == '|') ? a.eval(b) : a.pow(b);
+                //var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                var b = new multinomial(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
+                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             me.base = c.base;
             me.pv = c.pv;

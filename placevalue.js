@@ -1,10 +1,11 @@
 
 // Author : Anthony John Ripa
-// Date : 9/23/2015
+// Date : 11/30/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
     if (arguments.length < 2) exp = 0;
+    if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('whole') != -1) {
         console.log("new placevalue : arg is stringified placevalue");
         var ans = JSON.parse(man);
@@ -31,22 +32,28 @@ function placevalue(man, exp) {
     }
 }
 
-placevalue.prototype.tohtml = function () {     // Replaces toStringInternal 2015.7
-    return this.whole.toString() + 'E' + this.exp;
+placevalue.prototype.get = function (i) {       // 2015.11
+    return this.whole.get(i - this.exp);
 }
 
-placevalue.prototype.toString = function () {
+placevalue.prototype.tohtml = function (short) {        // Long and Short HTML  2015.11
+    if (short) return this.toString(true);
+    return this.whole.toString(true) + 'E' + this.exp;  // Replaces toStringInternal 2015.7
+}
+
+placevalue.prototype.toString = function (sTag) {       //  sTag    2015.11
     var ret = "";
     for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
-        if (i == this.whole.mantisa.length + this.exp) ret += '.';
-        ret += this.whole.digit(i);
+        if (i == this.whole.mantisa.length + this.exp) ret += '@';              // Need '@' to see our '.' among digit's '.'    2015.11
+        ret += this.whole.digit(i, sTag);               //  sTag    2015.11
     }
-    for (var i = 0; i<this.exp; i++) ret += '0';
-    if (ret.indexOf('.') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
-    if (ret[ret.length - 1] == '.') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
+    for (var i = 0; i < this.exp; i++) ret += '0';
+    if (ret.indexOf('@') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
+    if (ret[ret.length - 1] == '@') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
     while (ret[0] == 0) ret = ret.substring(1);                                                             // Remove leading zeros
-    if (ret[0] == '.') ret = '0' + ret;                                                                     // '.x' -> '0.x'
+    if (ret[0] == '@') ret = '0' + ret;                                                                     // '.x' -> '0.x'
     if (ret == '') ret = '0';                                                                               // ''   -> '0'
+    ret = ret.replace('@', '.');                                                // '@' -> '.'   2015.11
     return ret;
 }
 
@@ -94,7 +101,8 @@ placevalue.prototype.pointdivide = function (divisor) {
 
 placevalue.prototype.pow = function (power) {	// 2015.8
     if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
-    if (power.get(0)<0) return (new placevalue(1)).divide(this.pow(new placevalue(-power.get(0)))); // 2015.8
+    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
+    if (power.get(0) < 0) return (new placevalue(1)).divide(this.pow(new placevalue(-power.get(0)))); // 2015.8
     var whole = this.whole.pow(power);
     var exp = this.exp * power.get(0);    // exp*pow not exp^pow  2015.9
     return new placevalue(whole, exp);
@@ -113,23 +121,45 @@ placevalue.align = function (a, b) {    // rename pad align 2015.9
 }
 
 placevalue.prototype.times = function (top) {
+    if (!(top instanceof Object && JSON.stringify(top).indexOf('whole') != -1)) top = new placevalue(top);  // 2015.11
     var whole = this.whole.times(top.whole);
     return new placevalue(whole, this.exp + top.exp);
 }
 
+placevalue.prototype.scale = function (scalar) {   // 2015.11
+    var whole = this.whole.scale(scalar);
+    return new placevalue(whole, this.exp);
+}
+
 placevalue.prototype.divide = function (denominator) {
     var me = this.clone();
-    if (me.whole.mantisa.length<denominator.whole.mantisa.length) pad(me, denominator, 4);  // 2015.9
+    if (!(denominator instanceof Object && JSON.stringify(denominator).indexOf('whole') != -1)) denominator = new placevalue(denominator);  // 2015.11
+    var pads = 0;						// 2015.11
+    pads = pad(me, denominator, 4);		// 2015.11
     var whole = me.whole.divide(denominator.whole);
     console.log('placevalue.prototype.divide : return new placevalue(whole, ' + me.exp + '-' + denominator.exp +')')
-    return new placevalue(whole, me.exp - denominator.exp);
+    var ret = new placevalue(whole, me.exp - denominator.exp);
+	unpad(ret,pads);					// 2015.11
+	return ret;
     function pad(n, d, sigfig) {
+		var i = 0;						// 2015.11
         while (n.whole.mantisa.length < sigfig + d.whole.mantisa.length) {
+			i++;						// 2015.11
             console.log('placevalue.prototype.divide.padback : ' + n.whole.mantisa.length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
             n.exp--;
             n.whole.times10();      // Delegate Shift to Whole  2015.7
         }
+		return i;						// 2015.11
     }
+	function unpad(pv, pads) {			// 2015.11
+        while (pads>0) {
+			if (pv.whole.get(0)==0) {
+				pv.whole.mantisa.shift()
+				pv.exp++
+			}
+			pads--;
+        }		
+	}
 }
 
 placevalue.prototype.clone = function () {

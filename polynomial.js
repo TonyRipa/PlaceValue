@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 9/7/2015
+// Date : 11/18/2015
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
@@ -53,13 +53,15 @@ function polynomial(arg, pv) {
         } else if (node.type == 'OperatorNode') {
             console.log('OperatorNode')
             var kids = node.args;
-            var a = new polynomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            //var a = new polynomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+            var a = new polynomial(kids[0]);        // polynomial handles unpreprocessed kid    2015.11
             if (node.fn == 'unaryMinus') {
                 var c = new polynomial(0).sub(a);
             } else if (node.fn == 'unaryPlus') {
                 var c = new polynomial(0).add(a);
             } else {
-                var b = new polynomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                //var b = new polynomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                var b = new polynomial(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
                 var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             me.base = c.base;

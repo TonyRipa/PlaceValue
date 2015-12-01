@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 9/14/2015
+// Date : 11/29/2015
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -67,32 +67,37 @@ wholeplacevalue.prototype.tohtml = function () {    // Replaces toStringInternal
     return me.mantisa.reverse().toString();         // R2L
 }
 
-wholeplacevalue.prototype.toString = function () {
+wholeplacevalue.prototype.toString = function (sTag) {                          //  sTag    2015.11
     var ret = "";
-    for (var i = 0 ; i < this.mantisa.length; i++) ret += this.digit(i);
+    for (var i = 0 ; i < this.mantisa.length; i++) ret += this.digit(i, sTag);
     return ret;
 }
 
-wholeplacevalue.prototype.digit = function (i) {
+wholeplacevalue.prototype.digit = function (i, sTag) {                          //  sTag    2015.11
+    if (sTag) return this.digithelp(i, '<s>', '</s>', true);
+    return this.digithelp(i, '', String.fromCharCode(822), false);
+}
+
+wholeplacevalue.prototype.digithelp = function (i, NEGBEG, NEGEND, fraction) {  // 2015.11
     // 185  189  822 8315   9321
     // ^1   1/2  -   ^-     10
-    var NEGATIVE = String.fromCharCode(822);
     var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
     var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
-    var cons = { '-0.159': 'τ' + NEGATIVE + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
+    var cons = { '-0.159': NEGBEG + 'τ' + NEGEND + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
     var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
     var digit = i < 0 ? 0 : this.mantisa[this.mantisa.length - 1 - i]; // R2L  2015.7
     var rounddigit = Math.round(digit * 1000) / 1000;
     if (isNaN(digit)) return '%';
-    if (digit == -1 / 0) return '∞' + NEGATIVE;
-    if (num[-digit]) return num[-digit] + NEGATIVE;
+    if (digit == -1 / 0) return NEGBEG + '∞' + NEGEND;
+    if (num[-digit]) return NEGBEG + num[-digit] + NEGEND;
     if (digit < -9 && isFinite(digit)) return '(' + rounddigit + ')';
     if (-1 < digit && digit < 0) {
+        if (fraction) if (frac[-rounddigit]) return NEGBEG + frac[-rounddigit] + NEGEND;
         var flip = -1 / digit;
-        if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + NEGATIVE + INVERSE;
+        if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return NEGBEG + (num[flip] ? num[flip] : Math.abs(flip)) + NEGEND + INVERSE;
         if (cons[rounddigit]) return cons[rounddigit];
     }
-    if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? Math.abs(digit).toString().split('').join(NEGATIVE) + NEGATIVE : '(' + rounddigit + ')';
+    if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? NEGBEG + Math.abs(digit).toString() + NEGEND : '(' + rounddigit + ')';
     if (digit == 0) return '0';
     if (0 < digit && digit < 1) {
         if (frac[rounddigit]) return frac[rounddigit];
@@ -110,7 +115,7 @@ wholeplacevalue.prototype.digit = function (i) {
     return 'x';
 }
 
-wholeplacevalue.prototype.add = function (other) { return this.f(function (x,y) {return x+y}, other); }
+wholeplacevalue.prototype.add = function (other) { return this.f(function (x, y) { return x + y }, other); }
 wholeplacevalue.prototype.sub = function (other) { return this.f(function (x,y) {return x-y}, other).round(); } // 1-1.1≠-.100009 2015.9
 wholeplacevalue.prototype.pointtimes = function (other) { return this.f(function (x,y) {return x*y}, other); }
 wholeplacevalue.prototype.pointdivide = function (other) { return this.f(function (x,y) {return x/y}, other); }

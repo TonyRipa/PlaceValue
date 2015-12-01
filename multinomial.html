@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 8/10/2015
+   Date : 11/18/2015
    Demo for Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 -->
 
@@ -61,11 +61,13 @@
             } else if (node.type == 'OperatorNode') {
                 console.log('OperatorNode')
                 var kids = node.args;
-                var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+                //var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+                var a = new multinomial(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                    //var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                    var b = new multinomial(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
                 }
             }
             a.align(b);     // align    2015.7

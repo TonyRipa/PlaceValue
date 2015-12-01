@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 10/21/2015
+   Date : 11/29/2015
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -25,6 +25,7 @@
     <script type="text/javascript" src='multinomial.js'></script>
     <script type="text/javascript" src='placevalue2.js'></script>
     <script type="text/javascript" src='laurent2.js'></script>
+    <script type="text/javascript" src='exponential.js'></script>
     <style>
         body,html { height:85% }
         body,input { font-family: "Arial Unicode MS" }
@@ -37,7 +38,7 @@
 </head>
 <body>
     <h1>Computer Algebra System</h1>
-    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option></select>
+    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Exponential</option></select>
     <button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
     <hr style="clear:both"/>
     <div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>
@@ -46,14 +47,14 @@
             return "<span style='white-space:nowrap'>" + x + "</span>";
         }
         function compute() {
-            f = [polynomial, laurent, multinomial, laurent2][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
+            f = [polynomial, laurent, multinomial, laurent2, exponential][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
             var poly = new f($('#a').val());
             var tuple = parse($('#a').val());
             $('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
         }
         function tupletostring(tuple) { // Replaced toStringInternal w/ tohtml  2015.7
             if (tuple.length == 1)
-                return '<span style="color:blue">'+nobr(tuple[0].tohtml())+'</span><hr>';	// In<hr>	2015.8
+                return '<span style="color:blue">' + nobr(tuple[0].tohtml()) + '</span><hr>';	// In<hr>	2015.8
             else if (tuple.length == 2)
                 return '<table class="aux"><tr><td style="color:red">' + tuple[0] + '</td><td style="color:blue;text-align:right;float:right">' + nobr(tuple[1].tohtml('cas.html >')) + '</td></tr></table><br clear="all"><hr>';		// OpIn<hr>	2015.8
             else
@@ -61,19 +62,25 @@
         }
         function parse(str) {
             var node = math.parse(str);
-            if (node.type != 'OperatorNode') {
-                return [new f(node.value || node.name)];
-            } else if (node.type == 'OperatorNode') {
-                console.log('OperatorNode')
+            if (node.type == 'OperatorNode') {
+                console.log('CAS: OperatorNode')
                 var kids = node.args;
-                var a = new f(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+                //var a = new f(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+                var a = new f(kids[0]);     // f handles unpreprocessed kid 2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    var b = new f(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                    //var b = new f(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+                    var b = new f(kids[1]); // f handles unpreprocessed kid 2015.11
                 }
+            } else if (node.type == 'FunctionNode') {   // exponential  2015.11
+                console.log('CAS: FunctionNode')
+                return [node.name, new laurent(node.args[0])];
+            } else {
+                console.log('CAS: OtherNode')
+                return [new f(node.value || node.name)];
             }
-            if (f==multinomial) a.align(b);     // align    2015.7
+            if (f == multinomial) a.align(b);     // align    2015.7
             return [node.op, a, b];
         }
     </script>

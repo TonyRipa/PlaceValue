@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 8/7/2015
+   Date : 11/26/2015
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -21,6 +21,10 @@
     <script type="text/javascript" src='polynomial.js'></script>
     <script src='wholeplacevalue2.js'></script>
     <script src='multinomial.js'></script>
+    <script src='placevalue2.js'></script>
+    <script src='laurent2.js'></script>
+    <script src='laurent.js'></script>
+    <script src='exponential.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -36,7 +40,7 @@
 </head>
 <body>
     <h1>Differentiator</h1>
-    <select id='f' onchange="clean()"><option>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option selected>Multinomial</option></select>
+    <select id='f' onchange="clean()"><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Exponential</option></select>
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
@@ -44,19 +48,30 @@
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
     </table>
     <script type="text/javascript">
-	function differentiate() {
-		console.log('diff');
-		$('#a').val('('+$('#func').val().replace(/x/g,'(x+h)')+'-('+$('#func').val()+'))/h');
-		$('#b').val('0');
-		compute();
-	}
+        function differentiate() {
+            if ($('#f')[0].selectedIndex == 2) dexp(); else dpoly();
+		    function dpoly() {
+		        console.log('diffpoly');
+		        $('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
+		        $('#b').val('0');
+		        $('#op').val('|');
+		        compute();
+		    }
+		    function dexp() {   // Added Exponential Differentiation    2015.11
+		        console.log('diffexp');
+		        $('#a').val($('#func').val());
+		        $('#b').val('6exp(6@)+5exp(5@)+4exp(4@)+3exp(3@)+2exp(2@)+exp(@)-exp(-@)-2exp(-2@)-3exp(-3@)-4exp(-4@)-5exp(-5@)-6exp(-6@)'.replace(/@/g, new exponential($('#func').val()).base));
+		        $('#op').val('⊗');
+		        compute();
+		    }
+        }
         function compute() {
-            f = [wholeplacevalue, placevalue, polynomial, multinomial][$('#f')[0].selectedIndex];   // Add Multinomial  2015.7
+            f = [multinomial, laurent2, exponential][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-	    function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+	        function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

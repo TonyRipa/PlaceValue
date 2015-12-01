@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 10/21/2015
+// Date : 11/30/2015
 // Placevalue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(man, exp) {
@@ -123,25 +123,49 @@ placevalue2.prototype.times = function (top) {
 
 placevalue2.prototype.divide = function (denominator) {
     var me = this.clone();
-    //pad(me, denominator, 4);
-    //padup(me, denominator, 4);
+    var pads = 0;						// 2015.11
+    pads = padup(me, denominator, 4);   // 2015.11
     if (denominator.whole.mantisa[0].length != 1 || me.whole.mantisa[0].length < denominator.whole.mantisa[0].length) pad(me, denominator, 4);  // 2015.9 // [0] 2015.10
-    if (denominator.whole.mantisa.length != 1 || me.whole.mantisa.length < denominator.whole.mantisa.length) padup(me, denominator, 4);  // 2015.9 // [0] 2015.10
+    //if (denominator.whole.mantisa.length != 1 || me.whole.mantisa.length < denominator.whole.mantisa.length) padup(me, denominator, 4);  // 2015.9 // [0] 2015.10
     var whole = me.whole.divide(denominator.whole);
     console.log('placevalue2.prototype.divide : return new placevalue2(whole, ' + me.exp + '-' + denominator.exp +')')
-    return new placevalue2(whole, [me.exp[0] - denominator.exp[0], me.exp[1] - denominator.exp[1]]);
+    var ret = new placevalue2(whole, [me.exp[0] - denominator.exp[0], me.exp[1] - denominator.exp[1]]);
+    unpad(ret, pads);					// 2015.11
+    depad(ret);                         // 2015.11
+    return ret;
     function pad(n, d, sigfig) {
+        var i = 0;						// 2015.11
         while (n.whole.mantisa[0].length < sigfig + d.whole.mantisa[0].length) {    // [0] 2015.10
+            i++;						// 2015.11
             console.log('placevalue2.prototype.divide.padback : ' + n.whole.mantisa[0].length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
             n.exp[0]--; // exp is 2D    2015.10
             n.whole.times10();      // Delegate Shift to Whole  2015.7
         }
+        return i;						// 2015.11
     }
     function padup(n, d, sigfig) {
+        var i = 0;						// 2015.11
         while (n.whole.mantisa.length < sigfig + d.whole.mantisa.length) {
+            i++;						// 2015.11
             console.log('placevalue2.prototype.divide.padback : ' + n.whole.mantisa.length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
             n.exp[1]--; // exp is 2D    2015.10
             n.whole.times01();      // Delegate Shift to Whole  2015.7
+        }
+        return i;						// 2015.11
+    }
+    function unpad(pv, pads) {			// 2015.11
+        while (pads > 0) {
+            if (pv.whole.mantisa[0].reduce(function (x, y) { return x && y == 0 }, true)) {
+                pv.whole.mantisa.shift()
+                pv.exp[1]++
+            }
+            pads--;
+        }
+    }
+    function depad(pv) {			// 2015.11
+        while (pv.exp[1] < 0 && pv.whole.mantisa[0].reduce(function (x, y) { return x && y == 0 }, true)) {
+            pv.whole.mantisa.shift()
+            pv.exp[1]++
         }
     }
 }
@@ -150,26 +174,14 @@ placevalue2.prototype.clone = function () {
     return new placevalue2(this.whole.clone(), this.exp.slice(0));  // exp is 2D    2015.10
 }
 
-//placevalue2.prototype.eval = function (base) {
-//    var sum = 0;
-//    for (var i = 0; i < this.whole.mantisa.length; i++) {
-//        sum += this.whole.get(i) * Math.pow(base, i);
-//    }
-//    var scale = Math.pow(base, this.exp)
-//    sum *= scale;
-//    return new placevalue2('(' + sum + ')');
-//}
-
 placevalue2.prototype.eval = function (base) {	// 2015.8
-    //alert(JSON.stringify(this.whole))
     var ret = [];
     for (var col = 0; col < this.whole.mantisa[0].length; col++) {
         var sum = 0;
         for (var row = 0; row < this.whole.mantisa.length; row++) {
-            sum += this.whole.get(row - this.exp[1], col) * Math.pow(base, row);
+            sum += this.whole.get(row - this.exp[1], col) * Math.pow(base, row + this.exp[0]);  // Offset pow by exp    2015.11
         }
         ret.push(sum);
     }
-    //alert(ret);
-    return new placevalue2(new wholeplacevalue2(ret), [this.exp[0], 0]);
+    return new placevalue2(new wholeplacevalue2(ret), [this.exp[1], 0]);
 }
