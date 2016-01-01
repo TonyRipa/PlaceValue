@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/30/2015
+// Date : 12/31/2015
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 function exponential(arg, pv) {
@@ -83,16 +83,18 @@ function exponential(arg, pv) {
             //alert(kidaspoly)
             me.base = kidaspoly.base;
             var ten = new placevalue(10)
-            var tens = kidaspoly.pv.get(1)
+            var tenth = new placevalue(.1)
+            var tens = new placevalue('(' + kidaspoly.pv.get(1) + ')'); // Add '(' for 2 digit power    2015.12
             var one = kidaspoly.pv.get(0)
             var exp = ten.pow(tens)
             if (one) exp = exp.scale(Math.exp(one));
-            var exp2 = ten.pow(-tens)
+            var exp2 = tenth.pow(tens)
             if (one) exp2 = exp2.scale(1 / Math.exp(one));
             //alert([exp, exp2]);
             if (fn == 'exp') me.pv = exp;
-            if (fn == 'cosh') me.pv = exp.add(exp2).scale(.5);
-            if (fn == 'sinh') me.pv = exp.sub(exp2).scale(.5);
+            else if (fn == 'cosh') me.pv = exp.add(exp2).scale(.5);
+            else if (fn == 'sinh') me.pv = exp.sub(exp2).scale(.5);
+            else alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');  // Check    2015.12
         } else {
             alert('othertype')
         }
@@ -157,12 +159,17 @@ exponential.prototype.pow = function (other) { // 2015.6
     return new exponential(this.base, this.pv.pow(other.pv));
 }
 
-exponential.toStringCosh = function(pv, base) { // 2015.11
+exponential.prototype.pointpow = function (other) { // 2015.12
+    return new exponential(this.base, this.pv.pointpow(other.pv));
+}
+
+exponential.toStringCosh = function (pv, base) { // 2015.11
     var s = pv.clone();
     var ret = '';
     hyper('cosh(', +1);
     hyper('sinh(', -1);
     ret += exponential.toStringXbase(s, base);
+    //alert([JSON.stringify(s), JSON.stringify(ret)]);
     return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
     function hyper(name, sign) {
         for (var i = 4; i >= -4; i--) {
@@ -200,20 +207,21 @@ exponential.toStringXbase = function (pv, base) {                        // adde
         var digit = Math.round(1000 * str[i]) / 1000;   // power is index because whole is L2R  2015.7 
         if (digit != 0) {
             ret += '+';
-            coef = coefficient(digit);
+            coef = coefficient(digit); if (power == 0) { coef = digit; }
             exp1 = ''; if (power != 0) exp1 = power + base; if (power == 1) exp1 = base; if (power == -1) exp1 = '-' + base;
             exp2 = '';
             if (Math.abs(Math.log(digit) - Math.round(Math.log(digit))) < .01) { coef = ''; exp2 = Math.round(Math.log(digit)); }
             exp12 = (exp1 && exp2) ? ('exp(' + exp1 + '+' + exp2 + ')') : exp1 ? ('exp(' + exp1 + ')') : exp2 ? ('exp(' + exp2 + ')') : '';
-            ret += exp12 ? (coef + exp12) : coef ? coef : '1';
+            ret += exp12 ? (coef + exp12) : coef != '' ? coef : '1';
         }
         console.log('exponential.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
     }
     ret = ret.replace(/\+\-/g, '-');
     if (ret[0] == '+') ret = ret.substring(1);
+    if (ret.slice(-1) == '*') ret = ret.slice(0,-1);
     if (ret == '') ret = '0';
     return ret;
-    function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) || isNaN(digit) || !isFinite(digit) ? '' : '*'); }
+    function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*'); }
     function sup(x) {
 	    if (x == 1) return '';
         return pretty(x);

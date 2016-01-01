@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/18/2015
+// Date : 12/30/2015
 // Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 
 function multinomial(arg, pv) {
@@ -71,6 +71,11 @@ function multinomial(arg, pv) {
             me.base = c.base;
             me.pv = c.pv;
             console.log('new multinomial : parse2 : base = ' + JSON.stringify(me.base));
+        } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
+            alert('Syntax Error: Multinomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
+            var k = new multinomial(node.args[0]);
+            me.base = k.base;
+            me.pv = k.pv;
         }
     }
 }

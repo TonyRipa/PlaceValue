@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/30/2015
+// Date : 12/31/2015
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -99,10 +99,18 @@ placevalue.prototype.pointdivide = function (divisor) {
     return new placevalue(whole, me.exp);
 }
 
+placevalue.prototype.pointpow = function (power) {	// 2015.12
+    if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
+    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
+    var ret = this.clone();
+    ret.whole.mantisa = ret.whole.mantisa.map(function (x) { return Math.pow(x, power.get(0)) });
+    return ret;
+}
+
 placevalue.prototype.pow = function (power) {	// 2015.8
     if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
-    if (power.get(0) < 0) return (new placevalue(1)).divide(this.pow(new placevalue(-power.get(0)))); // 2015.8
+    if (power.get(0) < 0) return (new placevalue(1)).divide(this.pow(new placevalue('(' + -power.get(0) + ')'))); // 2015.8 //  Add '(' for 2 digit power   2015.12
     var whole = this.whole.pow(power);
     var exp = this.exp * power.get(0);    // exp*pow not exp^pow  2015.9
     return new placevalue(whole, exp);

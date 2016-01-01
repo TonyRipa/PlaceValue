@@ -1,6 +1,6 @@
 ﻿Author : Anthony John Ripa
 
-Date : 11/30/2015
+Date : 12/31/2015
 
 Introduction
 ==========
@@ -14,7 +14,7 @@ Why not divide in a base agnostic way? The PlaceValue data-type does. 1/11 = 0.1
 
 WholePlaceValue
 ------------------------
-The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be the analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
+The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
 
 Polynomial
 -------------
@@ -73,7 +73,7 @@ Laurent Multinomial
 
 Exponential
 -----------
-<i>exponential.js</i> is a datatype for representing exponentials; an application of the PlaceValue datatype. Exponentials are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^x or e^y. Exponential.js is little more than an exponential looking skin for an underlying PlaceValue datatype. Exponential takes an input like exp(2x) and stores it as 100 base e^x. It can then render it on demand in the exponential looking form exp(2x). Exponential also recognizes hyperbolic trig functions like cosh(x), which it stores as ½0.½ base e^x, and renders on demand as cosh(x). Likewise sinh(x), which it stores as ½0.<s>½</s>, and renders on demand as sinh(x).
+<i>exponential.js</i> is a datatype for representing exponentials; an application of the PlaceValue datatype. Exponentials are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^x or e^y. Exponential.js is little more than an exponential (or hyperbolic trigonometric) looking skin for an underlying PlaceValue datatype. Exponential takes an input like exp(2x) and stores it as 100 base e^x. It can then render it on demand in the exponential looking form exp(2x). Exponential also recognizes hyperbolic trig functions like cosh(x), which it stores as ½0.½ base e^x, and renders on demand as cosh(x). Likewise sinh(x), which it stores as ½0.<s>½</s>, and renders on demand as sinh(x).
 If Exponential wants to calculate sinh(x)+cosh(x), then it asks PlaceValue to calculate:
 
 ½0.<s>½</s> + ½0.½ = 10
@@ -82,11 +82,39 @@ Exponential then formats PlaceValue's result as exp(x) .
 
 Exponentials are nothing more than a veneer for PlaceValue.
 
+PlaceValueComplex
+-------------------
+<i>placevaluecomplex.js</i> is a complex version of PlaceValue. PlaceValueComplex is used by <i>Fourier.js</i>. If Fourier wants to calculate sin(x)^2, then it asks PlaceValueComplex to calculate:
+
+<s>½</s>̉0.½̉ base e<sup>xi</sup> ^ 2 = <s>¼</s>0½.0<s>¼</s> base e<sup>xi</sup>
+
+Fourier then formats PlaceValueComplex's result as -0.5cos(2x)+.5 .
+
+Fouriers are nothing more than a veneer for PlaceValueComplex.
+
+WholePlaceValueComplex
+------------------------
+The base class (by composition) for PlaceValueComplex is <i>WholePlaceValueComplex</i>. WholePlaceValueComplex is supposed to be an analogue of integers. WholePlaceValueComplex uses only positive powers of the base. For WholePlaceValueComplex, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1. We also allow for imaginary digits ii * 2 = 2̉2̉. Imaginary digits look like regular digits but with a dot on top.
+
+Fourier
+-----------
+<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValueComplex datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as ½0.<s>½</s>, and renders on demand as sin(x).
+If Fourier wants to calculate sin(x)*cos(x), then it asks PlaceValue to calculate:
+
+½0.<s>½</s> * ½0.½ = <s>¼</s>̉00.0¼̉ 
+
+Fourier then formats PlaceValue's result as 0.5sin(2x) .
+
+Fouriers are nothing more than a veneer for PlaceValue.
+
+CAS
+-----------
+
 <i>CAS.html</i> which stands for either Computer Algebra System (for the algebraic looking UI) or Computer Arithmetic System (for the under the hood arithmetic implementation) is a demo for Laurent Polynomial, Multinomial & Exponential.
 
 Calculator
 --------------
-<i>index.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
+<i>index.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), and Complex Exponential mode (Fourier).
 
 Differentiator
 ----------------
@@ -94,7 +122,8 @@ Differentiator
 
 Calculus
 --------
-<i>calculus.html</i> is an extension of differentiator that supports exponentials, and allows for both differentiation and integration. Differentiation procedes in a LaPlace like manner. The derivative of exp(kx) is k*exp(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective n. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… .  
+<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation procedes in a LaPlace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the complex case.
+
 If Exponential wants to differentiate sinh(x) + 7, then it asks PlaceValue to calculate:
 
 ½7.<s>½</s> ⊗ 10.<s>1</s> = ½0.½
@@ -109,7 +138,27 @@ If Exponential wants to integrate cosh(x), then it asks PlaceValue to calculate:
 
 Exponential then formats PlaceValue's result as sinh(x) + NaN.
 
+If Fourier wants to differentiate sin(x) + 7, then it asks PlaceValueComplex to calculate:
+
+<s>½</s>̉7.½̉ ⊗ i0.<s>i</s> = ½0.½
+
+Fourier then formats PlaceValueComplex's result as cos(x) .
+
+Integration is achieved by reversing the pointwise multiplication with pointwise division.
+
+If Fourier wants to integrate cos(x), then it asks PlaceValueComplex to calculate:
+
+½0.½ ⊘ i0.<s>i</s> = <s>½</s>̉%.½̉
+
+Fourier then formats PlaceValue's result as sin(x) + NaN.
+
 The NaN is not a mistake. It's a spectacular success. The pointwise division of the 0 in the one's place of ½0.½, with the 0 in the one's place of 10.<s>1</s>, yields 0/0 which placevalue represents as %. Exponential represents this as NaN (Not a Number). 0/0 is an underconstrained number. This underconstrained constant is what is normally understood as the Constant of Integration.
+
+DiffEq
+---------------
+
+<i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k is solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x).
 
 Measure
 ------------

@@ -7,7 +7,7 @@
 
 <html>
 <head>
-    <title>Calculus</title>
+    <title>Diff E.Q.</title>
     <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
@@ -42,60 +42,37 @@
     </style>
 </head>
 <body>
-    <h1>Calculus</h1>
-    <select id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option selected>Exponential</option><option>Fourier</option></select>
-	<p>f(x)=<input id='func' value='exp(2x)'><button onclick='differentiate()'>Differentiate</button><button id='int' onclick='integrate()'>Integrate</button></p>
+    <h1>Differential Equation</h1>
+    <select id='f' onchange="clean()"><option selected>Exponential</option><option>Fourier</option></select>
+    <p>D^<select id='d' onchange="$('sup').html($(d).val())"><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0<button onclick='diffeq()'>DiffEQ</button></p>
+    <p>f(x) = 0 / (D<sup>1</sup> + <span id="k2">1</span>)</p>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>|</option><option selected>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
+        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>|</option><option>^</option><option>⊗</option><option selected>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><!--<button onclick="moveanswer('#c','#func')">↑</button>--></td><td id="co"></td></tr>
     </table>
     <script type="text/javascript">
-        function exp(op) {                              // Added Exponential Calculus    2015.11
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
-            console.log('exp' + op);
-            var exp = new f($('#func').val())
-            var nums = [];
-            var lo = exp.pv.exp-1;
-            var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
-            if (f == fourier) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (Array.isArray(n) ? (n[0] != 0 || n[1] != 0) : (n != 0)) nums.push(i); }
-            if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
-            //alert(nums)
-            var s = '';
-            for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {
-                if (i == 0) continue;
-                var n = (i == 1) ? '' : (i == -1) ? '-' : i;
-                s += '+' + n + 'exp(' + n + '@)';
-            }
+        function diffeq() {
+            var n = $('#d').val()
+            var s = '3exp(3x)+2exp(2x)+exp(x)-exp(-x)-2exp(-2x)-3exp(-3x)';
+            f = [exponential, fourier][$('#f')[0].selectedIndex];   // Establish f before s 2015.12
             if (f == fourier) s = s.replace(/exp/g, 'i*cis');
-            s = s.replace(/\+\-/g, '-');
-            if (s[0] == '+') s = s.substr(1);
-            $('#a').val($('#func').val());
-            $('#b').val(s.replace(/@/g, exp.base));
-            $('#op').val(op);
-            $('[data-val]').removeAttr('data-val');
+            var fs = new f(s);
+            var fsn = fs.pointpow(new f(n))
+            var k = new f($('#k').val())
+            //alert(JSON.stringify(k))
+            var fsn_k = fsn.pointadd(k)
+            //alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
+            $('#a').val(0);
+            $('#b').val(fsn_k.toString());
+            $('#op').val('⊘');
             compute();
         }
-        function differentiate() {
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
-            if ($('#f')[0].selectedIndex >= 2) exp('⊗'); else dpoly();
-            function dpoly() {
-                console.log('diffpoly');
-                $('#func').val(new f($('#func').val()).toString()); //  Clean func  2015.12
-                $('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
-                $('#b').val('0');
-                $('#op').val('|');
-                compute();
-            }
-        }
-        function integrate() {
-            if ($('#f')[0].selectedIndex >= 2) exp('⊘'); else alert('Only Exponential Integration is supported.');
-        }
         function compute() {
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
+            f = [exponential, fourier][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
             var a = getinput('#a');
             var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
+            var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pow, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
 	        function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c) {

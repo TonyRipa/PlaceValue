@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/30/2015
+// Date : 12/31/2015
 // Placevalue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(man, exp) {
@@ -156,14 +156,14 @@ placevalue2.prototype.divide = function (denominator) {
     function unpad(pv, pads) {			// 2015.11
         while (pads > 0) {
             if (pv.whole.mantisa[0].reduce(function (x, y) { return x && y == 0 }, true)) {
-                pv.whole.mantisa.shift()
+                pv.whole.mantisa.shift(); if (pv.whole.mantisa.length == 0) pv.whole.mantisa = [[]];    // LengthCheck  2015.12
                 pv.exp[1]++
             }
             pads--;
         }
     }
     function depad(pv) {			// 2015.11
-        while (pv.exp[1] < 0 && pv.whole.mantisa[0].reduce(function (x, y) { return x && y == 0 }, true)) {
+        while (pv.exp[1] < 0 && pv.whole.mantisa[0].length && pv.whole.mantisa[0].reduce(function (x, y) { return x && y == 0 }, true)) {   //  LengthCheck 2015.12
             pv.whole.mantisa.shift()
             pv.exp[1]++
         }
@@ -179,9 +179,10 @@ placevalue2.prototype.eval = function (base) {	// 2015.8
     for (var col = 0; col < this.whole.mantisa[0].length; col++) {
         var sum = 0;
         for (var row = 0; row < this.whole.mantisa.length; row++) {
-            sum += this.whole.get(row - this.exp[1], col) * Math.pow(base, row + this.exp[0]);  // Offset pow by exp    2015.11
+            //alert([this.whole.get(row, col), Math.pow(base, row + this.exp[1])]);
+            sum += this.whole.get(row, col) * Math.pow(base, row + this.exp[1]);  // Offset pow by exp    2015.11   // UnOffset get 2015.12
         }
         ret.push(sum);
     }
-    return new placevalue2(new wholeplacevalue2(ret), [this.exp[1], 0]);
+    return new placevalue2(new wholeplacevalue2(ret), [this.exp[0], 0]);    // exp[0]   2015.12
 }

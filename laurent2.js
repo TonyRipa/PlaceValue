@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/30/2015
+// Date : 12/31/2015
 // Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype
 
 function laurent2(arg, pv) {
@@ -71,6 +71,11 @@ function laurent2(arg, pv) {
             me.base = c.base;
             me.pv = c.pv;
             console.log('new laurent2 : parse2 : base = ' + JSON.stringify(me.base));
+        } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
+            alert('Syntax Error: Laurent2 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
+            var k = new laurent2(node.args[0]);
+            me.base = k.base;
+            me.pv = k.pv;
         }
     }
 }
@@ -219,12 +224,14 @@ laurent2.toStringXbase2 = function(pv, base) {
 }
 
 laurent2.prototype.eval = function (base) {	// 2015.8
-    if (isNaN(this.base[1]))
+    if (isNaN(this.base[1])) {
         return new laurent2([this.base[0], null], this.pv.eval(base));
+    }
     else {
         var me = new laurent2(0);
-        me.pv.whole.mantisa = math.transpose(this.pv.whole.mantisa);
+        me.pv.whole.mantisa = (this.pv.whole.mantisa[0].length > 0) ? math.transpose(this.pv.whole.mantisa) : [[]]; //  mathJS can't transpose [[]] 2015.12
         me.pv.exp = this.pv.exp.slice(0);   //  Infuse me w/ this's exp 2015.11
+        me.pv.exp.push(me.pv.exp.shift());  //  Exp transposed like Mantisa
         return new laurent2([null, null], me.pv.eval(base));
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 11/29/2015
+   Date : 12/31/2015
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -17,6 +17,9 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../../js/math.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
+    <script type="text/javascript" src='placevaluecomplex.js'></script>
+    <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='laurent.js'></script>
     <script type="text/javascript" src='wholeplacevalue2.js'></script>
@@ -38,7 +41,7 @@
 </head>
 <body>
     <h1>Computer Algebra System</h1>
-    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Exponential</option></select>
+    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option></select>
     <button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
     <hr style="clear:both"/>
     <div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>
@@ -47,7 +50,7 @@
             return "<span style='white-space:nowrap'>" + x + "</span>";
         }
         function compute() {
-            f = [polynomial, laurent, multinomial, laurent2, exponential][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
+            f = [polynomial, laurent, multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
             var poly = new f($('#a').val());
             var tuple = parse($('#a').val());
             $('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
