@@ -1,103 +1,117 @@
 
 // Author : Anthony John Ripa
-// Date : 12/31/2015
+// Date : 1/21/2016
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
-function exponential(arg, pv) {
-    console.log('exponential : arguments.length=' + arguments.length);
-    if (arguments.length < 2) {
-        var base;
-        var pv;
-        if (isNaN(arg)) {
-            if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of exponential-object
-                var argObj = JSON.parse(arg);
-                console.log('argObj=' + JSON.stringify(argObj));
-                base = argObj.base;
-                console.log('argObj.base=' + JSON.stringify(argObj.base));
-                pv = argObj.pv;
-                console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-            } else if (arg != arg) {    // If arg is %   2015.8
-                base = 1;
-                pv = [arg];
-            } else {                    // Arg is String
-                //alert(arg)
-                parse(this, arg);
-                return;
-            }
+function exponential(base, pv) {
+    if (arguments.length < 2) alert('exponential expects 2 arguments');
+    if (Array.isArray(base)) alert('exponential expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
+    if (!(pv instanceof placevalue)) alert('exponential expects argument 2 (pv) to be a placevalue but found ' + typeof pv);
+    this.base = base
+    this.pv = pv;
+    return;
+
+    //console.log('exponential : arguments.length=' + arguments.length);
+    //if (arguments.length < 2) {
+    //    var base;
+    //    var pv;
+    //    if (isNaN(arg)) {
+    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of exponential-object
+    //            var argObj = JSON.parse(arg);
+    //            console.log('argObj=' + JSON.stringify(argObj));
+    //            base = argObj.base;
+    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
+    //            pv = argObj.pv;
+    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
+    //        } else if (arg != arg) {    // If arg is %   2015.8
+    //            base = 1;
+    //            pv = [arg];
+    //        } else {                    // Arg is String
+    //            //alert(arg)
+    //            parse(this, arg);
+    //            return;
+    //        }
+    //    } else {
+    //        base = 1;
+    //        pv = [arg];
+    //    }
+    //    this.base = base;
+    //    this.pv = new placevalue(pv);
+    //    console.log("exponential : this.pv=" + JSON.stringify(this.pv));
+    //} else {
+    //    this.base = arg;
+    //    if (pv instanceof placevalue)
+    //        this.pv = pv;
+    //    else if (typeof pv == 'number') {
+    //        console.log("exponential: typeof pv == 'number'");
+    //        this.pv = new placevalue(pv)
+    //        console.log(this.pv.toString());
+    //    }
+    //    else
+    //        alert('exponential: bad arg typeof(arg2)=' + typeof (pv));
+    //}
+}
+
+exponential.parse = function (strornode) {
+    console.log('<strornode>')
+    console.log(strornode)
+    console.log('</strornode>')
+    //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponential(a.base, new placevalue(new wholeplacevalue(a.pv.whole.mantisa), a.pv.exp)) }
+    var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+    if (node.type == 'ConstantNode') {
+        return new exponential(1, new placevalue(new wholeplacevalue([Number(node.value)]), 0));
+    } else if (node.type == 'SymbolNode') {
+        alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');
+        console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
+        console.log(node)
+        var base = node.name;
+        //pv = 10;
+        //me.base = base;
+        var pv = new placevalue(new wholeplacevalue([1]), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
+        return new exponential(base, pv);
+    } else if (node.type == 'OperatorNode') {
+        console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
+        console.log(node)
+        var kids = node.args;
+        //var a = new exponential(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+        var a = exponential.parse(kids[0]);       // exponential handles unpreprocessed kid   2015.11
+        if (node.fn == 'unaryMinus') {
+            var c = new exponential(1, new placevalue(new wholeplacevalue([0]), 0)).sub(a);
+        } else if (node.fn == 'unaryPlus') {
+            var c = new exponential(1, new placevalue(new wholeplacevalue([0]), 0)).add(a);
         } else {
-            base = 1;
-            pv = [arg];
+            //var b = new exponential(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+            var b = exponential.parse(kids[1]);   // exponential handles unpreprocessed kid   2015.11
+            var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
-        this.base = base;
-        this.pv = new placevalue(pv);
-        console.log("exponential : this.pv=" + JSON.stringify(this.pv));
+        return c;
+        //me.base = c.base;
+        //me.pv = c.pv;
+    } else if (node.type == 'FunctionNode') {
+        console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
+        console.log(node)
+        var fn = node.name;
+        var kids = node.args;
+        var kidaspoly = laurent.parse(kids[0])
+        //alert(kidaspoly)
+        var base = kidaspoly.base;
+        var ten = new placevalue(new wholeplacevalue([0, 1]), 0);
+        var tenth = new placevalue(new wholeplacevalue([1]), -1)
+        var tens = new placevalue(new wholeplacevalue([kidaspoly.pv.get(1)]), 0); // Add '(' for 2 digit power    2015.12
+        var one = kidaspoly.pv.get(0)
+        var exp = ten.pow(tens)
+        if (one) exp = exp.scale(Math.exp(one));
+        var exp2 = tenth.pow(tens)
+        if (one) exp2 = exp2.scale(1 / Math.exp(one));
+        //alert([exp, exp2]);
+        if (fn == 'exp') var pv = exp;
+        else if (fn == 'cosh') var pv = exp.add(exp2).scale(.5);
+        else if (fn == 'sinh') var pv = exp.sub(exp2).scale(.5);
+        else alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');  // Check    2015.12
+        return new exponential(base, pv);
     } else {
-        this.base = arg;
-        if (pv instanceof placevalue)
-            this.pv = pv;
-        else if (typeof pv == 'number') {
-            console.log("exponential: typeof pv == 'number'");
-            this.pv = new placevalue(pv)
-            console.log(this.pv.toString());
-        }
-        else
-            alert('exponential: bad arg typeof(arg2)=' + typeof (pv));
-    }
-    function parse(me, strornode) {
-        console.log('<strornode>')
-        console.log(strornode)
-        console.log('</strornode>')
-        //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
-        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
-        if (node.type == 'SymbolNode') {
-            alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');
-            console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
-            console.log(node)
-            var base = node.name;
-            //pv = 10;
-            me.base = base;
-            me.pv = new placevalue(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-        } else if (node.type == 'OperatorNode') {
-            console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
-            console.log(node)
-            var kids = node.args;
-            //var a = new exponential(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-            var a = new exponential(kids[0]);       // exponential handles unpreprocessed kid   2015.11
-            if (node.fn == 'unaryMinus') {
-                var c = new exponential(0).sub(a);
-            } else if (node.fn == 'unaryPlus') {
-                var c = new exponential(0).add(a);
-            } else {
-                //var b = new exponential(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var b = new exponential(kids[1]);   // exponential handles unpreprocessed kid   2015.11
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
-            }
-            me.base = c.base;
-            me.pv = c.pv;
-        } else if (node.type == 'FunctionNode') {
-            console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
-            console.log(node)
-            var fn = node.name;
-            var kids = node.args;
-            var kidaspoly = new laurent(kids[0])
-            //alert(kidaspoly)
-            me.base = kidaspoly.base;
-            var ten = new placevalue(10)
-            var tenth = new placevalue(.1)
-            var tens = new placevalue('(' + kidaspoly.pv.get(1) + ')'); // Add '(' for 2 digit power    2015.12
-            var one = kidaspoly.pv.get(0)
-            var exp = ten.pow(tens)
-            if (one) exp = exp.scale(Math.exp(one));
-            var exp2 = tenth.pow(tens)
-            if (one) exp2 = exp2.scale(1 / Math.exp(one));
-            //alert([exp, exp2]);
-            if (fn == 'exp') me.pv = exp;
-            else if (fn == 'cosh') me.pv = exp.add(exp2).scale(.5);
-            else if (fn == 'sinh') me.pv = exp.sub(exp2).scale(.5);
-            else alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');  // Check    2015.12
-        } else {
-            alert('othertype')
-        }
+        alert('othertype')
     }
 }
 
@@ -152,7 +166,7 @@ exponential.prototype.pointdivide = function (other) {
 exponential.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
     if (other.pv.whole.mantisa.length == 1 && other.pv.exp == 0) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new exponential('0/0') }
+    if (this.base != other.base) { alert('Different bases : ' + JSON.stringify(this.base) + ' & ' + JSON.stringify(other.base)); return new exponential(1, new placevalue(new wholeplacevalue(['%']), 0)) }
 }
 
 exponential.prototype.pow = function (other) { // 2015.6
@@ -183,7 +197,7 @@ exponential.toStringCosh = function (pv, base) { // 2015.11
             if (Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001) {
                 var n = m * 2;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-                s = s.sub(new placevalue(1, i).add(new placevalue(1, -i).scale(sign)).scale(m));
+                s = s.sub(new placevalue(new wholeplacevalue([1]), i).add(new placevalue(new wholeplacevalue([1]), -i).scale(sign)).scale(m));
             }
         }
         ret = ret.replace(/\+\-/g, '-');
@@ -197,7 +211,7 @@ exponential.toStringXbase = function (pv, base) {                        // adde
     console.log('exponential.toStringXbase: x=' + x);
     if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
         x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return exponential.toStringXbase(new placevalue(x), base);  // added namespace  2015.7
+        return exponential.toStringXbase(new placevalue(new wholeplacevalue(x), 0), base);  // added namespace  2015.7
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
@@ -236,9 +250,9 @@ exponential.toStringXbase = function (pv, base) {                        // adde
 exponential.prototype.eval = function (base) {
     var sum = 0;
     for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
-        var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
-        if (this.pv.whole.get(i)!=0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
+        var pow = Math.pow(Math.exp(base), i + this.pv.exp);  // offset by exp    2015.8    // Replace base w/ exp(base)    2016.1
+        if (this.pv.whole.get(i) != 0) sum += this.pv.whole.get(i) * pow;  // Skip 0 to avoid %    2015.8
         //alert(this.pv.exp+','+this.pv.whole.get(i)+','+(i+this.pv.exp)+','+sum)
     }
-    return new exponential(sum);  // interpret as number  2015.8
+    return new exponential(1, new placevalue(new wholeplacevalue([sum]), 0));  // interpret as number  2015.8
 }

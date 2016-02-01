@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 12/31/2015
+   Date : 1/29/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -16,6 +16,10 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../../js/math.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
+    <script type="text/javascript" src='complexplacevalue.js'></script>
+    <script type="text/javascript" src='complexlaurent.js'></script>
+    <script type="text/javascript" src='laplace.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
@@ -43,8 +47,8 @@
 </head>
 <body>
     <h1>Calculus</h1>
-    <select id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option selected>Exponential</option><option>Fourier</option></select>
-	<p>f(x)=<input id='func' value='exp(2x)'><button onclick='differentiate()'>Differentiate</button><button id='int' onclick='integrate()'>Integrate</button></p>
+    <select id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Laplace</option></select>
+	<p>f(x)=<input id='func' value='exp(x)cis(x)'><button onclick='differentiate()'>Differentiate</button><button id='int' onclick='integrate()'>Integrate</button></p>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
         <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>|</option><option selected>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
@@ -52,9 +56,9 @@
     </table>
     <script type="text/javascript">
         function exp(op) {                              // Added Exponential Calculus    2015.11
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
+            f = [multinomial, laurent2, exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
             console.log('exp' + op);
-            var exp = new f($('#func').val())
+            var exp = f.parse($('#func').val())
             var nums = [];
             var lo = exp.pv.exp-1;
             var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
@@ -70,6 +74,11 @@
             if (f == fourier) s = s.replace(/exp/g, 'i*cis');
             s = s.replace(/\+\-/g, '-');
             if (s[0] == '+') s = s.substr(1);
+            //if (f == laplace) s = '2exp(2x)+exp(x)-exp(-x)-2exp(-2x)+2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x)';
+            //if (f == laplace) s = 'exp(x)-exp(-x)+i*cis(x)-i*cis(-x)+(1+i)exp(x)cis(x)+(-1+i)exp(-x)cis(x)+(1-i)exp(x)cis(-x)+(-1-i)exp(-x)cis(-x)';
+            s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
+            s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
+            if (f == laplace) s = s1 + '+' + s2;
             $('#a').val($('#func').val());
             $('#b').val(s.replace(/@/g, exp.base));
             $('#op').val(op);
@@ -77,11 +86,11 @@
             compute();
         }
         function differentiate() {
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
+            f = [multinomial, laurent2, exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
             if ($('#f')[0].selectedIndex >= 2) exp('⊗'); else dpoly();
             function dpoly() {
                 console.log('diffpoly');
-                $('#func').val(new f($('#func').val()).toString()); //  Clean func  2015.12
+                $('#func').val(f.parse($('#func').val()).toString()); //  Clean func  2015.12
                 $('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
                 $('#b').val('0');
                 $('#op').val('|');
@@ -92,12 +101,12 @@
             if ($('#f')[0].selectedIndex >= 2) exp('⊘'); else alert('Only Exponential Integration is supported.');
         }
         function compute() {
-            f = [multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
+            f = [multinomial, laurent2, exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-	        function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

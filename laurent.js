@@ -1,9 +1,15 @@
 
 // Author : Anthony John Ripa
-// Date : 11/18/2015
+// Date : 1/31/2016
 // Laurent : a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
-function laurent(arg, pv) {
+function laurent(base, pv) {
+    if (arguments.length < 2) alert('laurent expects 2 arguments');
+    if (Array.isArray(base)) alert('laurent expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
+    if (!(pv instanceof placevalue)) alert('laurent expects argument 2 (pv) to be a placevalue but found ' + typeof pv);
+    this.base = base
+    this.pv = pv;
+    return;
     console.log('laurent : arguments.length=' + arguments.length);
     if (arguments.length < 2) {
         var base;
@@ -42,34 +48,40 @@ function laurent(arg, pv) {
         else
             alert('laurent: bad arg typeof(arg2)=' + typeof (pv));
     }
-    function parse(me, strornode) {
-        console.log('<strornode>')
-        console.log(strornode)
-        console.log('</strornode>')
-        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
-        if (node.type == 'SymbolNode') {
-            console.log('SymbolNode')
-            base = node.name;
-            //pv = 10;
-            me.base = base;
-            me.pv = new placevalue(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-        } else if (node.type == 'OperatorNode') {
-            console.log('OperatorNode')
-            var kids = node.args;
-            //var a = new laurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-            var a = new laurent(kids[0]);       // laurent handles unpreprocessed kid   2015.11
-            if (node.fn == 'unaryMinus') {
-                var c = new laurent(0).sub(a);
-            } else if (node.fn == 'unaryPlus') {
-                var c = new laurent(0).add(a);
-            } else {
-                //var b = new laurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var b = new laurent(kids[1]);   // laurent handles unpreprocessed kid   2015.11
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
-            }
-            me.base = c.base;
-            me.pv = c.pv;
+}
+
+laurent.parse = function (strornode) {
+    console.log('<strornode>')
+    console.log(strornode)
+    console.log('</strornode>')
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue(a.pv.whole.mantisa), a.pv.exp)) }
+    var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+    if (node.type == 'ConstantNode') {
+        return new laurent(1, new placevalue(new wholeplacevalue([Number(node.value)]), 0));
+    } else if (node.type == 'SymbolNode') {
+        console.log('SymbolNode')
+        var base = node.name;
+        //pv = 10;
+        //me.base = base;
+        var pv = new placevalue(new wholeplacevalue([1]), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
+        return new laurent(base, pv);
+    } else if (node.type == 'OperatorNode') {
+        console.log('OperatorNode')
+        var kids = node.args;
+        //var a = new laurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+        var a = laurent.parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
+        if (node.fn == 'unaryMinus') {
+            var c = new laurent(1, new placevalue(new wholeplacevalue([0]), 0)).sub(a);
+        } else if (node.fn == 'unaryPlus') {
+            var c = new laurent(1, new placevalue(new wholeplacevalue([0]), 0)).add(a);
+        } else {
+            //var b = new laurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+            var b = laurent.parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
+            var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
+        return c;
+        //me.base = c.base;
+        //me.pv = c.pv;
     }
 }
 
@@ -124,7 +136,7 @@ laurent.prototype.pointdivide = function (other) {
 laurent.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
     if (other.pv.whole.mantisa.length == 1 && other.pv.exp == 0) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new laurent('0/0') }
+    if (this.base != other.base) { console.trace(); alert('Laurent Different bases : ' + this.base + ' & ' + other.base); return new laurent('0/0') }
 }
 
 laurent.prototype.pow = function (other) { // 2015.6
@@ -178,7 +190,6 @@ laurent.prototype.eval = function (base) {
     for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
         var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
         if (this.pv.whole.get(i)!=0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
-        //alert(this.pv.exp+','+this.pv.whole.get(i)+','+(i+this.pv.exp)+','+sum)
     }
-    return new laurent(sum);  // interpret as number  2015.8
+    return new laurent(1, new placevalue(new wholeplacevalue([sum]), 0));  // interpret as number  2015.8
 }

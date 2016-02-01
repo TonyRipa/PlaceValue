@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 12/31/2015
+// Date : 1/20/2016
 // WholePlaceValueComplex : a datatype for representing base agnostic arithmetic via whole numbers whose digits are complex
 
 //var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -63,6 +63,64 @@ function wholeplacevaluecomplex(man) {
     }
 }
 
+wholeplacevaluecomplex.parse = function (man) {
+    if (Array.isArray(man)) {
+        console.log("wholeplacevaluecomplex: arg is array " + JSON.stringify(man));
+        var mantisa = man.map(function (x) { return Array.isArray(x) ? x : Number(x) });     // ["+1"]→[1] 2015.6  Array   2015.12
+        console.log("wholeplacevaluecomplex: arg is array " + JSON.stringify(this.mantisa));
+    } else if (typeof man == 'string' || typeof man == 'number') {
+        man = man.toString();
+        if (man.indexOf('mantisa') != -1) {     // if arg1 is json of placevalue-object
+            var ans = JSON.parse(man)
+            console.log('ans=' + JSON.stringify(ans));
+            var mantisa = ans.mantisa
+        } else {
+            console.log('wholeplacevaluecomplex : num or string but not wpv; man = ' + man);
+            var mantisa = num2array(man);
+        }
+    } else {
+        console.log('wholeplacevaluecomplex : arg is else; man = ' + JSON.stringify(man)); // 2015.8
+        var mantisa = man.mantisa;
+    }
+    return new wholeplacevaluecomplex(mantisa);
+    while (this.get(this.mantisa.length - 1) == 0)  //  while most significant digit is 0  // get(this.mantisa.length - 1) 2015.7
+        this.mantisa.pop();                             //  pop root
+    if (this.mantisa.length == 0) this.mantisa = [0];
+    console.log('cwpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
+    function num2array(n) {
+        var N = n.toString();
+        var ret = [];
+        var numb = '';
+        var imag = '';
+        var inparen = false;
+        var inimag = false;
+        for (var i = 0; i < N.length; i++) {
+            var c = N[i];
+            if (c == '(') { inparen = true; continue; }
+            if (c == ',') { inimag = true; continue; }
+            if (c == ')') { ret.push([Number(numb), Number(imag)]); numb = ''; imag = ''; inimag = false; inparen = false; continue; }
+            if (inparen)
+                if (inimag) imag += c; else numb += c;
+            else {
+                if (c == '.' || c == 'e' || c == 'E') break;    // Truncate    2015.9
+                if (c == 0 || c == 1 | c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9) ret.push(c);
+                var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
+                if (frac[c]) ret.push(frac[c]);
+                if (c == 'τ') ret.push(6.28);
+                var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
+                if (num[c]) ret.push(num[c]);
+                if (c == '∞') ret.push(Infinity);
+                if (c == '%') ret.push(NaN);
+                if (c == 'i') ret.push([0, 1]);     // 2015.12
+                if (c == String.fromCharCode(777)) ret[ret.length - 1] = [0, ret[ret.length - 1]];
+                if (c == String.fromCharCode(822)) { if (Array.isArray(ret[ret.length - 1])) { ret[ret.length - 1][0] *= -1; ret[ret.length - 1][1] *= -1; } else ret[ret.length - 1] *= -1; }
+                if (c == String.fromCharCode(8315)) ret[ret.length - 1] = 1 / ret[ret.length - 1];
+            }
+        }
+        return ret.reverse();   // .reverse makes lower indices represent lower powers 2015.7
+    }
+}
+
 wholeplacevaluecomplex.prototype.get = function (i) {
     return [this.getreal(i), this.getimag(i)];
     //return Number(this.mantisa[i]);
@@ -72,7 +130,7 @@ wholeplacevaluecomplex.prototype.getreal = function (i) {
     if (i < 0 || this.mantisa.length <= i) return 0;
     if (Array.isArray(this.mantisa[i])) return Number(this.mantisa[i][0]);
     return Number(this.mantisa[i]);
-    return this.get(i);
+    //return this.get(i);
 }
 
 wholeplacevaluecomplex.prototype.getimag = function (i) {
@@ -207,7 +265,7 @@ wholeplacevaluecomplex.prototype.pow = function (power) { // 2015.6
     var c = wholeplacevaluecomplex;
     if (!(power instanceof wholeplacevaluecomplex)) power = new wholeplacevaluecomplex([power]);
     if (power.mantisa.length > 1) { alert('CWPV >Bad Exponent = ' + power.tohtml()); return new wholeplacevaluecomplex('%') }   // tohtml supercedes to StringInternal
-    if (this.mantisa.length == 1 && this.getimag(0) == 0) return new wholeplacevaluecomplex([this.getreal(0) == 0 && power.getreal(0) == 0 ? '%' : Math.pow(this.getreal(0), power.getreal(0))]);
+    if (this.mantisa.length == 1 && this.getimag(0) == 0) return new wholeplacevaluecomplex([Math.pow(this.getreal(0), power.getreal(0))]); // 0^0=1 for convenience    2016.1
     if (power.getimag(0) != 0) { alert('CWPV iBad Exponent = ' + power.tohtml()); return new c([c.mul([Math.pow(c.norm(this.get(0)), power.getreal(0)) * Math.exp(-power.getimag(0) * c.arg(this.get(0))), 0], c.exp([0, power.getreal(0) * c.arg(this.get(0)) + .5 * power.getimag(0) * c.lnn(this.get(0))[0]]))]) }
     if (power.getreal(0) != Math.round(power.getreal(0))) { alert('CWPV .Bad Exponent = ' + JSON.stringify(power)); return new wholeplacevaluecomplex('%') }
     if (power.getreal(0) < 0) return new wholeplacevaluecomplex(0);

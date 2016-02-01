@@ -1,28 +1,12 @@
 
 // Author : Anthony John Ripa
-// Date : 10/21/2015
+// Date : 1/20/2016
 // WholePlaceValue2 : a 2D datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 function wholeplacevalue2(man, trace) {
-    if (Array.isArray(man)) {
-        this.mantisa = man;
-        console.log(trace + ' new wholeplacevalue2 : man(array) = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
-    } else if (man instanceof String || typeof man == 'string' || typeof man == 'number') {
-        man = man.toString();
-        if (man.indexOf('mantisa') != -1) {
-            var ans = JSON.parse(man)
-            console.log('ans=' + JSON.stringify(ans));
-            this.mantisa = ans.mantisa
-        } else {
-            console.log(trace + 'new wholeplacevalue2 : num or string but not wpv; man = ' + man);
-            this.mantisa = [num2array(man)];    //  Array is 2D     2015.7
-        }
-        console.log(trace + ' new wholeplacevalue2 : man(str|num) = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
-    } else {
-        this.mantisa = man.mantisa;
-        console.log(trace + ' new wholeplacevalue2(object) : man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
-    }
-    this.mantisa = removeLeadingZeros(this.mantisa);
+    if (!Array.isArray(man)) { console.trace(); alert("wholeplacevalue2 expects argument to be 2D array but found " + typeof man + man); }
+    if (!Array.isArray(man[0])) alert("wholeplacevalue2 expects argument to be 2D array but found 1D array of " + typeof man[0]);
+    this.mantisa = removeLeadingZeros(man);
     function removeLeadingZeros(man) {
         return ensureArray2D(removeLeadingZeroCol(removeLeadingZeroRow(ensureArray2D(man))));
         function ensureArray2D(man) {
@@ -41,6 +25,28 @@ function wholeplacevalue2(man, trace) {
         }
         function removeLeadingZeroCol(man) { return math.transpose(removeLeadingZeroRow(math.transpose(man))); }
     }
+}
+
+wholeplacevalue2.parse = function (man, trace) {
+    if (Array.isArray(man)) {
+        //this.mantisa = man;
+        console.log(trace + ' new wholeplacevalue2 : man(array) = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
+    } else if (man instanceof String || typeof man == 'string' || typeof man == 'number') {
+        man = man.toString();
+        if (man.indexOf('mantisa') != -1) {
+            var ans = JSON.parse(man)
+            console.log('ans=' + JSON.stringify(ans));
+            man = ans.mantisa
+        } else {
+            console.log(trace + 'new wholeplacevalue2 : num or string but not wpv; man = ' + man);
+            man = [num2array(man)];    //  Array is 2D     2015.7
+        }
+        console.log(trace + ' new wholeplacevalue2 : man(str|num) = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
+    } else {
+        man = man.mantisa;
+        console.log(trace + ' new wholeplacevalue2(object) : man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
+    }
+    return new wholeplacevalue2(man);
     function int2array(n) {
         var arr = n.toString().split('');
         for (var i = 0; i < arr.length; i++) {
@@ -75,17 +81,16 @@ wholeplacevalue2.prototype.toString = function (trace, hSeparator, vSeparator, s
     for (var r = this.mantisa.length - 1; r >= 0; r--) {
         var degree = wholeplacevalue2.getDegree([this.mantisa[r]]).col;
         if (degree > degreeMax) degreeMax = degree;
-        ret += wholeplacevalue2.toString1(this.mantisa[r], degreeMax, hSeparator, space, html) + vSeparator;
+        ret += toStringHelper(this.mantisa[r], degreeMax, hSeparator, space, html) + vSeparator;
     }
     return ret.trim();
-}
-
-wholeplacevalue2.toString1 = function (man, degreeMax, separator, space, html) {
-    if (arguments.length < 3) separator = '';
-    var ret = "";
-    for (var i = man.length - 1 ; i >= 0; i--)
-        ret += ((i > degreeMax) ? space : html ? wholeplacevalue2.digithtml(man, i) : wholeplacevalue2.digit(man, i)) + separator;
-    return ret;
+    function toStringHelper(man, degreeMax, separator, space, html) {   //  Changed from static function to nested function.    2016.1
+        if (arguments.length < 3) separator = '';   
+        var ret = "";
+        for (var i = man.length - 1 ; i >= 0; i--)
+            ret += ((i > degreeMax) ? space : html ? wholeplacevalue2.digithtml(man, i) : wholeplacevalue2.digit(man, i)) + separator;
+        return ret;
+    }
 }
 
 wholeplacevalue2.digithtml = function (man, i) {
@@ -128,7 +133,7 @@ wholeplacevalue2.digithtml = function (man, i) {
     }
 }
 
-wholeplacevalue2.digit = function (man, i, html) {
+wholeplacevalue2.digit = function (man, i) {    // Removed uncalled parameter html, since callers call digithtml() instead. 2016.1
     // 185  189  822 8315   9321
     // ^1   1/2  -   ^-     10
     var NEGATIVE = String.fromCharCode(822);
@@ -145,9 +150,9 @@ wholeplacevalue2.digit = function (man, i, html) {
     if (digit == -1 / 0) return '∞' + NEGATIVE;
     if (digit < -9 && isFinite(digit)) {
         var str = (Math.round(digit)).toString();
-        return html ? "<small><span style='letter-spacing:-3px'>" + str.substring(0, str.length - 1) + '</span>' + str[str.length - 1] + '</small>' : '(' + rounderdigit + ')';
+        return '(' + rounderdigit + ')';
     }
-    if (!html && -1 < digit && digit <= .01) {
+    if (-1 < digit && digit <= .01) {
         var flip = -1 / digit;
         if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + NEGATIVE + INVERSE;
     }
@@ -157,11 +162,11 @@ wholeplacevalue2.digit = function (man, i, html) {
         var str = (Math.round(digit * 10) / 10).toString();
         str = digit.toString();
         var dot = str.indexOf('.');
-        return (digit == Math.round(digit)) ? digit : html ? "<small><span style='letter-spacing:-2px'>-.</span>" + str[dot + 1] + '</small>' : '' + rounderdigit + '';
+        return (digit == Math.round(digit)) ? digit : rounderdigit;
     }
     if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? Math.abs(digit).toString().split('').join(NEGATIVE) + NEGATIVE : '(' + rounderdigit + ')';
     if (digit == 0) return '0';
-    if (!html && .01 <= digit && digit < 1) {
+    if (.01 <= digit && digit < 1) {
         var flip = Math.round(1 / digit);   // round prevents 1/24.99999    2015.7
         if (flip < 100 && Math.abs(digit - 1 / flip) < .001) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;    // flip<100&|digit-1/flip|     2015.7
     }
@@ -170,12 +175,12 @@ wholeplacevalue2.digit = function (man, i, html) {
     if (0 < digit && digit < 1) {
         var str = (Math.round(digit * 10) / 10).toString();
         var dot = str.indexOf('.');
-        return (digit == Math.round(digit)) ? digit : html ? "<small><span style='letter-spacing:-2px'>.</span>" + str[dot + 1] + '</small>' : '' + rounderdigit + '';
+        return (digit == Math.round(digit)) ? digit : rounderdigit;
     }
-    if (1 <= digit && digit <= 9) return (digit == Math.round(digit)) ? digit : html ? "<small><span style='letter-spacing:-3px'>" + roundstr[0] + '</span>.</small>' : '' + rounderdigit + '';
+    if (1 <= digit && digit <= 9) return (digit == Math.round(digit)) ? digit : rounderdigit;
     if (9 < digit && isFinite(digit)) {
         var str = (Math.round(digit)).toString();
-        return html ? "<small><span style='letter-spacing:-3px'>" + str.substring(0, str.length - 1) + '</span>' + str[str.length - 1] + '</small>' : '(' + rounderdigit + ')';
+        return '(' + rounderdigit + ')';
     }
     if (digit == 1 / 0) return '∞';
     return 'x';
@@ -250,15 +255,15 @@ wholeplacevalue2.prototype.pointsub = function (other) {
 }
 
 wholeplacevalue2.prototype.pow = function (power) { // 2015.7
-    if (!(power instanceof wholeplacevalue2)) power = new wholeplacevalue2([power], 'wholeplacevalue2.prototype.pow1 >');
-    if (power.mantisa.length > 1) { alert('WPV2 >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue2('%', 'wholeplacevalue2.prototype.pow2 >') }
+    if (!(power instanceof wholeplacevalue2)) power = new wholeplacevalue2([[power]], 'wholeplacevalue2.prototype.pow1 >');
+    if (power.mantisa.length > 1) { alert('WPV2 >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue2([['%']], 'wholeplacevalue2.prototype.pow2 >') }
     if (this.mantisa.length == 1 && this.mantisa[0].length == 1) {  // check mantisa[0]     2015.7
-        if (this.mantisa == 0 && power.mantisa == 0) return new wholeplacevalue2('%', 'wholeplacevalue2.prototype.pow3 >');
-        else return new wholeplacevalue2([Math.pow(this.mantisa, power.mantisa)], 'wholeplacevalue2.prototype.pow4 >');
+        if (this.mantisa == 0 && power.mantisa == 0) return new wholeplacevalue2([['%']], 'wholeplacevalue2.prototype.pow3 >');
+        else return new wholeplacevalue2([[Math.pow(this.mantisa, power.mantisa)]], 'wholeplacevalue2.prototype.pow4 >');
     }
-    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV2 .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue2('%', 'wholeplacevalue2.prototype.pow5 >') }
-    if (power.mantisa < 0) return new wholeplacevalue2(0, 'wholeplacevalue2.prototype.pow6 >');
-    if (power.mantisa == 0) return new wholeplacevalue2(1, 'wholeplacevalue2.prototype.pow7 >');
+    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV2 .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue2([['%']], 'wholeplacevalue2.prototype.pow5 >') }
+    if (power.mantisa < 0) return new wholeplacevalue2([[0]], 'wholeplacevalue2.prototype.pow6 >');
+    if (power.mantisa == 0) return new wholeplacevalue2([[1]], 'wholeplacevalue2.prototype.pow7 >');
     return this.times(this.pow(power.mantisa - 1));
 }
 
@@ -268,14 +273,14 @@ wholeplacevalue2.prototype.times01 = function() { this.mantisa.unshift(new Array
 wholeplacevalue2.prototype.times = function (other) {
     var h = this.mantisa.length;
     var w = this.mantisa[0].length;
-    var ret = new wholeplacevalue2(0, 'wholeplacevalue2.prototype.times >');
+    var ret = new wholeplacevalue2([[0]], 'wholeplacevalue2.prototype.times >');
     for (var r = 0; r < h; r++)
         for (var c = 0; c < w; c++) {
             ret = ret.add(unshift(other.scale(this.get(r, c)), r, c), 'wholeplacevalue2.prototype.times >');
         }
     return ret;
     function unshift(me, up, left) {
-        var ret = new wholeplacevalue2(0, 'wholeplacevalue2.prototype.add >').add(me, 'wholeplacevalue2.prototype.unshift >');
+        var ret = new wholeplacevalue2([[0]], 'wholeplacevalue2.prototype.add >').add(me, 'wholeplacevalue2.prototype.unshift >');
         for (var r = 0; r < ret.mantisa.length; r++) {
             for (var i = 0; i < left; i++) ret.mantisa[r].unshift(0);
         }
@@ -311,7 +316,7 @@ wholeplacevalue2.prototype.divide = function (den) {
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return new wholeplacevalue2(0, 'wholeplacevalue2.prototype.divide >');
+        if (c == 0) return new wholeplacevalue2([[0]], 'wholeplacevalue2.prototype.divide >');
         var d = wholeplacevalue2.getDegree(den.mantisa, true);
         var quotient = shift(num, d.row, d.col).scale(1 / d.val, 'wholeplacevalue2.prototype.divide >');
         if (d.val == 0) return quotient;
@@ -320,7 +325,7 @@ wholeplacevalue2.prototype.divide = function (den) {
         quotient = quotient.add(q2);
         return quotient;
         function shift(me, up, left) {
-            var ret = new wholeplacevalue2(0, 'wholeplacevalue2.prototype.add >').add(me, 'wholeplacevalue2.prototype.shift >');
+            var ret = new wholeplacevalue2([[0]], 'wholeplacevalue2.prototype.add >').add(me, 'wholeplacevalue2.prototype.shift >');
             for (var r = 0; r < ret.mantisa.length; r++) {
                 for (var i = 0; i < left; i++) ret.mantisa[r].shift();
             }
@@ -334,11 +339,11 @@ wholeplacevalue2.prototype.eval = function (base) {	// 2015.8
     var ret = [];
     for (var col = 0; col < this.mantisa[0].length; col++) {
         var sum = 0;
-	for (var row = 0; row < this.mantisa.length; row++) {
+        for (var row = 0; row < this.mantisa.length; row++) {
             sum += this.get(row, col) * Math.pow(base, row);
         }
         ret.push(sum);
     }
     //alert(ret);
-    return new wholeplacevalue2(ret);
+    return new wholeplacevalue2([ret]);
 }

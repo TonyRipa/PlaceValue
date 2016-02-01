@@ -1,6 +1,6 @@
-
+﻿
 // Author : Anthony John Ripa
-// Date : 12/31/2015
+// Date : 1/30/2016
 // PlaceValueComplex : a datatype for representing base agnostic arithmetic via numbers whose digits are complex
 
 function placevaluecomplex(man, exp) {
@@ -24,7 +24,37 @@ function placevaluecomplex(man, exp) {
         if (x.mantisa) return 0;  // To check for wholeplacevaluecomplex-like objects, replace (x instanceof wholeplacevaluecomplex) with (x.mantisa)    2015.9
         if (x.toString().toUpperCase().indexOf('E') != -1) {    // Recognize 2e3    2015.9
             x = x.toString().toUpperCase();
-            return Number(x.substr(1+x.indexOf('E'))) + getexp(x.substr(0,x.indexOf('E')))
+            return Number(x.substr(1 + x.indexOf('E'))) + getexp(x.substr(0, x.indexOf('E')))
+        }
+        var NEGATIVE = String.fromCharCode(822); var MINUS = String.fromCharCode(8315); var ONE = String.fromCharCode(185);
+        x = x.toString().replace(new RegExp(NEGATIVE, 'g'), '').replace(new RegExp(MINUS, 'g'), '').replace(new RegExp(ONE, 'g'), '').replace(/\([^\(]*\)/g, 'm');
+        return x.indexOf('.') == -1 ? 0 : x.indexOf('.') - x.length + 1;
+    }
+}
+
+placevaluecomplex.parse = function (man, exp) { // 2016.1
+    if (arguments.length < 2) exp = 0;
+    if (typeof (man) == "number") man = man.toString();     // 2015.11
+    if (typeof (man) == "string" && man.indexOf('whole') != -1) {
+        console.log("new placevaluecomplex : arg is stringified placevaluecomplex");
+        var ans = JSON.parse(man);
+        man = ans.whole;
+        exp = ans.exp;
+    } else if (man instanceof Object && JSON.stringify(man).indexOf('whole') != -1) {   // 2015.8
+        console.log("new placevaluecomplex : arg is placevaluecomplex");
+        exp = man.exp;      // get exp from man before
+        man = man.whole;    // man overwrites self 2015.8
+    }
+    var whole = new wholeplacevaluecomplex((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
+    return new placevaluecomplex(whole, exp + getexp(man));
+    //this.exp = exp + getexp(man);
+    console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
+    function getexp(x) {
+        if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
+        if (x.mantisa) return 0;  // To check for wholeplacevaluecomplex-like objects, replace (x instanceof wholeplacevaluecomplex) with (x.mantisa)    2015.9
+        if (x.toString().toUpperCase().indexOf('E') != -1) {    // Recognize 2e3    2015.9
+            x = x.toString().toUpperCase();
+            return Number(x.substr(1 + x.indexOf('E'))) + getexp(x.substr(0, x.indexOf('E')))
         }
         var NEGATIVE = String.fromCharCode(822); var MINUS = String.fromCharCode(8315); var ONE = String.fromCharCode(185);
         x = x.toString().replace(new RegExp(NEGATIVE, 'g'), '').replace(new RegExp(MINUS, 'g'), '').replace(new RegExp(ONE, 'g'), '').replace(/\([^\(]*\)/g, 'm');
@@ -139,6 +169,10 @@ placevaluecomplex.prototype.scale = function (scalar) {   // 2015.11
     return new placevaluecomplex(whole, this.exp);
 }
 
+placevaluecomplex.prototype.inverse = function () { // 2016.1
+    return new placevaluecomplex(new wholeplacevaluecomplex([1]), 0).divide(this);
+}
+
 placevaluecomplex.prototype.divide = function (denominator) {
     var me = this.clone();
     if (!(denominator instanceof Object && JSON.stringify(denominator).indexOf('whole') != -1)) denominator = new placevaluecomplex(denominator);  // 2015.11
@@ -175,13 +209,13 @@ placevaluecomplex.prototype.clone = function () {
 }
 
 placevaluecomplex.prototype.eval = function (base) {
-    //alert(JSON.stringify(base))
+    //alert(JSON.stringify([this, '|', base]));
+    var c = wholeplacevaluecomplex;
     var sum = [0, 0];
     for (var i = 0; i < this.whole.mantisa.length; i++) {
-        sum = wholeplacevaluecomplex.add(sum, wholeplacevaluecomplex.mul(this.get(i), base.pow(i).get(0)));
+        //alert(JSON.stringify([this, i, this.whole.get(i), '*', base, '^', i + this.exp, '=', base.pow(i + this.exp).get(0)]));
+        if (this.whole.get(i)[0] != 0 || this.whole.get(i)[1] != 0) // Only add non-zero digits; Prevents 0*∞=%.    2016.1
+            sum = c.add(sum, c.mul(this.whole.get(i), base.pow(i + this.exp).get(0)));  // this.get->this.whole.get, i->i+this.exp  2016.1
     }
-    var scale = base.pow(this.exp).get(0)
-    //alert(JSON.stringify(scale))
-    sum = wholeplacevaluecomplex.mul(sum, scale);
     return new placevaluecomplex('(' + sum + ')');
 }

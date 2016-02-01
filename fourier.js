@@ -1,108 +1,80 @@
 
 // Author : Anthony John Ripa
-// Date : 12/31/2015
+// Date : 1/31/2016
 // Fourier : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 
-function fourier(arg, pv) {
-    console.log('fourier : arguments.length=' + arguments.length);
-    if (arguments.length < 2) {
-        var base;
-        var pv;
-        if (isNaN(arg)) {
-            if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of fourier-object
-                var argObj = JSON.parse(arg);
-                console.log('argObj=' + JSON.stringify(argObj));
-                base = argObj.base;
-                console.log('argObj.base=' + JSON.stringify(argObj.base));
-                pv = argObj.pv;
-                console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-            } else if (arg != arg) {    // If arg is %   2015.8
-                base = 1;
-                pv = [arg];
-            } else {                    // Arg is String
-                //alert(arg)
-                parse(this, arg);
-                return;
-            }
+function fourier(base, pv) {
+    if (arguments.length < 2) alert('fourier expects 2 arguments');
+    if (Array.isArray(base)) alert('fourier expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
+    if (!(pv instanceof placevaluecomplex)) alert('fourier expects argument 2 (pv) to be a placevaluecomplex but found ' + typeof pv);
+    this.base = base
+    this.pv = pv;
+}
+
+fourier.parse = function (strornode) {
+    console.log('<strornode>')
+    console.log(strornode)
+    console.log('</strornode>')
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new fourier(a.base, new placevaluecomplex(new wholeplacevaluecomplex(a.pv.whole.mantisa), a.pv.exp)) }
+    //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
+    var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+    if (node.type == 'ConstantNode') {
+        return new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex([Number(node.value)]), 0));
+    } else if (node.type == 'SymbolNode') {
+        var base = node.name;
+        if (base == 'i') {
+            return new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex([[0, 1]]), 0));
         } else {
-            base = 1;
-            pv = [arg];
+            alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
+            console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
+            console.log(node)
+            //pv = 10;
+            //me.base = base;
+            //me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
+            return new fourier(base, new placevaluecomplex(new wholeplacevaluecomplex([1]), 1));
         }
-        this.base = base;
-        this.pv = new placevaluecomplex(pv);
-        console.log("fourier : this.pv=" + JSON.stringify(this.pv));
+    } else if (node.type == 'OperatorNode') {
+        console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
+        console.log(node)
+        var kids = node.args;
+        //var a = new fourier(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+        var a = fourier.parse(kids[0]);       // fourier handles unpreprocessed kid   2015.11
+        if (node.fn == 'unaryMinus') {
+            var c = new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex([0]), 0)).sub(a);
+        } else if (node.fn == 'unaryPlus') {
+            var c = new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex([0]), 0)).add(a);
+        } else {
+            //var b = new fourier(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+            var b = fourier.parse(kids[1]);   // fourier handles unpreprocessed kid   2015.11
+            var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
+        }
+        return c;
+        //me.base = c.base;
+        //me.pv = c.pv;
+    } else if (node.type == 'FunctionNode') {
+        console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
+        console.log(node)
+        var fn = node.name;
+        var kids = node.args;
+        var kidaspoly = laurent.parse(kids[0])
+        //alert(kidaspoly)
+        var base = kidaspoly.base;
+        var ten = new placevaluecomplex(new wholeplacevaluecomplex([1]), 1);
+        var tens = kidaspoly.pv.get(1)
+        var one = kidaspoly.pv.get(0)
+        var exp = ten.pow(tens)
+        if (one) exp = exp.scale(Math.exp(one));
+        var exp2 = ten.pow(-tens)
+        //alert(exp2)
+        if (one) exp2 = exp2.scale(1 / Math.exp(one));
+        //alert([exp, exp2]);
+        if (fn == 'cis') var pv = exp;
+        else if (fn == 'cos') var pv = exp.add(exp2).scale([.5, 0]);
+        else if (fn == 'sin') var pv = exp.sub(exp2).scale([0, -.5]);
+        else alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');    //  Check   2015.12
+        return new fourier(base, pv);
     } else {
-        this.base = arg;
-        if (pv instanceof placevaluecomplex)
-            this.pv = pv;
-        else if (typeof pv == 'number') {
-            console.log("fourier: typeof pv == 'number'");
-            this.pv = new placevaluecomplex(pv)
-            console.log(this.pv.toString());
-        }
-        else
-            alert('fourier: bad arg typeof(arg2)=' + typeof (pv));
-    }
-    function parse(me, strornode) {
-        console.log('<strornode>')
-        console.log(strornode)
-        console.log('</strornode>')
-        //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
-        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
-        if (node.type == 'SymbolNode') {
-            var base = node.name;
-            if (base == 'i') {
-                me.base = 1;
-                me.pv = new placevaluecomplex([[0, 1]], 0);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-            } else {
-                alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
-                console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
-                console.log(node)
-                //pv = 10;
-                me.base = base;
-                me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-            }
-        } else if (node.type == 'OperatorNode') {
-            console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
-            console.log(node)
-            var kids = node.args;
-            //var a = new fourier(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-            var a = new fourier(kids[0]);       // fourier handles unpreprocessed kid   2015.11
-            if (node.fn == 'unaryMinus') {
-                var c = new fourier(0).sub(a);
-            } else if (node.fn == 'unaryPlus') {
-                var c = new fourier(0).add(a);
-            } else {
-                //var b = new fourier(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var b = new fourier(kids[1]);   // fourier handles unpreprocessed kid   2015.11
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
-            }
-            me.base = c.base;
-            me.pv = c.pv;
-        } else if (node.type == 'FunctionNode') {
-            console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
-            console.log(node)
-            var fn = node.name;
-            var kids = node.args;
-            var kidaspoly = new laurent(kids[0])
-            //alert(kidaspoly)
-            me.base = kidaspoly.base;
-            var ten = new placevaluecomplex(1, 1);
-            var tens = kidaspoly.pv.get(1)
-            var one = kidaspoly.pv.get(0)
-            var exp = ten.pow(tens)
-            if (one) exp = exp.scale(Math.exp(one));
-            var exp2 = ten.pow(-tens)
-            //alert(exp2)
-            if (one) exp2 = exp2.scale(1 / Math.exp(one));
-            //alert([exp, exp2]);
-            if (fn == 'cis') me.pv = exp;
-            else if (fn == 'cos') me.pv = exp.add(exp2).scale([.5, 0]);
-            else if (fn == 'sin') me.pv = exp.sub(exp2).scale([0, -.5]);
-            else alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');    //  Check   2015.12
-        } else {
-            alert('othertype')
-        }
+        alert('othertype')
     }
 }
 
@@ -115,6 +87,7 @@ fourier.prototype.toString = function () {
 }
 
 fourier.prototype.add = function (other) {
+    //alert(JSON.stringify([this, other]));
     this.align(other);
     return new fourier(this.base, this.pv.add(other.pv));
 }
@@ -241,12 +214,11 @@ fourier.toStringXbase = function (pv, base) {                        // added na
     }
 }
 
-fourier.prototype.eval = function (base) {
-    var sum = 0;
-    for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
-        var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
-        if (this.pv.whole.get(i)!=0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
-        //alert(this.pv.exp+','+this.pv.whole.get(i)+','+(i+this.pv.exp)+','+sum)
-    }
-    return new fourier(sum);  // interpret as number  2015.8
+fourier.prototype.eval = function (base) {	// 2016.1
+    base = base.pv;
+    var c = placevaluecomplex;
+    var ei = new c([[.54, .84]]);
+    alert(JSON.stringify([ei, base, ei.pow(base)]));
+    base = ei.pow(base);
+    return new fourier(this.base, this.pv.eval(base));
 }

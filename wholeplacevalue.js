@@ -1,60 +1,47 @@
 
 // Author : Anthony John Ripa
-// Date : 12/31/2015
+// Date : 1/31/2016
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
 var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v == 1 / 0) ? '∞' : (v == -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }
 
 function wholeplacevalue(man) {
-    if (Array.isArray(man)) {
-        console.log("wholeplacevalue: arg is array " + JSON.stringify(man));
-        this.mantisa = man.map(Number);     // ["+1"]→[1] 2015.6
-    } else if (typeof man == 'string' || typeof man == 'number') {
-        man = man.toString();
-        if (man.indexOf('mantisa') != -1) {     // if arg1 is json of placevalue-object
-            var ans = JSON.parse(man)
-            console.log('ans=' + JSON.stringify(ans));
-            this.mantisa = ans.mantisa
-        } else {
-            console.log('wholeplacevalue : num or string but not wpv; man = ' + man);
-            this.mantisa = num2array(man);
-        }
-    } else {
-        console.log('wholeplacevalue : arg is else; man = ' + JSON.stringify(man)); // 2015.8
-        this.mantisa = man.mantisa;
-    }
+    if (!Array.isArray(man)) alert('wholeplacevalue expects array argument but found ' + typeof man + man);
+    this.mantisa = man.map(Number);     // ["+1"]→[1] 2015.6
     while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1) == 0) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
         this.mantisa.pop();                             //  pop root
     if (this.mantisa.length == 0) this.mantisa = [0];
     console.log('wpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
-    function num2array(n) {
-        var N = n.toString();
-        var ret = [];
-        var numb = '';
-        var inparen = false;
-        for (var i = 0; i < N.length; i++) {
-            var c = N[i];
-            if (c == '(') { inparen = true; continue; }
-            if (c == ')') { ret.push(Number(numb)); numb = ''; inparen = false; continue; }
-            if (inparen)
-                numb += c;
-            else {
-                if (c == '.' || c == 'e' || c == 'E') break;    // Recognize 2e3    2015.9
-                if (c == 0 || c == 1 | c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9) ret.push(c);
-                var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
-                if (frac[c]) ret.push(frac[c]);
-                if (c == 'τ') ret.push(6.28);
-                var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
-                if (num[c]) ret.push(num[c]);
-                if (c == '∞') ret.push(Infinity);
-                if (c == '%') ret.push(NaN);
-                if (c == String.fromCharCode(822)) ret[ret.length - 1] *= -1;
-                if (c == String.fromCharCode(8315)) ret[ret.length - 1] = 1 / ret[ret.length - 1];
-            }
+}
+
+wholeplacevalue.parse = function(n) {
+    var N = n.toString();
+    if (N.indexOf('mantisa') != -1) return new wholeplacevalue(JSON.parse(N).mantisa);
+    var ret = [];
+    var numb = '';
+    var inparen = false;
+    for (var i = 0; i < N.length; i++) {
+        var c = N[i];
+        if (c == '(') { inparen = true; continue; }
+        if (c == ')') { ret.push(Number(numb)); numb = ''; inparen = false; continue; }
+        if (inparen)
+            numb += c;
+        else {
+            if (c == '.' || c == 'e' || c == 'E') break;    // Recognize 2e3    2015.9
+            if (c == 0 || c == 1 | c == 2 || c == 3 || c == 4 || c == 5 || c == 6 || c == 7 || c == 8 || c == 9) ret.push(c);
+            var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
+            if (frac[c]) ret.push(frac[c]);
+            if (c == 'τ') ret.push(6.28);
+            var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
+            if (num[c]) ret.push(num[c]);
+            if (c == '∞') ret.push(Infinity);
+            if (c == '%') ret.push(NaN);
+            if (c == String.fromCharCode(822)) ret[ret.length - 1] *= -1;
+            if (c == String.fromCharCode(8315)) ret[ret.length - 1] = 1 / ret[ret.length - 1];
         }
-        return ret.reverse();   // .reverse makes lower indices represent lower powers 2015.7
     }
+    return new wholeplacevalue(ret.reverse());   // .reverse makes lower indices represent lower powers 2015.7
 }
 
 wholeplacevalue.prototype.get = function (i) {
@@ -116,11 +103,11 @@ wholeplacevalue.prototype.digithelp = function (i, NEGBEG, NEGEND, fraction) {  
 }
 
 wholeplacevalue.prototype.add = function (other) { return this.f(function (x, y) { return x + y }, other); }
-wholeplacevalue.prototype.sub = function (other) { return this.f(function (x,y) {return x-y}, other).round(); } // 1-1.1≠-.100009 2015.9
-wholeplacevalue.prototype.pointtimes = function (other) { return this.f(function (x,y) {return x*y}, other); }
-wholeplacevalue.prototype.pointdivide = function (other) { return this.f(function (x,y) {return x/y}, other); }
-wholeplacevalue.prototype.clone = function () { return this.f(function (x) {return x}, this); }
-wholeplacevalue.prototype.round = function () { return this.f(function (x) {return Math.round(x*1000)/1000}, this); }   // for sub 2015.9
+wholeplacevalue.prototype.sub = function (other) { return this.f(function (x, y) { return x - y }, other).round(); } // 1-1.1≠-.100009 2015.9
+wholeplacevalue.prototype.pointtimes = function (other) { return this.f(function (x, y) { return x * y }, other); }
+wholeplacevalue.prototype.pointdivide = function (other) { return this.f(function (x, y) { return x / y }, other); }
+wholeplacevalue.prototype.clone = function () { return this.f(function (x) { return x }, this); }
+wholeplacevalue.prototype.round = function () { return this.f(function (x) { return Math.round(x * 1000) / 1000 }, this); }   // for sub 2015.9
 
 wholeplacevalue.prototype.f = function (f, other) { // template for binary operations   2015.9
     var man = [];
@@ -148,11 +135,11 @@ wholeplacevalue.prototype.pointadd = function (addend) {
 
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);
-    if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue('%') }   // tohtml supercedes to StringInternal
+    if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue(['%']) }   // tohtml supercedes to StringInternal
     if (this.mantisa.length == 1) return new wholeplacevalue([this.mantisa == 0 && power.mantisa == 0 ? '%' : Math.pow(this.mantisa, power.mantisa)]);
-    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue('%') }
-    if (power.mantisa < 0) return new wholeplacevalue(0);
-    if (power.mantisa == 0) return new wholeplacevalue(1);
+    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue(['%']) }
+    if (power.mantisa < 0) return new wholeplacevalue([0]);
+    if (power.mantisa == 0) return new wholeplacevalue([1]);
     return this.times(this.pow(power.mantisa - 1));
 }
 
@@ -166,7 +153,7 @@ wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
 wholeplacevalue.prototype.times10 = function () { this.mantisa.unshift(0) } // Caller can pad w/out knowing L2R or R2L  2015.7
 
 wholeplacevalue.prototype.times = function (top) {
-    if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue(top);
+    //if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);
     var prod = new wholeplacevalue([]);
     for (var b = 0; b < this.mantisa.length; b++) {
         var sum = [];
@@ -183,8 +170,8 @@ wholeplacevalue.prototype.times = function (top) {
 wholeplacevalue.prototype.scale = function (scalar, trace) {
     var ret = this.clone(trace + ' wholeplacevalue.prototype.scale >');
     ret.mantisa[ret.mantisa.length - 1] *= scalar;                        // leading can be NaN       2015.9
-    for (var r = 0; r < ret.mantisa.length-1; r++)
-        if (true||!isNaN(ret.mantisa[r] * scalar)) ret.mantisa[r] *= scalar;  // nonleading can/t be NaN  2015.9
+    for (var r = 0; r < ret.mantisa.length - 1; r++)
+        if (true || !isNaN(ret.mantisa[r] * scalar)) ret.mantisa[r] *= scalar;  // nonleading can/t be NaN  2015.9
     return ret;
 }
 
@@ -200,7 +187,7 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return new wholeplacevalue(0, 'wholeplacevalue.prototype.divide >');
+        if (c == 0) return new wholeplacevalue([0], 'wholeplacevalue.prototype.divide >');
         var d = wholeplacevalue.getDegree(den.mantisa);
         var quotient = shift(num, d.deg).scale(1 / d.val, 'wholeplacevalue.prototype.divide >');
         if (d.val == 0) return quotient;
@@ -209,7 +196,7 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
         quotient = quotient.add(q2);
         return quotient;
         function shift(me, left) {
-            var ret = new wholeplacevalue(0, 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+            var ret = new wholeplacevalue([0], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
             for (var r = 0; r < left; r++) ret.mantisa.shift();
             return ret;
         }
@@ -219,7 +206,7 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
 wholeplacevalue.prototype.eval = function (base) {
     var sum = 0;
     for (var i = 0; i < this.mantisa.length; i++) {
-        sum += this.get(i) * Math.pow(base, i);
+        sum += this.get(i) * Math.pow(base.get(0), i);  // get(0)   2016.1
     }
     return new wholeplacevalue([sum]);
 }

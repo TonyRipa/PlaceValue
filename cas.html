@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 12/31/2015
+   Date : 1/29/2016
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -17,6 +17,10 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../../js/math.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
+    <script type="text/javascript" src='complexplacevalue.js'></script>
+    <script type="text/javascript" src='complexlaurent.js'></script>
+    <script type="text/javascript" src='laplace.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
@@ -41,7 +45,7 @@
 </head>
 <body>
     <h1>Computer Algebra System</h1>
-    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option></select>
+    <select id='f'><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option selected>Laurent Multinomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Laplace</option></select>
     <button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
     <hr style="clear:both"/>
     <div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>
@@ -50,8 +54,8 @@
             return "<span style='white-space:nowrap'>" + x + "</span>";
         }
         function compute() {
-            f = [polynomial, laurent, multinomial, laurent2, exponential, fourier][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
-            var poly = new f($('#a').val());
+            f = [polynomial, laurent, multinomial, laurent2, complexlaurent, exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
+            var poly = f.parse($('#a').val());
             var tuple = parse($('#a').val());
             $('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
         }
@@ -69,19 +73,19 @@
                 console.log('CAS: OperatorNode')
                 var kids = node.args;
                 //var a = new f(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-                var a = new f(kids[0]);     // f handles unpreprocessed kid 2015.11
+                var a = f.parse(kids[0]);     // f handles unpreprocessed kid 2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
                     //var b = new f(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                    var b = new f(kids[1]); // f handles unpreprocessed kid 2015.11
+                    var b = f.parse(kids[1]); // f handles unpreprocessed kid 2015.11
                 }
             } else if (node.type == 'FunctionNode') {   // exponential  2015.11
                 console.log('CAS: FunctionNode')
-                return [node.name, new laurent(node.args[0])];
+                return [node.name, laurent.parse(node.args[0])];
             } else {
                 console.log('CAS: OtherNode')
-                return [new f(node.value || node.name)];
+                return [f.parse(node.value || node.name)];
             }
             if (f == multinomial) a.align(b);     // align    2015.7
             return [node.op, a, b];

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 12/31/2015
+   Date : 1/29/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -16,9 +16,13 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../../js/math.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='complexlaurent.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
+    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
+    <script type="text/javascript" src='complexplacevalue.js'></script>
+    <script type="text/javascript" src='laplace.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='polynomial.js'></script>
@@ -43,7 +47,7 @@
 </head>
 <body>
     <h1>PlaceValue Calculator</h1>
-    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option>Laurent Multinomial</option><option>Exponential</option><option>WholePlaceValueComplex</option><option>PlaceValueComplex</option><option>Fourier</option></select>
+    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option>Laurent Multinomial</option><option>Complex Laurent</option><option>Exponential</option><option>WholePlaceValueComplex</option><option>PlaceValueComplex</option><option>Fourier</option><option>Laplace</option></select>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
         <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>^</option><option>|</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
@@ -51,19 +55,19 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [wholeplacevalue, placevalue, polynomial, laurent, multinomial, laurent2, exponential, wholeplacevaluecomplex, placevaluecomplex, fourier][$('#f')[0].selectedIndex];   // Add Laurent  2015.8
+            f = [wholeplacevalue, placevalue, polynomial, laurent, multinomial, laurent2, complexlaurent, exponential, wholeplacevaluecomplex, placevaluecomplex, fourier, laplace][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-	    function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
                 showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need html.  2015.7
+                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); }
             }
             eval();
         }
@@ -72,7 +76,7 @@
             $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
-        function clean() {//return
+        function clean() {return
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 12/31/2015
+   Date : 1/20/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -66,7 +66,7 @@
 		        if (i) str = str.replace(/exp/g, 'i*cis');
 		        console.log('diffexp');
 		        $('#a').val($('#func').val());
-		        $('#b').val(str.replace(/@/g, new f($('#func').val()).base));
+		        $('#b').val(str.replace(/@/g, f.parse($('#func').val()).base));
 		        $('#op').val('⊗');
 		        compute();
 		    }
@@ -77,7 +77,7 @@
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-	        function getinput(elem) { return new f($(elem).attr('data-val') || $(elem).val()); }
+            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

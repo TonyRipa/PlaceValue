@@ -1,6 +1,6 @@
 ﻿Author : Anthony John Ripa
 
-Date : 12/31/2015
+Date : 1/31/2016
 
 Introduction
 ==========
@@ -107,6 +107,38 @@ Fourier then formats PlaceValue's result as 0.5sin(2x) .
 
 Fouriers are nothing more than a veneer for PlaceValue.
 
+WholePlaceValueComplex2
+------------------------
+<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary units (a.k.a. 2i) we would write <span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span>. This way many such digit may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue).
+
+<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">①</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td></tr></tbody></table>
+
+ComplexPlaceValue
+-------------------
+Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation.
+
+<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.0344439357957027rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.356194490192345rad)">③</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.356194490192345rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.677945044588987rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;position:relative"><span style="position:absolute;right:-1px;bottom:-3px">.</span><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(3.141592653589793rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(3.141592653589793rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.356194490192345rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.677945044588987rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.0344439357957027rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.356194490192345rad)">③</span></td></tr></tbody></table>
+
+ComplexLaurent
+---------------
+<i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. Lettered bases are interesting, but not nearly as interesting as the exponential bases found in the Laplace data-type.
+
+Laplace
+--------
+Whereas <i>exponential.js</i> provided a hyperbolic trigonometric interface, and <i>fourier.js</i> provided a circular trigonometric interface, <i>laplace.js</i> provides both hyberbolic and circular trig in one interface. Whereas Exponential provided 1 axis for real powers of e<sup>x</sup>, and Fourier provided 1 axis for imaginary powers of e<sup>x</sup>, Laplace provides a horizontal axis for real powers of e<sup>x</sup>, and a vertical axis for imaginary powers of e<sup>x</sup>. For example, exp(x)+cos(x) is represented via ComplexPlaceValue as
+
+<pre>
+Ⓞ½
+10.
+Ⓞ½
+</pre>
+
+It can be differentiated by pointwise multiplication by <i>s</i>. Yielding:
+
+<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">½</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;position:relative"><span style="position:absolute;right:-1px;bottom:-3px">.</span><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">½</span></td></tr></tbody></table>
+
+This ComplexPlaceValue is then rendered by Laplace.js as -sin(x)+exp(x).
+
 CAS
 -----------
 
@@ -167,3 +199,12 @@ Measure
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
 
 measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox.  Using PlaceValue the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π). 
+
+Dependencies
+---------------
+Polynomial																		depends on WholePlaceValue.
+Exponential&Fourier	depends on Laurent			depends on PlaceValue			depends on WholePlaceValue.
+Fourier											depends on PlaceValueComplex	depends on WholePlaceValueComplex.
+Multinomial																		depends on WholePlaceValue2.
+Laurent2										depends on PlaceValue2			depends on WholePlaceValue2.
+Laplace				depends on ComplexLaurent	depends on ComplexPlaceValue	depends on WholePlaceValueComplex2.
