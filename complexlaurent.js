@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/29/2016
+// Date : 2/14/2016
 // ComplexLaurent : a 2d datatype for representing Complex Laurent multinomials; an application of the ComplexPlaceValue datatype
 
 function complexlaurent(base, pv) {
@@ -45,6 +45,7 @@ complexlaurent.parse = function (strornode) {  // 2016.1
         me.pv = c.pv;
         console.log('new complexlaurent : parse2 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
+        if (node.name == 'i') { var i = math.parse('i*q'); i.args[1] = node.args[0]; return complexlaurent.parse(i) } // interpret function i(x) as product i*x     2016.2
         alert('Syntax Error: complexlaurent expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
         var k = complexlaurent.parse(node.args[0]);
         me.base = k.base;

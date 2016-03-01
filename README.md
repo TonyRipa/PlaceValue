@@ -1,6 +1,8 @@
 ﻿Author : Anthony John Ripa
 
-Date : 1/31/2016
+Date : 2/29/2016
+
+Live Demo at <a href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
 
 Introduction
 ==========
@@ -109,35 +111,45 @@ Fouriers are nothing more than a veneer for PlaceValue.
 
 WholePlaceValueComplex2
 ------------------------
-<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary units (a.k.a. 2i) we would write <span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span>. This way many such digit may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue).
+<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary units (a.k.a. 2i) we would write <span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span>. This way many such digit may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
 
-<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">①</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td></tr></tbody></table>
+<table><tbody><tr><td>2+2i</td><td>1+2i</td><td>2i</td></tr><tr><td>2+i</td><td>1+i</td><td>i</td></tr><tr><td>2</td><td>1</td><td>0</td></tr></tbody></table>
 
 ComplexPlaceValue
 -------------------
-Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation.
+Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
 
-<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.0344439357957027rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.356194490192345rad)">③</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.356194490192345rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(2.677945044588987rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;position:relative"><span style="position:absolute;right:-1px;bottom:-3px">.</span><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(3.141592653589793rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(3.141592653589793rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.4636476090008061rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.7853981633974483rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.356194490192345rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.677945044588987rad)">②</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-0.7853981633974483rad)">③</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.1071487177940904rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.0344439357957027rad)">②</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-2.356194490192345rad)">③</span></td></tr></tbody></table>
+<table>
+<tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
+<tr><td>2+1i</td><td>1+1i</td><td>0+1i</td><td>-1+1i</td><td>-2+1i</td></tr>
+<tr><td>2+0i</td><td>1+0i</td><td>0+0i</td><td>-1+0i</td><td>-2+0i</td></tr>
+<tr><td>2-1i</td><td>1-1i</td><td>0-1i</td><td>-1-1i</td><td>-2-1i</td></tr>
+<tr><td>2-2i</td><td>1-2i</td><td>0-2i</td><td>-1-2i</td><td>-2-2i</td></tr>
+</table>
 
 ComplexLaurent
 ---------------
 <i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. Lettered bases are interesting, but not nearly as interesting as the exponential bases found in the Laplace data-type.
 
-Laplace
+Complex Exponential
 --------
-Whereas <i>exponential.js</i> provided a hyperbolic trigonometric interface, and <i>fourier.js</i> provided a circular trigonometric interface, <i>laplace.js</i> provides both hyberbolic and circular trig in one interface. Whereas Exponential provided 1 axis for real powers of e<sup>x</sup>, and Fourier provided 1 axis for imaginary powers of e<sup>x</sup>, Laplace provides a horizontal axis for real powers of e<sup>x</sup>, and a vertical axis for imaginary powers of e<sup>x</sup>. For example, exp(x)+cos(x) is represented via ComplexPlaceValue as
+Whereas <i>exponential.js</i> provided a hyperbolic trigonometric interface, and <i>fourier.js</i> provided a circular trigonometric interface, <i>complexexponential.js</i> provides both hyberbolic and circular trig in one interface. Whereas Exponential provided 1 axis for real powers of e<sup>x</sup>, and Fourier provided 1 axis for imaginary powers of e<sup>x</sup>, ComplexExponential provides a horizontal axis for real powers of e<sup>x</sup>, and a vertical axis for imaginary powers of e<sup>x</sup>. For example, exp(x)+cos(x) is represented via ComplexPlaceValue as
 
 <pre>
-Ⓞ½
+0½
 10.
-Ⓞ½
+0½
 </pre>
 
 It can be differentiated by pointwise multiplication by <i>s</i>. Yielding:
 
-<table style="display:inline-block;border-spacing:0;line-height:80%;text-align:center;"><tbody><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(1.5707963267948966rad)">½</span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">①</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;position:relative"><span style="position:absolute;right:-1px;bottom:-3px">.</span><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></span></td></tr><tr><td style="display:inline-block;letter-spacing:-0px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(0rad)">Ⓞ</span></td><td style="display:inline-block;letter-spacing:-1px;padding:0"><span style="display:inline-block;transform-origin:50% 70%;transform:rotate(-1.5707963267948966rad)">½</span></td></tr></tbody></table>
+<table>
+<tr><td>0</td><td>i/2</td></tr>
+<tr><td>1</td><td>.0</td></tr>
+<tr><td>0</td><td><s>i/2</s></td></tr>
+</table>
 
-This ComplexPlaceValue is then rendered by Laplace.js as -sin(x)+exp(x).
+This ComplexPlaceValue is then rendered by ComplexExponential.js as -sin(x)+exp(x).
 
 CAS
 -----------
@@ -146,7 +158,7 @@ CAS
 
 Calculator
 --------------
-<i>index.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), and Complex Exponential mode (Fourier).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), and Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
 
 Differentiator
 ----------------
@@ -154,7 +166,7 @@ Differentiator
 
 Calculus
 --------
-<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation procedes in a LaPlace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the complex case.
+<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation procedes in a Laplace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the complex case.
 
 If Exponential wants to differentiate sinh(x) + 7, then it asks PlaceValue to calculate:
 
@@ -190,7 +202,7 @@ DiffEq
 ---------------
 
 <i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k is solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
-For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x).
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification it now also supports Laplace solution.
 
 Measure
 ------------
@@ -198,13 +210,56 @@ Measure
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
 
-measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox.  Using PlaceValue the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π). 
+measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox.  Using PlaceValue the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π).
+
+PlaceValue Mechanics
+----------------------
+PlaceValue Mechanics is a refactoring of Quantum Mechanics based on the PlaceValue data-type. The two other classical versions of Quantum Mechanics are Matrix Mechanics and Wave Mechanics. Both suffer from issues relating to sparseness. Both data-types allow for large numbers of parameters of which only a painfully small subset amount to actual states in the theory. Consider for example the Heisenberg Matrix:
+
+<table>
+<tr><td>0</td><td>&radic;1</td><td>0</td><td>0</td><td>&hellip;</td></tr>
+<tr><td>&radic;1</td><td>0</td><td>&radic;2</td><td>0</td><td>&hellip;</td></tr>
+<tr><td>0</td><td>&radic;2</td><td>0</td><td>&radic;3</td><td>&hellip;</td></tr>
+<tr><td>0</td><td>0</td><td>&radic;3</td><td>0</td><td>&hellip;</td></tr>
+<tr><td>&#8942;</td><td>&#8942;</td><td>&#8942;</td><td>&#8942;</td><td>&#8945;</td></tr>
+</table>
+
+It's a doubly infinite matrix. Almost every element is 0. It's got about 2 non-zero rows out of a countably infinite number of zero rows. It's not the most economical storage scheme. It's storage efficiency is the reciprocal of a countably infinite number.
+
+There's also Wave Mechanics. The model is real valued functions of a real variable. You can describe an uncountably infinite number of states of which only a countable number are interesting. The sparseness is even worse than Matrix Mechanics because it's now the reciprocal of an uncountably infinite number.
+
+In PlaceValue Mechanics, PlaceValue States are represented as 1-D scalars. Furthermore, Laplace inspired refactorings make due with only the rationals (a countable set). For example, the relatively compact encoding .10<s>1</s>0&hellip; represents an eigenstate of parity, a superposition of 2 momentum states, a completely smeared out position.
+
+Apart from compression considerations, there are pedagogical considerations (dependencies). You cannot teach Wave Mechanics without Calculus. You cannot teach Matrix Mechanics without Linear Algebra. Too many dependencies have to be installed, before you can install either of these two versions of Quantum Mechanics.
+
+PlaceValue Mechanics (like the rest of PlaceValue arithmetic), depends only on arithmetic.
+
+Say, you want to apply a momentum operator to our state .10<s>1</s>0&hellip;. Simply multiply by i0, yielding i.0<s>i</s>0i&hellip;. It's basically the constant i, times Laplace's derivative operator s (in this case 10 base s), times our state of interest. Had we simply wanted the derivative of our state it would be 10 * .10<s>1</s>0&hellip; = 1.0<s>1</s>01&hellip;
+
+The position operator is almost as beautiful. It shifts right instead of left (i.e. .1 instead of 10), but has the necessity of pointwise scaling by .012345&hellip;. Applied to our state .10<s>1</s>0&hellip; the position operator yields .030<s>5</s>0&hellip;.
+
+We actually have enough now to show Heisenberg's Uncertainty Principle. And do just that in <i>Mechanics.html</i>. For pedagogical simplicity (and without loss of generality) we do it with the pseudo-momentum operator 10, and the true momentum operator i0. Formally, we show xp-px=iħ. Or in natual units, xp-px=i. Furthermore since the factor i plays no interesting part in xp-px (while it does play an interesting part in the Schrodinger Equation with the sign of p^2), we also show a simplified construction with xp-px=1.
+
+<i>mechanics2.html</i> is a different refactoring of Q.M.. Whereas mechanics.html was based on the Laplace inspired data-type laplace.js, mechanics2.html is based on the Fourier inspired data-type fourier2.js. Whereas mechanics.html's underlying data-type laplace.js was inspired by the Laplace transform, mechanics2.html's underlying data-type fourier2.js is not inspired by the Fourier transform but the Fourier series, and a 2D version at that. One benefit of mechanics2.html is the ease of representing multidimensional space-time states as integers, albeit 2D integers. For example ψ(x)=exp(i(2x+t)) is
+
+<pre>
+100
+000
+</pre> 
+
+One downside of this economy appears to be that fourier2.js as used by mechanics2.html is not large enough to handle all quantum states of interest (i.e. solutions of the Schrödinger Equation), whereas laplace.js as used by mechanics.html is large enough (at least in the 1D case). The quantum states that mechanics2 can represent can be plugged into the Schrödinger Equation and checked to see what value of mass that solution has (admittedly a backward kind of situation). But that's what you get for its barebones approach which may be better for pedagogical and academic purposes than for anything else. Mechanics.html on the other hand allows for full normal forward solution of the Schrödinger Equation, as one would expect.
 
 Dependencies
 ---------------
-Polynomial																		depends on WholePlaceValue.
-Exponential&Fourier	depends on Laurent			depends on PlaceValue			depends on WholePlaceValue.
-Fourier											depends on PlaceValueComplex	depends on WholePlaceValueComplex.
-Multinomial																		depends on WholePlaceValue2.
-Laurent2										depends on PlaceValue2			depends on WholePlaceValue2.
-Laplace				depends on ComplexLaurent	depends on ComplexPlaceValue	depends on WholePlaceValueComplex2.
+<table>
+<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue.</td></tr>
+<tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue.</td></tr>
+<tr><td>Fourier&amp;Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValueComplex.</td></tr>
+<tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td></tr>
+<tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td></tr>
+<tr><td>ComplexExponential</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td></tr>
+</table>
+
+System Requirements
+--------------------
+A browser with modern JavaScript (Need Firefox 44.0+ or equivalent)

@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/20/2016
+// Date : 2/23/2016
 // WholePlaceValueComplex : a datatype for representing base agnostic arithmetic via whole numbers whose digits are complex
 
 //var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -25,7 +25,7 @@ function wholeplacevaluecomplex(man) {
         console.log('wholeplacevaluecomplex : arg is else; man = ' + JSON.stringify(man)); // 2015.8
         this.mantisa = man.mantisa;
     }
-    while (this.get(this.mantisa.length - 1) == 0)  //  while most significant digit is 0  // get(this.mantisa.length - 1) 2015.7
+    while (this.mantisa.length > 1 && this.getreal(this.mantisa.length - 1) == 0 && this.getimag(this.mantisa.length - 1) == 0)  //  while most sigDig=0  // get(this.man.len-1) 2015.7    // getreal  2016.2
         this.mantisa.pop();                             //  pop root
     if (this.mantisa.length == 0) this.mantisa = [0];
     console.log('cwpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);

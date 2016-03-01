@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 1/20/2016
+   Date : 2/29/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -104,7 +104,7 @@
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
                 showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.toStringInternal()); }
+                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.tohtml()); }
             }
         }
         function clean() {

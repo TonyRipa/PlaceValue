@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 2/26/2016
 // Fourier : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
@@ -160,7 +160,7 @@ fourier.toStringCosh = function (pv, base) { // 2015.11
             if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
                 var n = m * 2 * sign;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-                s = s.sub(new placevaluecomplex(1, i).add(new placevaluecomplex(1, -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));
+                s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex([1]), i).add(new placevaluecomplex(new wholeplacevaluecomplex([1]), -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));
             }
         }
         ret = ret.replace(/\+\-/g, '-');
@@ -174,7 +174,7 @@ fourier.toStringXbase = function (pv, base) {                        // added na
     console.log('fourier.toStringXbase: x=' + x);
     if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
         x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return fourier.toStringXbase(new placevaluecomplex(x), base);  // added namespace  2015.7
+        return fourier.toStringXbase(new placevaluecomplex(new wholeplacevaluecomplex([x]), 0), base);  // added namespace  2015.7
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
@@ -186,7 +186,7 @@ fourier.toStringXbase = function (pv, base) {                        // added na
         if (digit[0] != 0 || digit[1] != 0) {
             ret += '+';
             //coef = coefficient(digit);
-            coef = new placevaluecomplex([digit]).toString(false, true);
+            coef = new placevaluecomplex(new wholeplacevaluecomplex([digit]), 0).toString(false, true);
             if (coef == 'NaN') coef += '*';
             //alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
             exp1 = ''; if (power != 0) exp1 = power + base; if (power == 1) exp1 = base; if (power == -1) exp1 = '-' + base;
@@ -217,8 +217,8 @@ fourier.toStringXbase = function (pv, base) {                        // added na
 fourier.prototype.eval = function (base) {	// 2016.1
     base = base.pv;
     var c = placevaluecomplex;
-    var ei = new c([[.54, .84]]);
-    alert(JSON.stringify([ei, base, ei.pow(base)]));
+    var ei = new c(new wholeplacevaluecomplex([[.54, .84]]), 0);
+    //alert(JSON.stringify([ei, base, ei.pow(base)]));
     base = ei.pow(base);
     return new fourier(this.base, this.pv.eval(base));
 }

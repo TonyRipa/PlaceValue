@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 1/29/2016
+   Date : 2/29/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -19,10 +19,11 @@
     <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
     <script type="text/javascript" src='complexplacevalue.js'></script>
     <script type="text/javascript" src='complexlaurent.js'></script>
-    <script type="text/javascript" src='laplace.js'></script>
+    <script type="text/javascript" src='complexexponential.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
+    <script type="text/javascript" src='laplace.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='polynomial.js'></script>
@@ -47,9 +48,9 @@
 </head>
 <body>
     <h1>Differential Equation</h1>
-    <select id='f' onchange="clean()"><option>Exponential</option><option>Fourier</option><option selected>Laplace</option></select>
-    <p>D^<select id='d' onchange="$('#sup').html($(d).val())"><option>0</option><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val()); $('#sup').html($('#d').val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0<button onclick='    diffeq()'>DiffEQ</button></p>
-    <p>f(x) = 0 / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>
+    <select id='f' onchange="clean()"><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option><option selected>Laplace</option></select>
+    <p>D^<select id='d' onchange="$('#sup').html($(d).val())"><option>0</option><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val()); $('#sup').html($('#d').val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0<button onclick='diffeq()'>DiffEQ</button></p>
+    <p>f(x) = <span id="num">1</span> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
         <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>^</option><option>|</option><option>⊗</option><option selected>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
@@ -58,27 +59,30 @@
     <script type="text/javascript">
         function diffeq() {
             $('#sup').html($(d).val())
-            $('#k2').html($('#k').val())
+            var k = $('#k').val();
+            $('#k2').html(k);
             var n = $('#d').val()
             var s = '3exp(3x)+2exp(2x)+exp(x)-exp(-x)-2exp(-2x)-3exp(-3x)';
-            f = [exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Establish f before s 2015.12
+            f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Establish f before s 2015.12
             if (f == fourier) s = s.replace(/exp/g, 'i*cis');
             var s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
             var s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
-            if (f == laplace) s = s1 + '+' + s2;
+            if (f == complexexponential) s = s1 + '+' + s2;
+            if (f == laplace) s = 's^' + n + '+' + k;
+            //alert(s);
             var fs = f.parse(s);
             var fsn = fs.pointpow(f.parse(n))
             var k = f.parse($('#k').val())
             //alert(JSON.stringify(k))
             var fsn_k = fsn.pointadd(k)
             //alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
-            $('#a').val(0);
-            $('#b').val(fsn_k.toString()); $('#b').attr('data-val', JSON.stringify(fsn_k));
-            $('#op').val('⊘');
+            var num = (f == laplace) ? 1 : 0; $('#num').html(num); $('#a').val(num);
+            if (f == laplace) $('#b').val(s); else { $('#b').val(fsn_k.toString()); $('#b').attr('data-val', JSON.stringify(fsn_k)); }
+            if (f == laplace) $('#op').val('/'); else $('#op').val('⊘');
             compute();
         }
         function compute() {
-            f = [exponential, fourier, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
+            f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
             //var start = new Date()
             var a = getinput('#a');
             var b = getinput('#b');

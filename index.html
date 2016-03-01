@@ -1,86 +1,32 @@
-﻿
+
 <!--
    Author : Anthony John Ripa
-   Date : 1/29/2016
+   Date : 2/29/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
+<!DOCTYPE html>
 <html>
-<head>
-    <title>PlaceValue Calculator</title>
-    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-    <script type="text/javascript">
-        window.math || document.write("<script src='../../js/math.js'><" + "/script>")
-    </script>
-    <script type="text/javascript" src='complexlaurent.js'></script>
-    <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
-    <script type="text/javascript" src='placevaluecomplex.js'></script>
-    <script type="text/javascript" src='fourier.js'></script>
-    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
-    <script type="text/javascript" src='complexplacevalue.js'></script>
-    <script type="text/javascript" src='laplace.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
-    <script type="text/javascript" src='placevalue.js'></script>
-    <script type="text/javascript" src='polynomial.js'></script>
-    <script type="text/javascript" src='laurent.js'></script>
-    <script src='wholeplacevalue2.js'></script>
-    <script src='multinomial.js'></script>
-    <script src='placevalue2.js'></script>
-    <script src='laurent2.js'></script>
-    <script src='exponential.js'></script>
-    <style>
-        h1 { text-align: center; }
-        #f { position: absolute; top: 10px; left: 10px; }
-        body, input { font-family: "Arial Unicode MS" }
-        #main { border-spacing: 0; float: left; margin: 10px; }
-        #col3 { width: 150px }
-        #ao, #bo, #co { min-width: 150px; text-align: right }
-        #augend:nth-child(1) td { color: green; }
-        #base>td { border-bottom: 1pt solid black; color: blue; }
-        #base>td table { color: blue; }
-        input { text-align: right; }
-    </style>
-</head>
-<body>
-    <h1>PlaceValue Calculator</h1>
-    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option>Laurent Multinomial</option><option>Complex Laurent</option><option>Exponential</option><option>WholePlaceValueComplex</option><option>PlaceValueComplex</option><option>Fourier</option><option>Laplace</option></select>
-    <table id="main">
-        <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-        <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>^</option><option>|</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
-        <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
-    </table>
-    <script type="text/javascript">
-        function compute() {
-            f = [wholeplacevalue, placevalue, polynomial, laurent, multinomial, laurent2, complexlaurent, exponential, wholeplacevaluecomplex, placevaluecomplex, fourier, laplace][$('#f')[0].selectedIndex];
-            var a = getinput('#a');
-            var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
-            output(a, b, c);
-            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
-            function output(a, b, c) {
-                $('#c').attr('data-val', JSON.stringify(c));
-                $('#c').val(c);
-                showInternal(a, '#ao');
-                showInternal(b, '#bo');
-                showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); }
+    <head>
+        <title>PlaceValue</title>
+        <style>
+            h1, h2
+            {
+                text-align: center;
             }
-            eval();
-        }
-        function moveanswer(from, to) {
-            $(to).val($(from).val());                           // move toString
-            $(to + 'o').html($(from + 'o').html());             // move toStringInternal
-            $(to).attr('data-val', $(from).attr('data-val'));   // move json
-        }
-        function clean() {return
-            $('input').val('');
-            $('td:nth-child(4)').html('&nbsp;');
-            $('[data-val]').removeAttr('data-val');
-        }
-    </script>
-</body>
+        </style>
+    </head>
+    <body>
+        <h1>PlaceValue</h1>
+        <h2><a href="calculator.html">Calculator</a></h2>
+		<h2><a href="measure.html">Measure</a></h2>
+		<h2><a href="polynomial.html">Polynomial</a></h2>
+		<h2><a href="multinomial.html">Multinomial</a></h2>
+		<h2><a href="cas.html">C.A.S.</a></h2>
+		<h2><a href="differentiator.html">Differentiator</a></h2>
+		<h2><a href="calculus.html">Calculus</a></h2>
+        <h2><a href="diffeq.html">Diff. Eq.</a></h2>
+        <h2><a href="mechanics.html">Mechanics</a></h2>
+        <h2><a href="mechanics2.html">Mechanics 2</a></h2>
+    </body>
 </html>
