@@ -1,7 +1,7 @@
 
 // Author : Anthony John Ripa
-// Date : 2/26/2016
-// Fourier : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
+// Date : 3/18/2016
+// Fourier : a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
     if (arguments.length < 2) alert('fourier expects 2 arguments');
@@ -157,7 +157,7 @@ fourier.toStringCosh = function (pv, base) { // 2015.11
             var al = Math.abs(l);
             var ar = Math.abs(r);
             //alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-            if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
+            if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2 * sign;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
                 s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex([1]), i).add(new placevaluecomplex(new wholeplacevaluecomplex([1]), -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));

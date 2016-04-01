@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 3/31/2016
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -78,10 +78,12 @@ wholeplacevalue.prototype.digithelp = function (i, NEGBEG, NEGEND, fraction) {  
     if (digit == -1 / 0) return NEGBEG + '∞' + NEGEND;
     if (num[-digit]) return NEGBEG + num[-digit] + NEGEND;
     if (digit < -9 && isFinite(digit)) return '(' + rounddigit + ')';
+    if (Math.abs(digit + 1) < .04) return NEGBEG + '1' + NEGEND;
     if (-1 < digit && digit < 0) {
         if (fraction) if (frac[-rounddigit]) return NEGBEG + frac[-rounddigit] + NEGEND;
         var flip = -1 / digit;
-        if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return NEGBEG + (num[flip] ? num[flip] : Math.abs(flip)) + NEGEND + INVERSE;
+        var abflip = Math.abs(flip)
+        if (abflip < 100 && Math.abs(abflip - Math.round(abflip)) < .1) return NEGBEG + (num[flip] ? num[flip] : Math.round(abflip)) + NEGEND + INVERSE;
         if (cons[rounddigit]) return cons[rounddigit];
     }
     if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? NEGBEG + Math.abs(digit).toString() + NEGEND : '(' + rounddigit + ')';
@@ -91,7 +93,8 @@ wholeplacevalue.prototype.digithelp = function (i, NEGBEG, NEGEND, fraction) {  
         if (cons[rounddigit]) return cons[rounddigit];	// cons b4 flip prevents .159=6^-1	2015.8
         if (0 < digit && digit < .5) {                  // prevents 1/1.1                       2015.9
             var flip = Math.round(1 / digit);		// round prevents 1/24.99999		2015.8
-            if (Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
+            if (flip <= 50 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
+            if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return '(' + (num[flip] ? num[flip] : Math.abs(flip)) + ')' + INVERSE;
         }
     }
     if (cons[rounddigit]) return cons[rounddigit];
@@ -201,6 +204,60 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
             return ret;
         }
     }
+}
+
+wholeplacevalue.getDegreeLeft = function (man) {
+    for (var i = 0 ; i < man.length ; i++)
+        if (man[i] != 0) return { 'deg': i, 'val': man[i] };
+    return { 'deg': 0, 'val': man[0] };
+}
+
+wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
+    var num = this;
+    var iter = 5//num.mantisa.length;
+    var quotient = divideh(num, den, iter);
+    return quotient;
+    function divideh(num, den, c) {
+        if (c == 0) return new wholeplacevalue([0], 'wholeplacevalue.prototype.divide >');
+        var d = wholeplacevalue.getDegreeLeft(den.mantisa);
+        var quotient = shift(num, d.deg).scale(1 / d.val, 'wholeplacevalue.prototype.divide >');
+        if (d.val == 0) return quotient;
+        var remainder = num.sub(quotient.times(den), 'wholeplacevalue.prototype.divide >')
+        var q2 = divideh(remainder, den, c - 1);
+        quotient = quotient.add(q2);
+        return quotient;
+        function shift(me, left) {
+            var ret = new wholeplacevalue([0], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+            for (var r = 0; r < left; r++) ret.mantisa.shift();
+            return ret;
+        }
+    }
+}
+
+wholeplacevalue.prototype.dividemiddle = function (den) {   // 2016.3
+    var A = []
+    var b = []
+    for (var i = 0; i <= this.mantisa.length + 1; i++) {
+        let row = [den.get(i - 1), den.get(i), den.get(i + 1)];
+        if (row[0] == 0 && row[1] == 0 && row[2] == 0) continue;
+        A.push(row);
+        b.push([this.get(i)]);
+    }
+    A = math.matrix(A);
+    b = math.matrix(b);
+    var At = A.transpose();
+    var AtA = math.multiply(At, A);
+    var I = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+    try {
+        var AtAinv = math.divide(I, AtA);
+    } catch (e) {
+        return wholeplacevalue.parse('%0');
+    }
+    var Atb = math.multiply(At, b);
+    var x = math.multiply(AtAinv, Atb);
+    x = x.transpose().valueOf()[0];
+    x.reverse();
+    return new wholeplacevalue(x);
 }
 
 wholeplacevalue.prototype.eval = function (base) {

@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/29/2016
+// Date : 3/25/2016
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -177,6 +177,14 @@ placevalue.prototype.divide = function (denominator) {
 			pads--;
         }		
 	}
+}
+
+placevalue.prototype.dividemiddle = function (den) {    // 2016.3
+    return new placevalue(this.whole.dividemiddle(den.whole), this.exp - den.exp - 1);  // The offset 1 is because whole.dividemiddle is always off by a factor of 10.
+}
+
+placevalue.prototype.divideleft = function (den) {      // 2016.3
+    return new placevalue(this.whole.divideleft(den.whole), this.exp - den.exp);
 }
 
 placevalue.prototype.clone = function () {

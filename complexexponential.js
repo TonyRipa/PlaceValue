@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 2/29/2016
+// Date : 3/18/2016
 // ComplexExponential : a datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function complexexponential(base, pv) {
@@ -173,7 +173,7 @@ complexexponential.toStringCosh = function (pv, base) { // 2015.11
             var al = Math.abs(l);
             var ar = Math.abs(r);
             //alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-            if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
+            if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
                 s = s.sub(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [i, 0]).add(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [-i, 0]).scale({ 'r': sign, 'i': 0 })).scale({ 'r': m, 'i': 0 }));
@@ -201,7 +201,7 @@ complexexponential.toStringCos = function (pv, base) { // 2015.11
             var al = Math.abs(l);
             var ar = Math.abs(r);
             //alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-            if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
+            if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2 * sign;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
                 s = s.sub(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [0, i]).add(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [0, -i]).scale({ 'r': sign, 'i': 0 })).scale(ind == 0 ? { 'r': m, 'i': 0 } : { 'r': 0, 'i': m }));
@@ -245,12 +245,6 @@ complexexponential.toStringXbase = function (pv, base) {
 }
 
 complexexponential.prototype.eval = function (base) {	// 2015.8
-    //if (!(base instanceof Object && JSON.stringify(base).indexOf('r') != -1 && JSON.stringify(base).indexOf('i') != -1))
-    //    base = { 'r': base, 'i': 0 };
-    //alert(JSON.stringify(base))
-    //base = new complexplacevalue([[{ 'r': '0', 'i': 0 }]]);
-    //alert(base)
-    //alert(JSON.stringify(this))
     base = base.pv;
     var c = complexplacevalue;
     var ei = new c(new wholeplacevaluecomplex2([[{ 'r': .54, 'i': .84 }]]), [0, 0]);

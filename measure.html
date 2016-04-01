@@ -1,14 +1,14 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 2/29/2016
+   Date : 3/21/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Base Calculator</title>
+    <title>PlaceValue Measure</title>
     <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
@@ -21,11 +21,14 @@
         table { border-spacing: 0; float: left; margin: 10px; }
         .line td { border-bottom: 1pt solid black; }
         input { text-align: right; }
+        #kind {float:left}
+        h1{text-align:center}
     </style>
 </head>
 <body>
+    <select id="kind" onchange="select1()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
     <h1>PlaceValue Measure</h1>
-    <table border>
+    <table border="1">
         <tr>
             <td>
                 <a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
@@ -71,18 +74,44 @@
     <script type="text/javascript">
         var f = placevalue;
         function select1() {
-            var shapes = [1, 10, 20, 400, 600];
-            var top = shapes[$('#top')[0].selectedIndex];
-            var bot = shapes[$('#bot')[0].selectedIndex];
-            top = Math.min(top, bot);
+            if ($('#kind')[0].selectedIndex == 0)   //  2016.3
+                var shapes = [1, 10, 20, 400, 600];
+            else if ($('#kind')[0].selectedIndex == 1)
+                var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
+            else {
+                var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
+                var L = $('#top')[0].selectedIndex
+                var R = $('#bot')[0].selectedIndex
+                var likelihood = f.parse(shapes[R])
+                var prior = f.parse(shapes[L])
+                var conditional = (f.parse(shapes[Math.min(L, R)])).divide(f.parse(shapes[L]))
+                var support = conditional.divide(likelihood)
+                $('#op').val('x');
+                pop(support.toString(), prior.toString());
+                $('#p').text($('#c').val())
+                return;
+            }
+            var botindex = $('#bot')[0].selectedIndex
+            var topindex = $('#top')[0].selectedIndex
+            topindex = Math.min(topindex, botindex);
+            var top = shapes[topindex];
+            var bot = shapes[botindex];
+            //top = Math.min(top, bot);
+            $('#op').val('/');
             pop(top, bot);
             $('#p').text($('#c').val())
         }
         function select2() {
-            var topshapes = [".0(.0796)"];
-            var botshapes = ["0.½", "0.½"];
+            if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
+                var topshapes = [1];
+                var botshapes = ["τ", "τ"];
+            } else {
+                var topshapes = [".0(.0796)"];
+                var botshapes = ["0.½", "0.½"];
+            }
             var top = topshapes[$('#top2')[0].selectedIndex];
             var bot = botshapes[$('#bot2')[0].selectedIndex];
+            $('#op').val('/');
             pop(top, bot);
             $('#p2').text($('#c').val())
         }
@@ -97,14 +126,14 @@
             var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
             function getinput(elem) { return f.parse($(elem).val()); }
-            function getshape(elem) { return f.parse($(elem).val()); }
+            //function getshape(elem) { return f.parse($(elem).val()); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
                 showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).text('Internal Representation : ' + pv.tohtml()); }
+                function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
             }
         }
         function clean() {

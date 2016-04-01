@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/21/2016
+// Date : 3/18/2016
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 function exponential(base, pv) {
@@ -11,45 +11,6 @@ function exponential(base, pv) {
     this.pv = pv;
     return;
 
-    //console.log('exponential : arguments.length=' + arguments.length);
-    //if (arguments.length < 2) {
-    //    var base;
-    //    var pv;
-    //    if (isNaN(arg)) {
-    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of exponential-object
-    //            var argObj = JSON.parse(arg);
-    //            console.log('argObj=' + JSON.stringify(argObj));
-    //            base = argObj.base;
-    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
-    //            pv = argObj.pv;
-    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-    //        } else if (arg != arg) {    // If arg is %   2015.8
-    //            base = 1;
-    //            pv = [arg];
-    //        } else {                    // Arg is String
-    //            //alert(arg)
-    //            parse(this, arg);
-    //            return;
-    //        }
-    //    } else {
-    //        base = 1;
-    //        pv = [arg];
-    //    }
-    //    this.base = base;
-    //    this.pv = new placevalue(pv);
-    //    console.log("exponential : this.pv=" + JSON.stringify(this.pv));
-    //} else {
-    //    this.base = arg;
-    //    if (pv instanceof placevalue)
-    //        this.pv = pv;
-    //    else if (typeof pv == 'number') {
-    //        console.log("exponential: typeof pv == 'number'");
-    //        this.pv = new placevalue(pv)
-    //        console.log(this.pv.toString());
-    //    }
-    //    else
-    //        alert('exponential: bad arg typeof(arg2)=' + typeof (pv));
-    //}
 }
 
 exponential.parse = function (strornode) {
@@ -194,7 +155,7 @@ exponential.toStringCosh = function (pv, base) { // 2015.11
             var al = Math.abs(l);
             var ar = Math.abs(r);
             //alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-            if (Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001) {
+            if (math.sign(l) * math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
                 s = s.sub(new placevalue(new wholeplacevalue([1]), i).add(new placevalue(new wholeplacevalue([1]), -i).scale(sign)).scale(m));
