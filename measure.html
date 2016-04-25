@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 3/21/2016
+   Date : 4/25/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -96,7 +96,6 @@
             topindex = Math.min(topindex, botindex);
             var top = shapes[topindex];
             var bot = shapes[botindex];
-            //top = Math.min(top, bot);
             $('#op').val('/');
             pop(top, bot);
             $('#p').text($('#c').val())
@@ -104,10 +103,15 @@
         function select2() {
             if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
                 var topshapes = [1];
-                var botshapes = ["τ", "τ"];
-            } else {
+                var botshapes = ["τ0", "τ0"];           // τ -> τ0  2016.4
+            } else if ($('#kind')[0].selectedIndex == 1) {
                 var topshapes = [".0(.0796)"];
                 var botshapes = ["0.½", "0.½"];
+            } else {                                    //  2016.4
+                $('#op').val('x');
+                pop("τ0", ".0(.0253)");
+                $('#p2').text($('#c').val())
+                return;
             }
             var top = topshapes[$('#top2')[0].selectedIndex];
             var bot = botshapes[$('#bot2')[0].selectedIndex];

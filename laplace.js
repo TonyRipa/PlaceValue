@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 2/29/2016
+// Date : 4/25/2016
 // Laplace : a datatype for representing the Laplace Transform; an application of the PlaceValueComplex datatype
 
 function laplace(base, pv) {
@@ -148,13 +148,12 @@ laplace.prototype.pointpow = function (other) { // 2015.12
 laplace.toStringCosh = function (pv, base) { // 2015.11
     var s = pv.clone();
     //var extra = new placevaluecomplex(new wholeplacevalue([0]), -1);
-    var ret = '';
+    var trigreal = '';
+    var trigimag = '';
     //alert(JSON.stringify(s))
-    [s, ret] = trig(s, ret);
-    //s = s.sub(extra);
-    //alert(JSON.stringify(s))
-    //hyper('cos(', +1,0);
-    //hyper('sin(', -1,1);
+    [s, trigreal] = trig(s.times(new placevaluecomplex(new wholeplacevaluecomplex([[1, 0]]), 0)), '');
+    [s, trigimag] = trig(s.times(new placevaluecomplex(new wholeplacevaluecomplex([[0, -1]]), 0)), ''); //  2016.4
+    var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');
     ret += '+' + laplace.toStringXbase(s, base);
     if (ret[0] == '+') ret = ret.slice(1);
     return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
@@ -175,6 +174,7 @@ laplace.toStringCosh = function (pv, base) { // 2015.11
         if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && s2 * s6 == s4 * s4) { c = s2; k = -s4 / s2; ret += '+' + rnd(c / root(k)) + 'sin(' + root(k) + 'x)'; sub([0, c * k * k, 0, -c * k, 0, c, 0]); }
         if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = -(s4 / 3) / (s2 / 1); ret += '+' + c + 'xcos(' + root(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * -c * k, 0, c, 0]); }
         if (s1 != 0 && s2 == 0 && s3 * s1 < 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = -(s3 / 3) / (s1 / 1); ret += '+' + c + '(cos(' + root(k) + 'x)-' + root(k) + 'xsin(' + root(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * -c * k, 0, c]); }
+        ret = ret.replace('+-', '-');
         return [s, ret];
         function rnd(num) { return Math.round(num * 1000) / 1000 }
         function root(num) { return Math.round(Math.sqrt(num) * 1000) / 1000 }

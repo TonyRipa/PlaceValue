@@ -1,22 +1,26 @@
 ﻿Author : Anthony John Ripa
 
-Date : 3/31/2016
+Date : 4/25/2016
 
 Live Demo at <a href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
 
 Abstract
 -----------
-This project is a refactoring of arithmetic, via a new data-type which represents base agnostic arithmetic via numbers whose digits are real. The effects of this refactoring are manifold.
+This project is a refactoring of arithmetic, via a new data-type (PlaceValue) which represents base agnostic arithmetic via numbers whose digits are real. The effects of this refactoring are manifold.
 
-Algebra (as it has been traditionally implemented) has been as a set of rules for manipulating objects of 2 types: variables and constants. Arithmetic may have been seen as a special case of algebra that addresses only the manipulation of constants. A downside of this formulation of algebra is the necessity of students to acquire an entirely new cognitive framework in the move from arithmetic to algebra. A common refrain in high school is "I stopped understanding math when we switched from numbers to letters.".
+Mathematical computations can be thought of as coming in two varieties: numerical and symbolic. Numerical has an advantage of being simple. Symbolic has an advantage of addressing a larger class of objects. The PlaceValue data-type (having characteristics of each of these varieties) manifests both advantages.
 
-An alternative approach is a more careful construction of arithmetic, which allows algebra to be a special case of arithmetic. The simple constraint that all arithmetic operations should be computed in a base agnostic manner, appears to be all the care that is necessary for arithmetic to model algebra.
+In much the same way that Heaviside with his Operational Calculus was able to reduce calculus to algebra, PlaceValue reduces algebra to arithmetic. By transitivity, calculus is reduced to arithmetic. Given that there are actually multiple reduction avenues available for each step, this transitive reduction turns out to be robust.
 
-Calculus (as it has been traditionally implemented) has been as a set of manipulation rules of 2 types: algebraic and limits. Algebra may have been seen as a special case of calculus that addresses only the algebraic manipulations. A downside of this formulation of calculus is the necessity of students to acquire an entirely new cognitive framework in the move from algebra to calculus. A common refrain of college students is "I stopped understanding math when I got to calculus.".
+The reduction of differential equations comes with little effort. Unsurprisingly, quantum mechanics, with its two standard formulations of wave mechanics & matrix mechanics, admits a corresponding third formulation PlaceValue Mechanics.
 
-An alternative approach is a more careful construction of algebra, which allows calculus to be a special case of algebra. The absence of the distributive law of evaluation, appears to be all the care that is necessary for algebra to model calculus.
+For machine learning, convolutional networks (at least any convolutional layer of them) can be reduced to a single instance of a PlaceValue. Given that one of the four basic arithmetic operators * is essentially a convolution, this also comes with little surprise. Training this layer (i.e. deconvolution) quickly reduces to PlaceValue division.
 
-The PlaceValue datatype addresses both of these concerns, as well as others. It is an arithmetic datatype powerful enough to model and resolve algebra, calculus, differential equations, quantum mechanics, convolutional networks, measures, probability measures, classically indeterminate form Bayes' Laws, the Borel-Kolmogorov Paradox, and others.
+One of the happiest gains afforded by the PlaceValue data-type is in its formulation of Measure Theory. Measure Theory has traditionally been rather limited by its reliance on measures as real numbers. Extensions relaxing this constraint have not gained wide acceptance. Using PlaceValue, the Borel-Kolmogorov paradox is quickly resolved as it was essentially an unfortunate (but necessary) consequence of a lossy type cast from PlaceValue to real.
+
+The ease with which this data-type (including its corresponding functions and above applications) can and has been implemented in computer software can be thought of as stemming from formal language theory and PlaceValue’s underlying grammar type. Numerical types can be thought of as regular grammars, and instances of those types (numbers) can be regarded as regular expressions. Symbolic expressions, on the other hand, generally cannot and so are handled by the more complex context-free grammars, which are a superset of regular grammars. PlaceValue can be considered a regular grammar, and so admits a simple computational approach.
+
+As all classical computation is as true for silicon hardware as it is for bio hardware, the same efficiency gains also hold for both mental and hand computations.
 
 Introduction
 ==========
@@ -31,6 +35,10 @@ Why not divide in a base agnostic way? The PlaceValue data-type does. 1/11 = 0.1
 WholePlaceValue
 ------------------------
 The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
+
+SparsePlaceValue
+------------------------
+SparsePlaceValue is a data-type optimised for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 Polynomial
 -------------

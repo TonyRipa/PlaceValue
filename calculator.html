@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 3/31/2016
+   Date : 4/25/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -33,6 +33,7 @@
     <script src='placevalue2.js'></script>
     <script src='laurent2.js'></script>
     <script src='exponential.js'></script>
+    <script src='sparseplacevalue.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -48,7 +49,7 @@
 </head>
 <body>
     <h1>PlaceValue Calculator</h1>
-    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option>Laurent Multinomial</option><option>Complex Laurent</option><option>Exponential</option><option>WholePlaceValueComplex</option><option>PlaceValueComplex</option><option>Fourier</option><option>Fourier2</option><option>Complex Exponential</option></select>
+    <select id='f' onchange="clean()"><option selected>WholePlaceValue</option><option>PlaceValue</option><option>SparsePlaceValue</option><option>Polynomial</option><option>Laurent Polynomial</option><option>Multinomial</option><option>Laurent Multinomial</option><option>Complex Laurent</option><option>Exponential</option><option>WholePlaceValueComplex</option><option>PlaceValueComplex</option><option>Fourier</option><option>Fourier2</option><option>Complex Exponential</option></select>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
         <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>÷</option><option>^</option><option>|</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
@@ -56,7 +57,7 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [wholeplacevalue, placevalue, polynomial, laurent, multinomial, laurent2, complexlaurent, exponential, wholeplacevaluecomplex, placevaluecomplex, fourier, fourier2, complexexponential][$('#f')[0].selectedIndex];
+            f = [wholeplacevalue, placevalue, sparseplacevalue, polynomial, laurent, multinomial, laurent2, complexlaurent, exponential, wholeplacevaluecomplex, placevaluecomplex, fourier, fourier2, complexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
@@ -77,7 +78,7 @@
             $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
-        function clean() {//return
+        function clean() {
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');
