@@ -1,6 +1,8 @@
 ﻿Author : Anthony John Ripa
 
-Date : 4/25/2016
+Date : 5/31/2016
+
+<a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
 Live Demo at <a href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
 
@@ -38,7 +40,11 @@ The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholeP
 
 SparsePlaceValue
 ------------------------
-SparsePlaceValue is a data-type optimised for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>SparsePlaceValue</i> is a data-type optimised for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+
+PlaceValueRatio
+------------------
+<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 . Other points of interest are that whereas PlaceValue's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), PlaceValueRatio can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
 
 Polynomial
 -------------
@@ -133,13 +139,13 @@ Fouriers are nothing more than a veneer for PlaceValue.
 
 WholePlaceValueComplex2
 ------------------------
-<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary unit (a.k.a. 2i) we would render the character ② rotated by 90°. This way many such digits may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
+<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary unit (a.k.a. 2i) we would render the character ② rotated by 90°. This way many such digits may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation, this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
 
 <table><tbody><tr><td>2+2i</td><td>1+2i</td><td>2i</td></tr><tr><td>2+i</td><td>1+i</td><td>i</td></tr><tr><td>2</td><td>1</td><td>0</td></tr></tbody></table>
 
 ComplexPlaceValue
 -------------------
-Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
+Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -224,7 +230,7 @@ DiffEq
 ---------------
 
 <i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k is solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
-For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification it now also supports Laplace solution.
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification, it now also supports Laplace solution.
 
 Measure
 ------------
@@ -232,9 +238,9 @@ Measure
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
 
-In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminant forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
+In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
 
-measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox.  Using PlaceValue, the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π).
+measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox. Using PlaceValue, the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π).
 
 PlaceValue Mechanics
 ----------------------
@@ -262,7 +268,7 @@ Say, you want to apply a momentum operator to our state .10<s>1</s>0&hellip;. Si
 
 The position operator is almost as beautiful. It shifts right instead of left (i.e. .1 instead of 10), but has the necessity of pointwise scaling by .012345&hellip;. Applied to our state .10<s>1</s>0&hellip; the position operator yields .030<s>5</s>0&hellip;.
 
-We actually have enough now to show Heisenberg's Uncertainty Principle. And do just that in <i>Mechanics.html</i>. For pedagogical simplicity (and without loss of generality) we do it with the pseudo-momentum operator 10, and the true momentum operator i0. Formally, we show xp-px=iħ. Or in natual units, xp-px=i. Furthermore since the factor i plays no interesting part in xp-px (while it does play an interesting part in the Schrodinger Equation with the sign of p^2), we also show a simplified construction with xp-px=1.
+We actually have enough now to show Heisenberg's Uncertainty Principle. And do just that in <i>Mechanics.html</i>. For pedagogical simplicity (and without loss of generality) we do it with the pseudo-momentum operator 10, and the true momentum operator i0. Formally, we show xp-px=iħ. Or in natural units, xp-px=i. Furthermore since the factor i plays no interesting part in xp-px (while it does play an interesting part in the Schrodinger Equation with the sign of p^2), we also show a simplified construction with xp-px=1.
 
 In Wave Mechanics, Heisenberg's Uncertainty Principle follows from the fact that the derivative operator doesn't commute with multiplication by x. Which is ungraspable without calculus. It is somewhat more elegant in Matrix Mechanics, where Heisenberg's Uncertainty Principle follows from the fact that Matrix Multiplication is not always commutative, and is not for position and momentum matrices. This is ungraspable without linear algebra. In PlaceValue mechanics, Heisenberg's Uncertainty Principle follows from the fact that arithmetic multiplication doesn't commute with an even more naive kind of multiplication (point-wise multiplication [12⊗34=38]). This is graspable in elementary school.
 

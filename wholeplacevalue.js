@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 3/31/2016
+// Date : 5/31/2016
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -98,18 +98,31 @@ wholeplacevalue.prototype.digithelp = function (i, NEGBEG, NEGEND, fraction) {  
         }
     }
     if (cons[rounddigit]) return cons[rounddigit];
-    if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? digit : '(' + rounddigit + ')';
+    if (0 < digit && digit <= 9) return (rounddigit == Math.round(digit)) ? rounddigit : '(' + rounddigit + ')';    // Check rounddigit prevents "(2)"  2016.5
     if (num[digit]) return num[digit]
     if (9 < digit && isFinite(digit)) return '(' + rounddigit + ')';
     if (digit == 1 / 0) return '∞';
     return 'x';
 }
 
+wholeplacevalue.prototype.equals = function (other) {
+    var ret = true
+    for (var i = 0; i < Math.max(this.mantisa.length, other.mantisa.length) ; i++)
+        ret = ret && this.get(i) == other.get(i);
+    return ret;
+}
+
+wholeplacevalue.prototype.is0 = function () { return this.equals(wholeplacevalue.zero); }   //  2016.5
+
+wholeplacevalue.zero = new wholeplacevalue([0]);    //  2016.5
+wholeplacevalue.one = new wholeplacevalue([1]);     //  2016.5
+
 wholeplacevalue.prototype.add = function (other) { return this.f(function (x, y) { return x + y }, other); }
 wholeplacevalue.prototype.sub = function (other) { return this.f(function (x, y) { return x - y }, other).round(); } // 1-1.1≠-.100009 2015.9
 wholeplacevalue.prototype.pointtimes = function (other) { return this.f(function (x, y) { return x * y }, other); }
 wholeplacevalue.prototype.pointdivide = function (other) { return this.f(function (x, y) { return x / y }, other); }
 wholeplacevalue.prototype.clone = function () { return this.f(function (x) { return x }, this); }
+wholeplacevalue.prototype.negate = function () { return this.f(function (x) { return -x }, this); }     //  2016.5
 wholeplacevalue.prototype.round = function () { return this.f(function (x) { return Math.round(x * 1000) / 1000 }, this); }   // for sub 2015.9
 
 wholeplacevalue.prototype.f = function (f, other) { // template for binary operations   2015.9
@@ -139,7 +152,7 @@ wholeplacevalue.prototype.pointadd = function (addend) {
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);
     if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.tohtml()); return new wholeplacevalue(['%']) }   // tohtml supercedes to StringInternal
-    if (this.mantisa.length == 1) return new wholeplacevalue([this.mantisa == 0 && power.mantisa == 0 ? '%' : Math.pow(this.mantisa, power.mantisa)]);
+    if (this.mantisa.length == 1) return new wholeplacevalue([Math.pow(this.mantisa, power.mantisa)]);  //  0^0=1 for convenience   2016.5
     if (power.mantisa != Math.round(power.mantisa)) { alert('WPV .Bad Exponent = ' + power.tohtml()); return new wholeplacevalue(['%']) }
     if (power.mantisa < 0) return new wholeplacevalue([0]);
     if (power.mantisa == 0) return new wholeplacevalue([1]);
@@ -154,6 +167,7 @@ wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
 }
 
 wholeplacevalue.prototype.times10 = function () { this.mantisa.unshift(0) } // Caller can pad w/out knowing L2R or R2L  2015.7
+wholeplacevalue.prototype.div10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me; }  // 2016.5
 
 wholeplacevalue.prototype.times = function (top) {
     //if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);
@@ -175,6 +189,13 @@ wholeplacevalue.prototype.scale = function (scalar, trace) {
     ret.mantisa[ret.mantisa.length - 1] *= scalar;                        // leading can be NaN       2015.9
     for (var r = 0; r < ret.mantisa.length - 1; r++)
         if (true || !isNaN(ret.mantisa[r] * scalar)) ret.mantisa[r] *= scalar;  // nonleading can/t be NaN  2015.9
+    return ret;
+}
+
+wholeplacevalue.prototype.unscale = function (scalar, trace) {  //  2016.5
+    var ret = this.clone(trace + ' wholeplacevalue.prototype.unscale >');
+    for (var r = 0; r < ret.mantisa.length; r++)
+        ret.mantisa[r] /= scalar;
     return ret;
 }
 
@@ -204,6 +225,10 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
             return ret;
         }
     }
+}
+
+wholeplacevalue.prototype.remainder = function (den) {  //  2016.5
+    return this.sub(this.divide(den).times(den));
 }
 
 wholeplacevalue.getDegreeLeft = function (man) {
@@ -258,6 +283,22 @@ wholeplacevalue.prototype.dividemiddle = function (den) {   // 2016.3
     x = x.transpose().valueOf()[0];
     x.reverse();
     return new wholeplacevalue(x);
+}
+
+wholeplacevalue.prototype.gcd = function () {   // 2016.5
+    var list = [];
+    for (var i = 0; i < this.mantisa.length; i++)
+        list.push(this.get(i));
+    if (list.length == 0) return 1;
+    if (list.length == 1) return list[0] == 0 ? 1 : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
+    return list.reduce(gcd, 0);
+    function gcd(a, b) {
+        if (a < 0 && b > 0) return gcd(-a, b);
+        if (a == 0) return b;
+        if (b == 0) return a;
+        if (a > Math.abs(b)) return gcd(a % b, b);
+        return gcd(b % a, a);
+    }
 }
 
 wholeplacevalue.prototype.eval = function (base) {
