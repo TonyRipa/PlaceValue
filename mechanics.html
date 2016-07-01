@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 2/29/2016
+   Date : 6/25/2016
    Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 -->
 
@@ -16,6 +16,7 @@
     <script type="text/javascript">
         window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='complex.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
     <script type="text/javascript" src='complexplacevalue.js'></script>
     <script type="text/javascript" src='complexlaurent.js'></script>
@@ -150,7 +151,7 @@
                 function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
             }
             function positionOperator(state) {
-                return state.pointtimes(new laplace("s", new placevaluecomplex(new wholeplacevaluecomplex([[6, 0], [5, 0], [4, 0], [3, 0], [2, 0], [1, 0]]), -6))).divide(new laplace("s", new placevaluecomplex(new wholeplacevaluecomplex([[0, 0], [1, 0]]), 0)));
+                return state.pointtimes(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('123456'), -6))).divide(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('10'), 0)));
             }
             function momentumOperator(state) {
                 if ($('#mom')[0].selectedIndex) {
@@ -158,7 +159,7 @@
                     return state.times(new laplace("s", new placevaluecomplex(new wholeplacevaluecomplex([[0, 0], [0, 1]]), 0)));
                 }
                 $('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always 1 by Heisenberg Uncertainty</a>");
-                return state.times(new laplace("s", new placevaluecomplex(new wholeplacevaluecomplex([[0, 0], [1, 0]]), 0)));
+                return state.times(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('10'), 0))); //  parse is implementation independent 2016.6
             }
             eval();
         }

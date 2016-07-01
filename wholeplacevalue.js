@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 5/31/2016
+// Date : 6/6/2016
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -113,6 +113,7 @@ wholeplacevalue.prototype.equals = function (other) {
 }
 
 wholeplacevalue.prototype.is0 = function () { return this.equals(wholeplacevalue.zero); }   //  2016.5
+wholeplacevalue.prototype.is1 = function () { return this.equals(wholeplacevalue.one); }    //  2016.5
 
 wholeplacevalue.zero = new wholeplacevalue([0]);    //  2016.5
 wholeplacevalue.one = new wholeplacevalue([1]);     //  2016.5

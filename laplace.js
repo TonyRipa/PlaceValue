@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 4/25/2016
+// Date : 6/28/2016
 // Laplace : a datatype for representing the Laplace Transform; an application of the PlaceValueComplex datatype
 
 function laplace(base, pv) {
@@ -19,11 +19,11 @@ laplace.parse = function (strornode) {
     //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new laplace(1, new placevaluecomplex(new wholeplacevaluecomplex([Number(node.value)]), 0));
+        return new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse(Number(node.value)), 0));
     } else if (node.type == 'SymbolNode') {
         var base = node.name;
         if (base == 'i') {
-            return new laplace(1, new placevaluecomplex(new wholeplacevaluecomplex([[0, 1]]), 0));
+            return new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse('i'), 0));   //  2016.6
         } else {
             //alert('Syntax Error: laplace expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
             console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
@@ -31,7 +31,7 @@ laplace.parse = function (strornode) {
             //pv = 10;
             //me.base = base;
             //me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-            return new laplace(base, new placevaluecomplex(new wholeplacevaluecomplex([1]), 1));
+            return new laplace(base, new placevaluecomplex(wholeplacevaluecomplex.parse('1'), 1));  //  parse is implementation independent   2016.6
         }
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
@@ -40,9 +40,9 @@ laplace.parse = function (strornode) {
         //var a = new laplace(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = laplace.parse(kids[0]);       // laplace handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new laplace(1, new placevaluecomplex(new wholeplacevaluecomplex([0]), 0)).sub(a);
+            var c = new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse('0'), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new laplace(1, new placevaluecomplex(new wholeplacevaluecomplex([0]), 0)).add(a);
+            var c = new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse('0'), 0)).add(a);
         } else {
             //var b = new laplace(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = laplace.parse(kids[1]);   // laplace handles unpreprocessed kid   2015.11
@@ -59,7 +59,7 @@ laplace.parse = function (strornode) {
         var kidaspoly = laurent.parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
-        var ten = new placevaluecomplex(new wholeplacevaluecomplex([1]), 1);
+        var ten = new placevaluecomplex(wholeplacevaluecomplex.parse('1'), 1);
         var tens = kidaspoly.pv.get(1)
         var one = kidaspoly.pv.get(0)
         var exp = ten.pow(tens)
@@ -151,17 +151,17 @@ laplace.toStringCosh = function (pv, base) { // 2015.11
     var trigreal = '';
     var trigimag = '';
     //alert(JSON.stringify(s))
-    [s, trigreal] = trig(s.times(new placevaluecomplex(new wholeplacevaluecomplex([[1, 0]]), 0)), '');
-    [s, trigimag] = trig(s.times(new placevaluecomplex(new wholeplacevaluecomplex([[0, -1]]), 0)), ''); //  2016.4
+    [s, trigreal] = trig(s.times(new placevaluecomplex(wholeplacevaluecomplex.parse('1'), 0)), '');
+    [s, trigimag] = trig(s.times(new placevaluecomplex(wholeplacevaluecomplex.parse('(0,-1)'), 0)), ''); //  2016.4
     var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');
     ret += '+' + laplace.toStringXbase(s, base);
     if (ret[0] == '+') ret = ret.slice(1);
     return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
     function trig(s, ret) {
-        var r = new placevaluecomplex(new wholeplacevaluecomplex([1]), 0).divide(s);
+        var r = new placevaluecomplex(wholeplacevaluecomplex.parse('1'), 0).divide(s);
         //alert(JSON.stringify([s, r]));
         var s0, s1, s2, s3, s4, s5, s6, s7;
-        [s0, s1, s2, s3, s4, s5, s6, s7] = [s.get(0)[0], s.get(-1)[0], s.get(-2)[0], s.get(-3)[0], s.get(-4)[0], s.get(-5)[0], s.get(-6)[0], s.get(-7)[0]];
+        [s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)];
         var c = 1;
         var k = 1;
         if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }
@@ -178,25 +178,24 @@ laplace.toStringCosh = function (pv, base) { // 2015.11
         return [s, ret];
         function rnd(num) { return Math.round(num * 1000) / 1000 }
         function root(num) { return Math.round(Math.sqrt(num) * 1000) / 1000 }
-        function sub(array) { s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex(array), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.get(0)[0], s.get(-1)[0], s.get(-2)[0], s.get(-3)[0], s.get(-4)[0], s.get(-5)[0], s.get(-6)[0], s.get(-7)[0]]; }
+        function sub(array) { s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
     }
-    function hyper(name, sign,ind) {
-        for (var i = 5; i >= -5; i--) {
-            if (i == 0) continue;
-            var l = s.get(i)[ind];
-            var r = s.get(-i)[ind];
-            var m = Math.min(l, sign * r);
-            var al = Math.abs(l);
-            var ar = Math.abs(r);
-            //alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-            if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
-                var n = m * 2 * sign;
-                ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-                s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex([1]), i).add(new placevaluecomplex(new wholeplacevaluecomplex([1]), -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));
-            }
-        }
-        ret = ret.replace(/\+\-/g, '-');
-    }
+    //function hyper(name, sign, ind) {
+    //    for (var i = 5; i >= -5; i--) {
+    //        if (i == 0) continue;
+    //        var l = s.get(i)[ind];
+    //        var r = s.get(-i)[ind];
+    //        var m = Math.min(l, sign * r);
+    //        var al = Math.abs(l);
+    //        var ar = Math.abs(r);
+    //        if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
+    //            var n = m * 2 * sign;
+    //            ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
+    //            s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex([1]), i).add(new placevaluecomplex(new wholeplacevaluecomplex([1]), -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));
+    //        }
+    //    }
+    //    ret = ret.replace(/\+\-/g, '-');
+    //}
 }
 
 laplace.toStringXbase = function (pv, base) {                        // added namespace  2015.7
@@ -216,18 +215,17 @@ laplace.toStringXbase = function (pv, base) {                        // added na
         var power = i + exp;
         if (power < -5) continue;    // Prevents roundoff errors 2016.2
         var digit = str[i]
-        if (wholeplacevaluecomplex.norm(digit) > .001) {
-            ret += '+';
+        if (digit.norm() > .001) {
             //coef = coefficient(digit);
             var pow = Math.abs(power) - 1
-            coef = new placevaluecomplex(new wholeplacevaluecomplex([digit]), 0).scale([1 / math.factorial(pow), 0]).toString(false, true);
+            coef = new placevaluecomplex(new wholeplacevaluecomplex([digit]), 0).scale(new complex(1 / math.factorial(pow))).toString(false, true);
             if (coef == 0) continue;    // Prevents 0 times -s  2016.2
             if (coef == 1) coef = '';
             if (coef == 'NaN') coef += '*';
             //alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
             exp1 = ''; if (pow != 0) exp1 = 'x^' + pow; if (pow == 1) exp1 = 'x'; if (pow == -1) exp1 = '-' + base;
-            exp2 = '';
-            //exp12 = (exp1 && exp2) ? ('cis(' + exp1 + '+' + exp2 + ')') : exp1 ? ('cis(' + exp1 + ')') : exp2 ? ('cis(' + exp2 + ')') : '';
+            //exp2 = '';
+            ret += '+';
             ret += exp1 ? (coef + exp1) : coef ? coef : '1';
         }
         console.log('laplace.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
@@ -252,7 +250,7 @@ laplace.toStringXbase = function (pv, base) {                        // added na
 laplace.prototype.eval = function (base) {	// 2016.1
     base = base.pv;
     var c = placevaluecomplex;
-    var ei = new c(new wholeplacevaluecomplex([[.54, .84]]), 0);
+    var ei = new c(new wholeplacevaluecomplex([new complex(.54, .84)]), 0);
     alert(JSON.stringify([ei, base, ei.pow(base)]));
     base = ei.pow(base);
     return new laplace(this.base, this.pv.eval(base));

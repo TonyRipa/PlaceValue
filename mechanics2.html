@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 3/31/2016
+   Date : 6/30/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -48,7 +48,7 @@
 </head>
 <body>
     <h1>PlaceValue Mechanics</h1>
-    <select id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Fourier2</option></select>
+    <select style="display:none" id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Fourier2</option></select>
 	<p>&psi;(x)=<input id='func' value='exp(i(2x+t))'><button onclick='differentiate()'>Differentiate</button><!--<button id='int' onclick='integrate()'>Integrate</button>--></p>
     <table id="main" border="0">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
