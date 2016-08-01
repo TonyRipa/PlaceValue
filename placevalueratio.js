@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 5/31/2016
+// Date : 7/31/2016
 // PlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 function placevalueratio(num, den) {
@@ -14,7 +14,7 @@ function placevalueratio(num, den) {
 }
 
 placevalueratio.parse = function (man) {    // 2016.1
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new placevalueratio(new wholeplacevalue(a.num.mantisa), new wholeplacevalue(a.den.mantisa)) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new placevalueratio(wholeplacevalue.parse(JSON.stringify(a.num)), wholeplacevalue.parse(JSON.stringify(a.den))) }
     var den = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -27,15 +27,25 @@ placevalueratio.parse = function (man) {    // 2016.1
         den = man.den;      // get den from man before
         man = man.num;    // man overwrites self 2015.8
     }
-    if (man.indexOf('/') == -1) {
+    var slashindex = findslash(man);
+    if (slashindex == -1) {
         var num = wholeplacevalue.parse(man);
         var den = wholeplacevalue.parse(1);
     } else {
-        var num = wholeplacevalue.parse(man.split('/')[0]);
-        var den = wholeplacevalue.parse(man.split('/')[1]);
+        var num = wholeplacevalue.parse(man.substr(0, slashindex));
+        var den = wholeplacevalue.parse(man.substr(slashindex + 1));
     }
     return new placevalueratio(num, den);
     console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
+    function findslash(x) { //  2016.7
+        var depth = 0;
+        for (var i = 0; i < x.length; i++) {
+            if (x[i] == '/' && depth == 0) return i;
+            if (x[i] == '(') depth++;
+            if (x[i] == ')') depth--;
+        }
+        return -1;
+    }
 }
 
 placevalueratio.prototype.tohtml = function (short) {        // Long and Short HTML  2015.11
@@ -55,7 +65,7 @@ placevalueratio.prototype.reduce = function () {    //  2016.5
 
     function circumfixEuclid(me) {
         var n = me.num.gcd();
-        var d = me.den.gcd();
+        var d = me.den.gcd();//alert(JSON.stringify([n,d]))
         me.num = me.num.unscale(n);
         me.den = me.den.unscale(d);
         euclid(me);
@@ -75,29 +85,29 @@ placevalueratio.prototype.reduce = function () {    //  2016.5
 
     function pulloutcommonconstants(me) {
         if (me.num.is0() && me.den.is0()) return;
-        if (me.num.is0()) { me.den = new wholeplacevalue([1]); return }
-        if (me.den.is0()) { me.num = new wholeplacevalue([1]); return }
-        var num = me.num.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
-        var den = me.den.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
+        if (me.num.is0()) { me.den = wholeplacevalue.parse(1); return }
+        if (me.den.is0()) { me.num = wholeplacevalue.parse(1); return }
+        var num = me.num//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
+        var den = me.den//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
         var n = num.gcd();
-        var d = den.gcd()
-        var g = gcd(n, d);
+        var d = den.gcd();
+        var g = n.gcd(d);   // delegate to digits   2016.7
         //alert([JSON.stringify(me.num), n, JSON.stringify(me.den), d, g]);
-        if (g != Math.round(g)) return;
+        //if (g != Math.round(g)) return;
         me.num = num.unscale(g);
         me.den = den.unscale(g);
     }
 
-    function gcd(a, b) {
-        if (a < 0 && b > 0) return gcd(-a, b);
-        if (a == 0) return b;
-        if (b == 0) return a;
-        if (a >= Math.abs(b)) return gcd(a % b, b);
-        return gcd(b % a, a);
-    }
+    //function gcd(a, b) {
+    //    if (a < 0 && b > 0) return gcd(-a, b);
+    //    if (a == 0) return b;
+    //    if (b == 0) return a;
+    //    if (a >= Math.abs(b)) return gcd(a % b, b);
+    //    return gcd(b % a, a);
+    //}
 
     function gcdpv(a, b) {
-        if (a.get(a.mantisa.length - 1) < 0 && b.get(b.mantisa.length - 1) > 0) return gcdpv(a.negate(), b);
+        if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
         if (a.is0()) return b;
         if (b.is0()) return a;
         if (a.mantisa.length > b.mantisa.length) return gcdpv(a.remainder(b), b);
@@ -116,40 +126,40 @@ placevalueratio.prototype.sub = function (subtrahend) {
 placevalueratio.prototype.pointsub = function (other) {
     var first = this.num.div10s(this.den.mantisa.length - 1);
     var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new placevalueratio(first.pointsub(second), new wholeplacevalue([1]));
+    return new placevalueratio(first.pointsub(second), wholeplacevalue.parse(1));
 }
 
 placevalueratio.prototype.pointadd = function (other) {
     var first = this.num.div10s(this.den.mantisa.length - 1);
     var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new placevalueratio(first.pointadd(second), new wholeplacevalue([1]));
+    return new placevalueratio(first.pointadd(second), wholeplacevalue.parse(1));
 }
 
 placevalueratio.prototype.pointtimes = function (other) {
     var first = this.num.div10s(this.den.mantisa.length - 1);
     var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new placevalueratio(first.pointtimes(second), new wholeplacevalue([1]));
+    return new placevalueratio(first.pointtimes(second), wholeplacevalue.parse(1));
 }
 
 placevalueratio.prototype.pointdivide = function (other) {
     var first = this.num.div10s(this.den.mantisa.length - 1);
     var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new placevalueratio(first.pointtimes(second), new wholeplacevalue([1]));
+    return new placevalueratio(first.pointtimes(second), wholeplacevalue.parse(1));
 }
 
 placevalueratio.prototype.pointpow = function (other) {	// 2015.12
     var first = this.num.div10s(this.den.mantisa.length - 1);
     var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new placevalueratio(first.pointpow(second), new wholeplacevalue([1]));
+    return new placevalueratio(first.pointpow(second), wholeplacevalue.parse(1));
 }
 
 placevalueratio.prototype.pow = function (power) {	// 2015.8
     if (power instanceof placevalueratio) power = power.num;
-    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
-    var pow = Math.abs(power.get(0));
-    if (power.get(0) > 0) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
+    if (!(power instanceof wholeplacevalue)) power = wholeplacevalue.parse('(' + power + ')');  // 2015.11
+    var pow = power.get(0).abs();
+    if (power.get(0).ispos()) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
     return new placevalueratio(this.den.pow(pow), this.num.pow(pow));
-    if (power.get(0) < 0) return (new placevalueratio(new wholeplacevalue([1]), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([-power.get(0)]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
+    if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
     var num = this.num.pow(power);
     var den = this.den.pow(power);
     return new placevalueratio(num, den);
@@ -188,13 +198,13 @@ placevalueratio.prototype.reciprocal = function () {
 
 placevalueratio.prototype.eval = function (base) {
     if (base.num.is0()) return new placevalueratio(new wholeplacevalue([this.num.get(0)]), new wholeplacevalue([this.den.get(0)]));
-    var num = new placevalueratio(new wholeplacevalue([0]), new wholeplacevalue([1]));
+    var num = new placevalueratio(wholeplacevalue.parse(0), wholeplacevalue.parse(1));
     for (var i = 0; i < this.num.mantisa.length; i++) {
-        if (this.num.get(i) != 0) num = num.add(base.pow(i).scale(this.num.get(i)));
+        if (!this.num.get(i).is0()) num = num.add(base.pow(i).scale(this.num.get(i)));
     }
-    var den = new placevalueratio(new wholeplacevalue([0]), new wholeplacevalue([1]));
+    var den = new placevalueratio(wholeplacevalue.parse(0), wholeplacevalue.parse(1));
     for (var i = 0; i < this.den.mantisa.length; i++) {
-        if (this.den.get(i) != 0) den = den.add(base.pow(i).scale(this.den.get(i)));
+        if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
     }
     return num.divide(den);
 }

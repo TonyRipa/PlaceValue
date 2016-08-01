@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 3/25/2016
+   Date : 7/31/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -17,12 +17,13 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../../js/math.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='rational.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <style>
         output { margin: 50px; }
-        body,input { font-family:"Arial Unicode MS"}
-        table { border-spacing: 0; float: left; margin: 10px; }
+        body,input { font-family: "Arial Unicode MS"; }
+        .convtable { border-spacing: 0; float: left; margin: 10px; }
         .line td { border-bottom: 1pt solid black; }
         input { text-align: right; }
     </style>
@@ -36,7 +37,7 @@
                 <p id="p" style="display:inline"></p>
             </td>
             <td>
-                <table border="1">
+                <table border="1" class="convtable">
                     <tr id="input" ><td>Input Layer</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
                     <tr id="hidden"><td>Hidden Layer</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td></tr>
                     <tr id="output"><td>Output Layer</td><td>0</td><td>0</td><td>0</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td></tr>
@@ -47,7 +48,7 @@
                 <p id="p2" style="display:inline"></p>
             </td>
             <td>
-                <table>
+                <table class="convtable">
                     <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
                     <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>÷</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
                     <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
@@ -76,14 +77,14 @@
         }
         function learn() {
             if ($('#top')[0].selectedIndex == 0) {
-                var top = new placevalue(new wholeplacevalue([0, 0, 0, 0, 1]), 0);
-                var bot = new placevalue(new wholeplacevalue([0, 0, 0, 0, 1, 1, 1, 1]), 0);
+                var top = new placevalue(wholeplacevalue.parse(10000), 0);
+                var bot = new placevalue(wholeplacevalue.parse(11110000), 0);
             } else if ($('#top')[0].selectedIndex == 1) {
-                var top = new placevalue(new wholeplacevalue([0, 0, 0, 0, 1]), 0);
-                var bot = new placevalue(new wholeplacevalue([0, .125, 0, 0, 1, 1, 1, 1]), 0);
+                var top = new placevalue(wholeplacevalue.parse(10000), 0);
+                var bot = new placevalue(wholeplacevalue.parse("111100⅛0"), 0);
             } else {
-                var top = new placevalue(new wholeplacevalue([0, 0, 0, .25, .5, .25]), 0);
-                var bot = new placevalue(new wholeplacevalue([0, 0, 0, 0, 1]), 0);
+                var top = new placevalue(wholeplacevalue.parse("¼½¼000"), 0);
+                var bot = new placevalue(wholeplacevalue.parse(10000), 0);
             }
             pop(top, bot);
             $('#p2').text($('#c').val())

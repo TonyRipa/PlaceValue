@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 7/21/2016
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
@@ -21,80 +21,50 @@ polynomial.parse = function (strornode) {
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial(a.base, new wholeplacevalue(a.pv.mantisa)) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial(a.base, wholeplacevalue.parse(JSON.stringify(a.pv))) }
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
         var base = node.name;
-        var pv = [0, 1];
-        return new polynomial(base, new wholeplacevalue(pv));
+        //var pv = [0, 1];
+        return new polynomial(base, wholeplacevalue.parse(10));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        //var a = new polynomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = polynomial.parse(kids[0]);        // polynomial handles unpreprocessed kid    2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new polynomial(1, new wholeplacevalue([0])).sub(a);
+            var c = new polynomial(1, wholeplacevalue.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new polynomial(1, new wholeplacevalue([0])).add(a);
+            var c = new polynomial(1, wholeplacevalue.parse(0)).add(a);
         } else {
-            //var b = new polynomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = polynomial.parse(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new polynomial(1, new wholeplacevalue([Number(node.value)]));
+        return new polynomial(1, wholeplacevalue.parse('(' + Number(node.value) + ')'));
     }
 }
 
 polynomial.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
-    return this.pv.toString() + ' base ' + this.base;
+    return this.pv.tohtml(true) + ' base ' + this.base;
 }
 
 polynomial.prototype.toString = function () {
     return polynomial.toStringXbase(this.pv, this.base);
 }
 
-polynomial.prototype.add = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.add(other.pv));
-}
-
-polynomial.prototype.sub = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.sub(other.pv));
-}
-
-polynomial.prototype.times = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.times(other.pv));
-}
-
-polynomial.prototype.divide = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.divide(other.pv));
-}
-
-polynomial.prototype.pointadd = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.pointadd(other.pv));
-}
-
-polynomial.prototype.pointsub = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.pointsub(other.pv));
-}
-
-polynomial.prototype.pointtimes = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.pointtimes(other.pv));
-}
-
-polynomial.prototype.pointdivide = function (other) {
-    this.align(other);
-    return new polynomial(this.base, this.pv.pointdivide(other.pv));
-}
+polynomial.prototype.add = function (other) { this.align(other); return new polynomial(this.base, this.pv.add(other.pv)); }
+polynomial.prototype.sub = function (other) { this.align(other); return new polynomial(this.base, this.pv.sub(other.pv)); }
+polynomial.prototype.times = function (other) { this.align(other); return new polynomial(this.base, this.pv.times(other.pv)); }
+polynomial.prototype.divide = function (other) { this.align(other); return new polynomial(this.base, this.pv.divide(other.pv)); }
+polynomial.prototype.divideleft = function (other) { this.align(other); return new polynomial(this.base, this.pv.divideleft(other.pv)); }
+polynomial.prototype.dividemiddle = function (other) { this.align(other); return new polynomial(this.base, this.pv.dividemiddle(other.pv)); }
+polynomial.prototype.pointadd = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointadd(other.pv)); }
+polynomial.prototype.pointsub = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointsub(other.pv)); }
+polynomial.prototype.pointtimes = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointtimes(other.pv)); }
+polynomial.prototype.pointdivide = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointdivide(other.pv)); }
+polynomial.prototype.pointpow = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointpow(other.pv)); }
 
 polynomial.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.mantisa.length == 1) this.base = other.base;
@@ -116,9 +86,9 @@ polynomial.toStringXbase = function (pv, base) {                        // added
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
-    var maxbase = x.length - 1// + exp;
-    for (var power = maxbase; power >= 0; power--) {        // power is index because whole is L2R  2015.7 
-        var digit = Math.round(1000 * str[power]) / 1000;   // power is index because whole is L2R  2015.7 
+    var maxbase = x.length - 1
+    for (var power = maxbase; power >= 0; power--) {                    // power is index because whole is L2R  2015.7 
+        var digit = Math.round(1000 * str[power].toreal()) / 1000;      // toreal  2016.7 
         if (digit != 0) {
             ret += '+';
             if (power == 0)
@@ -137,10 +107,10 @@ polynomial.toStringXbase = function (pv, base) {                        // added
     function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 }
 
-polynomial.prototype.eval = function (base) {
-    var sum = 0;
+polynomial.prototype.eval = function (base) {   //  rational    2016.7
+    var sum = new rational(0);
     for (var i = 0; i < this.pv.mantisa.length; i++) {
-        sum += this.pv.get(i) * Math.pow(base, i);
+        sum = sum.add(this.pv.get(i).times(base.pv.get(0).pow(i)));
     }
     return new polynomial(1, new wholeplacevalue([sum]));
 }

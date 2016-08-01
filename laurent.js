@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 7/20/2016
 // Laurent : a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
@@ -57,13 +57,13 @@ laurent.parse = function (strornode) {
     if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue(a.pv.whole.mantisa), a.pv.exp)) }
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new laurent(1, new placevalue(new wholeplacevalue([Number(node.value)]), 0));
+        return new laurent(1, new placevalue(wholeplacevalue.parse('(' + Number(node.value) + ')'), 0));
     } else if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
         var base = node.name;
         //pv = 10;
         //me.base = base;
-        var pv = new placevalue(new wholeplacevalue([1]), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
+        var pv = new placevalue(wholeplacevalue.parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9
         return new laurent(base, pv);
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
@@ -71,9 +71,9 @@ laurent.parse = function (strornode) {
         //var a = new laurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = laurent.parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new laurent(1, new placevalue(new wholeplacevalue([0]), 0)).sub(a);
+            var c = new laurent(1, new placevalue(wholeplacevalue.parse(0), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new laurent(1, new placevalue(new wholeplacevalue([0]), 0)).add(a);
+            var c = new laurent(1, new placevalue(wholeplacevalue.parse(0), 0)).add(a);
         } else {
             //var b = new laurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = laurent.parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
@@ -86,52 +86,24 @@ laurent.parse = function (strornode) {
 }
 
 laurent.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
-    return this.pv.tohtml() + ' base ' + this.base;
+    return this.pv.tohtml(true) + ' base ' + this.base;
 }
 
 laurent.prototype.toString = function () {
     return laurent.toStringXbase(this.pv, this.base);
 }
 
-laurent.prototype.add = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.add(other.pv));
-}
-
-laurent.prototype.sub = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.sub(other.pv));
-}
-
-laurent.prototype.times = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.times(other.pv));
-}
-
-laurent.prototype.divide = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.divide(other.pv));
-}
-
-laurent.prototype.pointadd = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.pointadd(other.pv));
-}
-
-laurent.prototype.pointsub = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.pointsub(other.pv));
-}
-
-laurent.prototype.pointtimes = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.pointtimes(other.pv));
-}
-
-laurent.prototype.pointdivide = function (other) {
-    this.align(other);
-    return new laurent(this.base, this.pv.pointdivide(other.pv));
-}
+laurent.prototype.add = function (other) { this.align(other); return new laurent(this.base, this.pv.add(other.pv)); }
+laurent.prototype.sub = function (other) { this.align(other); return new laurent(this.base, this.pv.sub(other.pv)); }
+laurent.prototype.times = function (other) { this.align(other); return new laurent(this.base, this.pv.times(other.pv)); }
+laurent.prototype.divide = function (other) { this.align(other); return new laurent(this.base, this.pv.divide(other.pv)); }
+laurent.prototype.divideleft = function (other) { this.align(other); return new laurent(this.base, this.pv.divideleft(other.pv)); }
+laurent.prototype.dividemiddle = function (other) { this.align(other); return new laurent(this.base, this.pv.dividemiddle(other.pv)); }
+laurent.prototype.pointadd = function (other) { this.align(other); return new laurent(this.base, this.pv.pointadd(other.pv)); }
+laurent.prototype.pointsub = function (other) { this.align(other); return new laurent(this.base, this.pv.pointsub(other.pv)); }
+laurent.prototype.pointtimes = function (other) { this.align(other); return new laurent(this.base, this.pv.pointtimes(other.pv)); }
+laurent.prototype.pointdivide = function (other) { this.align(other); return new laurent(this.base, this.pv.pointdivide(other.pv)); }
+laurent.prototype.pointpow = function (other) { this.align(other); return new laurent(this.base, this.pv.pointpow(other.pv)); }
 
 laurent.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
@@ -157,7 +129,7 @@ laurent.toStringXbase = function (pv, base) {                        // added na
     var maxbase = x.length - 1 + exp;				// exp for negative powers	2015.8
     for (var i = str.length-1; i >=0 ; i--) {        // power is index because whole is L2R  2015.7 
 	var power = i + exp;
-        var digit = Math.round(1000 * str[i]) / 1000;   // power is index because whole is L2R  2015.7 
+        var digit = Math.round(1000 * str[i].toreal()) / 1000;  // toreal   2016.7 
         if (digit != 0) {
             ret += '+';
             if (power == 0)
@@ -186,10 +158,12 @@ laurent.toStringXbase = function (pv, base) {                        // added na
 }
 
 laurent.prototype.eval = function (base) {
-    var sum = 0;
+    var sum = new rational(0);
     for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
-        var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
-        if (this.pv.whole.get(i)!=0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
+        //var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
+        var pow = base.pv.whole.get(0).pow(i + this.pv.exp);  // offset by exp    2015.8
+        //if (this.pv.whole.get(i) != 0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
+        if (!this.pv.whole.get(i).is0()) sum = sum.add(this.pv.whole.get(i).times(pow))  // Skip 0 to avoid %    2015.8
     }
     return new laurent(1, new placevalue(new wholeplacevalue([sum]), 0));  // interpret as number  2015.8
 }

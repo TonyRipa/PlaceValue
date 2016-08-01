@@ -1,13 +1,13 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/29/2016
+// Date:    7/22/2016
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
     if (arguments.length < 1) alert('complex expects 1 or 2 arguments');
     if (arguments.length < 2) imag = 0;
-    if (!(typeof real == 'number' || real instanceof Number)) { console.trace(); alert('complex expects argument 1 (real) to be a Number but found ' + typeof real + ' ' + JSON.stringify(real)); }
-    if (!(typeof imag == 'number' || imag instanceof Number)) { console.trace(); alert('complex expects argument 2 (imag) to be a Number but found ' + typeof imag + ' ' + JSON.stringify(imag)); }
+    if (!(typeof real == 'number' || real instanceof Number)) { console.trace(); alert('complex expects argument 1 (real) to be a Number but found ' + typeof real + ' ' + JSON.stringify(real)); end; }    //  2016.7
+    if (!(typeof imag == 'number' || imag instanceof Number)) { console.trace(); alert('complex expects argument 2 (imag) to be a Number but found ' + typeof imag + ' ' + JSON.stringify(imag)); end; }    //  2016.7
     this.r = real;
     this.i = imag;
 }

@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 3/25/2016
+// Date : 7/23/2016
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -13,7 +13,7 @@ function placevalue(man, exp) {
 }
 
 placevalue.parse = function (man) {    // 2016.1
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevalue(new wholeplacevalue(a.whole.mantisa), a.exp) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevalue(wholeplacevalue.parse(JSON.stringify(a.whole)), a.exp) }
     var exp = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('whole') != -1) {
@@ -47,14 +47,17 @@ placevalue.prototype.get = function (i) {       // 2015.11
 
 placevalue.prototype.tohtml = function (short) {        // Long and Short HTML  2015.11
     if (short) return this.toString(true);
-    return this.whole.toString(true) + 'E' + this.exp;  // Replaces toStringInternal 2015.7
+    return this.whole.tohtml(true) + 'E' + this.exp;  // Replaces toStringInternal 2015.7
 }
 
 placevalue.prototype.toString = function (sTag) {       //  sTag    2015.11
     var ret = "";
     for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
-        if (i == this.whole.mantisa.length + this.exp) ret += '@';              // Need '@' to see our '.' among digit's '.'    2015.11
-        ret += this.whole.digit(i, sTag);               //  sTag    2015.11
+        if (i == this.whole.mantisa.length + this.exp) ret += '@';                  // Need '@' to see our '.' among digit's '.'    2015.11
+        if (sTag)
+            ret += this.whole.get(this.whole.mantisa.length - i - 1).tohtml(true);    //  .get(...).toString(sTag)    2016.7
+        else
+            ret += this.whole.get(this.whole.mantisa.length - i - 1).toString(sTag);    //  .get(...).toString(sTag)    2016.7
     }
     for (var i = 0; i < this.exp; i++) ret += '0';
     if (ret.indexOf('@') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
@@ -111,17 +114,19 @@ placevalue.prototype.pointdivide = function (divisor) {
 placevalue.prototype.pointpow = function (power) {	// 2015.12
     if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
-    var ret = this.clone();
-    ret.whole.mantisa = ret.whole.mantisa.map(function (x) { return Math.pow(x, power.get(0)) });
+    //var ret = this.clone();
+    var man = this.whole.mantisa.map(function (x) { return x.pow(power.get(0)) });
+    var ret = new placevalue(new wholeplacevalue(man), this.exp);
+    //ret.whole.mantisa = ret.whole.mantisa.map(function (x) { return x.pow(power.get(0)) });
     return ret;
 }
 
 placevalue.prototype.pow = function (power) {	// 2015.8
     if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
-    if (power.get(0) < 0) return (new placevalue(new wholeplacevalue([1]), 0)).divide(this.pow(new placevalue(new wholeplacevalue([-power.get(0)]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
+    if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
     var whole = this.whole.pow(power);
-    var exp = this.exp * power.get(0);    // exp*pow not exp^pow  2015.9
+    var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
     return new placevalue(whole, exp);
 }
 
@@ -145,6 +150,11 @@ placevalue.prototype.times = function (top) {
 
 placevalue.prototype.scale = function (scalar) {   // 2015.11
     var whole = this.whole.scale(scalar);
+    return new placevalue(whole, this.exp);
+}
+
+placevalue.prototype.unscale = function (scalar) {   // 2016.7
+    var whole = this.whole.unscale(scalar);
     return new placevalue(whole, this.exp);
 }
 
@@ -193,11 +203,11 @@ placevalue.prototype.clone = function () {
 
 placevalue.prototype.eval = function (base) {
     var b = base.get(0);    // 2016.1
-    var sum = 0;
+    var sum = new rational(0);
     for (var i = 0; i < this.whole.mantisa.length; i++) {
-        sum += this.whole.get(i) * Math.pow(b, i);
+        sum = sum.add(this.whole.get(i).times(b.pow(i)));
     }
-    var scale = Math.pow(b, this.exp)
-    sum *= scale;
+    var scale = b.pow(this.exp)
+    sum = sum.times(scale);
     return new placevalue(new wholeplacevalue([sum]), 0);
 }

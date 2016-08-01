@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 6/28/2016
+// Date : 7/31/2016
 // Laplace : a datatype for representing the Laplace Transform; an application of the PlaceValueComplex datatype
 
 function laplace(base, pv) {
@@ -19,7 +19,7 @@ laplace.parse = function (strornode) {
     //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse(Number(node.value)), 0));
+        return new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse('(' + Number(node.value) + ')'), 0));  //  Add paren for 2 digit numbers   2016.7
     } else if (node.type == 'SymbolNode') {
         var base = node.name;
         if (base == 'i') {

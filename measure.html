@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 6/29/2016
+   Date : 7/31/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,12 +13,13 @@
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
+    <script type="text/javascript" src='rational.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <style>
         output { margin: 50px; }
         body,input { font-family:"Arial Unicode MS"}
-        table { border-spacing: 0; float: left; margin: 10px; }
+        .measuretable { border-spacing: 0; float: left; margin: 10px; }
         .line td { border-bottom: 1pt solid black; }
         input { text-align: right; }
         #kind {float:left}
@@ -28,7 +29,7 @@
 <body>
     <select id="kind" onchange="select1()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
     <h1>PlaceValue Measure</h1>
-    <table border="1">
+    <table border="1" class="measuretable">
         <tr>
             <td>
                 <a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
@@ -53,7 +54,7 @@
                 <p id="p" style="display:inline"></p>
             </td>
             <td rowspan="2">
-                <table>
+                <table class="measuretable">
                     <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
                     <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
                     <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>

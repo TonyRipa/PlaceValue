@@ -1,6 +1,6 @@
 ﻿Author : Anthony John Ripa
 
-Date : 6/30/2016
+Date : 7/31/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -38,13 +38,17 @@ WholePlaceValue
 ------------------------
 The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
 
+Rational
+---------------
+<i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (I.E. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
+
 SparsePlaceValue
 ------------------------
-<i>SparsePlaceValue</i> is a data-type optimised for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>SparsePlaceValue</i> is a data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 PlaceValueRatio
 ------------------
-<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 . Other points of interest are that whereas PlaceValue's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), PlaceValueRatio can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
+<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
 
 Polynomial
 -------------
@@ -83,7 +87,7 @@ Multinomial can be thought of as nothing more than an algebraic looking interfac
 
 Laurent Polynomial
 -------------------
-<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomials.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to user interfaces for PlaceValue.
+<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to user interfaces for PlaceValue.
 
 PlaceValue2
 -------------------
@@ -132,10 +136,10 @@ Complex
 
 Fourier
 -----------
-<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValueComplex datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as ½0.<s>½</s>, and renders on demand as sin(x).
+<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValueComplex datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
 If Fourier wants to calculate sin(x)*cos(x), then it asks PlaceValue to calculate:
 
-½0.<s>½</s> * ½0.½ = <s>¼</s>̉00.0¼̉ 
+<s>½</s>̉0.½̉  * ½0.½ = <s>¼</s>̉00.0¼̉ 
 
 Fourier then formats PlaceValue's result as 0.5sin(2x) .
 
@@ -149,7 +153,7 @@ WholePlaceValueComplex2
 
 ComplexPlaceValue
 -------------------
-Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the Laplace data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
+Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the ComplexExponential data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -161,7 +165,7 @@ Whereas, placevalue extended wholeplacevalue by allowing for negative exponents 
 
 ComplexLaurent
 ---------------
-<i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. Lettered bases are interesting, but not nearly as interesting as the exponential bases found in the Laplace data-type.
+<i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. Lettered bases are interesting, but not nearly as interesting as the exponential bases found in the ComplexExponential data-type.
 
 Complex Exponential
 --------
@@ -190,7 +194,7 @@ CAS
 
 Calculator
 --------------
-<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), and Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
 
 Differentiator
 ----------------
@@ -198,7 +202,15 @@ Differentiator
 
 Calculus
 --------
-<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the complex case.
+<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… , or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the imaginary case, or in the general complex case by:
+
+<table>
+<tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
+<tr><td>2+1i</td><td>1+1i</td><td>0+1i</td><td>-1+1i</td><td>-2+1i</td></tr>
+<tr><td>2+0i</td><td>1+0i</td><td>0+0i</td><td>-1+0i</td><td>-2+0i</td></tr>
+<tr><td>2-1i</td><td>1-1i</td><td>0-1i</td><td>-1-1i</td><td>-2-1i</td></tr>
+<tr><td>2-2i</td><td>1-2i</td><td>0-2i</td><td>-1-2i</td><td>-2-2i</td></tr>
+</table>
 
 If Exponential wants to differentiate sinh(x) + 7, then it asks PlaceValue to calculate:
 
@@ -233,8 +245,8 @@ The NaN is not a mistake. It's a spectacular success. The pointwise division of 
 DiffEq
 ---------------
 
-<i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k is solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
-For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification, it now also supports Laplace solution.
+<i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification, it now also supports Fourier, ComplexExponential, and Laplace solution.
 
 Measure
 ------------
@@ -270,13 +282,13 @@ PlaceValue Mechanics (like the rest of PlaceValue arithmetic), depends only on a
 
 Say, you want to apply a momentum operator to our state .10<s>1</s>0&hellip;. Simply multiply by i0, yielding i.0<s>i</s>0i&hellip;. It's basically the constant i, times Laplace's derivative operator s (in this case 10 base s), times our state of interest. Had we simply wanted the derivative of our state it would be 10 * .10<s>1</s>0&hellip; = 1.0<s>1</s>01&hellip;
 
-The position operator is almost as beautiful. It shifts right instead of left (i.e. .1 instead of 10), but has the necessity of pointwise scaling by .012345&hellip;. Applied to our state .10<s>1</s>0&hellip; the position operator yields .030<s>5</s>0&hellip;.
+The position operator is almost as beautiful. It shifts right instead of left (i.e. .1 instead of 10), but has the necessity of pointwise scaling by .012345&hellip; . Applied to our state .10<s>1</s>0&hellip; the position operator yields .030<s>5</s>0&hellip; .
 
 We actually have enough now to show Heisenberg's Uncertainty Principle. And do just that in <i>Mechanics.html</i>. For pedagogical simplicity (and without loss of generality) we do it with the pseudo-momentum operator 10, and the true momentum operator i0. Formally, we show xp-px=iħ. Or in natural units, xp-px=i. Furthermore since the factor i plays no interesting part in xp-px (while it does play an interesting part in the Schrodinger Equation with the sign of p^2), we also show a simplified construction with xp-px=1.
 
-In Wave Mechanics, Heisenberg's Uncertainty Principle follows from the fact that the derivative operator doesn't commute with multiplication by x. Which is ungraspable without calculus. It is somewhat more elegant in Matrix Mechanics, where Heisenberg's Uncertainty Principle follows from the fact that Matrix Multiplication is not always commutative, and is not for position and momentum matrices. This is ungraspable without linear algebra. In PlaceValue mechanics, Heisenberg's Uncertainty Principle follows from the fact that arithmetic multiplication doesn't commute with an even more naive kind of multiplication (point-wise multiplication [12⊗34=38]). This is graspable in elementary school.
+In Wave Mechanics, Heisenberg's Uncertainty Principle follows from the fact that the derivative operator doesn't commute with multiplication by x. Which is ungraspable without calculus. It is somewhat more elegant in Matrix Mechanics, where Heisenberg's Uncertainty Principle follows from the fact that Matrix Multiplication is not always commutative, and specifically is not for position and momentum matrices. This is ungraspable without linear algebra. In PlaceValue mechanics, Heisenberg's Uncertainty Principle follows from the fact that arithmetic multiplication doesn't commute with an even more naive kind of multiplication (point-wise multiplication [12⊗34=38]). This is graspable in elementary school.
 
-<i>mechanics2.html</i> is a different refactoring of Q.M.. Whereas mechanics.html was based on the Laplace inspired data-type laplace.js, mechanics2.html is based on the Fourier inspired data-type fourier2.js. Whereas mechanics.html's underlying data-type laplace.js was inspired by the Laplace transform, mechanics2.html's underlying data-type fourier2.js is not inspired by the Fourier transform but the Fourier series, and a 2D version at that. One benefit of mechanics2.html is the ease of representing multidimensional space-time states as integers, albeit 2D integers. For example ψ(x)=exp(i(2x+t)) is
+<i>mechanics2.html</i> is a different refactoring of Q.M. . Whereas mechanics.html was based on the Laplace inspired data-type laplace.js, mechanics2.html is based on the Fourier inspired data-type fourier2.js. Whereas mechanics.html's underlying data-type laplace.js was inspired by the Laplace transform, mechanics2.html's underlying data-type fourier2.js is not inspired by the Fourier transform but the Fourier series, and a 2D version at that. One benefit of mechanics2.html is the ease of representing multidimensional space-time states as integers, albeit 2D integers. For example ψ(x)=exp(i(2x+t)) is
 
 <pre>
 100
@@ -287,17 +299,17 @@ One downside of this economy appears to be that fourier2.js as used by mechanics
 
 ConvNet
 ------------
-<i>convnet.html</i> is a demo for convolutional learning. As PlaceValue multiplication is convolutional by nature, PlaceValue division is deconvolutional by nature. There is however an unfortunate asymmetry in its naive definition of division. 1/11 = 0.1<s>1</s>1<s>1</s>... sums inverse powers of its agnostic base. This results in a convergent series should the base be greater than 1, but a divergent series should the base be less than 1. This elicits a new kind of division to restore symmetry. The old division may be called right division as new digits are continually added to the right to complete the sum. This is somewhat arbitrary, and problematic for bases less than 1. A solution is a new kind of division left division. ...1<s>1</s>1<s>1</s>1 = 1 \ 11 . For bases less than 1, this sums positive powers of its base and yields a convergent sum.
+<i>convnet.html</i> is a demo for convolutional learning. As PlaceValue multiplication is convolutional by nature, PlaceValue division is deconvolutional by nature. There is however an unfortunate asymmetry in its naive definition of division. 1/11 = 0.1<s>1</s>1<s>1</s>... sums inverse powers of its agnostic base. This results in a convergent series when the base is greater than 1, but a divergent series when the base is less than 1. This elicits a new kind of division to restore symmetry. The old division may be called right division as new digits are continually added to the right to complete the sum. This is somewhat arbitrary, and problematic for bases less than 1. A solution is a new kind of division left division. ...1<s>1</s>1<s>1</s>1 = 1 \ 11 . For bases less than 1, this sums positive powers of its base and yields a convergent sum.
 
-What kind of division would be appropriate for deconvolution? Right division would asymmetrically magnify remainder differences indefinitely to the right in a way that it not logically convergent for convolutional learning. Left division suffers similar problems but in the other direction. They are both really overfitting noise. What deconvolution really needs is a balance between the 2 that does not accumulate error indefinitely on either side. Deconvolution needs a kind of center division that best fits noise into the middle without diverging off either end. Many plausible approaches may come to mind to suit such constraints. We take a rather naive approach of the best linear approximation of an overdetermined system. This can be understood as solving Ax=b for a matrix A with more rows than columns, and so A is not classically invertible. We solve the system via the Moore-Penrose pseudoinverse. In other words, we do a least squares approximation. Using this definition of center division we find that 1 ÷ 11 = 1.
+What kind of division would be appropriate for deconvolution? Right division would asymmetrically magnify remainder differences indefinitely to the right in a way that is not logically convergent for convolutional learning. Left division suffers similar problems but in the other direction. They are both really overfitting noise. What deconvolution really needs is a balance between the 2 that does not accumulate error indefinitely on either side. Deconvolution needs a kind of center division that best fits noise into the middle without diverging off either end. Many plausible approaches may come to mind to suit such constraints. We take a rather naive approach of the best linear approximation of an overdetermined system. This can be understood as solving Ax=b for a matrix A with more rows than columns, and so A is not classically invertible. We solve the system via the Moore-Penrose pseudoinverse. In other words, we do a least squares approximation. Using this definition of center division we find that 1 ÷ 11 = 1.
 
 The value of 1 ÷ 11 may not be of particular interest. Getting a filter to learn edge detection automatically may be. A simple edge may be represented by a number like 11110000. The edge is seen at the fifth position. The filter we seek would output 10000 to indicate that the edge is in position 5. So, we seek some filter f such that f x 11110000 = 10000. Solving for f : f = 10000 ÷ 11110000. This yields the desired well known filter 1<s>1</s>.
 
 Dependencies
 ---------------
 <table>
-<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue.</td><td></td></tr>
-<tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue.</td><td></td></tr>
+<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier&amp;Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>

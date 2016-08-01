@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/28/2016
+// Date:    7/22/2016
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
@@ -60,8 +60,8 @@ fourier.parse = function (strornode) {
         //alert(kidaspoly)
         var base = kidaspoly.base;
         var ten = new placevaluecomplex(new wholeplacevaluecomplex([new complex(1)]), 1);    //  2016.6
-        var tens = kidaspoly.pv.get(1)
-        var one = kidaspoly.pv.get(0)
+        var tens = kidaspoly.pv.get(1).toreal();    //  2016.7
+        var one = kidaspoly.pv.get(0).toreal();     //  2016.7
         var exp = ten.pow(tens)
         if (one) exp = exp.scale(Math.exp(one));
         var exp2 = ten.pow(-tens)
