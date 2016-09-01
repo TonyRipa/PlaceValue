@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 8/31/2016
 // Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype
 
 function laurent2(base, pv) {
@@ -10,47 +10,46 @@ function laurent2(base, pv) {
     this.base = base
     this.pv = pv;
     return;
-
-    console.log('new laurent2 : arguments.length=' + arguments.length);
-    if (arguments.length < 2) {
-        var base;
-        var pv;
-        if (isNaN(arg)) {
-            if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of polynomial-object
-                var argObj = JSON.parse(arg);
-                console.log('argObj=' + JSON.stringify(argObj));
-                base = argObj.base;
-                console.log('argObj.base=' + JSON.stringify(argObj.base));
-                pv = argObj.pv;
-                console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-                console.log("new laurent21 : ");
-            } else {
-                parse(this, arg);
-                console.log("new laurent22 : " + JSON.stringify(this));
-                return;
-            }
-        } else {
-            this.base = [1, null];
-            this.pv = new placevalue2([[arg]], [0, 0]); // exp is 2D    2015.10
-            console.log("new laurent23 : " + JSON.stringify(this));
-            return;
-        }
-        this.base = base;
-        this.pv = new placevalue2(pv, 'new laurent24 >');
-        console.log("new laurent24 : " + JSON.stringify(this));
-    } else {
-        this.base = arg;
-        if (pv instanceof placevalue2){
-            this.pv = pv;
-            console.log("new laurent25 : " + JSON.stringify(this));
-        }
-        else if (typeof pv == 'number') {
-            this.pv = new placevalue2(pv, 'new laurent2 >')
-            console.log("new laurent26 : " + JSON.stringify(this));
-        }
-        else
-            alert('laurent2: bad arg typeof(arg2)=' + typeof (pv));
-    }
+    //console.log('new laurent2 : arguments.length=' + arguments.length);
+    //if (arguments.length < 2) {
+    //    var base;
+    //    var pv;
+    //    if (isNaN(arg)) {
+    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of polynomial-object
+    //            var argObj = JSON.parse(arg);
+    //            console.log('argObj=' + JSON.stringify(argObj));
+    //            base = argObj.base;
+    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
+    //            pv = argObj.pv;
+    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
+    //            console.log("new laurent21 : ");
+    //        } else {
+    //            parse(this, arg);
+    //            console.log("new laurent22 : " + JSON.stringify(this));
+    //            return;
+    //        }
+    //    } else {
+    //        this.base = [1, null];
+    //        this.pv = new placevalue2([[arg]], [0, 0]); // exp is 2D    2015.10
+    //        console.log("new laurent23 : " + JSON.stringify(this));
+    //        return;
+    //    }
+    //    this.base = base;
+    //    this.pv = new placevalue2(pv, 'new laurent24 >');
+    //    console.log("new laurent24 : " + JSON.stringify(this));
+    //} else {
+    //    this.base = arg;
+    //    if (pv instanceof placevalue2){
+    //        this.pv = pv;
+    //        console.log("new laurent25 : " + JSON.stringify(this));
+    //    }
+    //    else if (typeof pv == 'number') {
+    //        this.pv = new placevalue2(pv, 'new laurent2 >')
+    //        console.log("new laurent26 : " + JSON.stringify(this));
+    //    }
+    //    else
+    //        alert('laurent2: bad arg typeof(arg2)=' + typeof (pv));
+    //}
 }
 
 laurent2.parse = function (strornode) {
@@ -65,7 +64,7 @@ laurent2.parse = function (strornode) {
         //me.base = base;
         var pv = new placevalue2(new wholeplacevalue2([[1]]), [1, 0]);    // exp is 2D    2015.10
         return new laurent2(base, pv);
-        console.log('new laurent2 : parse1 : base = ' + JSON.stringify(me.base));
+        //console.log('new laurent2 : parse1 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'OperatorNode') {
         console.log('new laurent2 : OperatorNode')
         var kids = node.args;
@@ -83,7 +82,7 @@ laurent2.parse = function (strornode) {
         return c;
         //me.base = c.base;
         //me.pv = c.pv;
-        console.log('new laurent2 : parse2 : base = ' + JSON.stringify(me.base));
+        //console.log('new laurent2 : parse2 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
         alert('Syntax Error: Laurent2 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
         return laurent2.parse(node.args[0]);

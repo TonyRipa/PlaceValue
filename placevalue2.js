@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 1/23/2016
+// Date : 8/31/2016
 // PlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(whole, exp) {
@@ -12,41 +12,24 @@ function placevalue2(whole, exp) {
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(whole)=" + Array.isArray(whole));
 }
 
-//placevalue2.parse = function (man, exp) {
-//    if (arguments.length < 2) exp = [0, 0]; // exp is 2D    // 2015.10
-//    if (typeof (man) == "string" && man.indexOf('whole') != -1) {
-//        console.log("new placevalue2 : arg is stringified placevalue2");
-//        var ans = JSON.parse(man);
-//        man = ans.whole;
-//        exp = ans.exp;
-//        return new placevalue2(man, exp);
-//    } else if (man instanceof Object && JSON.stringify(man).indexOf('whole') != -1) {   // 2015.8
-//        console.log("new placevalue2 : arg is placevalue2");
-//        exp = man.exp;      // get exp from man before
-//        man = man.whole;    // man overwrites self 2015.8
-//        return new placevalue2(man, exp);
-//    }
-//    var whole = wholeplacevalue2.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
-//    return new placevalue2(whole, exp);
-//}
-
 placevalue2.prototype.tohtml = function () {     // Replaces toStringInternal 2015.7
     return this.whole.tohtml() + 'E' + (this.exp[1] == 0 ? this.exp[0] : this.exp); // exp is 2D    // 2015.10
 }
 
-placevalue2.prototype.toString = function () {return JSON.stringify([this.whole,this.exp])//return this.tohtml()
-    var ret = "";
-    for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
-        if (i == this.whole.mantisa.length + this.exp) ret += '.';
-        ret += this.whole.digit(i);
-    }
-    for (var i = 0; i<this.exp; i++) ret += '0';
-    if (ret.indexOf('.') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
-    if (ret[ret.length - 1] == '.') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
-    while (ret[0] == 0) ret = ret.substring(1);                                                             // Remove leading zeros
-    if (ret[0] == '.') ret = '0' + ret;                                                                     // '.x' -> '0.x'
-    if (ret == '') ret = '0';                                                                               // ''   -> '0'
-    return ret;
+placevalue2.prototype.toString = function () {
+	return JSON.stringify([this.whole,this.exp])
+    //var ret = "";
+    //for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
+    //    if (i == this.whole.mantisa.length + this.exp) ret += '.';
+    //    ret += this.whole.digit(i);
+    //}
+    //for (var i = 0; i<this.exp; i++) ret += '0';
+    //if (ret.indexOf('.') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
+    //if (ret[ret.length - 1] == '.') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
+    //while (ret[0] == 0) ret = ret.substring(1);                                                             // Remove leading zeros
+    //if (ret[0] == '.') ret = '0' + ret;                                                                     // '.x' -> '0.x'
+    //if (ret == '') ret = '0';                                                                               // ''   -> '0'
+    //return ret;
 }
 
 placevalue2.prototype.add = function (addend) {

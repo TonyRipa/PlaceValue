@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 7/20/2016
+// Date : 8/31/2016
 // Laurent : a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
@@ -10,44 +10,44 @@ function laurent(base, pv) {
     this.base = base
     this.pv = pv;
     return;
-    console.log('laurent : arguments.length=' + arguments.length);
-    if (arguments.length < 2) {
-        var base;
-        var pv;
-        if (isNaN(arg)) {
-            if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of laurent-object
-                var argObj = JSON.parse(arg);
-                console.log('argObj=' + JSON.stringify(argObj));
-                base = argObj.base;
-                console.log('argObj.base=' + JSON.stringify(argObj.base));
-                pv = argObj.pv;
-                console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-            } else if(arg != arg) {    // If arg is %   2015.8
-                base = 1;
-                pv = [arg];
-            } else {
-                parse(this, arg);
-                return;
-            }
-        } else {
-            base = 1;
-            pv = [arg];
-        }
-        this.base = base;
-        this.pv = new placevalue(pv);
-        console.log("laurent : this.pv=" + JSON.stringify(this.pv));
-    } else {
-        this.base = arg;
-        if (pv instanceof placevalue)
-            this.pv = pv;
-        else if (typeof pv == 'number') {
-            console.log("laurent: typeof pv == 'number'");
-            this.pv = new placevalue(pv)
-            console.log(this.pv.toString());
-        }
-        else
-            alert('laurent: bad arg typeof(arg2)=' + typeof (pv));
-    }
+    //console.log('laurent : arguments.length=' + arguments.length);
+    //if (arguments.length < 2) {
+    //    var base;
+    //    var pv;
+    //    if (isNaN(arg)) {
+    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of laurent-object
+    //            var argObj = JSON.parse(arg);
+    //            console.log('argObj=' + JSON.stringify(argObj));
+    //            base = argObj.base;
+    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
+    //            pv = argObj.pv;
+    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
+    //        } else if(arg != arg) {    // If arg is %   2015.8
+    //            base = 1;
+    //            pv = [arg];
+    //        } else {
+    //            parse(this, arg);
+    //            return;
+    //        }
+    //    } else {
+    //        base = 1;
+    //        pv = [arg];
+    //    }
+    //    this.base = base;
+    //    this.pv = new placevalue(pv);
+    //    console.log("laurent : this.pv=" + JSON.stringify(this.pv));
+    //} else {
+    //    this.base = arg;
+    //    if (pv instanceof placevalue)
+    //        this.pv = pv;
+    //    else if (typeof pv == 'number') {
+    //        console.log("laurent: typeof pv == 'number'");
+    //        this.pv = new placevalue(pv)
+    //        console.log(this.pv.toString());
+    //    }
+    //    else
+    //        alert('laurent: bad arg typeof(arg2)=' + typeof (pv));
+    //}
 }
 
 laurent.parse = function (strornode) {

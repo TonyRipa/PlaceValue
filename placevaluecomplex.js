@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/29/2016
+// Date:    8/31/2016
 // PlaceValueComplex : a datatype for representing base agnostic arithmetic via numbers whose digits are complex
 
 function placevaluecomplex(whole, exp) {
@@ -28,8 +28,7 @@ placevaluecomplex.parse = function (man, exp) { // 2016.1
     }
     var whole = wholeplacevaluecomplex.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
     return new placevaluecomplex(whole, exp + getexp(man));
-    //this.exp = exp + getexp(man);
-    console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
+    //console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
         if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
         if (x.mantisa) return 0;  // To check for wholeplacevaluecomplex-like objects, replace (x instanceof wholeplacevaluecomplex) with (x.mantisa)    2015.9

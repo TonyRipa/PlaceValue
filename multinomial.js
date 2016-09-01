@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2016
+// Date : 8/31/2016
 // Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 
 function multinomial(base, pv) {
@@ -10,80 +10,80 @@ function multinomial(base, pv) {
     this.base = base
     this.pv = pv;
     return;
-    console.log('new multinomial : arguments.length=' + arguments.length);
-    if (arguments.length < 2) {
-        var base;
-        var pv;
-        if (isNaN(arg)) {
-            if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of polynomial-object
-                var argObj = JSON.parse(arg);
-                console.log('argObj=' + JSON.stringify(argObj));
-                base = argObj.base;
-                console.log('argObj.base=' + JSON.stringify(argObj.base));
-                pv = argObj.pv;
-                console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-                console.log("new multinomial1 : ");
-            } else {
-                parse(this, arg);
-                console.log("new multinomial2 : " + JSON.stringify(this));
-                return;
-            }
-        } else {
-            this.base = [1, null];
-            this.pv = new wholeplacevalue2([[arg]], 'new multinomial3 >');;
-            console.log("new multinomial3 : " + JSON.stringify(this));
-            return;
-        }
-        this.base = base;
-        this.pv = new wholeplacevalue2(pv, 'new multinomial4 >');
-        console.log("new multinomial4 : " + JSON.stringify(this));
-    } else {
-        this.base = arg;
-        if (pv instanceof wholeplacevalue2) {
-            this.pv = pv;
-            console.log("new multinomial5 : " + JSON.stringify(this));
-        }
-        else if (typeof pv == 'number') {
-            this.pv = new wholeplacevalue2(pv, 'new multinomial >')
-            console.log("new multinomial6 : " + JSON.stringify(this));
-        }
-        else
-            alert('multinomial: bad arg typeof(arg2)=' + typeof (pv));
-    }
-    function parse(me, strornode) {
-        console.log('new multinomial : ' + JSON.stringify(strornode))
-        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
-        if (node.type == 'SymbolNode') {
-            console.log('new multinomial : SymbolNode')
-            base = [node.name, null];
-            pv = 10;
-            me.base = base;
-            me.pv = new wholeplacevalue2(pv, 'new multinomial >');
-            console.log('new multinomial : parse1 : base = ' + JSON.stringify(me.base));
-        } else if (node.type == 'OperatorNode') {
-            console.log('new multinomial : OperatorNode')
-            var kids = node.args;
-            //var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-            var a = new multinomial(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
-            if (node.fn == 'unaryMinus') {
-                var c = new multinomial(0).sub(a);
-            } else if (node.fn == 'unaryPlus') {
-                var c = new multinomial(0).add(a);
-            } else {
-                //var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                var b = new multinomial(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
-                var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
-            }
-            me.base = c.base;
-            me.pv = c.pv;
-            console.log('new multinomial : parse2 : base = ' + JSON.stringify(me.base));
-        } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
-            alert('Syntax Error: Multinomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
-            var k = new multinomial(node.args[0]);
-            me.base = k.base;
-            me.pv = k.pv;
-        }
-    }
+    //console.log('new multinomial : arguments.length=' + arguments.length);
+    //if (arguments.length < 2) {
+    //    var base;
+    //    var pv;
+    //    if (isNaN(arg)) {
+    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of polynomial-object
+    //            var argObj = JSON.parse(arg);
+    //            console.log('argObj=' + JSON.stringify(argObj));
+    //            base = argObj.base;
+    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
+    //            pv = argObj.pv;
+    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
+    //            console.log("new multinomial1 : ");
+    //        } else {
+    //            parse(this, arg);
+    //            console.log("new multinomial2 : " + JSON.stringify(this));
+    //            return;
+    //        }
+    //    } else {
+    //        this.base = [1, null];
+    //        this.pv = new wholeplacevalue2([[arg]], 'new multinomial3 >');;
+    //        console.log("new multinomial3 : " + JSON.stringify(this));
+    //        return;
+    //    }
+    //    this.base = base;
+    //    this.pv = new wholeplacevalue2(pv, 'new multinomial4 >');
+    //    console.log("new multinomial4 : " + JSON.stringify(this));
+    //} else {
+    //    this.base = arg;
+    //    if (pv instanceof wholeplacevalue2) {
+    //        this.pv = pv;
+    //        console.log("new multinomial5 : " + JSON.stringify(this));
+    //    }
+    //    else if (typeof pv == 'number') {
+    //        this.pv = new wholeplacevalue2(pv, 'new multinomial >')
+    //        console.log("new multinomial6 : " + JSON.stringify(this));
+    //    }
+    //    else
+    //        alert('multinomial: bad arg typeof(arg2)=' + typeof (pv));
+    //}
+    //function parse(me, strornode) {
+    //    console.log('new multinomial : ' + JSON.stringify(strornode))
+    //    var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+    //    if (node.type == 'SymbolNode') {
+    //        console.log('new multinomial : SymbolNode')
+    //        base = [node.name, null];
+    //        pv = 10;
+    //        me.base = base;
+    //        me.pv = new wholeplacevalue2(pv, 'new multinomial >');
+    //        console.log('new multinomial : parse1 : base = ' + JSON.stringify(me.base));
+    //    } else if (node.type == 'OperatorNode') {
+    //        console.log('new multinomial : OperatorNode')
+    //        var kids = node.args;
+    //        //var a = new multinomial(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
+    //        var a = new multinomial(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
+    //        if (node.fn == 'unaryMinus') {
+    //            var c = new multinomial(0).sub(a);
+    //        } else if (node.fn == 'unaryPlus') {
+    //            var c = new multinomial(0).add(a);
+    //        } else {
+    //            //var b = new multinomial(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
+    //            var b = new multinomial(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
+    //            var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
+    //        }
+    //        me.base = c.base;
+    //        me.pv = c.pv;
+    //        console.log('new multinomial : parse2 : base = ' + JSON.stringify(me.base));
+    //    } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
+    //        alert('Syntax Error: Multinomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
+    //        var k = new multinomial(node.args[0]);
+    //        me.base = k.base;
+    //        me.pv = k.pv;
+    //    }
+    //}
 }
 
 multinomial.parse = function (strornode) {
@@ -96,7 +96,7 @@ multinomial.parse = function (strornode) {
         var pv = new wholeplacevalue2([[0, 1]]);
         //alert(JSON.stringify([base, new wholeplacevalue2(pv, 'new multinomial >'), new multinomial(base, new wholeplacevalue2(pv, 'new multinomial >'))]))
         return new multinomial(base, pv);
-        console.log('new multinomial : parse1 : base = ' + JSON.stringify(me.base));
+        //console.log('new multinomial : parse1 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'OperatorNode') {
         console.log('new multinomial : OperatorNode')
         var kids = node.args;
@@ -112,7 +112,7 @@ multinomial.parse = function (strornode) {
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
-        console.log('new multinomial : parse2 : base = ' + JSON.stringify(me.base));
+        //console.log('new multinomial : parse2 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'ConstantNode') {
         return new multinomial([1, null], new wholeplacevalue2([[Number(node.value)]]));
     } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12

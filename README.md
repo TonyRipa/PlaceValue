@@ -1,10 +1,10 @@
 ﻿Author : Anthony John Ripa
 
-Date : 7/31/2016
+Date : 8/31/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
-Live Demo at <a href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
+Live Demo at <a target='_blank' href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
 
 Abstract
 -----------
@@ -14,7 +14,7 @@ Mathematical computations can be thought of as coming in two varieties: numerica
 
 In much the same way that Heaviside with his Operational Calculus was able to reduce calculus to algebra, PlaceValue reduces algebra to arithmetic. By transitivity, calculus is reduced to arithmetic. Given that there are actually multiple reduction avenues available for each step, this transitive reduction turns out to be robust.
 
-The reduction of differential equations comes with little effort. Unsurprisingly, quantum mechanics, with its two standard formulations of wave mechanics & matrix mechanics, admits a corresponding third formulation PlaceValue Mechanics.
+The reduction of differential equations comes with little effort. Quantum mechanics, with its two standard formulations of wave mechanics & matrix mechanics, admits a corresponding third formulation PlaceValue Mechanics.
 
 For machine learning, convolutional networks (at least any convolutional layer of them) can be reduced to a single instance of a PlaceValue. Given that one of the four basic arithmetic operators * is essentially a convolution, this also comes with little surprise. Training this layer (i.e. deconvolution) quickly reduces to PlaceValue division.
 
@@ -30,9 +30,9 @@ This project is a refactoring of arithmetic, via a new data-type which represent
 
 PlaceValue
 ---------------
-<i>PlaceValue</i> is a data-type for representing base agnostic arithmetic via numbers whose digits are real. Why? Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
+<i>PlaceValue</i> is a data-type for representing base agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
 
-Why not divide in a base agnostic way? The PlaceValue data-type does. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
+The PlaceValue data-type transcends this problem by dividing in a base agnostic. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
 
 WholePlaceValue
 ------------------------
@@ -40,7 +40,7 @@ The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholeP
 
 Rational
 ---------------
-<i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (I.E. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
+<i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
 
 SparsePlaceValue
 ------------------------
@@ -48,7 +48,7 @@ SparsePlaceValue
 
 PlaceValueRatio
 ------------------
-<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
+<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via euclid's algorithm 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
 
 Polynomial
 -------------
@@ -57,6 +57,16 @@ Polynomial
 The PlaceValue data-type is particularly well-suited to polynomial arithmetic. Polynomial arithmetic uses a placeholder x. PlaceValue arithmetic dispenses with this placeholder.
 
 <i>polynomial.html</i> is a demo for polynomial.js.
+
+Polynomial Ratio
+-------------
+<i>polynomialratio.js</i> is a datatype for representing ratios of polynomials (also known as rational functions); an application of the PlaceValueRatio datatype.
+
+If PolynomialRatio wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+6), then it asks PlaceValueRatio to calculate:
+
+1<s>4</s>4<s>3</s>⑭ / 18⑫⑰6 = 1<s>5</s>7/173
+
+PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
 
 Multinomial
 -------------
@@ -99,7 +109,7 @@ PlaceValue2
 </pre>
 Laurent Multinomial then formats PlaceValue2's result as x^2h^-1+2x+h .
 
-Laurent Multinomials are nothing more than a veneer for PlaceValue2.
+Laurent Multinomials are nothing more than a UI for PlaceValue2.
 
 Laurent Multinomial
 -------------------
@@ -132,7 +142,7 @@ The base class (by composition) for PlaceValueComplex is <i>WholePlaceValueCompl
 
 Complex
 -----------
-<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits.
+<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
 
 Fourier
 -----------
@@ -147,7 +157,7 @@ Fouriers are nothing more than a veneer for PlaceValue.
 
 WholePlaceValueComplex2
 ------------------------
-<i>wholeplacevaluecomplex2.js</i> is like a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary unit (a.k.a. 2i) we would render the character ② rotated by 90°. This way many such digits may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation, this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
+<i>wholeplacevaluecomplex2.js</i> is a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary unit (a.k.a. 2i) we would render the character ② rotated by 90°. This way many such digits may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation, this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
 
 <table><tbody><tr><td>2+2i</td><td>1+2i</td><td>2i</td></tr><tr><td>2+i</td><td>1+i</td><td>i</td></tr><tr><td>2</td><td>1</td><td>0</td></tr></tbody></table>
 
@@ -309,6 +319,7 @@ Dependencies
 ---------------
 <table>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier&amp;Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
@@ -316,6 +327,10 @@ Dependencies
 <tr><td>ComplexExponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
 </table>
 
+External Dependencies
+----------------------
+<a href='jquery.com'>jQuery</a> & <a href='mathjs.org'>mathjs</a>
+
 System Requirements
 --------------------
-A browser with modern JavaScript (Need Firefox 44.0+ or equivalent)
+A standards-compliant browser (Firefox for Ubuntu 47.0+ or equivalent)

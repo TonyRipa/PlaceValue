@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 7/31/2016
+// Date : 8/31/2016
 // PlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 function placevalueratio(num, den) {
@@ -36,7 +36,7 @@ placevalueratio.parse = function (man) {    // 2016.1
         var den = wholeplacevalue.parse(man.substr(slashindex + 1));
     }
     return new placevalueratio(num, den);
-    console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
+    //console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function findslash(x) { //  2016.7
         var depth = 0;
         for (var i = 0; i < x.length; i++) {
@@ -159,10 +159,10 @@ placevalueratio.prototype.pow = function (power) {	// 2015.8
     var pow = power.get(0).abs();
     if (power.get(0).ispos()) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
     return new placevalueratio(this.den.pow(pow), this.num.pow(pow));
-    if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
-    var num = this.num.pow(power);
-    var den = this.den.pow(power);
-    return new placevalueratio(num, den);
+    //if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
+    //var num = this.num.pow(power);
+    //var den = this.den.pow(power);
+    //return new placevalueratio(num, den);
 }
 
 placevalueratio.prototype.times = function (top) {
