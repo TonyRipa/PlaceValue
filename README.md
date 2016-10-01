@@ -1,10 +1,10 @@
 ﻿Author : Anthony John Ripa
 
-Date : 8/31/2016
+Date : 9/30/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
-Live Demo at <a target='_blank' href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox 44.0+ or equivalent)
+Live Demo at <a target='_blank' href='http://placevalue.neocities.org/'>http://placevalue.neocities.org/</a> (Need Firefox for Ubuntu 47.0+ or equivalent)
 
 Abstract
 -----------
@@ -26,7 +26,15 @@ As all classical computation is as true for silicon hardware as it is for bio ha
 
 Introduction
 ==========
-This project is a refactoring of arithmetic, via a new data-type which represents base agnostic arithmetic via numbers whose digits are real.
+The convolution theorem allows for complicated operations to be performed by re-representing data (in a form that is often simpler) as well as re-representing the operation to be performed (in a form that is often simpler). This theorem has simplified many computational schemes, and is exploited by PlaceValue.
+
+In Mathematica, we may represent the variable x as something like an expression tree of height 1 consisting a root node of type variable. We could then ask Mathematica x*x and it could represent that as an expression tree of height 2 with a root node of type operator with 2 child nodes of type variable.
+
+In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,9]. We could then ask MATLAB x*x (actually x.*x) and it could return [0,1,4,9,16,25,36,49,64,81].
+
+PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,4,5,6,7,8,9] by a Fourier-type Transform of x = [0, 1]. PlaceValue can calculate x*x by calculating [0, 1] * [0, 1] = [0, 0, 1]. This is nothing more than 10 * 10 = 100.
+
+By building a data-type whose base operations are constructed to take advantage of such efficiencies, many applications which are handled in an otherwise convoluted manner may now be handled in an elegant manner.
 
 PlaceValue
 ---------------
@@ -258,6 +266,17 @@ DiffEq
 <i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
 For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification, it now also supports Fourier, ComplexExponential, and Laplace solution.
 
+Determinant
+-----------------------
+
+<i>determinant.html</i> demonstrates an application of PlaceValue to problems in linear algebra.
+
+The determinant of a matrix is the n-volume of the parallelotope formed from the column vectors of that matrix. Classically, if one of the parallelotope's sides is of length zero then the entire n-volume is zero. This has the effect of destroying information. 
+
+The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
+
+PlaceValue can represent multiple measure scales, as in a unit cube 1000, and a unit square 100. In fact, in determinant.html we demonstrate that Cramer's Rule continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0).
+
 Measure
 ------------
 <i>measure.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of the conditional probability of being on a line-segment in a plane given that you are on another line-segment in that plane.
@@ -329,7 +348,7 @@ Dependencies
 
 External Dependencies
 ----------------------
-<a href='jquery.com'>jQuery</a> & <a href='mathjs.org'>mathjs</a>
+<a href='http://jquery.com'>jQuery</a> & <a href='http://mathjs.org'>mathjs</a>
 
 System Requirements
 --------------------
