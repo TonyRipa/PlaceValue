@@ -1,6 +1,10 @@
-﻿Author : Anthony John Ripa
+﻿
+PlaceValue: A data-type for base-agnostic arithmetic
+=====================================================
 
-Date : 9/30/2016
+Author : Anthony John Ripa
+
+Date : 10/31/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -25,7 +29,7 @@ The ease with which this data-type (including its corresponding functions and ab
 As all classical computation is as true for silicon hardware as it is for bio hardware, the same efficiency gains also hold for both mental and hand computations.
 
 Introduction
-==========
+------------
 The convolution theorem allows for complicated operations to be performed by re-representing data (in a form that is often simpler) as well as re-representing the operation to be performed (in a form that is often simpler). This theorem has simplified many computational schemes, and is exploited by PlaceValue.
 
 In Mathematica, we may represent the variable x as something like an expression tree of height 1 consisting a root node of type variable. We could then ask Mathematica x*x and it could represent that as an expression tree of height 2 with a root node of type operator with 2 child nodes of type variable.
@@ -75,6 +79,22 @@ If PolynomialRatio wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+
 1<s>4</s>4<s>3</s>⑭ / 18⑫⑰6 = 1<s>5</s>7/173
 
 PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
+
+SparsePolynomial
+------------------------
+<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue datatype.
+
+If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue to calculate:
+
+(1E100 + 1) ^ 2 = 1E200 + 2E100 + 1
+
+SparsePolynomial then formats SparsePlaceValue's result as x^200 + 2x^100 + 1.
+
+If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue to calculate:
+
+(1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
+
+SparsePolynomial then formats SparsePlaceValue's result as x + 2x^.5 + 1.
 
 Multinomial
 -------------
@@ -334,9 +354,14 @@ What kind of division would be appropriate for deconvolution? Right division wou
 
 The value of 1 ÷ 11 may not be of particular interest. Getting a filter to learn edge detection automatically may be. A simple edge may be represented by a number like 11110000. The edge is seen at the fifth position. The filter we seek would output 10000 to indicate that the edge is in position 5. So, we seek some filter f such that f x 11110000 = 10000. Solving for f : f = 10000 ÷ 11110000. This yields the desired well known filter 1<s>1</s>.
 
+Summary
+---------
+PlaceValue is an intuitive and powerful data-type that can handle a wide range of academically relevant use-cases.
+
 Dependencies
 ---------------
 <table>
+<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue</td><td></td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
