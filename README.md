@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2016
+Date : 11/30/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -138,6 +138,15 @@ PlaceValue2
 Laurent Multinomial then formats PlaceValue2's result as x^2h^-1+2x+h .
 
 Laurent Multinomials are nothing more than a UI for PlaceValue2.
+
+SparsePlaceValue2
+------------------------
+<i>SparsePlaceValue2.js</i> is a 2D data-type optimized for sparse PlaceValue2's. The PlaceValue2:
+<pre>
+500 
+000
+</pre>
+is represented as the SparsePlaceValue2: 5E2,1 .
 
 Laurent Multinomial
 -------------------
