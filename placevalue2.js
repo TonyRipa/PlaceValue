@@ -1,6 +1,6 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 8/31/2016
+// Date : 12/31/2016
 // PlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(whole, exp) {
@@ -17,19 +17,7 @@ placevalue2.prototype.tohtml = function () {     // Replaces toStringInternal 20
 }
 
 placevalue2.prototype.toString = function () {
-	return JSON.stringify([this.whole,this.exp])
-    //var ret = "";
-    //for (var i = Math.min(0, this.exp) ; i < this.whole.mantisa.length; i++) {
-    //    if (i == this.whole.mantisa.length + this.exp) ret += '.';
-    //    ret += this.whole.digit(i);
-    //}
-    //for (var i = 0; i<this.exp; i++) ret += '0';
-    //if (ret.indexOf('.') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
-    //if (ret[ret.length - 1] == '.') ret = ret.substring(0, ret.length - 1);                                 // Remove trailing decimal
-    //while (ret[0] == 0) ret = ret.substring(1);                                                             // Remove leading zeros
-    //if (ret[0] == '.') ret = '0' + ret;                                                                     // '.x' -> '0.x'
-    //if (ret == '') ret = '0';                                                                               // ''   -> '0'
-    //return ret;
+    return JSON.stringify([this.whole, this.exp]);
 }
 
 placevalue2.prototype.add = function (addend) {
@@ -76,7 +64,7 @@ placevalue2.prototype.pointdivide = function (divisor) {
 
 placevalue2.prototype.pow = function (power) {	// 2015.8
     if (power instanceof placevalue2) power = power.whole;   // laurent calls wpv    2015.8
-    if (power.get(0,0)<0) return (new placevalue2(1)).divide(this.pow(new placevalue2(-power.get(0,0)))); // 2015.8
+    if (power.get(0, 0) < 0) return (new placevalue2(wholeplacevalue2.parse(1), [0, 0])).divide(this.pow(new placevalue2(wholeplacevalue2.parse(-power.get(0, 0)), [0, 0]))); // 2016.12
     var whole = this.whole.pow(power);
     var exp = [this.exp[0] * power.get(0, 0), this.exp[1] * power.get(0, 0)];    // exp*pow not exp^pow  2015.9 // exp is 2D    2015.10
     return new placevalue2(whole, exp);

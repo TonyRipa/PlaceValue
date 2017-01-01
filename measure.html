@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 8/31/2016
+   Date : 12/31/2016
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -23,11 +23,11 @@
         .line > td { border-bottom: 1pt solid black; }
         input { text-align: right; }
         #kind {float:left}
-        h1{text-align:center}
+        h1 {text-align:center}
     </style>
 </head>
 <body>
-    <select id="kind" onchange="select1()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
+    <select id="kind" onchange="selector()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
     <h1>PlaceValue Measure</h1>
     <table border="1" class="measuretable">
         <tr>
@@ -35,7 +35,6 @@
                 <a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
             </td>
             <td>
-                <!--<img style="float:right" src="sets.png" />-->
                 <svg width="300px" height="201px" xmlns="http://www.w3.org/2000/svg">
                     <rect x="00" width="300" height="201" style="fill  :rgb(  34 , 177 ,  76 )" />
                     <rect x="50" width="200" height="201" style="fill  :rgb(  63 ,  72 , 204 )" />
@@ -44,7 +43,7 @@
                     <circle cx="150" cy="100" r="1" style="stroke:rgb( 255 , 255 , 255 )" />
                 </svg>
             </td>
-            <td>
+            <td id="td1">
                 P(
                 <select id="top" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
                 |
@@ -66,7 +65,6 @@
                 <a href="http://wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox">Borel<br />Paradox</a>
             </td>
             <td>
-                <!--<img style="height:300px;float:right;clear:both" src="https://gandenberger.files.wordpress.com/2013/07/equator-and-prime-meridian-plus-circle.png" />-->
                 <svg width="300px" height="300px" viewBox="0 0 580 580" version="1.1" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="290" cy="288" r="285" fill="magenta" />
                     <ellipse cx="290" cy="288" ry="285" rx="060" stroke="red" stroke-width="5" fill-opacity="0" transform="rotate(-8 290 288)" />
@@ -74,7 +72,7 @@
                     <circle cx="360" cy="389" r="33" />
                 </svg>
             </td>
-            <td>
+            <td id="td2">
                 P(
                 <select id="top2" onchange="select2()"><option>Black Dot</option></select>
                 |
@@ -87,7 +85,15 @@
     </table>
     <script type="text/javascript">
         var f = placevalue;
+        select = 1;
+        function selector() {   //  2016.12
+            if (select == 1) select1();
+            else select2();
+        }
         function select1() {
+            select = 1;
+            $('#td1').css('background-color', '#EEEEEE');
+            $('#td2').css('background-color', 'white');
             if ($('#kind')[0].selectedIndex == 0)   //  2016.3
                 var shapes = [1, 10, 20, 400, 600];
             else if ($('#kind')[0].selectedIndex == 1)
@@ -115,6 +121,9 @@
             $('#p').text($('#c').val())
         }
         function select2() {
+            select = 2;
+            $('#td2').css('background-color', '#EEEEEE');
+            $('#td1').css('background-color', 'white');
             if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
                 var topshapes = [1];
                 var botshapes = ["τ0", "τ0"];           // τ -> τ0  2016.4
@@ -144,7 +153,6 @@
             var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
             function getinput(elem) { return f.parse($(elem).val()); }
-            //function getshape(elem) { return f.parse($(elem).val()); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 11/30/2016
+Date : 12/31/2016
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -139,6 +139,10 @@ Laurent Multinomial then formats PlaceValue2's result as x^2h^-1+2x+h .
 
 Laurent Multinomials are nothing more than a UI for PlaceValue2.
 
+Laurent Multinomial
+-------------------
+<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example y/x = y*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from PlaceValue, Laurent2.js inherits from PlaceValue2. This is because PlaceValue represents places to the left or right of the decimal point (radix point) which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which PlaceValue2 represents as digits to the left (or on top) of the radix point. Laurent multinomials are reduced to skins for PlaceValue2.
+
 SparsePlaceValue2
 ------------------------
 <i>SparsePlaceValue2.js</i> is a 2D data-type optimized for sparse PlaceValue2's. The PlaceValue2:
@@ -148,9 +152,21 @@ SparsePlaceValue2
 </pre>
 is represented as the SparsePlaceValue2: 5E2,1 .
 
-Laurent Multinomial
--------------------
-<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example y/x = y*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from PlaceValue, Laurent2.js inherits from PlaceValue2. This is because PlaceValue represents places to the left or right of the decimal point (radix point) which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which PlaceValue2 represents as digits to the left (or on top) of the radix point. Laurent multinomials are reduced to skins for PlaceValue2.
+SparseMultinomial
+------------------------
+<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue2 datatype.
+
+If SparseMultinomial wants to calculate (x+h)^2, then it asks SparsePlaceValue2 to calculate:
+
+(1E1 + 1E0,1) ^ 2 = 1E2 + 2E1,1 + 1E0,2
+
+SparseMultinomial then formats SparsePlaceValue2's result as x^2+2x*h+h^2.
+
+If SparseMultinomial wants to calculate ((x+h)^2 - x^2)/h|0, then it asks SparsePlaceValue2 to calculate:
+
+2E1+1E0,1 | 0 = 2E1
+
+SparseMultinomial then formats SparsePlaceValue2's result as 2x.
 
 Exponential
 -----------
@@ -371,6 +387,7 @@ Dependencies
 ---------------
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue</td><td></td></tr>
+<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue2</td><td></td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
@@ -382,7 +399,7 @@ Dependencies
 
 External Dependencies
 ----------------------
-<a href='http://jquery.com'>jQuery</a> & <a href='http://mathjs.org'>mathjs</a>
+<a target='_blank' href='http://jquery.com'>jQuery</a> & <a target='_blank' href='http://mathjs.org'>mathjs</a>
 
 System Requirements
 --------------------

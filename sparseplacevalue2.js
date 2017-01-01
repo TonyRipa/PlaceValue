@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 11/30/2016
+// Date : 12/31/2016
 // SparsePlaceValue2 : a 2d datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
 
 function sparseplacevalue2(points) {
@@ -8,6 +8,7 @@ function sparseplacevalue2(points) {
     if (!Array.isArray(points[0])) alert("sparseplacevalue2 expects argument to be 2D array but found 1D array of " + typeof points[0]);
     points = normal(points);
     points = trim(points);
+    points = points.map(function (x) { return [x[0], [Math.round(x[1][0] * 1000) / 1000, Math.round(x[1][1] * 1000) / 1000]] });
     this.points = points;
     function normal(points) {
         var list = points.map(function (x) { return x.slice(0) });
@@ -67,18 +68,13 @@ sparseplacevalue2.prototype.tohtml = function () {  // Replaces toStringInternal
     return me.points.reverse().map(JSON.stringify).join();
 }
 
-sparseplacevalue2.prototype.toString = function (sTag) {                                 //  sTag    2015.11
+sparseplacevalue2.prototype.toString = function () {                            //  2016.12
     var ret = "";
-    for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i, sTag);     //  Plus-delimited  2016.10
+    for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i);   //  Plus-delimited  2016.10
     return ret.substr(1);
 }
 
-sparseplacevalue2.prototype.digit = function (i, sTag, long) {                           //  sTag    2015.11
-    if (sTag) return this.digitpair(i, '<s>', '</s>', true, long);
-    return this.digitpair(i, '', String.fromCharCode(822), false, long);
-}
-
-sparseplacevalue2.prototype.digitpair = function (i, NEGBEG, NEGEND, fraction, long) {  // 2015.12
+sparseplacevalue2.prototype.digit = function (i) {                      // 2016.12
     var digit = i < 0 ? 0 : this.points[this.points.length - 1 - i];    // R2L  2015.7
     var a = Math.round(digit[0] * 1000) / 1000
     var b = digit[1];
@@ -95,6 +91,7 @@ sparseplacevalue2.prototype.pointsub = function (other) { return this.pointadd(o
 sparseplacevalue2.prototype.pointpow = function (power) { return this; }
 sparseplacevalue2.prototype.clone = function () { return new sparseplacevalue2(this.points.slice(0)); }
 sparseplacevalue2.prototype.negate = function () { return new sparseplacevalue2(this.points.map(function (x) { return [-x[0], x[1]] })); }
+sparseplacevalue2.prototype.transpose = function () { return new sparseplacevalue2(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
 
 sparseplacevalue2.prototype.pointadd = function (addend) {
     var ret = this.clone().points;
