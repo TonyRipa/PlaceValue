@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2016
+Date : 1/31/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -54,9 +54,9 @@ Rational
 ---------------
 <i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
 
-SparsePlaceValue
+SparsePlaceValue1
 ------------------------
-<i>SparsePlaceValue</i> is a data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>SparsePlaceValue1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 PlaceValueRatio
 ------------------
@@ -151,6 +151,10 @@ SparsePlaceValue2
 000
 </pre>
 is represented as the SparsePlaceValue2: 5E2,1 .
+
+SparsePlaceValue
+------------------------
+<i>SparsePlaceValue.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValue can handle as arbitrary number of dimensions such as 1E2,3,4 .
 
 SparseMultinomial
 ------------------------
@@ -386,7 +390,7 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 Dependencies
 ---------------
 <table>
-<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue</td><td></td></tr>
+<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1</td><td></td></tr>
 <tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue2</td><td></td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 12/10/2016
+   Date : 1/31/2017
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -36,6 +36,7 @@
     <script type="text/javascript" src='laurent2.js'></script>
     <script type="text/javascript" src='exponential.js'></script>
     <script type="text/javascript" src='sparseplacevalue.js'></script>
+    <script type="text/javascript" src='sparseplacevalue1.js'></script> <!-- sparsepolynomial depends on sparseplacevalue1 2017.1 -->
     <script type="text/javascript" src='sparsepolynomial.js'></script>
     <script type="text/javascript" src='sparseplacevalue2.js'></script>
     <script type="text/javascript" src='sparsemultinomial.js'></script>
@@ -83,7 +84,6 @@
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    //var b = new f(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
                     var b = f.parse(kids[1]); // f handles unpreprocessed kid 2015.11
                 }
             } else if (node.type == 'FunctionNode') {   // exponential  2015.11
