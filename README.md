@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 1/31/2017
+Date : 2/28/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -34,7 +34,7 @@ The convolution theorem allows for complicated operations to be performed by re-
 
 In Mathematica, we may represent the variable x as something like an expression tree of height 1 consisting a root node of type variable. We could then ask Mathematica x*x and it could represent that as an expression tree of height 2 with a root node of type operator with 2 child nodes of type variable.
 
-In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,9]. We could then ask MATLAB x*x (actually x.*x) and it could return [0,1,4,9,16,25,36,49,64,81].
+In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,9]. We could then ask MATLAB x * x (actually x.*x) and it could return [0,1,4,9,16,25,36,49,64,81].
 
 PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,4,5,6,7,8,9] by a Fourier-type Transform of x = [0, 1]. PlaceValue can calculate x*x by calculating [0, 1] * [0, 1] = [0, 0, 1]. This is nothing more than 10 * 10 = 100.
 
@@ -152,25 +152,35 @@ SparsePlaceValue2
 </pre>
 is represented as the SparsePlaceValue2: 5E2,1 .
 
+SparseMultinomial2
+------------------------
+<i>SparseMultinomial2</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue2 datatype.
+
+If SparseMultinomial2 wants to calculate (x+h)^2, then it asks SparsePlaceValue2 to calculate:
+
+(1E1 + 1E0,1) ^ 2 = 1E2 + 2E1,1 + 1E0,2
+
+SparseMultinomial2 then formats SparsePlaceValue2's result as x^2+2x*h+h^2.
+
+If SparseMultinomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks SparsePlaceValue2 to calculate:
+
+2E1+1E0,1 | 0 = 2E1
+
+SparseMultinomial2 then formats SparsePlaceValue2's result as 2x.
+
 SparsePlaceValue
 ------------------------
 <i>SparsePlaceValue.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValue can handle as arbitrary number of dimensions such as 1E2,3,4 .
 
 SparseMultinomial
 ------------------------
-<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue2 datatype.
+<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue datatype.
 
-If SparseMultinomial wants to calculate (x+h)^2, then it asks SparsePlaceValue2 to calculate:
+If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue2 to calculate:
 
-(1E1 + 1E0,1) ^ 2 = 1E2 + 2E1,1 + 1E0,2
+(1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
-SparseMultinomial then formats SparsePlaceValue2's result as x^2+2x*h+h^2.
-
-If SparseMultinomial wants to calculate ((x+h)^2 - x^2)/h|0, then it asks SparsePlaceValue2 to calculate:
-
-2E1+1E0,1 | 0 = 2E1
-
-SparseMultinomial then formats SparsePlaceValue2's result as 2x.
+SparseMultinomial then formats SparsePlaceValue's result as x*z + y*z.
 
 Exponential
 -----------
@@ -261,7 +271,7 @@ CAS
 
 Calculator
 --------------
-<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
 
 Differentiator
 ----------------
@@ -269,7 +279,7 @@ Differentiator
 
 Calculus
 --------
-<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k*exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… , or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the imaginary case, or in the general complex case by:
+<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k * exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… , or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the imaginary case, or in the general complex case by:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -313,7 +323,7 @@ DiffEq
 ---------------
 
 <i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
-For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN*exp(x)+NaN*exp(-x). With slight modification, it now also supports Fourier, ComplexExponential, and Laplace solution.
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN * exp(x) + NaN * exp(-x). With slight modification, it now also supports Fourier, ComplexExponential, and Laplace solution.
 
 Determinant
 -----------------------
@@ -391,7 +401,7 @@ Dependencies
 ---------------
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1</td><td></td></tr>
-<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue2</td><td></td></tr>
+<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue</td><td></td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

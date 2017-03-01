@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 12/31/2016
+// Date : 2/28/2017
 // SparsePlaceValue2 : a 2d datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
 
 function sparseplacevalue2(points) {
@@ -51,14 +51,14 @@ sparseplacevalue2.parse = function (arg) {
     return new sparseplacevalue2(terms);
     function parseterm(term) {      //  Parse a scientific notation (E-notation) expression   2016.10
         term = term.toUpperCase();
-        if (term == 'INFINITY') return [Infinity, 0];
-        if (term == '-INFINITY') return [-Infinity, 0];
+        if (term == 'INFINITY') return [Infinity, [0, 0]];  //  2017.2  0->[0,0]
+        if (term == '-INFINITY') return [-Infinity, [0, 0]];
         var coefpow = term.split('E')
         var coef = coefpow[0];
         var pow = coefpow[1] || '0,0';
         var pows = pow.split(',')
-        if (!pows.length) pows = [0, 0];
-        if (pows.length == 1) pows.push(0);
+        //if (!pows.length) pows = [0, 0];
+        if (pows.length == 1) pows.push(0); //  Ensures pow is 2D
         return [Number(coef), pows.map(Number)];
     }
 }

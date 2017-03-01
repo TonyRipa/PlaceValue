@@ -1,15 +1,14 @@
 
 // Author : Anthony John Ripa
-// Date : 7/31/2016
+// Date : 2/28/2017
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
-var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v == 1 / 0) ? '∞' : (v == -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }
+var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v === 1 / 0) ? '∞' : (v === -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }  //  2017.2  ===
 
 function wholeplacevalue(man) {
     if (!Array.isArray(man)) alert('wholeplacevalue expects array argument but found ' + typeof man + man);
     if (man.length > 0 && !(man[0] instanceof rational)) { console.trace(); alert("wholeplacevalue expects rational[] but found " + typeof man[0] + '[] :' + man); end; }
-    //this.mantisa = man.map(Number);     // ["+1"]→[1] 2015.6
     this.mantisa = man;
     while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
         this.mantisa.pop();                             //  pop root

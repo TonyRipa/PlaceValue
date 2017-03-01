@@ -1,20 +1,17 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 1/31/2017
+// Date : 2/28/2017
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
-function sparsepolynomial(arg, pv) {
-    console.log('sparsepolynomial : arguments.length=' + arguments.length);
-    this.base = arg;
-    if (pv instanceof Object && JSON.stringify(pv).indexOf('points') != -1)  // 2015.8
-        this.pv = pv;
-    else if (typeof pv == 'number') {
-        console.log("sparsepolynomial: typeof pv == 'number'");
-        this.pv = new sparseplacevalue1([pv, 0]);
-        console.log(this.pv.toString());
+function sparsepolynomial(base, pv) {
+    if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
+    if (Array.isArray(base)) alert('sparsepolynomial expects argument 1 (base) to be a string but found array: ' + typeof base);
+    if (!(pv instanceof sparseplacevalue1)) {   //  2017.2
+        alert('sparsepolynomial expects argument 2 (pv) to be a sparseplacevalue1 but found arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+        console.trace();
     }
-    else
-        alert('sparsepolynomial: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+    this.base = base;
+    this.pv = pv;
 }
 
 sparsepolynomial.parse = function (strornode) {
@@ -46,7 +43,7 @@ sparsepolynomial.parse = function (strornode) {
     }
 }
 
-sparsepolynomial.prototype.tohtml = function () {   // Replacement for toStringInternal 2015.7
+sparsepolynomial.prototype.tohtml = function () {       // Replacement for toStringInternal 2015.7
     return this.pv.toString(true) + ' base ' + this.base;
 }
 
@@ -66,23 +63,23 @@ sparsepolynomial.prototype.pointtimes = function (other) { this.align(other); re
 sparsepolynomial.prototype.pointdivide = function (other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointdivide(other.pv)); }
 sparsepolynomial.prototype.pointpow = function (other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointpow(other.pv)); }
 
-sparsepolynomial.prototype.align = function (other) {    // Consolidate alignment    2015.9
+sparsepolynomial.prototype.align = function (other) {   // Consolidate alignment    2015.9
     if (this.pv.points.length == 1 & this.pv.points[0][1] == 0) this.base = other.base;
     if (other.pv.points.length == 1 & other.pv.points[0][1] == 0) other.base = this.base;
     if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new sparsepolynomial(1, new sparseplacevalue1(['%', 0])); }
 }
 
-sparsepolynomial.prototype.pow = function (other) { // 2015.6
+sparsepolynomial.prototype.pow = function (other) {     // 2015.6
     return new sparsepolynomial(this.base, this.pv.pow(other.pv));
 }
 
-sparsepolynomial.toStringXbase = function (pv, base) {                        // added namespace  2015.7
+sparsepolynomial.toStringXbase = function (pv, base) {  // added namespace  2015.7
     console.log('sparsepolynomial: pv = ' + pv);
     var x = pv.points;
     console.log('sparsepolynomial.toStringXbase: x=' + x);
-    if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
-        x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return sparsepolynomial.toStringXbase(new sparseplacevalue1(x, 0), base);  // added namespace  2015.7
+    if (x[x.length - 1] == 0 && x.length > 1) {         // Replace 0 w x.length-1 because L2R 2015.7
+        x.pop();                                        // Replace shift with pop because L2R 2015.7
+        return sparsepolynomial.toStringXbase(new sparseplacevalue1(x, 0), base);   // added namespace  2015.7
     }
     var ret = '';
     var maxbase = x.length - 1

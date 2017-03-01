@@ -1,11 +1,11 @@
-
+﻿
 // Author : Anthony John Ripa
-// Date : 1/31/2017
+// Date : 2/28/2017
 // SparsePlaceValue : a datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
 
 function sparseplacevalue(points) {
     if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue expects argument to be 2D array but found " + typeof points + points); }
-    if (!Array.isArray(points[0])) alert("sparseplacevalue expects argument to be 2D array but found 1D array of " + typeof points[0]);
+    if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue expects argument to be 2D array but found 1D array of " + typeof points[0]);
     points = normal(points);
     points = trim(points);
     points = points.map(function (x) { return [x[0], x[1].map(function (y) { return Math.round(y * 1000) / 1000 })] });
@@ -57,7 +57,7 @@ function sparseplacevalue(points) {
     }
     function trim(points) {     //  2016.10
         for (var i = 0; i < points.length; i++) {
-            if (points[i][0] == 0) points.splice(i, 1);
+            if (points[i][0] == 0) points.splice(i--, 1);   //  2017.2  Add -- so i iterates right despite array modification
             else                //  2017.1
                 while (points[i][1].length > 1 && points[i][1].slice(-1)[0] == 0) {
                     points[i][1].pop();
@@ -78,35 +78,33 @@ sparseplacevalue.parse = function (arg) {
     return new sparseplacevalue(terms);
     function parseterm(term) {      //  Parse a scientific notation (E-notation) expression   2016.10
         term = term.toUpperCase();
-        if (term == 'INFINITY') return [Infinity, 0];
-        if (term == '-INFINITY') return [-Infinity, 0];
+        if (term == 'INFINITY') return [Infinity, [0]]; //  2017.2  0->[0]
+        if (term == '-INFINITY') return [-Infinity, [0]];
         var coefpow = term.split('E')
         var coef = coefpow[0];
         var pow = coefpow[1] || '0';
         var pows = pow.split(',')
-        if (!pows.length) pows = [0, 0];
-        //if (pows.length == 1) pows.push(0);
+        //if (!pows.length) pows = [0, 0];
         return [Number(coef), pows.map(Number)];
     }
 }
 
-sparseplacevalue.prototype.tohtml = function () {  // Replaces toStringInternal 2015.7
+sparseplacevalue.prototype.tohtml = function () {   // Replaces toStringInternal 2015.7
     var me = this.clone();                          // Reverse will mutate  2015.9
     return me.points.reverse().map(JSON.stringify).join();
 }
 
-sparseplacevalue.prototype.toString = function () {                            //  2016.12
+sparseplacevalue.prototype.toString = function () {                             //  2016.12
     var ret = "";
     for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i);   //  Plus-delimited  2016.10
     return ret.substr(1);
 }
 
-sparseplacevalue.prototype.digit = function (i) {                       // 2016.12
-    var digit = i < 0 ? 0 : this.points[this.points.length - 1 - i];    // R2L  2015.7
+sparseplacevalue.prototype.digit = function (i) {                       //  2017.2
+    var digit = i < 0 ? 0 : this.points[this.points.length - 1 - i];    //  R2L  2015.7
     var a = Math.round(digit[0] * 1000) / 1000
     var b = digit[1];
-    if (b.every(function (x) { return x == 0 })) return a;              // Every 2017.1
-    if (b[1] == 0) return a + 'E' + b[0];
+    if (b.every(function (x) { return x == 0 })) return a;              //  Every 2017.1
     return a + 'E' + b;                                                 //  E-notation  2016.10
 }
 
@@ -132,7 +130,7 @@ sparseplacevalue.prototype.times = function (top) {
     var points = []
     for (var i = 0; i < this.points.length; i++)
         for (var j = 0; j < top.points.length; j++)
-            points.push([this.points[i][0] * top.points[j][0], addvectors(this.points[i][1], top.points[j][1])]);
+            if (this.points[i][0] != 0 && top.points[j][0]) points.push([this.points[i][0] * top.points[j][0], addvectors(this.points[i][1], top.points[j][1])]); // 2017.2 0*∞=0 for easy division
     return new sparseplacevalue(points);
     function addvectors(a, b) { //  2017.1
         if (a.length > b.length) return addvectors(b, a);
