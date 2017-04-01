@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/22/2016
+// Date:    3/31/2017
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -13,7 +13,11 @@ function complex(real, imag) {
 }
 
 complex.parse = function (n) {
+    if (n instanceof String || typeof (n) == 'string') if (n.indexOf('i') != -1 && n.indexOf('r') != -1) { var x = JSON.parse(n); return new complex(x.r, x.i) }    //  2017.3
+    if (typeof n == "number") return new complex(n, 0); //  2017.3
+    if (n instanceof Number) return new complex(n, 0);  //  2017.3
     var N = n.toString();
+    if (N[0] == '-') return complex.parse(N.substring(1)).negate(); //  2017.3
     var ret = 0;
     var numb = '';
     var imag = '';
@@ -93,7 +97,6 @@ complex.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 2
     var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
     var cons = { '-0.159': NEGBEG + 'τ' + NEGEND + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
     var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
-    //var digit = i < 0 ? 0 : this.mantisa[this.mantisa.length - 1 - i]; // R2L  2015.7
     if (typeof (digit) == 'string') return digit;
     var rounddigit = Math.round(digit * 1000) / 1000;
     if (isNaN(digit)) return '%';
@@ -128,16 +131,21 @@ complex.zero = new complex(0);
 
 complex.prototype.equals = function (other) { return (this.r == other.r) && (this.i == other.i); }
 complex.prototype.is0 = function () { return this.equals(complex.zero); }
+complex.prototype.below = function (other) { return this.r != other.r ? this.r < other.r : this.i < other.i; }  //  2017.3
+complex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
+complex.prototype.below0 = function () { return this.below(complex.zero); }                                     //  2017.3
+complex.prototype.above0 = function () { return this.above(complex.zero); }                                     //  2017.3
 
 complex.prototype.add = function (other) { return new complex(this.r + other.r, this.i + other.i); }
 complex.prototype.sub = function (other) { return new complex(this.r - other.r, this.i - other.i); }
-complex.prototype.exp = function () { return new complex(Math.exp(this.r) * Math.cos(this.i), Math.exp(this.r) * Math.sin(this.i)) }
+complex.prototype.exp = function () { return this.i == 0 ? new complex(Math.exp(this.r), 0) : new complex(Math.exp(this.r) * Math.cos(this.i), Math.exp(this.r) * Math.sin(this.i)); }  //  2017.3
 complex.prototype.ln = function () { return new complex(Math.log(Math.sqrt(this.r * this.r + this.i * this.i)), Math.atan2(this.i, this.r)) }
 complex.prototype.nor = function () { return new complex(this.r * this.r + this.i * this.i) }
 complex.prototype.norm = function () { return Math.sqrt(this.r * this.r + this.i * this.i) }
 complex.prototype.lnn = function () { return this.nor().ln() }
 complex.prototype.arg = function () { return Math.atan2(this.i, this.r) }
-complex.prototype.roun = function () { return new complex(Math.round(1000 * this.r) / 1000, Math.round(1000 * this.i) / 1000) }
+complex.prototype.round = function () { return new complex(Math.round(1000 * this.r) / 1000, Math.round(1000 * this.i) / 1000) }
+complex.prototype.negate = function () { return new complex(-this.r, -this.i) }    //  2017.3
 
 complex.prototype.times = function (y) {
     if (!(y instanceof complex)) { console.trace(); alert('complex.times expects argument (y) to be a Complex but found ' + typeof y + ' ' + JSON.stringify(y)); }
@@ -152,9 +160,17 @@ complex.prototype.divide = function (y) {
     return y.i == 0 ? x.i == 0 ? new c(x.r / y.r, 0) : x.r == 0 ? new c(0, x.i / y.r) : new c(x.r / y.r, x.i / y.r) : new c((x.r * y.r + x.i * y.i) / (y.r * y.r + y.i * y.i), (x.i * y.r - x.r * y.i) / (y.r * y.r + y.i * y.i));
 }
 
-complex.prototype.pow = function (y) {
-    var x = this;
-    var c = complex;
-    var p = x.norm() == 0 ? new c(Math.pow(0, y.r), 0) : new c(Math.pow(x.norm(), y.r) * Math.exp(-y.i * x.arg()), 0).times(new c(0, y.r * x.arg() + .5 * y.i * x.lnn().r).exp());
-    return p.roun()
+complex.prototype.pow = function (p) {
+    try {
+        var b = this;
+        var c = complex;
+        if (b.norm() == 0) var ret = new c(Math.pow(0, p.r), 0);
+        else if (b.i == 0) var ret = p.times(b.ln()).exp(); //  2017.3
+        else var ret = new c(Math.pow(b.norm(), p.r) * Math.exp(-p.i * b.arg()), 0).times(new c(0, p.r * b.arg() + .5 * p.i * b.lnn().r).exp());
+        return ret.round();
+    } catch (e) {
+        alert(e);
+        console.trace();
+        end;
+    }
 }
