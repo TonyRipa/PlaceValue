@@ -1,7 +1,7 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 3/31/2017
+   Author:  Anthony John Ripa
+   Date:    4/29/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -43,8 +43,10 @@
     <script src='placevalueratio.js'></script>
     <script src='polynomialratio.js'></script>
     <script src='sparseplacevalue2.js'></script>
+    <script src='abstractpolynomial.js'></script>
     <script src='sparsemultinomial.js'></script>
     <script src='sparseplacevaluecomplex.js'></script>
+    <script src='complexsparsemultinomial.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -84,6 +86,7 @@
             <option>Laurent Multinomial</option>
             <option>Sparse Multinomial</option>
             <option>Complex Laurent</option>
+            <option>Complex Sparse Multinomial</option>
             <option>Exponential</option>
             <option>Fourier</option>
             <option>Fourier2</option>
@@ -97,7 +100,7 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, polynomial, polynomialratio, sparsepolynomial, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, exponential, fourier, fourier2, complexexponential][$('#f')[0].selectedIndex];
+            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, polynomial, polynomialratio, sparsepolynomial, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);

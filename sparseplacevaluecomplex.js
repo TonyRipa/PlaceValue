@@ -1,11 +1,13 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    3/31/2017
+// Date:    4/30/2017
 // SparsePlaceValueComplex : a datatype for representing base agnostic arithmetic via sparse numbers whose digits are complex
 
 function sparseplacevaluecomplex(points) {
     if (!Array.isArray(points)) { console.trace(); alert("sparseplacevaluecomplex expects argument to be 2D array but found " + typeof points + points); }
     if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevaluecomplex expects argument to be 2D array but found 1D array of " + typeof points[0]);
+    if (points.length > 0 && !points[0][0] instanceof complex) alert("sparseplacevaluecomplex expects coefficients are complex but found " + typeof points[0][0]);    //  2017.4
+    if (points.length > 0 && !points[0][1].every(x => x instanceof complex)) { var s = 'SparsePlaceValueComplex bad arg ' + JSON.stringify(points); alert(s); throw new Error(s); }  //  2017.4
     points = normal(points);
     points = trim(points);
     try { points = points.map(function (x) { if (x[1][0] === 0) throw new Error('l'); return [x[0].round(), x[1].map(function (y) { return y.round() })] }); } catch (e) { alert(e); console.trace() }
@@ -64,7 +66,6 @@ function sparseplacevaluecomplex(points) {
                 }
         }
         if (points.length == 0) points = [[complex.zero, []]];
-        //points = points.map(function (point) { return [point[0], point[1].length == 0 ? [complex.zero] : point[1]] });
         return points;
     }
 }
@@ -107,18 +108,18 @@ sparseplacevaluecomplex.prototype.tohtml = function () {   // Replaces toStringI
     return me.points.reverse().map(function (d) { return '[' + d[0] + ',[' + d[1] + ']]' }).join(' , ');
 }
 
-sparseplacevaluecomplex.prototype.toString = function () {                             //  2016.12
+sparseplacevaluecomplex.prototype.toString = function (long) {  //  2017.4  long
     var ret = "";
-    for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i);   //  Plus-delimited  2016.10
+    for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i, long);   //  Plus-delimited  2016.10
     return ret.substr(1);
 }
 
-sparseplacevaluecomplex.prototype.digit = function (i) {                //  2017.2
+sparseplacevaluecomplex.prototype.digit = function (i, long) {          //  2017.4  long
     var digit = i < 0 ? 0 : this.points[this.points.length - 1 - i];    //  R2L  2015.7
-    var a = digit[0]//Math.round(digit[0] * 1000) / 1000
+    var a = digit[0].toString(false, long);
     var b = digit[1];
     if (b.every(function (x) { return x == 0 })) return a;              //  Every 2017.1
-    return a + 'E' + b;                                                 //  E-notation  2016.10
+    return a + 'E' + b.map(x=> x.toString(false, long));                //  E-notation  2016.10
 }
 
 sparseplacevaluecomplex.prototype.add = function (other) { return new sparseplacevaluecomplex(this.points.concat(other.points)); }
@@ -159,6 +160,12 @@ sparseplacevaluecomplex.prototype.times = function (top) {
     }
 }
 
+sparseplacevaluecomplex.prototype.withoutmsb = function () {
+    var me = this.clone();
+    me.points.pop();
+    return me;
+}
+
 sparseplacevaluecomplex.prototype.divide = function (den) {    //  2016.10
     var num = this;
     var iter = 5//math.max(num.points.length, den.points.length);
@@ -170,8 +177,8 @@ sparseplacevaluecomplex.prototype.divide = function (den) {    //  2016.10
         var d = den.points.slice(-1)[0];
         var quotient = new sparseplacevaluecomplex([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
         if (d[0].is0()) return quotient;
-        var remainder = num.sub(quotient.times(den))
-        if (!(remainder.points.length < quotient.points.length)) { remainder.points.shift(); remainder = new sparseplacevaluecomplex(remainder.points); } // 2017.3   assert(msb removed)
+        var remainder = num.withoutmsb().sub(quotient.times(den).withoutmsb());     // 2017.4   msb removed so 1/∞=0
+        //if (!(remainder.points.length < num.points.length)) { remainder.points.shift(); remainder = new sparseplacevaluecomplex(remainder.points); }    // 2017.4   assert(msb removed) so 1/∞=0
         var q2 = divideh(remainder, den, c - 1);
         quotient = quotient.add(q2);
         return quotient;

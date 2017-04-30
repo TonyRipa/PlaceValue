@@ -1,6 +1,6 @@
 
-// Author : Anthony John Ripa
-// Date : 1/31/2016
+// Author:  Anthony John Ripa
+// Date:    4/30/2017
 // WholePlaceValueComplex2 : a 2D datatype for representing base agnostic arithmetic via whole numbers whose digits are complex
 
 function wholeplacevaluecomplex2(man, trace) {
@@ -114,7 +114,7 @@ wholeplacevaluecomplex2.digithtml = function (digit) {                // Uses di
     //var digit = i < 0 ? 0 : man[i];
     if (Array.isArray(digit)) return digit.map(function (elem) { return wholeplacevaluecomplex2.digithtml(elem) });
     if (!(digit instanceof Object)) digit = { 'r': digit, 'i': 0 };
-    return '<span style="display:inline-block;transform-origin:50% 70%;transform:rotate(' + wholeplacevaluecomplex2.arg(digit) + 'rad)">' + wholeplacevaluecomplex2.digithelp(wholeplacevaluecomplex2.norm(digit)) + '</span>';
+    return '<span style="display:inline-block;transform-origin:50% 50%;transform:rotate(' + wholeplacevaluecomplex2.arg(digit) + 'rad)">' + wholeplacevaluecomplex2.digithelp(wholeplacevaluecomplex2.norm(digit)) + '</span>'; //  2017.4  50% 50%
     //if (digit instanceof Object) return ['[' + (digit.r == Infinity ? '∞' : Math.round(digit.r * 1000) / 1000) + ',' + Math.round(digit.i * 1000) / 1000 + ']'];
 }
 
@@ -270,9 +270,6 @@ wholeplacevaluecomplex2.prototype.scale = function (scalar, trace) {
     //alert(JSON.stringify([this, this.clone()]));
     for (var r = 0; r < ret.mantisa.length; r++)
         for (var c = 0; c < ret.mantisa[0].length; c++) {
-            //var z = wholeplacevaluecomplex2.mul(ret.get(r, c), scalar)
-            //var z = wholeplacevaluecomplex2.mul(scalar, ret.get(r, c))
-            //alert(z);
             ret.mantisa[r][c] = wholeplacevaluecomplex2.mul(scalar, ret.get(r, c));
         }
             //ret.mantisa[r][c] *= scalar;

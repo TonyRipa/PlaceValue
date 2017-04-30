@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 7/31/2016
+   Date : 4/5/2017
    Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 -->
 
@@ -110,7 +110,6 @@
         }
         function compute() {
             f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
-            //var start = new Date()
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
@@ -124,7 +123,6 @@
             //alert(JSON.stringify(dy));
             var d = dy.divide(c);
             //alert(JSON.stringify(d));
-            //var end = new Date()
             //alert(JSON.stringify(c));
             output(a, b, c, y, p, x, xp, px, dy, d);
 	        function getinput(elem) { return f.parse($(elem).attr('data-val') || $(elem).val()); }
@@ -156,10 +154,10 @@
             function momentumOperator(state) {
                 if ($('#mom')[0].selectedIndex) {
                     $('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always i by Heisenberg Uncertainty</a>");
-                    return state.times(new laplace("s", new placevaluecomplex(new wholeplacevaluecomplex([[0, 0], [0, 1]]), 0)));
+                    return state.times(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('i0'), 0))); //  parse is implementation independent 2017.4
                 }
                 $('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always 1 by Heisenberg Uncertainty</a>");
-                return state.times(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('10'), 0))); //  parse is implementation independent 2016.6
+                return state.times(new laplace("s", new placevaluecomplex(wholeplacevaluecomplex.parse('10'), 0)));     //  parse is implementation independent 2016.6
             }
             eval();
         }

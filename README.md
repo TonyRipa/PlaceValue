@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2017
+Date : 4/30/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -176,7 +176,7 @@ SparseMultinomial
 ------------------------
 <i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue datatype.
 
-If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue2 to calculate:
+If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
 
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
@@ -244,9 +244,19 @@ SparsePlaceValueComplex
 -----------------------
 <i>sparseplacevaluecomplex.js</i> can be thought of as a Sparse version of ComplexPlaceValue.  However, it is actually implemented as a Complex version of SparsePlaceValue.  As such, since SparsePlaceValue could handle an unbounded number of dimensions (i.e. is suitable for modeling multivariable systems), SparsePlaceValueComplex can model an unbounded number of mutually orthogonal complex planes. Whereas a SparsePlaceValue may look like 1E2 + 3E4,5,6 , a SparsePlaceValueComplex may look like (1,-4)E(2,9) + 3E4,(5,6),i . Here the (5,6) is the complex number 5+6i.
 
+ComplexSparseMultinomial
+------------------------
+<i>ComplexSparseMultinomial</i> is a data-type optimized for Complex Sparse Multinomials; an application of the SparsePlaceValueComplex datatype.
+
+If ComplexSparseMultinomial wants to calculate (x+y*i)^2, then it asks SparsePlaceValueComplex to calculate:
+
+1E1+iE0,1 ^ 2 = 1E2+(0,2)E1,1+-1E0,2
+
+SparseMultinomial then formats SparsePlaceValueComplex's result as x^2+(2i)x*y-y^2.
+
 ComplexLaurent
 ---------------
-<i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. Lettered bases are interesting, but not nearly as interesting as the exponential bases found in the ComplexExponential data-type.
+<i>complexlaurent.js</i> is an algebraic looking skin for ComplexPlaceValue. Whereas ComplexPlaceValue is base agnostic, ComplexLaurent provides a base (x or otherwise) so as to provide a user interface for complex algebra. While the lettered bases are interesting, more interesting are the exponential bases found in the ComplexExponential data-type.
 
 Complex Exponential
 --------
@@ -404,8 +414,9 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 Dependencies
 ---------------
 <table>
-<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1</td><td></td></tr>
-<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue</td><td></td></tr>
+<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
+<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
+<tr><td>Complex Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

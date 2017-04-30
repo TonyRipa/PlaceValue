@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    3/31/2017
+// Date:    4/30/2017
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -56,12 +56,6 @@ complex.parse = function (n) {
 
 complex.prototype.tohtml = function () { return this.toString(false) }
 
-//complex.prototype.toString = function (sTag) {                          //  sTag    2015.11
-//    var ret = "";
-//    ret += this.digit(sTag);
-//    return ret;
-//}
-
 complex.prototype.toString = function (sTag, long) {                        //  sTag    2015.11
     if (sTag) return this.digitpair('<s>', '</s>', true, long);
     return this.digitpair('', String.fromCharCode(822), false, long);
@@ -81,10 +75,12 @@ complex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) {  // 20
     //if (real != real) return '%';
     if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);
     if (real == 0) {
+        if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
         if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
         return b == 1 ? 'i' : b == -1 ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
     }
     //return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
+    if (long == 'medium') return '(' + a + ',' + b + ')';
     if (long) return '(' + a + '+' + (b == 1 ? '' : b) + 'i)';
     return '(' + a + ',' + b + ')';
 }
