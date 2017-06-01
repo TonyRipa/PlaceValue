@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2017
+// Date:    5/31/2017
 // AbstractPolynomial : Base Class for SparseMultinomial & ComplexSparseMultinomial
 
 class abstractpolynomial {
@@ -61,6 +61,11 @@ class abstractpolynomial {
 
     pow(other) {
         return new this.constructor(this.base, this.pv.pow(other.pv));
+    }
+
+    pointpow(other) {
+        this.align(other);
+        return new this.constructor(this.base, this.pv.pointpow(other.pv));
     }
 
     eval(base) {

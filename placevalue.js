@@ -1,12 +1,12 @@
 
-// Author : Anthony John Ripa
-// Date : 8/31/2016
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
     if (arguments.length < 2) alert('placevalue expects 2 arguments');
     if (!(man instanceof wholeplacevalue)) alert('placevalue expects argument 1 to be a wholeplacevalue');
-    if (!(exp instanceof Number) && !(typeof exp == 'number')) alert('placevalue expects argument 2 to be a number but found ' + typeof exp);
+    if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevalue expects argument 2 to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
     this.whole = man
     this.exp = exp
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
@@ -117,16 +117,25 @@ placevalue.prototype.pointpow = function (power) {	// 2015.12
     //var ret = this.clone();
     var man = this.whole.mantisa.map(function (x) { return x.pow(power.get(0)) });
     var ret = new placevalue(new wholeplacevalue(man), this.exp);
-    //ret.whole.mantisa = ret.whole.mantisa.map(function (x) { return x.pow(power.get(0)) });
     return ret;
 }
 
 placevalue.prototype.pow = function (power) {	// 2015.8
-    if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
-    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([power]);  // 2015.11
-    if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
-    var whole = this.whole.pow(power);
-    var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
+    if (typeof power == 'number') power = rational.parse(power);            //  2017.5  exponential calls with number
+    if (power instanceof rational) power = new wholeplacevalue([power]);    //  2017.5
+    if (power instanceof wholeplacevalue) power = new placevalue(power, 0); //  2017.5  laurent calls wpv
+    //if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
+    //if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
+    //alert(JSON.stringify([this,power]))
+    if (power.exp == 0) {   //  2017.5
+        if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(power.negate()));
+        var whole = this.whole.pow(power.whole);
+        var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
+    } else if (power.exp == 1) {    //  2017.5
+        if (this.exp != 0) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
+        var whole = wholeplacevalue.parse(1);   //  2017.5
+        var exp = power.get(1).toreal();        //  2017.5  2^(3E1)=1E3
+    } else { alert('PV >Bad Exponent = ' + power.toString()); return placevalue.parse('%') }
     return new placevalue(whole, exp);
 }
 
@@ -146,6 +155,10 @@ placevalue.prototype.times = function (top) {
     if (!(top instanceof Object && JSON.stringify(top).indexOf('whole') != -1)) top = new placevalue(top);  // 2015.11
     var whole = this.whole.times(top.whole);
     return new placevalue(whole, this.exp + top.exp);
+}
+
+placevalue.prototype.negate = function () {         //  2017.5
+    return new placevalue(this.whole.negate(), this.exp);
 }
 
 placevalue.prototype.scale = function (scalar) {   // 2015.11

@@ -1,7 +1,7 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 7/31/2016
+   Author:  Anthony John Ripa
+   Date:    5/31/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -10,7 +10,7 @@
     <title>Diff E.Q.</title>
     <script type="text/javascript" src='../../js/jquery.js'></script>
     <script type="text/javascript">        
-        window.jQuery || document.write("<script src='http://code.jquery.com/jquery-latest.js'><" + "/script>")
+        window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
     </script>
     <script src="../../js/math.js"></script>
     <script type="text/javascript">
@@ -89,8 +89,6 @@
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
-            //var end = new Date()
-            //alert(JSON.stringify(c));
             output(a, b, c);
 	        function getinput(elem) { return f.parse($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c) {

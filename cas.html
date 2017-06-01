@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 4/29/2017
+   Date : 5/30/2017
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -91,7 +91,8 @@
                 }
             } else if (node.type == 'FunctionNode') {   // exponential  2015.11
                 console.log('CAS: FunctionNode')
-                return [node.name, laurent.parse(node.args[0])];
+                argtype = [laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, complexlaurent][$('#f')[0].selectedIndex]; //  2017.5
+                return [node.name, argtype.parse(node.args[0])];
             } else {
                 console.log('CAS: OtherNode')
                 return [f.parse(node.value || node.name)];

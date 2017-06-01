@@ -1,7 +1,7 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 4/5/2017
+   Author:  Anthony John Ripa
+   Date:    5/31/2017
    Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 -->
 
@@ -10,7 +10,7 @@
     <title>PlaceValue Mechanics</title>
     <script type="text/javascript" src='../../js/jquery.js'></script>
     <script type="text/javascript">        
-        window.jQuery || document.write("<script src='http://code.jquery.com/jquery-latest.js'><" + "/script>")
+        window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
     </script>
     <script src="../../js/math.js"></script>
     <script type="text/javascript">
@@ -119,8 +119,6 @@
             var xp = positionOperator(momentumOperator(c));
             var px = momentumOperator(positionOperator(c));
             var dy = px.sub(xp);
-            //alert(JSON.stringify(c));
-            //alert(JSON.stringify(dy));
             var d = dy.divide(c);
             //alert(JSON.stringify(d));
             //alert(JSON.stringify(c));

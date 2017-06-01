@@ -1,12 +1,12 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    8/31/2016
+// Date:    5/31/2017
 // PlaceValueComplex : a datatype for representing base agnostic arithmetic via numbers whose digits are complex
 
 function placevaluecomplex(whole, exp) {
     if (arguments.length < 2) alert('placevaluecomplex expects 2 arguments');
     if (!(whole instanceof wholeplacevaluecomplex)) { console.trace(); alert('placevaluecomplex expects argument 1 (whole) to be a wholeplacevaluecomplex but found ' + typeof whole + JSON.stringify(whole)); }
-    if (!(exp instanceof Number) && !(typeof exp == 'number')) alert('placevaluecomplex expects argument 2 (exp) to be a number but found ' + typeof exp);
+    if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevaluecomplex expects argument 2 (exp) to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
     this.whole = whole
     this.exp = whole.is0() ? 0 : exp;   // 0 has no exp 2016.6
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(whole)=" + Array.isArray(whole));
@@ -112,19 +112,31 @@ placevaluecomplex.prototype.pointdivide = function (divisor) {
 placevaluecomplex.prototype.pointpow = function (power) {	// 2015.12
     if (power instanceof placevaluecomplex) power = power.whole;   // laurent calls wpv    2015.8
     return new placevaluecomplex(this.whole.pointpow(power), this.exp);
-    //if (!(power instanceof wholeplacevaluecomplex)) power = new wholeplacevaluecomplex([power]);  // 2015.11
-    //if (power.getreal(0) < 0) return (new placevaluecomplex(new wholeplacevaluecomplex([1]), 0)).pointdivide(this.pointpow(new placevaluecomplex(new wholeplacevaluecomplex(-power.getreal(0)), 0))); // 2015.8   getreal 2015.12
-    //if (power.getreal(0) == 1) return this.clone();
-    //return this.pointtimes(this.pointpow(power.getreal(0) - 1));
 }
 
 placevaluecomplex.prototype.pow = function (power) {	// 2015.8
-    if (power instanceof placevaluecomplex) power = power.whole;   // laurent calls wpv    2015.8
-    //if (!(power instanceof wholeplacevaluecomplex)) power = wholeplacevaluecomplex.parse(power);  // 2016.6
-    if (!(power instanceof wholeplacevaluecomplex)) power = new wholeplacevaluecomplex([new complex(power)]);  // fourier calls w/ - (parse would fail) 2016.6
-    if (power.getreal(0) < 0) return (new placevaluecomplex(new wholeplacevaluecomplex([new complex(1)]), 0)).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-power.getreal(0))]), 0))); // 2015.8   getreal 2015.12
-    var whole = this.whole.pow(power);
-    var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
+    if (typeof power == 'number') power = complex.parse(power);                             //  2017.5  fourier calls with number
+    if (power instanceof complex) power = new wholeplacevaluecomplex([power]);              //  2017.5
+    if (power instanceof wholeplacevaluecomplex) power = new placevaluecomplex(power, 0);   //  2017.5
+
+    //if (power instanceof placevaluecomplex) power = power.whole;   // laurent calls wpv    2015.8
+    ////if (!(power instanceof wholeplacevaluecomplex)) power = wholeplacevaluecomplex.parse(power);  // 2016.6
+    //if (!(power instanceof wholeplacevaluecomplex)) power = new wholeplacevaluecomplex([new complex(power)]);  // fourier calls w/ - (parse would fail) 2016.6
+    //if (power.getreal(0) < 0) return (new placevaluecomplex(new wholeplacevaluecomplex([new complex(1)]), 0)).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-//power.getreal(0))]), 0))); // 2015.8   getreal 2015.12
+    //var whole = this.whole.pow(power);
+    //var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
+
+    if (power.exp == 0) {   //  2017.5
+        if (power.getreal(0) < 0) return placevaluecomplex.parse(1).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-power.getreal(0))]), 0)));   //  getreal 2015.12
+        var whole = this.whole.pow(power.whole);
+        var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
+    } else if (power.exp == 1) {
+        alert(JSON.stringify(['pow=1', power, power.get(0), power.get(1)]))
+        if (this.exp != 0) { alert('PVC >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevaluecomplex.parse('%') }
+        var whole = wholeplacevaluecomplex.parse(1);    //  2017.5
+        var exp = power.get(1).r;                       //  2017.5  2^(3E1)=1E3
+    } else { alert('PV >Bad Exponent = ' + power.toString()); return placevaluecomplex.parse('%') }
+
     return new placevaluecomplex(whole, exp);
 }
 

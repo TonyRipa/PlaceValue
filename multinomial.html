@@ -1,7 +1,7 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 1/20/2016
+   Author:  Anthony John Ripa
+   Date:    5/31/2017
    Demo for Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 -->
 
@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Multinomial Arithmetic</title>
-    <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
@@ -49,8 +49,6 @@
                 return '<span style="color:blue">'+nobr(tuple[0].tohtml())+'</span><hr>';	// In<hr>	2015.8
             else if (tuple.length == 2)
                 return '<table class="aux"><tr><td style="color:red">' + tuple[0] + '</td><td style="color:blue;text-align:right;float:right">' + nobr(tuple[1].tohtml('multinomial.html >')) + '</td></tr></table><br clear="all"><hr>';		// OpIn<hr>	2015.8
-            //else if (tuple[0] == '^')
-            //    return nobr('(' + tuple[1].tohtml() + ') ^ ' + tuple[2].toString());
             else
                 return '<table class="aux"><tr><td></td><td style="color:green;text-align:right;float:right">' + nobr(tuple[1].tohtml()) + '</td></tr><tr><td style="color:red">' + tuple[0] + '</td><td style="color:blue;text-align:right;float:right">' + nobr(tuple[2].tohtml('multinomial.html >')) + '</td></tr></table><br clear="all"><hr>'; // InOpIn<hr>Out 2015.7
         }

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    4/29/2017
+   Date:    5/12/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -47,6 +47,7 @@
     <script src='sparsemultinomial.js'></script>
     <script src='sparseplacevaluecomplex.js'></script>
     <script src='complexsparsemultinomial.js'></script>
+    <script src='sparsecomplexexponential.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -91,6 +92,7 @@
             <option>Fourier</option>
             <option>Fourier2</option>
             <option>Complex Exponential</option>
+            <option>Sparse Complex Exponential</option>
         </optgroup>
     </select>
     <table id="main">
@@ -100,7 +102,7 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, polynomial, polynomialratio, sparsepolynomial, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential][$('#f')[0].selectedIndex];
+            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, polynomial, polynomialratio, sparsepolynomial, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);

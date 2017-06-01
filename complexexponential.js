@@ -1,6 +1,6 @@
 
-// Author : Anthony John Ripa
-// Date : 3/18/2016
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // ComplexExponential : a datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function complexexponential(base, pv) {
@@ -64,17 +64,16 @@ complexexponential.parse = function (strornode) {  // 2016.1
         var tens = kidaspoly.pv.get(0, 1).r;
         var iones = kidaspoly.pv.get(0, 0).i;
         var itens = kidaspoly.pv.get(0, 1).i;
-        //alert(JSON.stringify([kidaspoly, ones, tens, itens]));
-        var exp = ten.pow(tens); if (itens != 0) exp = exp.times(iten.pow(itens));
-        var expi = iten.pow(tens); if (itens != 0) expi = expi.divide(ten.pow(itens));
+        //var exp = ten.pow(tens); if (itens != 0) exp = exp.times(iten.pow(itens));
+        //exp = exp.scale({ 'r': Math.exp(ones) * Math.cos(iones), 'i': Math.exp(ones) * Math.sin(iones) });
+        var exp = new complexplacevalue(new wholeplacevaluecomplex2([[2.718]]), [0, 0]).pow(kidaspoly.pv);  //  2017.5
+        //var expi = iten.pow(tens); if (itens != 0) expi = expi.divide(ten.pow(itens));
+        //expi = expi.scale({ 'r': Math.exp(-iones) * Math.cos(ones), 'i': Math.exp(-iones) * Math.sin(ones) });
+        var expi = new complexplacevalue(new wholeplacevaluecomplex2([[2.718]]), [0, 0]).pow(kidaspoly.pv.times(complexplacevalue.i));  //  2017.5
+        //exp2 = exp2.scale({ 'r': Math.exp(-ones) * Math.cos(-iones), 'i': Math.exp(-ones) * Math.sin(-iones) });
         var exp2 = exp.pow(-1)
+        //expi2 = expi2.scale({ 'r': Math.exp(iones) * Math.cos(-ones), 'i': Math.exp(iones) * Math.sin(-ones) });
         var expi2 = expi.pow(-1)
-        exp = exp.scale({ 'r': Math.exp(ones) * Math.cos(iones), 'i': Math.exp(ones) * Math.sin(iones) });
-        expi = expi.scale({ 'r': Math.exp(-iones) * Math.cos(ones), 'i': Math.exp(-iones) * Math.sin(ones) });
-        exp2 = exp2.scale({ 'r': Math.exp(-ones) * Math.cos(-iones), 'i': Math.exp(-ones) * Math.sin(-iones) });
-        expi2 = expi2.scale({ 'r': Math.exp(iones) * Math.cos(-ones), 'i': Math.exp(iones) * Math.sin(-ones) });
-        //alert(JSON.stringify(['ones', ones, 'itens', itens, 'tens', tens, 'exp', exp.whole, 'exp2', exp2.whole, 'exp.add(exp2)', exp.add(exp2), 'exp.add(exp2).scale({ r: .5, i: 0 })', exp.add(exp2).scale({ 'r': .5, 'i': 0 })]));
-        //alert(JSON.stringify(['expi', expi.whole, 'expi2', expi2.whole, 'expi.add(expi2)', expi.add(expi2), 'expi.add(expi2).scale({ r: .5, i: 0 })', expi.add(expi2).scale({ 'r': .5, 'i': 0 })]));
         if (fn == 'exp') var pv = exp;
         else if (fn == 'cis') var pv = expi;
         else if (fn == 'cosh') var pv = exp.add(exp2).scale({ 'r': .5, 'i': 0 });
@@ -92,7 +91,7 @@ complexexponential.parse = function (strornode) {  // 2016.1
     }
 }
 
-complexexponential.prototype.tohtml = function () {                                // Replacement for toStringInternal 2015.7
+complexexponential.prototype.tohtml = function () {                         // Replacement for toStringInternal 2015.7
     return this.pv.tohtml(true) + ' base e<sup>' + this.base + '</sup>';    // tohtml(true) includes <s>    2015.11
 }
 

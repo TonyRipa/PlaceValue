@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    4/30/2017
+// Date:    5/31/2017
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -29,7 +29,6 @@ complex.parse = function (n) {
         if (c == ',') { inimag = true; continue; }
         if (c == ')') { ret = [Number(numb), Number(imag)]; numb = ''; imag = ''; inimag = false; inparen = false; continue; }
         if (inparen) {
-            //alert(numb);
             if (inimag) imag += c; else numb += c;
         }
         else {
@@ -126,6 +125,7 @@ complex.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 2
 complex.zero = new complex(0);
 
 complex.prototype.equals = function (other) { return (this.r == other.r) && (this.i == other.i); }
+complex.prototype.isreal = function () { return this.i == 0; }                                                  //  2017.5
 complex.prototype.is0 = function () { return this.equals(complex.zero); }
 complex.prototype.below = function (other) { return this.r != other.r ? this.r < other.r : this.i < other.i; }  //  2017.3
 complex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
@@ -144,7 +144,8 @@ complex.prototype.round = function () { return new complex(Math.round(1000 * thi
 complex.prototype.negate = function () { return new complex(-this.r, -this.i) }    //  2017.3
 
 complex.prototype.times = function (y) {
-    if (!(y instanceof complex)) { console.trace(); alert('complex.times expects argument (y) to be a Complex but found ' + typeof y + ' ' + JSON.stringify(y)); }
+    if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   //  2017.5
+    if (!(y instanceof complex)) { var s = 'complex.times expects argument (y) to be a Complex but found ' + typeof y + ' ' + JSON.stringify(y); alert(s); throw new Error(s); }    //  2017.5
     var x = this;
     var c = complex;
     return x.i == 0 ? y.i == 0 ? new c(x.r * y.r, 0) : new c(x.r * y.r, x.r * y.i) : x.r == 0 ? new c(-x.i * y.i, x.i * y.r) : new c(x.r * y.r - x.i * y.i, x.r * y.i + x.i * y.r);

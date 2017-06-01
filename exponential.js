@@ -1,6 +1,6 @@
 
-// Author : Anthony John Ripa
-// Date : 7/31/2016
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 function exponential(base, pv) {
@@ -27,8 +27,6 @@ exponential.parse = function (strornode) {
         console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
         console.log(node)
         var base = node.name;
-        //pv = 10;
-        //me.base = base;
         var pv = new placevalue(wholeplacevalue.parse(1), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
         return new exponential(base, pv);
     } else if (node.type == 'OperatorNode') {
@@ -47,8 +45,6 @@ exponential.parse = function (strornode) {
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
-        //me.base = c.base;
-        //me.pv = c.pv;
     } else if (node.type == 'FunctionNode') {
         console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
         console.log(node)
@@ -57,14 +53,16 @@ exponential.parse = function (strornode) {
         var kidaspoly = laurent.parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
-        var ten = new placevalue(wholeplacevalue.parse(10), 0);
-        var tenth = new placevalue(wholeplacevalue.parse(1), -1)
-        var tens = new placevalue(new wholeplacevalue([kidaspoly.pv.get(1)]), 0); // Add '(' for 2 digit power    2015.12
-        var one = kidaspoly.pv.get(0).toreal()
-        var exp = ten.pow(tens)
-        if (one) exp = exp.scale(Math.exp(one));
-        var exp2 = tenth.pow(tens)
-        if (one) exp2 = exp2.scale(1 / Math.exp(one));
+        //var ten = placevalue.parse(10);
+        //var tens = kidaspoly.pv.get(1).toreal();
+        //var ones = kidaspoly.pv.get(0).toreal();
+        //var exp = ten.pow(tens)
+        //if (ones) exp = exp.scale(Math.exp(ones));
+        var exp = placevalue.parse('(2.718)').pow(kidaspoly.pv) //  2017.5
+        //var exp2 = ten.pow(-tens)
+        //if (ones) exp2 = exp2.scale(1 / Math.exp(ones));
+        //var exp2 = placevalue.parse('(2.718)').pow(kidaspoly.pv.negate())   //  2017.5
+        var exp2 = exp.pow(-1);     //  2017.5
         //alert([exp, exp2]);
         if (fn == 'exp') var pv = exp;
         else if (fn == 'cosh') var pv = exp.add(exp2).unscale(2);

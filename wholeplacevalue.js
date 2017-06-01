@@ -1,6 +1,6 @@
 
-// Author : Anthony John Ripa
-// Date : 2/28/2017
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -115,8 +115,9 @@ wholeplacevalue.prototype.pointadd = function (addend) {
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
     //alert(power instanceof rational);
     if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([rational.parse(power)]);
+    //if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]);  //  0^0=1 for convenience   2016.5
+    if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000
     if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.toString()); return wholeplacevalue.parse('%') }
-    if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]);  //  0^0=1 for convenience   2016.5
     if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return wholeplacevalue.parse('%') }
     if (power.get(0).toreal() < 0) return wholeplacevalue.parse(0);
     if (power.is0()) return wholeplacevalue.parse(1);//alert(JSON.stringify(power))
@@ -132,6 +133,7 @@ wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
 
 wholeplacevalue.prototype.times10 = function () { this.mantisa.unshift(new rational(0)) } // Caller can pad w/out knowing L2R or R2L  2015.7
 wholeplacevalue.prototype.div10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me; }  // 2016.5
+wholeplacevalue.prototype.times10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.unshift(new rational(0)); return me; }  // 2017.5
 
 wholeplacevalue.prototype.times = function (top) {
     //if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);
@@ -152,9 +154,6 @@ wholeplacevalue.prototype.scale = function (scalar, trace) {
     if (!(scalar instanceof rational)) scalar = rational.parse(scalar);
     var ret = this.clone(trace + ' wholeplacevalue.prototype.scale >');
     ret.mantisa = ret.mantisa.map(function (x) { return x.times(scalar) });
-    //ret.mantisa[ret.mantisa.length - 1] *= scalar;                        // leading can be NaN       2015.9
-    //for (var r = 0; r < ret.mantisa.length - 1; r++)
-    //    if (true || !isNaN(ret.mantisa[r] * scalar)) ret.mantisa[r] *= scalar;  // nonleading can/t be NaN  2015.9
     return ret;
 }
 

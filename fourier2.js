@@ -1,11 +1,11 @@
 
-// Author : Anthony John Ripa
-// Date : 2/14/2016
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // Fourier2 : a 2d datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function fourier2(base, pv) {
     if (arguments.length < 2) alert('fourier2 expects 2 arguments');
-    if (!Array.isArray(base)) alert('fourier expects argument 1 (base) to be Array but found ' + typeof base);
+    if (!Array.isArray(base)) { var s = 'fourier expects argument 1 (base) to be Array but found ' + typeof base; alert(s); throw new Error(s); }
     if (!(pv instanceof complexplacevalue)) alert('fourier2 expects argument 2 (pv) to be a complexplacevalue but found ' + typeof pv);
     this.base = base
     this.pv = pv;
@@ -22,7 +22,7 @@ fourier2.parse = function (strornode) {  // 2016.1
         if (node.name == 'i') {
             var base = [1, null];
             var pv = new complexplacevalue(new wholeplacevaluecomplex2([[{ 'r': 0, 'i': 1 }]]), [0, 0]);    //  i   2016.1
-            return new fourier2(1, pv);
+            return new fourier2(base, pv);  //  2017.5  base
         } else {
             var base = [node.name, null];
             alert('Syntax Error: fourier2 expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
@@ -41,7 +41,7 @@ fourier2.parse = function (strornode) {  // 2016.1
         if (kids[0].name == 'e' && node.op == '^') { var e = math.parse('exp(q)'); e.args = [kids[1]]; return fourier2.parse(e) }
         var a = fourier2.parse(kids[0]);       // fourier2 handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new fourier2(1, complexplacevalue[0]).sub(a);
+            var c = new fourier2([1, null], complexplacevalue[0]).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new fourier2(1, complexplacevalue[0]).add(a);
         } else {
@@ -61,24 +61,23 @@ fourier2.parse = function (strornode) {  // 2016.1
         var base = kidaspoly.base;
         var x = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [1, 0]);   // exp is 2D    2016.1
         var y = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [0, 1]);   // exp is 2D    2016.1
-        //var i = new complexplacevalue(new wholeplacevaluecomplex2([[{ 'r': 0, 'i': 1 }]]), [0, 0]);   // exp is 2D    2016.1
-        var ones = kidaspoly.pv.get(0, 0).r;
-        var iones = kidaspoly.pv.get(0, 0).i;
-        var xs = kidaspoly.pv.get(0, 1).r;
-        var ixs = kidaspoly.pv.get(0, 1).i;
-        var ys = kidaspoly.pv.get(1, 0).r;
-        var iys = kidaspoly.pv.get(1, 0).i;
-        //alert(JSON.stringify([kidaspoly, ones, tens, itens]));
-        var exp = x.pow(ixs).times(y.pow(iys)); //if (ixs != 0) exp = exp.times(y.pow(ixs));
-        var expi = x.pow(xs).times(y.pow(ys)); if (ixs != 0) expi = expi.divide(x.pow(ixs));
+        //var ones = kidaspoly.pv.get(0, 0).r;
+        //var iones = kidaspoly.pv.get(0, 0).i;
+        //var xs = kidaspoly.pv.get(0, 1).r;
+        //var ixs = kidaspoly.pv.get(0, 1).i;
+        //var ys = kidaspoly.pv.get(1, 0).r;
+        //var iys = kidaspoly.pv.get(1, 0).i;
+        ////alert(JSON.stringify([kidaspoly, ones, tens, itens]));
+        //var exp = x.pow(ixs).times(y.pow(iys)); //if (ixs != 0) exp = exp.times(y.pow(ixs));
+        //exp = exp.scale({ 'r': Math.exp(ones) * Math.cos(iones), 'i': Math.exp(ones) * Math.sin(iones) });
+        var exp = new complexplacevalue(new wholeplacevaluecomplex2([[2.718]]), [0, 0]).pow(kidaspoly.pv.divide(complexplacevalue.i));  //  2017.5
+        //var expi = x.pow(xs).times(y.pow(ys)); if (ixs != 0) expi = expi.divide(x.pow(ixs));
+        //expi = expi.scale({ 'r': Math.exp(-iones) * Math.cos(ones), 'i': Math.exp(-iones) * Math.sin(ones) });
+        var expi = new complexplacevalue(new wholeplacevaluecomplex2([[2.718]]), [0, 0]).pow(kidaspoly.pv);  //  2017.5
+        //exp2 = exp2.scale({ 'r': Math.exp(-ones) * Math.cos(-iones), 'i': Math.exp(-ones) * Math.sin(-iones) });
+        //expi2 = expi2.scale({ 'r': Math.exp(iones) * Math.cos(-ones), 'i': Math.exp(iones) * Math.sin(-ones) });
         var exp2 = exp.pow(-1)
         var expi2 = expi.pow(-1)
-        exp = exp.scale({ 'r': Math.exp(ones) * Math.cos(iones), 'i': Math.exp(ones) * Math.sin(iones) });
-        expi = expi.scale({ 'r': Math.exp(-iones) * Math.cos(ones), 'i': Math.exp(-iones) * Math.sin(ones) });
-        exp2 = exp2.scale({ 'r': Math.exp(-ones) * Math.cos(-iones), 'i': Math.exp(-ones) * Math.sin(-iones) });
-        expi2 = expi2.scale({ 'r': Math.exp(iones) * Math.cos(-ones), 'i': Math.exp(iones) * Math.sin(-ones) });
-        //alert(JSON.stringify(['ones', ones, 'itens', itens, 'tens', tens, 'exp', exp.whole, 'exp2', exp2.whole, 'exp.add(exp2)', exp.add(exp2), 'exp.add(exp2).scale({ r: .5, i: 0 })', exp.add(exp2).scale({ 'r': .5, 'i': 0 })]));
-        //alert(JSON.stringify(['expi', expi.whole, 'expi2', expi2.whole, 'expi.add(expi2)', expi.add(expi2), 'expi.add(expi2).scale({ r: .5, i: 0 })', expi.add(expi2).scale({ 'r': .5, 'i': 0 })]));
         if (fn == 'exp') var pv = exp;
         else if (fn == 'cis') var pv = expi;
         else if (fn == 'cos') var pv = expi.add(expi2).scale({ 'r': .5, 'i': 0 });

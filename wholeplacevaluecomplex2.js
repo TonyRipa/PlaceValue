@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2017
+// Date:    5/31/2017
 // WholePlaceValueComplex2 : a 2D datatype for representing base agnostic arithmetic via whole numbers whose digits are complex
 
 function wholeplacevaluecomplex2(man, trace) {
@@ -10,8 +10,15 @@ function wholeplacevaluecomplex2(man, trace) {
 }
 
 wholeplacevaluecomplex2[0] = new wholeplacevaluecomplex2([[0]]);
+wholeplacevaluecomplex2[1] = new wholeplacevaluecomplex2([[1]]);
+wholeplacevaluecomplex2.i = new wholeplacevaluecomplex2([[{ r: 0, i: 1 }]]);
+
+wholeplacevaluecomplex2.prototype.is0 = function () { return this.mantisa.length == 1 && this.mantisa[0].length == 1 && this.get(0, 0).r == 0 && this.get(0, 0).i == 0; }
+wholeplacevaluecomplex2.prototype.is1 = function () { return this.mantisa.length == 1 && this.mantisa[0].length == 1 && this.get(0, 0).r == 1 && this.get(0, 0).i == 0; }
 
 wholeplacevaluecomplex2.prototype.get = function (row, col) {
+    if (!isFinite(row)) { var s = 'wholeplacevaluecomplex2.get expects argument 1 (row) to be finite'; alert(s); throw new Error(s); }
+    if (!isFinite(col)) { var s = 'wholeplacevaluecomplex2.get expects argument 2 (col) to be finite'; alert(s); throw new Error(s); }
     return { 'r': this.getreal(row, col), 'i': this.getimag(row, col) };
 }
 
@@ -29,6 +36,7 @@ wholeplacevaluecomplex2.prototype.getreal = function (row, col) {
         if (row < 0 || man.length <= row) return 0;
         if (col < 0 || man[0].length <= col) return 0;
         //if (typeof man[row][col] == 'object') return Number(man[row][col].r);
+        //alert("get2: row=" + row + ", col=" + col + ", " + JSON.stringify(man));
         if (man[row][col] instanceof Object) return Number(man[row][col].r);
         //alert('g2: ' + JSON.stringify(man[row][col]) + ',' + Number(man[row][col]));
         return Number(man[row][col]);
@@ -176,6 +184,7 @@ wholeplacevaluecomplex2.lnn = function (x) { return wholeplacevaluecomplex2.ln(w
 wholeplacevaluecomplex2.arg = function (x) { return Math.atan2(x.i, x.r) }
 wholeplacevaluecomplex2.pow = function (x, y) { var c = wholeplacevaluecomplex2; var p = c.norm(x) == 0 ? { 'r': Math.pow(0, c.norm(y)), 'i': 0 } : c.mul({ 'r': Math.pow(c.norm(x), y.r) * Math.exp(-y.i * c.arg(x)), 'i': 0 }, c.exp({ 'r': 0, 'i': y.r * c.arg(x) + .5 * y.i * c.lnn(x).r })); return c.roun(p) }
 wholeplacevaluecomplex2.roun = function (x) { return { 'r': Math.round(1000 * x.r) / 1000, 'i': Math.round(1000 * x.i) / 1000 } }
+wholeplacevaluecomplex2.neg = function (x) { return { 'r': -x.r, 'i': -x.i }; } //  2017.5
 //alert(JSON.stringify(wholeplacevaluecomplex2.pow({ 'r': 2, 'i': 0 }, { 'r': 3, 'i': 0 })))
 wholeplacevaluecomplex2.prototype.add = function (other) { return this.f(function (x, y) { return wholeplacevaluecomplex2.add(x, y) }, other); }
 wholeplacevaluecomplex2.prototype.sub = function (other) { return this.f(function (x, y) { return wholeplacevaluecomplex2.sub(x, y) }, other); } // 1-1.1≠-.100009 2015.9
@@ -186,6 +195,7 @@ wholeplacevaluecomplex2.prototype.pointdivide = function (other) { return this.f
 wholeplacevaluecomplex2.prototype.pointpow = function (other) { return this.f2(function (x, y) { return wholeplacevaluecomplex2.pow(x, y) }, other); }
 wholeplacevaluecomplex2.prototype.clone = function () { return this.f(function (x) { return x }, this); }
 wholeplacevaluecomplex2.prototype.round = function () { return this.f(function (x) { return [x.r * Math.round(x.r * 1000) / 1000, x.i * Math.round(x.i * 1000) / 1000] }, this); }   // for sub 2015.9
+wholeplacevaluecomplex2.prototype.negate = function () { return this.f(function (x) { return wholeplacevaluecomplex2.neg(x) }, this); } //  2017.5
 
 wholeplacevaluecomplex2.prototype.f = function (f, other, trace) {
     //alert('wholeplacevaluecomplex2.prototype.f: ' + JSON.stringify(this) + JSON.stringify(other));
@@ -226,23 +236,33 @@ wholeplacevaluecomplex2.prototype.f2 = function (f, other, trace) {
 }
 
 wholeplacevaluecomplex2.prototype.pow = function (power) { // 2015.7
+    //alert("wpvc2: " + JSON.stringify(power) + " len=" + power.mantisa.length);
     var c = wholeplacevaluecomplex2;
     if (!(power instanceof wholeplacevaluecomplex2)) power = new wholeplacevaluecomplex2([[power]], 'wholeplacevaluecomplex2.prototype.pow1 >');
-    if (power.mantisa.length > 1) { alert('WPV2 >Bad Exponent = ' + power.tohtml()); return new wholeplacevaluecomplex2([['%']], 'wholeplacevaluecomplex2.prototype.pow2 >') }
+    if (power.is1()) return this.clone();
     if (this.mantisa.length == 1 && this.mantisa[0].length == 1) {  // check mantisa[0]     2015.7
-        //if (this.get(0, 0).r == 0 && this.get(0, 0).i == 0 && power.get(0, 0).r == 0 && power.get(0, 0).i == 0) return new wholeplacevaluecomplex2('%', 'wholeplacevaluecomplex2.prototype.pow3 >');
-        //else
-        return new c([[c.pow(this.get(0, 0), power.get(0, 0))]], 'wholeplacevaluecomplex2.prototype.pow4 >');
-        //else return new c([[c.mul({ 'r': Math.pow(c.norm(this.get(0)), power.getreal(0)) * Math.exp(-power.getimag(0) * c.arg(this.get(0))), 'i': 0 }, c.exp({ 'r': 0, 'i': power.getreal(0) * c.arg(this.get(0)) + .5 * power.getimag(0) * c.lnn(this.get(0)).r }))]], 'wholeplacevaluecomplex2.prototype.pow4 >');
+        //alert('a ' + JSON.stringify([this, power]));
+        ////if (this.get(0, 0).r == 0 && this.get(0, 0).i == 0 && power.get(0, 0).r == 0 && power.get(0, 0).i == 0) return new wholeplacevaluecomplex2('%', 'wholeplacevaluecomplex2.prototype.pow3 >');
+        ////else
+        //return new c([[c.pow(this.get(0, 0), power.get(0, 0))]], 'wholeplacevaluecomplex2.prototype.pow4 >');
+        return new c([[c.pow(this.get(0, 0), power.get(0, 0))]]).times10s(power.get(0, 1).r).times01s(power.get(0, 1).i).times01s(power.get(1, 0).r);
+        ////else return new c([[c.mul({ 'r': Math.pow(c.norm(this.get(0)), power.getreal(0)) * Math.exp(-power.getimag(0) * c.arg(this.get(0))), 'i': 0 }, c.exp({ 'r': 0, 'i': power.getreal(0) * c.arg(this.get(0)) + .5 * power.getimag(0) * c.lnn(this.get(0)).r }))]], 'wholeplacevaluecomplex2.prototype.pow4 >');
     }
-    if (power.mantisa != Math.round(power.mantisa)) { alert('WPV2 .Bad Exponent = ' + power.tohtml()); return new wholeplacevaluecomplex2([['%']], 'wholeplacevaluecomplex2.prototype.pow5 >') }
-    if (power.mantisa < 0) return new wholeplacevaluecomplex2([[0]], 'wholeplacevaluecomplex2.prototype.pow6 >');
-    if (power.mantisa == 0) return new wholeplacevaluecomplex2([[1]], 'wholeplacevaluecomplex2.prototype.pow7 >');
+    if (power.mantisa.length > 1) { alert('WPVC2 >Bad Exponent = ' + power.tohtml()); return new wholeplacevaluecomplex2([['%']], 'wholeplacevaluecomplex2.prototype.pow2 >') }
+    //if (this.mantisa.length == 1 && this.mantisa[0].length != 1) {  //  2017.5
+    //    alert('b ' + JSON.stringify([this, power]));
+    //    return new c([[c.pow(this.get(0, 0), power.get(0, 0))]]);
+    //}
+    if (power.get(0, 0).r != Math.round(power.get(0, 0).r)) { alert('WPV2 .Bad Exponent = ' + power.tohtml()); return new wholeplacevaluecomplex2([['%']], 'wholePVcomplex2.prototype.pow5 >') }
+    if (power.get(0, 0).r < 0) return new wholeplacevaluecomplex2([[0]], 'wholeplacevaluecomplex2.prototype.pow6 >');
+    if (power.get(0, 0).r == 0) return new wholeplacevaluecomplex2([[1]], 'wholeplacevaluecomplex2.prototype.pow7 >');
     return this.times(this.pow(power.get(0, 0).r - 1));
 }
 
-wholeplacevaluecomplex2.prototype.times10 = function() { this.mantisa.map(function(x) { return x.unshift(0) }) }           // Caller can pad w/o know L2R or R2L  2015.7 // 2D 2015.10
-wholeplacevaluecomplex2.prototype.times01 = function() { this.mantisa.unshift(new Array(this.mantisa[0].length).fill(0)) } // Caller can pad w/o know L2R or R2L  2015.7 // 2D 2015.10
+wholeplacevaluecomplex2.prototype.times10 = function () { this.mantisa.map(function (x) { return x.unshift(0) }) }           // Caller can pad w/o know L2R or R2L  2015.7 // 2D 2015.10
+wholeplacevaluecomplex2.prototype.times01 = function () { this.mantisa.unshift(new Array(this.mantisa[0].length).fill(0)) } // Caller can pad w/o know L2R or R2L  2015.7 // 2D 2015.10
+wholeplacevaluecomplex2.prototype.times10s = function (s) { var me = this.clone(); while (s-- > 0) me.mantisa.map(function (x) { return x.unshift(0) }); return me; }
+wholeplacevaluecomplex2.prototype.times01s = function (s) { var me = this.clone(); while (s-- > 0) me.mantisa.unshift(new Array(this.mantisa[0].length).fill(0)); return me; }
 
 wholeplacevaluecomplex2.prototype.times = function (other) {
     var h = this.mantisa.length;
@@ -296,9 +316,6 @@ wholeplacevaluecomplex2.prototype.divide = function (den) {
     function divideh(num, den, c) {
         if (c == 0) return new wholeplacevaluecomplex2([[0]], 'wholeplacevaluecomplex2.prototype.divide >');
         var d = wholeplacevaluecomplex2.getDegree(den);
-        //alert(JSON.stringify(shift(num, d.row, d.col)))
-        //alert(JSON.stringify(wholeplacevaluecomplex2.div({ 'r': 1, 'i': 0 }, d.val)))
-        //alert(JSON.stringify(shift(num, d.row, d.col).scale(wholeplacevaluecomplex2.div({ 'r': 1, 'i': 0 }, d.val))))
         var quotient = shift(num, d.row, d.col).scale(wholeplacevaluecomplex2.div({ 'r': 1, 'i': 0 }, d.val), 'wholeplacevaluecomplex2.prototype.divide >');
         if (d.val.r == 0 && d.val.i == 0) return quotient;
         var remainder = num.sub(quotient.times(den), 'wholeplacevaluecomplex2.prototype.divide >')

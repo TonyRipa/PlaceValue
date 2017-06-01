@@ -1,7 +1,7 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 7/31/2016
+   Author:  Anthony John Ripa
+   Date:    5/31/2017
    Demo for Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 -->
 
@@ -9,7 +9,7 @@
 <html>
 <head>
     <title>Polynomial Arithmetic</title>
-    <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
@@ -67,7 +67,6 @@
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    //var b = polynomial.parse(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
                     var b = polynomial.parse(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
                 }
             }

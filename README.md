@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2017
+Date : 5/31/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -278,6 +278,16 @@ It can be differentiated by pointwise multiplication by <i>s</i>. Yielding:
 
 This ComplexPlaceValue is then rendered by ComplexExponential.js as -sin(x)+exp(x).
 
+SparseComplexExponential
+-------------------------
+<i>SparseComplexExponential</i> is a data-type optimized for Complex Sparse Exponentials; an application of the SparsePlaceValueComplex datatype.
+
+If SparseComplexExponential wants to calculate exp(x) * cis(y), then it asks SparsePlaceValueComplex to calculate:
+
+1E1 * 1E0,i = 1E1,i
+
+SparseComplexExponential then formats SparsePlaceValueComplex's result as exp(x+(i)y).
+
 CAS
 -----------
 
@@ -416,7 +426,7 @@ Dependencies
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
 <tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
-<tr><td>Complex Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Complex Sparse Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

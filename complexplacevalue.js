@@ -1,19 +1,27 @@
 ﻿
-// Author : Anthony John Ripa
-// Date : 1/29/2016
+// Author:  Anthony John Ripa
+// Date:    5/31/2017
 // ComplexPlaceValue : a datatype for representing base agnostic arithmetic via complex numbers whose digits are complex
 
 function complexplacevalue(whole, exp) {
-    if (arguments.length < 2) alert('complexplacevalue expects 2 arguments');
-    if (!(whole instanceof wholeplacevaluecomplex2)) alert('complexplacevalue expects argument 1 (whole) to be a wholeplacevaluecomplex2');
-    if (!(Array.isArray(exp))) alert('complexplacevalue expects argument 2 (exp) to be an array but found ' + typeof exp);
+    if (arguments.length < 2) { var s = 'complexplacevalue expects 2 arguments'; alert(s); throw new Error(s); }
+    if (!(whole instanceof wholeplacevaluecomplex2)) { var s = 'complexplacevalue expects argument 1 (whole) to be a wpvcomplex2 not ' + typeof whole + ' ' + whole; alert(s); throw new Error(s); }
+    if (!(Array.isArray(exp))) { var s = 'complexplacevalue expects argument 2 (exp) to be an array but found ' + typeof exp + ' ' + exp; alert(s); throw new Error(s); }
+    if (exp[1] == null) { var s = 'complexplacevalue expects argument 2 (exp) to be an array of numbers but found ' + typeof exp + ' ' + exp; alert(s); throw new Error(s); }
     this.whole = whole
     this.exp = exp
 }
 
-complexplacevalue[0] = new complexplacevalue(new wholeplacevaluecomplex2([[0]]), [0, 0])
+complexplacevalue[0] = new complexplacevalue(wholeplacevaluecomplex2[0], [0, 0]);
+complexplacevalue[1] = new complexplacevalue(wholeplacevaluecomplex2[1], [0, 0]);
+complexplacevalue.i = new complexplacevalue(wholeplacevaluecomplex2.i, [0, 0]);
+
+complexplacevalue.prototype.is0 = function () { return this.exp[0] == 0 && this.exp[1] == 0 && this.whole.is0(); }  //  2017.5
+complexplacevalue.prototype.is1 = function () { return this.exp[0] == 0 && this.exp[1] == 0 && this.whole.is1(); }  //  2017.5
 
 complexplacevalue.prototype.get = function (r, c) {       // 2016.1
+    if (!isFinite(r)) { var s = 'complexplacevalue.get expects argument 1 (r) to be finite'; alert(s); throw new Error(s); }
+    if (!isFinite(c)) { var s = 'complexplacevalue.get expects argument 2 (c) to be finite'; alert(s); throw new Error(s); }
     //alert(JSON.stringify(['complexplacevalue.prototype.get', 'r', r, 'c', c, 'this.exp[0]', this.exp[0], 'this.exp[1]', this.exp[1]]))
     return this.whole.get(r - this.exp[1], c - this.exp[0]);
 }
@@ -96,16 +104,41 @@ complexplacevalue.prototype.pointpow = function (power) { // 2016.1
 complexplacevalue.prototype.pow = function (power) {	// 2015.8
     //alert(power);
     //alert(JSON.stringify(power));
-    if (power instanceof complexplacevalue) power = power.whole;   // laurent calls wpv    2015.8
-    if (!(power instanceof wholeplacevaluecomplex2)) power = new wholeplacevaluecomplex2([[power]], 'complexplacevalue.prototype.pow1 >');
-    if (power.get(0, 0) < 0) return (new complexplacevalue(1)).divide(this.pow(new complexplacevalue(-power.get(0, 0)))); // 2015.8
-    if (power.getimag(0, 0) == 1) return this.powi();
-    var whole = this.whole.pow(power);
-    var exp = [this.exp[0] * power.getreal(0, 0), this.exp[1] * power.getreal(0, 0)];    // exp*pow not exp^pow  2015.9 // exp is 2D    2015.10
+    if (typeof power == 'number') power = new wholeplacevaluecomplex2([[power]], 'complexplacevalue.prototype.pow1 >');
+    if (power instanceof wholeplacevaluecomplex2) power = new complexplacevalue(power, [0, 0]);  //  2017.5
+    power = power.clone();
+    //if (power.is1()) { return this.clone(); }   //  2017.5
+    //if (power instanceof complexplacevalue) power = power.whole;   // laurent calls wpv    2015.8
+    //if (power.get(0, 0) < 0) return (new complexplacevalue(1)).divide(this.pow(new complexplacevalue(-power.get(0, 0)))); // 2015.8
+    //if (power.getimag(0, 0) == 1) return this.powi();
+    //var whole = this.whole.pow(power);
+    //var exp = [this.exp[0] * power.getreal(0, 0), this.exp[1] * power.getreal(0, 0)];    // exp*pow not exp^pow  2015.9 // exp is 2D    2015.10
+    if (JSON.stringify(power.exp) == JSON.stringify([0, 0])) {
+        var a = power.whole.getreal(0, 0);
+        var b = power.whole.getimag(0, 0);
+        //alert('1 ' + JSON.stringify([this, power, a, b]));
+        //alert(JSON.stringify(new complexplacevalue(power.whole.negate(), power.exp)));
+        if (a < 0 && b == 0) return (complexplacevalue[1]).divide(this.pow(power.negate()));   //  2017.5
+        //if (b == 1) return this.pow(power.sub(complexplacevalue.i)).times(this.powi()); //  2017.5
+        if (a == 0 && b != 0 && power.whole.mantisa[0].length == 1) return this.pow(new complexplacevalue(new wholeplacevaluecomplex2([[{ r: b, i: 0 }]]), [0, 0])).powi(); //  2017.5
+        if (a != 0 && b != 0) return this.pow(new complexplacevalue(new wholeplacevaluecomplex2([[{ r: b, i: 0 }]]), [0, 0])).powi().times(this.pow(new complexplacevalue(new wholeplacevaluecomplex2([[{ r: a, i: 0 }]]), [0, 0]))); //  2017.5
+        var exp = [this.exp[0] * power.whole.getreal(0, 0), this.exp[1] * power.whole.getreal(0, 0)];    // exp*pow not exp^pow  2015.9 // exp is 2D    2015.10
+        //alert(JSON.stringify([power.whole.get(1, 0), power.whole.get(0, 1)]));
+        for (var i = power.whole.getreal(1, 0) ; i < 0; i++) { power.whole = power.whole.add(new wholeplacevaluecomplex2([[], [1]])); exp[1]-- }
+        for (var i = power.whole.getreal(0, 1) ; i < 0; i++) { power.whole = power.whole.add(new wholeplacevaluecomplex2([[0, 1]])); exp[0]-- }
+        for (var i = power.whole.getimag(0, 1) ; i < 0; i++) { power.whole = power.whole.add(new wholeplacevaluecomplex2([[0, { r: 0, i: 1 }]])); exp[1]-- }
+        var whole = this.whole.pow(power.whole);
+    } else if (JSON.stringify(power.exp) == JSON.stringify([1, 0])) {
+        //alert(2)
+        if (JSON.stringify(this.exp) != JSON.stringify([0, 0])) { alert('CPV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return complexplacevalue.parse('%') }
+        var whole = new wholeplacevaluecomplex2([[1]]); //  2017.5
+        //alert(JSON.stringify([power, power.whole, power.get(0, 1)]));
+        var exp = [power.get(0, 1).r, power.get(0, 1).i];               //  2017.5  (row,col)=(0,1)
+    } else { alert('CPV >Bad Exponent = ' + power.toString()); return new complexplacevalue(new wholeplacevalue2([[NaN]]), [0, 0]) }
     return new complexplacevalue(whole, exp);
 }
 
-complexplacevalue.prototype.powi = function () {
+complexplacevalue.prototype.powi = function () {//alert('i')
     //return new complexplacevalue(new wholeplacevaluecomplex2([[0]]), [0, 0]);
     var me = this.clone();
     while (me.exp[0] > 0) { me.exp[0]--; me.whole.times10() }
@@ -138,6 +171,7 @@ complexplacevalue.align = function (a, b) {    // rename pad align 2015.9
     alignhelper(a, b);
     alignhelper(b, a);
     function alignhelper(a, b) {
+        if (b.is0()) { b.exp[0] = a.exp[0]; b.exp[1] = a.exp[1]; return; }
         while (a.exp[0] > b.exp[0]) {
             a.exp[0]--;
             a.whole.times10(); // Delegate Shift to Whole  2015.7
@@ -147,6 +181,10 @@ complexplacevalue.align = function (a, b) {    // rename pad align 2015.9
             a.whole.times01(); // Delegate Shift to Whole  2015.7
         }
     }
+}
+
+complexplacevalue.prototype.negate = function () {
+    return new complexplacevalue(this.whole.negate(), this.exp.slice())
 }
 
 complexplacevalue.prototype.times = function (top) {
@@ -221,8 +259,6 @@ complexplacevalue.prototype.eval = function (base) {	// 2015.8
         //var sum = 0;
         var sum = { 'r': 0, 'i': 0 };
         for (var row = 0; row < this.whole.mantisa.length; row++) {
-            //alert(JSON.stringify([this.whole.get(row, col), base.whole.pow(row + this.exp[1]).get(0, 0)]));
-            //sum += this.whole.get(row, col) * Math.pow(base, row + this.exp[1]);
             if (this.whole.get(row, col).r != 0 || this.whole.get(row, col).i != 0) // Only add non-zero digits; Prevents 0*∞=%.    2016.1
                 sum = c.add(sum, c.mul(this.whole.get(row, col), base.whole.pow(row + this.exp[1]).get(0, 0))); // Offset pow by exp    2015.11 // UnOffset get 2015.12
         }

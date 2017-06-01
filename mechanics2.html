@@ -1,14 +1,14 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 6/30/2016
+   Author:  Anthony John Ripa
+   Date:    5/31/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
 <html>
 <head>
     <title>PlaceValue Mechanics</title>
-    <script type="text/javascript" src='http://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
     </script>
@@ -83,7 +83,6 @@
             s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
             s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
             if (f == complexexponential) s = s1 + '+' + s2;
-            //s1 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*cis(2t)+cis(t)-cis(-t)-2*cis(-2t))';
             s2 = '(cis(2t)+cis(t)+1+cis(-t)+cis(-2t))(2*cis(2x)+cis(x)-cis(-x)-2*cis(-2x))';
             if (f == fourier2) s = s2 //+ '+' + s2;
             $('#a').val($('#func').val());

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/22/2016
+// Date:    5/31/2017
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
@@ -59,18 +59,17 @@ fourier.parse = function (strornode) {
         var kidaspoly = laurent.parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
-        var ten = new placevaluecomplex(new wholeplacevaluecomplex([new complex(1)]), 1);    //  2016.6
+        var ten = placevaluecomplex.parse(10);      //  2017.5
         var tens = kidaspoly.pv.get(1).toreal();    //  2016.7
-        var one = kidaspoly.pv.get(0).toreal();     //  2016.7
-        var exp = ten.pow(tens)
-        if (one) exp = exp.scale(Math.exp(one));
-        var exp2 = ten.pow(-tens)
-        //alert(exp2)
-        if (one) exp2 = exp2.scale(1 / Math.exp(one));
-        //alert([exp, exp2]);
-        if (fn == 'cis') var pv = exp;
-        else if (fn == 'cos') var pv = exp.add(exp2).scale(new complex(.5));
-        else if (fn == 'sin') var pv = exp.sub(exp2).scale(new complex(0, -.5));
+        var ones = kidaspoly.pv.get(0).toreal();    //  2016.7
+        var expi = ten.pow(tens)
+        if (ones) expi = expi.scale(new complex(Math.cos(ones), Math.sin(ones))); //  2017.5
+        //var expi = placevaluecomplex.parse('(2.718)').pow(placevaluecomplex.parse('i')).pow(placevaluecomplex.parse(kidaspoly.pv.toString())) //  2017.5
+        //var exp2 = ten.pow(-tens); if (ones) exp2 = exp2.scale(1 / Math.exp(ones));
+        var expi2 = expi.pow(-1);                     //  2017.5
+        if (fn == 'cis') var pv = expi;
+        else if (fn == 'cos') var pv = expi.add(expi2).scale(new complex(.5));
+        else if (fn == 'sin') var pv = expi.sub(expi2).scale(new complex(0, -.5));
         else alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');    //  Check   2015.12
         return new fourier(base, pv);
     } else {
@@ -177,7 +176,7 @@ fourier.toStringXbase = function (pv, base) {                        // added na
     console.log('fourier.toStringXbase: x=' + x);
     if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
         x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return fourier.toStringXbase(new placevaluecomplex(new wholeplacevaluecomplex([x]), 0), base);  // added namespace  2015.7
+        return fourier.toStringXbase(new placevaluecomplex(new wholeplacevaluecomplex(x), 0), base);    //  2017.5  [x] -> x
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
