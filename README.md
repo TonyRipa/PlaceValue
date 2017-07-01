@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 5/31/2017
+Date : 6/30/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -58,9 +58,17 @@ SparsePlaceValue1
 ------------------------
 <i>SparsePlaceValue1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
+SparsePlaceValueRational
+------------------------
+<i>SparsePlaceValueRational</i> is a version of SparsePlaceValue1 that uses rational instead of real digits. This gives all the benefits of SparcePlaceValue1 with none of the round off errors.
+
 PlaceValueRatio
 ------------------
-<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via euclid's algorithm 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
+<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via euclid's algorithm to 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
+
+SparsePlaceValueRatio
+------------------
+<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRationals. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E½+1 .
 
 Polynomial
 -------------
@@ -69,16 +77,6 @@ Polynomial
 The PlaceValue data-type is particularly well-suited to polynomial arithmetic. Polynomial arithmetic uses a placeholder x. PlaceValue arithmetic dispenses with this placeholder.
 
 <i>polynomial.html</i> is a demo for polynomial.js.
-
-Polynomial Ratio
--------------
-<i>polynomialratio.js</i> is a datatype for representing ratios of polynomials (also known as rational functions); an application of the PlaceValueRatio datatype.
-
-If PolynomialRatio wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+6), then it asks PlaceValueRatio to calculate:
-
-1<s>4</s>4<s>3</s>⑭ / 18⑫⑰6 = 1<s>5</s>7/173
-
-PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
 
 SparsePolynomial
 ------------------------
@@ -95,6 +93,26 @@ If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceVal
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
 SparsePolynomial then formats SparsePlaceValue's result as x + 2x^.5 + 1.
+
+Polynomial Ratio
+-------------
+<i>polynomialratio.js</i> is a datatype for representing ratios of polynomials (also known as rational functions); an application of the PlaceValueRatio datatype.
+
+If PolynomialRatio wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+6), then it asks PlaceValueRatio to calculate:
+
+1<s>4</s>4<s>3</s>⑭ / 18⑫⑰6 = 1<s>5</s>7/173
+
+PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
+
+Sparse Polynomial Ratio
+-------------
+<i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio datatype.
+
+If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio to calculate:
+
+1E½-1 / 1E1-1 = 1 / 1E½+1
+
+SparsePolynomialRatio then formats SparsePlaceValueRatio's result as 1/(x^½+1).
 
 Multinomial
 -------------
@@ -426,6 +444,7 @@ Dependencies
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
 <tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
+<tr><td>SparsePolynomialRatio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Complex Sparse Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

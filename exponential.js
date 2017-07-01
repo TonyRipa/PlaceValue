@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    6/30/2017
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 function exponential(base, pv) {
@@ -40,7 +40,6 @@ exponential.parse = function (strornode) {
         } else if (node.fn == 'unaryPlus') {
             var c = new exponential(1, new placevalue(wholeplacevalue.parse(0), 0)).add(a);
         } else {
-            //var b = new exponential(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = exponential.parse(kids[1]);   // exponential handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }

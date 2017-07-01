@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
-// PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
+// Date:    6/30/2017
+// PlaceValue: a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
     if (arguments.length < 2) alert('placevalue expects 2 arguments');
@@ -140,14 +140,15 @@ placevalue.prototype.pow = function (power) {	// 2015.8
 }
 
 placevalue.align = function (a, b) {    // rename pad align 2015.9
-    if (arguments.length < 3) offset = 0;
+    //if (arguments.length < 3) offset = 0;
+    if (a.whole.is0()) a.exp = b.exp;   //  2017.6
     while (a.exp > b.exp) {
         a.exp--;
-        a.whole.times10();    // Delegate Shift to Whole  2015.7
+        a.whole.times10();              // Delegate Shift to Whole  2015.7
     }
     while (b.exp > a.exp) {
         b.exp--;
-        b.whole.times10();    // Delegate Shift to Whole  2015.7
+        b.whole.times10();              // Delegate Shift to Whole  2015.7
     }
 }
 

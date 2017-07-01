@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 5/7/2017
+   Date : 6/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -10,13 +10,36 @@
 <head>
     <meta charset="utf-8">
     <title>Determinant</title>
+    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+    </script>
+    <script type="text/javascript" src='rational.js'></script>
+    <script type="text/javascript" src='wholeplacevalue.js'></script>
     <style>
 	    input {width:30px}
 	    td {width:15px}
     </style>
-    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
-    <script type="text/javascript" src='rational.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
+</head>
+<body>
+    <center><h1>Determinant</h1></center>
+    <table>
+	    <tr>
+		    <td><input value='2' id='a'></td>
+		    <td><input value='0' id='b'></td>
+		    <td>x</td>
+		    <td rowspan='2'>=</td>
+		    <td><input value='6' id='e'></td>
+	    </tr>
+	    <tr>
+		    <td><input value='0' id='c'></td>
+		    <td><input value='0' id='d'></td>
+		    <td>y</td>
+		    <td><input value='0' id='f'></td>
+	    </tr>
+    </table>
+    <button onclick='cramer()'>Solve Ax=b</button>
+    <div id='tv'></div>
     <script>
         function cramer() {
             var a = $('#a').val();
@@ -54,25 +77,5 @@
             }
         }
     </script>
-</head>
-<body>
-<center><h1>Determinant</h1></center>
-<table>
-	<tr>
-		<td><input value='2' id='a'></td>
-		<td><input value='0' id='b'></td>
-		<td>x</td>
-		<td rowspan='2'>=</td>
-		<td><input value='6' id='e'></td>
-	</tr>
-	<tr>
-		<td><input value='0' id='c'></td>
-		<td><input value='0' id='d'></td>
-		<td>y</td>
-		<td><input value='0' id='f'></td>
-	</tr>
-</table>
-<button onclick='cramer()'>Solve Ax=b</button>
-<div id='tv'></div>
 </body>
 </html>

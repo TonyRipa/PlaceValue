@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
-// WholePlaceValue : a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
+// Date:    6/30/2017
+// WholePlaceValue: a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
 var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v === 1 / 0) ? '∞' : (v === -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }  //  2017.2  ===
@@ -132,8 +132,8 @@ wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
 }
 
 wholeplacevalue.prototype.times10 = function () { this.mantisa.unshift(new rational(0)) } // Caller can pad w/out knowing L2R or R2L  2015.7
-wholeplacevalue.prototype.div10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me; }  // 2016.5
-wholeplacevalue.prototype.times10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.unshift(new rational(0)); return me; }  // 2017.5
+wholeplacevalue.prototype.div10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }  // 2017.6    clone
+wholeplacevalue.prototype.times10s = function (s) { if (s < 0) return this.div10s(-s); me = this.clone(); while (s-- > 0) me.mantisa.unshift(new rational(0)); return me; }  // 2017.6
 
 wholeplacevalue.prototype.times = function (top) {
     //if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    5/12/2017
+   Date:    6/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -12,11 +12,11 @@
     <title>PlaceValue Calculator</title>
     <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
-        window.jQuery || document.write("<script src='../../js/jquery.js'><" + "/script>")
+        window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
     <script type="text/javascript">
-        window.math || document.write("<script src='../../js/math.js'><" + "/script>")
+        window.math || document.write("<script src='../js/math.js'><" + "/script>")
     </script>
     <script type="text/javascript" src='rational.js'></script>
     <script type="text/javascript" src='complex.js'></script>
@@ -48,6 +48,9 @@
     <script src='sparseplacevaluecomplex.js'></script>
     <script src='complexsparsemultinomial.js'></script>
     <script src='sparsecomplexexponential.js'></script>
+    <script src='sparseplacevaluerational.js'></script>
+    <script src='sparseplacevalueratio.js'></script>
+    <script src='sparsepolynomialratio.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -77,11 +80,14 @@
             <option>WholePlaceValueComplex</option>
             <option>PlaceValueComplex</option>
             <option>SparsePlaceValueComplex</option>
+            <option>SparsePlaceValueRational</option>
+            <option>SparsePlaceValueRatio</option>
         </optgroup>
         <optgroup label="Applications">
             <option>Polynomial</option>
-            <option>Polynomial Ratio</option>
             <option>Sparse Polynomial</option>
+            <option>Polynomial Ratio</option>
+            <option>Sparse Polynomial Ratio</option>
             <option>Laurent Polynomial</option>
             <option>Multinomial</option>
             <option>Laurent Multinomial</option>
@@ -102,7 +108,7 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, polynomial, polynomialratio, sparsepolynomial, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
+            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, polynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
@@ -123,7 +129,7 @@
             $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
-        function clean() {
+        function clean() {//return
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');
