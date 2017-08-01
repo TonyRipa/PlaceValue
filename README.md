@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2017
+Date : 7/31/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -58,17 +58,17 @@ SparsePlaceValue1
 ------------------------
 <i>SparsePlaceValue1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
-SparsePlaceValueRational
+SparsePlaceValueRational1
 ------------------------
-<i>SparsePlaceValueRational</i> is a version of SparsePlaceValue1 that uses rational instead of real digits. This gives all the benefits of SparcePlaceValue1 with none of the round off errors.
+<i>SparsePlaceValueRational1</i> is a version of SparsePlaceValue1 that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue1 with none of the round off errors.
 
 PlaceValueRatio
 ------------------
 <i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via euclid's algorithm to 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
 
-SparsePlaceValueRatio
+SparsePlaceValueRatio1
 ------------------
-<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRationals. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E½+1 .
+<i>SparsePlaceValueRatio1</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRational1s. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio1 would handle that as 1 / 1E1+1. SparsePlaceValueRatio1 can handle more exotic ratios such as 1 / 1E½+1 .
 
 Polynomial
 -------------
@@ -199,6 +199,24 @@ If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue t
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
 SparseMultinomial then formats SparsePlaceValue's result as x*z + y*z.
+
+SparsePlaceValueRational
+------------------------
+<i>SparsePlaceValueRational</i> is a version of SparsePlaceValue that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue with none of the round off errors.
+
+SparsePlaceValueRatio
+------------------
+<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRationals. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 .
+
+Sparse Multinomial Ratio
+-------------
+<i>sparsemultinomialratio.js</i> is a sparse version of Multinomial Ratio; an application of the SparsePlaceValueRatio datatype.
+
+If SparseMultinomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it asks SparsePlaceValueRatio to calculate:
+
+1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
+
+SparseMultinomialRatio then formats SparsePlaceValueRatio's result as (x*y^-1+1)/(x*y^-1-1).
 
 Exponential
 -----------
@@ -444,7 +462,8 @@ Dependencies
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
 <tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
-<tr><td>SparsePolynomialRatio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
+<tr><td>SparsePolynomialRatio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>SparseMultinomialRatio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Complex Sparse Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

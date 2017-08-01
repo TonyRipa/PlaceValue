@@ -1,13 +1,14 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/30/2017
+// Date:    7/31/2017
 // Rational: A data-type for representing Rational Numbers
 
 function rational(num, den) {   //  2016.7
     if (arguments.length < 1) alert('Rational expects 1 or 2 arguments');
     if (arguments.length < 2) den = 1;
-    if (!(typeof num == 'number' || num instanceof Number)) { console.trace(); alert('Rational expects argument 1 (num) to be a Number but found ' + typeof num + ' ' + JSON.stringify(num)); }
+    if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
     if (!(typeof den == 'number' || den instanceof Number)) { console.trace(); alert('Rational expects argument 2 (den) to be a Number but found ' + typeof den + ' ' + JSON.stringify(den)); }
+    if (isNaN(num)) { var s = 'Rational expects argument 1 (num) to be a Number but found NaN: ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }  //  2017.7
     this.n = num;
     this.d = den;
     pulloutcommonconstants(this);
@@ -93,7 +94,8 @@ rational.regex = function () {  //  2017.6
     var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
     var num = '(' + literal + '|' + dec + ')';
     var frac = '(' + num + '/' + num + '|' + num + ')';
-    return frac;
+    var signfrac = '(' + '[\+\-]?' + frac + ')';
+    return signfrac;
 }
 
 rational.prototype.toreal = function () { return this.n / this.d; }
@@ -108,16 +110,15 @@ rational.prototype.tohtml = function (short) {
 }
 
 rational.prototype.toString = function (sTag, long) {   //  2015.11 sTag    2017.6  long
+    if (long) return this.d == 1 ? this.n : this.n + '/' + this.d;  //  2017.7
     var NEGBEG = long ? '-' : sTag ? '<s>' : '';
     var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
-    var candidate1 = this.digitpair(NEGBEG, NEGEND, true)//.toString().replace('(', '').replace(')', '');
-    var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, true).toString().replace('(0.', '(.').replace('(-0.', '(-.');//alert([candidate1,candidate2])
+    var candidate1 = this.digitpair(NEGBEG, NEGEND, long)//.toString().replace('(', '').replace(')', '');
+    var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString().replace('(0.', '(.').replace('(-0.', '(-.');//alert([candidate1,candidate2])
     return (candidate1.length <= candidate2.replace('<s>', '').replace('</s>', '').length) ? candidate1 : candidate2;
-    //if (sTag) return this.digitpair('<s>', '</s>', true, long);
-    //return this.digitpair('', String.fromCharCode(822), false, long);
 }
 
-rational.prototype.digitpair = function (NEGBEG, NEGEND, fraction) {  // 2015.12
+rational.prototype.digitpair = function (NEGBEG, NEGEND, long) {  // 2015.12
     // 185  189  777 822 8315   9321
     // ^1   1/2  ^   -   ^-     10
     var IMAG = String.fromCharCode(777);
@@ -126,11 +127,11 @@ rational.prototype.digitpair = function (NEGBEG, NEGEND, fraction) {  // 2015.12
     var den = digit[1];
     var a = Math.round(num * 1000) / 1000
     var b = Math.round(den * 1000) / 1000
-    if (.99 < den && den < 1.01) return this.digithelp(num, NEGBEG, NEGEND, true);
+    if (.99 < den && den < 1.01) return this.digithelp(num, NEGBEG, NEGEND, long);
     return '(' + a + '/' + b + ')';
 }
 
-rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 2015.11
+rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, long) { //  2017.7  long
     // 185  189  777 822 8315   9321
     // ^1   1/2  ^   -   ^-     10
     var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
@@ -138,15 +139,14 @@ rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 
     var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
     var cons = { '-0.159': NEGBEG + 'τ' + NEGEND + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
     var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
-    //var digit = i < 0 ? 0 : this.mantisa[this.mantisa.length - 1 - i]; // R2L  2015.7
     if (typeof (digit) == 'string') return digit;
     var rounddigit = Math.round(digit * 1000) / 1000;
     if (isNaN(digit)) return '%';
     if (digit == -1 / 0) return NEGBEG + '∞' + NEGEND;
-    if (num[-digit]) return NEGBEG + num[-digit] + NEGEND;
+    if (!long && num[-digit]) return NEGBEG + num[-digit] + NEGEND;
     if (digit < -9 && isFinite(digit)) return '(' + rounddigit + ')';
-    if (-1 < digit && digit < 0) {
-        if (fraction) if (frac[-rounddigit]) return NEGBEG + frac[-rounddigit] + NEGEND;
+    if (!long) if (-1 < digit && digit < 0) {
+        if (frac[-rounddigit]) return NEGBEG + frac[-rounddigit] + NEGEND;
         if (cons[rounddigit]) return cons[rounddigit];
         if (0 < -digit && -digit < .5) {                // prevents 1/1.041666666           2016.7
             var flip = -Math.round(1 / digit);          
@@ -155,7 +155,7 @@ rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 
     }
     if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? NEGBEG + Math.abs(digit).toString() + NEGEND : '(' + rounddigit + ')';
     if (digit == 0) return '0';
-    if (0 < digit && digit < 1) {
+    if (!long) if (0 < digit && digit < 1) {
         if (frac[rounddigit]) return frac[rounddigit];
         if (cons[rounddigit]) return cons[rounddigit];	// cons b4 flip prevents .159=6^-1	2015.8
         if (0 < digit && digit < .5) {                  // prevents 1/1.1                   2015.9
@@ -163,9 +163,9 @@ rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 
             if (flip < 100 && Math.abs(Math.abs(1 / digit) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
         }
     }
-    if (cons[rounddigit]) return cons[rounddigit];
+    if (!long) if (cons[rounddigit]) return cons[rounddigit];
     if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? digit : '(' + rounddigit + ')';
-    if (num[digit]) return num[digit]
+    if (!long) if (num[digit]) return num[digit]
     if (9 < digit && isFinite(digit)) return '(' + rounddigit + ')';
     if (digit == 1 / 0) return '∞';
     return 'x';
@@ -197,6 +197,7 @@ rational.prototype.clone = function () { return new rational(this.n, this.d); } 
 
 rational.prototype.pow = function (other) {
     //if (other instanceof rational && other.isint()) return new rational(Math.pow(this.num, other.num), Math.pow(this.den, other.num));
+    if (other instanceof rational && other.negate().is1()) return new rational(this.d, this.n); //  2017.7
     if (other instanceof rational) other = other.toreal();
     return new rational(Math.pow(this.toreal(), other));
 }

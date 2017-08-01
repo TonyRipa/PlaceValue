@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2017
+// Date:    7/31/2017
 // SparsePlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValueRationals
 
 function sparseplacevalueratio(num, den) {
@@ -97,14 +97,17 @@ sparseplacevalueratio.prototype.reduce = function () {    //  2016.5
         me.den = den.unscale(g);
     }
 
-    function gcdpv(a, b) {
+    function gcdpv(a, b, count) {
+        if (arguments.length < 3) count = 0;
+        count++;
+        if (count == 10) return sparseplacevaluerational.parse(1);  //  2017.7
         //if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
-        if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b); }
+        if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b, count); }
         if (a.is0()) { "alert(2)"; return b; }
         if (b.is0()) { "alert(3)"; return a; }
-        if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
-        if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
-        "alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a);
+        if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
+        if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
+        "alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a, count);
     }
 }
 

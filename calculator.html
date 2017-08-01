@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    6/30/2017
+   Date:    7/31/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -48,9 +48,12 @@
     <script src='sparseplacevaluecomplex.js'></script>
     <script src='complexsparsemultinomial.js'></script>
     <script src='sparsecomplexexponential.js'></script>
+    <script src='sparseplacevaluerational1.js'></script>
+    <script src='sparseplacevalueratio1.js'></script>
+    <script src='sparsepolynomialratio.js'></script>
     <script src='sparseplacevaluerational.js'></script>
     <script src='sparseplacevalueratio.js'></script>
-    <script src='sparsepolynomialratio.js'></script>
+    <script src='sparsemultinomialratio.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -80,6 +83,8 @@
             <option>WholePlaceValueComplex</option>
             <option>PlaceValueComplex</option>
             <option>SparsePlaceValueComplex</option>
+            <option>SparsePlaceValueRational1</option>
+            <option>SparsePlaceValueRatio1</option>
             <option>SparsePlaceValueRational</option>
             <option>SparsePlaceValueRatio</option>
         </optgroup>
@@ -92,6 +97,7 @@
             <option>Multinomial</option>
             <option>Laurent Multinomial</option>
             <option>Sparse Multinomial</option>
+            <option>Sparse Multinomial Ratio</option>
             <option>Complex Laurent</option>
             <option>Complex Sparse Multinomial</option>
             <option>Exponential</option>
@@ -103,15 +109,15 @@
     </select>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-        <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>^</option><option>|</option><option>&otimes;</option><option>&#8856;</option><option>&#8854;</option><option>&oplus;</option><option>&#9853;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo">&nbsp;</td></tr>
+        <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>^</option><option>|</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo">&nbsp;</td></tr>
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">&uarr;</button></td><td id="co"></td></tr>
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, polynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
+            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, sparseplacevaluerational1, sparseplacevalueratio1, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, polynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
+            var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
             function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
             function output(a, b, c) {
@@ -129,7 +135,7 @@
             $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
-        function clean() {//return
+        function clean() {return
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');
