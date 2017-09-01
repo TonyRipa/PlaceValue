@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
-// AbstractPolynomial : Base Class for SparseMultinomial & ComplexSparseMultinomial
+// Date:    8/31/2017
+// AbstractPolynomial : Base Class for SparseMultinomial, ComplexSparseMultinomial & AbstractPolynomial1
 
 class abstractpolynomial {
 

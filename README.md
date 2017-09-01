@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2017
+Date : 8/31/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -80,19 +80,23 @@ The PlaceValue data-type is particularly well-suited to polynomial arithmetic. P
 
 SparsePolynomial
 ------------------------
-<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue datatype.
+<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue1 datatype.
 
-If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue to calculate:
+If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E100 + 1) ^ 2 = 1E200 + 2E100 + 1
 
-SparsePolynomial then formats SparsePlaceValue's result as x^200 + 2x^100 + 1.
+SparsePolynomial then formats SparsePlaceValue1's result as x^200 + 2x^100 + 1.
 
-If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue to calculate:
+If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
-SparsePolynomial then formats SparsePlaceValue's result as x + 2x^.5 + 1.
+SparsePolynomial then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
+
+SparsePolynomialRational
+------------------------
+<i>SparsePolynomialRational</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValueRational1 datatype. SparsePolynomialRational is like SparsePolynomial except that it uses rational instead of real. Whereas for SparsePolynomial, (x^(1/3))^3 returns x^.999 due to rounding, SparsePolynomialRational returns the exact value of x.
 
 Polynomial Ratio
 -------------
@@ -106,13 +110,13 @@ PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
 
 Sparse Polynomial Ratio
 -------------
-<i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio datatype.
+<i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio1 datatype.
 
-If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio to calculate:
+If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio1 to calculate:
 
 1E½-1 / 1E1-1 = 1 / 1E½+1
 
-SparsePolynomialRatio then formats SparsePlaceValueRatio's result as 1/(x^½+1).
+SparsePolynomialRatio then formats SparsePlaceValueRatio1's result as 1/(x^½+1).
 
 Multinomial
 -------------
@@ -216,7 +220,7 @@ If SparseMultinomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it a
 
 1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
 
-SparseMultinomialRatio then formats SparsePlaceValueRatio's result as (x*y^-1+1)/(x*y^-1-1).
+SparseMultinomialRatio then formats SparsePlaceValueRatio's result as (x*y^-1+1) / (x*y^-1-1).
 
 Exponential
 -----------
@@ -228,6 +232,14 @@ If Exponential wants to calculate sinh(x)+cosh(x), then it asks PlaceValue to ca
 Exponential then formats PlaceValue's result as exp(x) .
 
 Exponentials are nothing more than a veneer for PlaceValue.
+
+SparseExponential1
+------------------------
+<i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValueRational1 datatype. SparseExponential1 is like Exponential except that it uses a sparse placeValue. Exponentials reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValueRational1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
+
+SparseExponentialRatio
+------------------------
+<i>SparseExponentialRatio</i> is a data-type optimized for ratios of sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it is a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
 
 PlaceValueComplex
 -------------------
@@ -462,16 +474,18 @@ Dependencies
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
 <tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
-<tr><td>SparsePolynomialRatio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
-<tr><td>SparseMultinomialRatio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
+<tr><td>SparseExponential1</td><td>Sparse Polynomial Rational</td><td></td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Complex Sparse Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>PolynomialRatio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Exponential&amp;Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Fourier&amp;Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
-<tr><td>ComplexExponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
+<tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
 </table>
 
 External Dependencies

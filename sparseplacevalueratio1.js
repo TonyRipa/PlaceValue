@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/31/2017
+// Date:    8/31/2017
 // SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValueRational1s
 
 function sparseplacevalueratio1(num, den) {
@@ -97,11 +97,12 @@ sparseplacevalueratio1.prototype.reduce = function () {    //  2016.5
     }
 
     function gcdpv(a, b) {
+        console.log(a.toString(), b.toString());
         //if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
         if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b); }
         if (a.is0()) { "alert(2)"; return b; }
         if (b.is0()) { "alert(3)"; return a; }
-        if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
+        //if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
         if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
         "alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a);
     }
@@ -146,16 +147,15 @@ sparseplacevalueratio1.prototype.pointpow = function (other) {	// 2015.12
 }
 
 sparseplacevalueratio1.prototype.pow = function (power) {	// 2015.8
+    if (power == -1) throw new Error();
+    //alert(JSON.stringify(power));
+    return new sparseplacevalueratio1(this.num.pow(power.num.divide(power.den)), this.den.pow(power.num.divide(power.den)));
     if (power instanceof sparseplacevalueratio1) power = power.num.divide(power.den);
     if (!(power instanceof sparseplacevaluerational1)) power = sparseplacevaluerational1.parse('(' + power + ')');  // 2015.11
     var pow = power.get(0).abs();
     //alert(JSON.stringify([this.num,pow,this.num.pow(pow)]))
     if (power.get(0).ispos()) return new sparseplacevalueratio1(this.num.pow(pow), this.den.pow(pow));
     return new sparseplacevalueratio1(this.den.pow(pow), this.num.pow(pow));
-    //if (power.get(0).isneg()) return (new sparseplacevalueratio1(sparseplacevaluerational1.parse(1), 0)).divide(this.pow(new sparseplacevalueratio1(new sparseplacevaluerational1([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
-    //var num = this.num.pow(power);
-    //var den = this.den.pow(power);
-    //return new sparseplacevalueratio1(num, den);
 }
 
 sparseplacevalueratio1.prototype.times = function (top) {
@@ -171,13 +171,8 @@ sparseplacevalueratio1.prototype.divide = function (denominator) {
     return new sparseplacevalueratio1(this.num.times(denominator.den), this.den.times(denominator.num));
 }
 
-sparseplacevalueratio1.prototype.dividemiddle = function (denominator) {    // 2016.5
-    return new sparseplacevalueratio1(this.num.times(denominator.den), this.den.times(denominator.num));
-}
-
-sparseplacevalueratio1.prototype.divideleft = function (denominator) {      // 2016.5
-    return new sparseplacevalueratio1(this.num.times(denominator.den), this.den.times(denominator.num));
-}
+sparseplacevalueratio1.prototype.dividemiddle = sparseplacevalueratio1.prototype.divide
+sparseplacevalueratio1.prototype.divideleft = sparseplacevalueratio1.prototype.divide
 
 sparseplacevalueratio1.prototype.clone = function () {
     return new sparseplacevalueratio1(this.num.clone(), this.den.clone());

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/31/2017
+// Date:    8/31/2017
 // SparsePlaceValueRational: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are rational
 
 function sparseplacevaluerational1(points,showtrim) {
@@ -113,10 +113,11 @@ sparseplacevaluerational1.prototype.digitpair = function (i, NEGBEG, NEGEND, fra
     return a + 'E' + b;     //  E-notation  2016.10
 }
 
-sparseplacevaluerational1.prototype.isconst = function () { return this.points.length == 0 || (this.points.length == 1 && this.points[0][1].is0()); }    //  2017.6
-sparseplacevaluerational1.prototype.is1term = function () { return this.points.length == 1; }                                                            //  2017.6
-sparseplacevaluerational1.prototype.is0 = function () { return this.points.length == 0 || this.points[0][0].is0(); }                                     //  2017.6
-sparseplacevaluerational1.prototype.is1 = function () { return this.is1term() && this.isconst() && this.points[0][0].is1(); }                            //  2017.6
+sparseplacevaluerational1.prototype.isconst = function () { return this.points.length == 0 || (this.points.length == 1 && this.points[0][1].is0()); }   //  2017.6
+sparseplacevaluerational1.prototype.is1term = function () { return this.points.length == 1; }                                                           //  2017.6
+sparseplacevaluerational1.prototype.is0 = function () { return this.points.length == 0 || this.points[0][0].is0(); }                                    //  2017.6
+sparseplacevaluerational1.prototype.is1 = function () { return this.is1term() && this.isconst() && this.points[0][0].is1(); }                           //  2017.6
+sparseplacevaluerational1.prototype.equals = function (other) { return this.sub(other).is0(); }                                                         //  2017.8
 
 sparseplacevaluerational1.prototype.add = function (other) { return new sparseplacevaluerational1(this.points.concat(other.points)); }
 sparseplacevaluerational1.prototype.sub = function (other) { return new sparseplacevaluerational1(this.points.concat(other.points.map(function (x) { return [x[0].negate(), x[1]] }))); }
@@ -162,8 +163,6 @@ sparseplacevaluerational1.prototype.unscale = function (scalar) {  //  2016.5
     if (!(scalar instanceof rational)) scalar = rational.parse(scalar);
     var ret = this.clone();
     ret.points = ret.points.map(function (x) { return [x[0].divide(scalar), x[1]]; });
-    //for (var r = 0; r < ret.mantisa.length; r++)
-    //    ret.mantisa[r] = ret.mantisa[r].divide(scalar);
     return ret;
 }
 
@@ -212,13 +211,21 @@ sparseplacevaluerational1.prototype.dividemiddle = sparseplacevaluerational1.pro
 sparseplacevaluerational1.prototype.pow = function (power) {     //  2016.10
     if (power instanceof rational) power = new sparseplacevaluerational1([[power, rational.parse(0)]]);
     if (!(power instanceof sparseplacevaluerational1)) power = sparseplacevaluerational1.parse('' + power);   // 2017.6
-    if (power.isconst()) {
+    //alert(JSON.stringify(power))
+    if (power.points.length == 1 & power.points[0][1].is0()) {
+        //alert(0)
         if (this.is1term()) return new sparseplacevaluerational1([[this.points[0][0].pow(power.points[0][0]), this.points[0][1].times(power.points[0][0])]]);
         if (power.is0()) return sparseplacevaluerational1.parse(1);
         if (power.points[0][0].isneg()) return sparseplacevaluerational1.parse(1).divide(this.pow(new sparseplacevaluerational1([[power.points[0][0].negate(), rational.parse(0)]])));
         //if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(sparseplacevaluerational1.parse(1))));
         if (power.points[0][0].isint()) return this.times(this.pow(power.sub(sparseplacevaluerational1.parse(1))));
         //return this.times(this.pow(power.sub(sparseplacevaluerational1.parse(1))));
+    } else if (this.points.length == 1) {
+        //alert(1)
+        if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
+        var man = this.get(0).pow(power.get(0));   //  2017.8
+        var exp = power.get(1);        //  2017.8  2^(3E1)=1E3
+        return new sparseplacevaluerational1([[man, exp]]);
     }
     if (this.is0()) return sparseplacevaluerational1.parse(0);
     if (this.is1()) return sparseplacevaluerational1.parse(1);

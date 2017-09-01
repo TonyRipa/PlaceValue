@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    7/31/2017
+   Date:    8/31/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -18,20 +18,20 @@
     <script type="text/javascript">
         window.math || document.write("<script src='../js/math.js'><" + "/script>")
     </script>
-    <script type="text/javascript" src='rational.js'></script>
-    <script type="text/javascript" src='complex.js'></script>
-    <script type="text/javascript" src='complexlaurent.js'></script>
-    <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
-    <script type="text/javascript" src='placevaluecomplex.js'></script>
-    <script type="text/javascript" src='fourier.js'></script>
-    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
-    <script type="text/javascript" src='complexplacevalue.js'></script>
-    <script type="text/javascript" src='complexexponential.js'></script>
-    <script type="text/javascript" src='fourier2.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
-    <script type="text/javascript" src='placevalue.js'></script>
-    <script type="text/javascript" src='polynomial.js'></script>
-    <script type="text/javascript" src='laurent.js'></script>
+    <script src='rational.js'></script>
+    <script src='complex.js'></script>
+    <script src='complexlaurent.js'></script>
+    <script src='wholeplacevaluecomplex.js'></script>
+    <script src='placevaluecomplex.js'></script>
+    <script src='fourier.js'></script>
+    <script src='wholeplacevaluecomplex2.js'></script>
+    <script src='complexplacevalue.js'></script>
+    <script src='complexexponential.js'></script>
+    <script src='fourier2.js'></script>
+    <script src='wholeplacevalue.js'></script>
+    <script src='placevalue.js'></script>
+    <script src='polynomial.js'></script>
+    <script src='laurent.js'></script>
     <script src='wholeplacevalue2.js'></script>
     <script src='multinomial.js'></script>
     <script src='placevalue2.js'></script>
@@ -53,7 +53,11 @@
     <script src='sparsepolynomialratio.js'></script>
     <script src='sparseplacevaluerational.js'></script>
     <script src='sparseplacevalueratio.js'></script>
+    <script src='abstractpolynomial1.js'></script>
+    <script src='sparsepolynomialrational.js'></script>
     <script src='sparsemultinomialratio.js'></script>
+    <script src='sparseexponential1.js'></script>
+    <script src='exponentialratio.js'></script>
     <style>
         h1 { text-align: center; }
         #f { position: absolute; top: 10px; left: 10px; }
@@ -92,6 +96,7 @@
             <option>Polynomial</option>
             <option>Sparse Polynomial</option>
             <option>Polynomial Ratio</option>
+            <option>Sparse Polynomial Rational</option>
             <option>Sparse Polynomial Ratio</option>
             <option>Laurent Polynomial</option>
             <option>Multinomial</option>
@@ -101,6 +106,8 @@
             <option>Complex Laurent</option>
             <option>Complex Sparse Multinomial</option>
             <option>Exponential</option>
+            <option>Sparse Exponential 1</option>
+            <option>Exponential Ratio</option>
             <option>Fourier</option>
             <option>Fourier2</option>
             <option>Complex Exponential</option>
@@ -114,7 +121,7 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, sparseplacevaluerational1, sparseplacevalueratio1, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, polynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
+            f = [rational, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex, sparseplacevaluerational1, sparseplacevalueratio1, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, polynomialratio, sparsepolynomialrational, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, sparseexponential1, exponentialratio, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].selectedIndex];
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
@@ -135,7 +142,7 @@
             $(to + 'o').html($(from + 'o').html());             // move toStringInternal
             $(to).attr('data-val', $(from).attr('data-val'));   // move json
         }
-        function clean() {return
+        function clean() {//return
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
             $('[data-val]').removeAttr('data-val');
