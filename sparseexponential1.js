@@ -1,15 +1,17 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2017
+// Date:    9/30/2017
 // SparseExponential1 : a datatype for representing sparse complex exponentials; an application of the SparsePlaceValueRational1 datatype
 
 class sparseexponential1 extends abstractpolynomial1 {
 
     constructor(base, pv) {
-        if (arguments.length < 2) alert('sparseexponential1 expects 2 arguments');
+        //if (arguments.length < 2) alert('sparseexponential1 expects 2 arguments');
+        if (arguments.length < 2) pv = new sparseplacevaluerational1();
+        if (arguments.length < 1) base = 1;
         if (!(base instanceof String || typeof base == 'string' || base instanceof Number || typeof base == 'number'))
             { var s = 'sparseexponential1 expects arg1 (base) to be a string or number not ' + typeof base + ': ' + JSON.stringify(base); alert(s); throw new Error(s); }
-        if (!(pv instanceof sparseplacevaluerational1)) alert('sparseexponential1 expects argument 2 (pv) to be a sparseplacevaluerational1');
+        if (!(pv instanceof sparseplacevaluerational1)) { var s = 'sparseexponential1 wants arg2 to be sparsePVrational1 not ' + typeof pv +':' + JSON.stringify(pv); alert(s); throw new Error(s); }
         super();
         this.base = base
         this.pv = pv;
@@ -19,7 +21,7 @@ class sparseexponential1 extends abstractpolynomial1 {
         return this.pv.toString('medium') + ' Base e<sup>' + this.base + '</sup>';
     }
 
-    static parse(strornode) {
+    parse(strornode) {  //  2017.9
         console.log('new sparseexponential1 : ' + JSON.stringify(strornode))
         if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparseexponential1(a.base, sparseplacevaluerational1.parse(JSON.stringify(a.pv))) }
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
@@ -45,20 +47,20 @@ class sparseexponential1 extends abstractpolynomial1 {
             return c;
         } else if (node.type == 'ConstantNode') {
             //return new sparseexponential1([1, null], sparseplacevaluerational1.parse(Number(node.value)));
-            return new sparseexponential1(1, sparseplacevaluerational1.parse(Number(node.value)));
+            return new sparseexponential1(1, new sparseplacevaluerational1().parse(Number(node.value)));
         } else if (node.type == 'FunctionNode') {
             console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
             console.log(node)
             var fn = node.name;
             var kids = node.args;
             //var kidaspoly = complexlaurent.parse(kids[0])
-            var kidaspoly = sparsepolynomialrational.parse(kids[0])
+            var kidaspoly = new sparsepolynomialrational().parse(kids[0])
             var base = kidaspoly.base;
-            var ten = sparseplacevaluerational1.parse('1E1');   // exp is 2D    2016.1
+            var ten = new sparseplacevaluerational1().parse('1E1');   // exp is 2D    2016.1
             //var iten = sparseplacevaluerational1.parse('1Ei');   // exp is 2D    2016.1
             //alert(JSON.stringify([kidaspoly, ones, tens, itens]));
             var exp = kidaspoly.pv//sparseplacevaluerational1.parse('2.718').pow(kidaspoly.pv);  //  2017.5
-            var exp = sparseplacevaluerational1.parse('2.718').pow(kidaspoly.pv);  //  2017.5
+            var exp = new sparseplacevaluerational1().parse('2.718').pow(kidaspoly.pv);  //  2017.5
             //alert(JSON.stringify(exp))
             //var expi = sparseplacevaluerational1.parse('2.718').pow(kidaspoly.pv.times(sparseplacevaluerational1.parse('i')));  //  2017.5
             var exp2 = exp.pow(-1)
@@ -116,7 +118,7 @@ class sparseexponential1 extends abstractpolynomial1 {
                     ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
                     //s = s.sub(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [i, 0]).add(new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [-i, 0]).scale({ 'r': sign, 'i': 0 })).scale({ 'r': m, 'i': 0 }));
                     //alert(JSON.stringify(s));
-                    s = s.sub(sparseplacevaluerational1.parse('1E' + i).add(sparseplacevaluerational1.parse('1E' + (-i)).scale(sign)).scale(m));
+                    s = s.sub(new sparseplacevaluerational1().parse('1E' + i).add(new sparseplacevaluerational1().parse('1E' + (-i)).scale(sign)).scale(m));
                     //alert(JSON.stringify(s));
                 }
             }
@@ -194,7 +196,7 @@ class sparseexponential1 extends abstractpolynomial1 {
     }
 
     eval(base) {    //  2017.5
-        return new this.constructor(this.base.slice(0, -1), this.pv.eval(sparseplacevaluerational1.parse('2.718').pow(base.pv)));
+        return new this.constructor(this.base.slice(0, -1), this.pv.eval(new sparseplacevaluerational1().parse('2.718').pow(base.pv)));
     }
 
 }

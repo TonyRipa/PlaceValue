@@ -1,9 +1,11 @@
 
 // Author : Anthony John Ripa
-// Date : 7/21/2016
+// Date : 9/30/2017
 // Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
+    if (arguments.length < 1) arg = 1;                      //  2017.9
+    if (arguments.length < 2) pv = new wholeplacevalue();   //  2017.9
     console.log('polynomial : arguments.length=' + arguments.length);
     this.base = arg;
     if (pv instanceof Object && JSON.stringify(pv).indexOf('mantisa') != -1)  // 2015.8
@@ -14,10 +16,11 @@ function polynomial(arg, pv) {
         console.log(this.pv.toString());
     }
     else
-        alert('polynomial: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+        { var s = 'Polynomial expects arg 2 to be WholePlaceValue not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+        //alert('polynomial: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
 }
 
-polynomial.parse = function (strornode) {
+polynomial.prototype.parse = function (strornode) { //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -27,22 +30,22 @@ polynomial.parse = function (strornode) {
         console.log('SymbolNode')
         var base = node.name;
         //var pv = [0, 1];
-        return new polynomial(base, wholeplacevalue.parse(10));
+        return new polynomial(base, new wholeplacevalue().parse(10));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        var a = polynomial.parse(kids[0]);        // polynomial handles unpreprocessed kid    2015.11
+        var a = new polynomial().parse(kids[0]);        // polynomial handles unpreprocessed kid    2015.11
         if (node.fn == 'unaryMinus') {
             var c = new polynomial(1, wholeplacevalue.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new polynomial(1, wholeplacevalue.parse(0)).add(a);
         } else {
-            var b = polynomial.parse(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
+            var b = new polynomial().parse(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new polynomial(1, wholeplacevalue.parse('(' + Number(node.value) + ')'));
+        return new polynomial(1, new wholeplacevalue().parse('(' + Number(node.value) + ')'));
     }
 }
 

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    7/31/2017
+   Date:    9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -64,7 +64,7 @@
         function exp(op) {                              // Added Exponential Calculus    2015.11
             f = [multinomial, laurent2, sparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
             console.log('exp' + op);
-            var exp = f.parse($('#func').val())
+            var exp = new f().parse($('#func').val())
             var nums = [];
             var lo = exp.pv.exp-1;
             var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
@@ -93,7 +93,7 @@
             if ($('#f')[0].selectedIndex >= 3) exp('⊗'); else dpoly();
             function dpoly() {
                 console.log('diffpoly');
-                $('#func').val(f.parse($('#func').val()).toString()); //  Clean func  2015.12
+                $('#func').val(new f().parse($('#func').val()).toString()); //  Clean func  2015.12
                 $('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
                 $('#b').val('0');
                 $('#op').val('|');
@@ -109,7 +109,7 @@
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
+            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

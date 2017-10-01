@@ -1,10 +1,12 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2017
+// Date:    9/30/2017
 // PlaceValue: a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
-    if (arguments.length < 2) alert('placevalue expects 2 arguments');
+    //if (arguments.length < 2) alert('placevalue expects 2 arguments');
+    if (arguments.length < 1) man = new wholeplacevalue();  //  2017.9
+    if (arguments.length < 2) exp = 0;  //  2017.9
     if (!(man instanceof wholeplacevalue)) alert('placevalue expects argument 1 to be a wholeplacevalue');
     if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevalue expects argument 2 to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
     this.whole = man
@@ -12,8 +14,8 @@ function placevalue(man, exp) {
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
 }
 
-placevalue.parse = function (man) {    // 2016.1
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevalue(wholeplacevalue.parse(JSON.stringify(a.whole)), a.exp) }
+placevalue.prototype.parse = function (man) {    // 2017.9
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevalue(new wholeplacevalue().parse(JSON.stringify(a.whole)), a.exp) }
     var exp = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('whole') != -1) {
@@ -26,7 +28,7 @@ placevalue.parse = function (man) {    // 2016.1
         exp = man.exp;      // get exp from man before
         man = man.whole;    // man overwrites self 2015.8
     }
-    return new placevalue(wholeplacevalue.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man), exp + getexp(man));
+    return new placevalue(new wholeplacevalue().parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man), exp + getexp(man));
     //console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
         if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
@@ -121,19 +123,19 @@ placevalue.prototype.pointpow = function (power) {	// 2015.12
 }
 
 placevalue.prototype.pow = function (power) {	// 2015.8
-    if (typeof power == 'number') power = rational.parse(power);            //  2017.5  exponential calls with number
+    if (typeof power == 'number') power = new rational().parse(power);            //  2017.5  exponential calls with number
     if (power instanceof rational) power = new wholeplacevalue([power]);    //  2017.5
     if (power instanceof wholeplacevalue) power = new placevalue(power, 0); //  2017.5  laurent calls wpv
     //if (power instanceof placevalue) power = power.whole;   // laurent calls wpv    2015.8
     //if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
     //alert(JSON.stringify([this,power]))
     if (power.exp == 0) {   //  2017.5
-        if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(power.negate()));
+        if (power.get(0).toreal() < 0) return (new placevalue(new wholeplacevalue().parse(1), 0)).divide(this.pow(power.negate()));
         var whole = this.whole.pow(power.whole);
         var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
     } else if (power.exp == 1) {    //  2017.5
         if (this.exp != 0) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
-        var whole = wholeplacevalue.parse(1);   //  2017.5
+        var whole = new wholeplacevalue().parse(1);   //  2017.5
         var exp = power.get(1).toreal();        //  2017.5  2^(3E1)=1E3
     } else { alert('PV >Bad Exponent = ' + power.toString()); return placevalue.parse('%') }
     return new placevalue(whole, exp);

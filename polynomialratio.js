@@ -1,9 +1,11 @@
 
 // Author : Anthony John Ripa
-// Date : 8/7/2016
+// Date : 9/30/2017
 // PolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function polynomialratio(arg, pv) {
+    if (arguments.length < 1) base = 1;                     //  2017.9
+    if (arguments.length < 2) pv = new placevalueratio();   //  2017.9
     console.log('polynomialratio : arguments.length=' + arguments.length);
     this.base = arg;
     if (pv instanceof Object && JSON.stringify(pv).indexOf('mantisa') != -1)  // 2015.8
@@ -14,10 +16,11 @@ function polynomialratio(arg, pv) {
         console.log(this.pv.toString());
     }
     else
-        alert('polynomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+        { var s = 'PolynomialRatio expects arg 2 to be PlaceValueRatio not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+        //alert('polynomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
 }
 
-polynomialratio.parse = function (strornode) {
+polynomialratio.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -27,7 +30,7 @@ polynomialratio.parse = function (strornode) {
         console.log('SymbolNode')
         var base = node.name;
         var pv = 10;
-        return new polynomialratio(base, placevalueratio.parse(pv));
+        return new polynomialratio(base, new placevalueratio().parse(pv));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
@@ -44,7 +47,7 @@ polynomialratio.parse = function (strornode) {
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new polynomialratio(1, new placevalueratio(wholeplacevalue.parse('(' + Number(node.value) + ')'), wholeplacevalue.parse(1)));
+        return new polynomialratio(1, new placevalueratio(new wholeplacevalue().parse('(' + Number(node.value) + ')'), new wholeplacevalue().parse(1)));
     }
 }
 

@@ -1,21 +1,22 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    9/30/2017
 // WholePlaceValueComplex : a datatype for representing base agnostic arithmetic via whole numbers whose digits are complex
 
 //var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
 //var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v == 1 / 0) ? '∞' : (v == -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }
 
 function wholeplacevaluecomplex(arg) {
+    if (arguments.length < 1) arg = [];  //  2017.9
     if (!Array.isArray(arg)) { var s = 'wholeplacevaluecomplex expects array argument but found ' + typeof arg + ':' + arg; alert(s); throw new Error(s); }
-    if (arg.length > 0 && !(arg[0] instanceof complex)) { var s = 'wholeplacevaluecomplex expects complex[] but found ' + typeof arg[0] + '[] :' + JSON.stringify(arg); alert(s); throw new Error(s); }
+    if (arg.length > 0 && !(arg[0] instanceof complex)) { var s = 'wholeplacevaluecomplex expects complex[] not ' + typeof arg[0] + '[] :' + JSON.stringify(arg); alert(s); throw new Error(s); }
     this.mantisa = arg
     while (this.mantisa.length > 1 && this.get(this.mantisa.length - 1).is0())  //  while most sigDig=0  // get(this.man.len-1) 2015.7
         this.mantisa.pop();                             //  pop root
     if (this.mantisa.length == 0) this.mantisa = [new complex(0)];
 }
 
-wholeplacevaluecomplex.parse = function (man) {
+wholeplacevaluecomplex.prototype.parse = function (man) {   //  2017.9
     if (man instanceof String || typeof (man) == 'string') if (man.indexOf('mantisa') != -1) return new wholeplacevaluecomplex(JSON.parse(man).mantisa.map(function (x) { return new complex(x.r, x.i) }))
     if (Array.isArray(man)) {
         console.log("wholeplacevaluecomplex: arg is array " + JSON.stringify(man));
@@ -132,7 +133,7 @@ wholeplacevaluecomplex.prototype.pow = function (power) { // 2016.6
     if (!(power instanceof p)) power = new p([new complex(power)]);
     //if (this.mantisa.length == 1) return new p([this.get(0).pow(power.get(0))]);    //new p([new complex(Math.pow(this.getreal(0), power.getreal(0)), 0)]); // 0^0=1 for convenience    2016.1
     if (this.mantisa.length == 1) return new p([this.get(0).pow(power.get(0))]).times10s(power.get(1).r);    //  2017.5  2^23=800
-    if (power.mantisa.length > 1) { alert('CWPV >Bad Exponent = ' + power.tohtml()); return p.parse('%') }   // tohtml supercedes to StringInternal
+    if (power.mantisa.length > 1) { alert('CWPV >Bad Exponent = ' + power.tohtml()); return new p().parse('%') }   // tohtml supercedes to StringInternal
     if (power.getimag(0) != 0 && this.mantisa.length > 1) { alert('CWPV iBad Exponent = ' + power.tohtml()); return p.parse('%'); }
     //if (power.getimag(0) != 0 && this.mantisa.length == 1) { return new p([this.get(0).pow(power.get(0))]); } //new c([c.mul([Math.pow(c.norm(this.get(0)), power.getreal(0)) * Math.exp(-power.getimag(0) * c.arg(this.get(0))), 0], c.exp([0, power.getreal(0) * c.arg(this.get(0)) + .5 * power.getimag(0) * c.lnn(this.get(0))[0]]))]) }
     if (power.getreal(0) != Math.round(power.getreal(0))) { alert('CWPV .Bad Exponent = ' + JSON.stringify(power)); return p.parse('%') }
@@ -154,7 +155,7 @@ wholeplacevaluecomplex.prototype.times10 = function () { this.mantisa.unshift(0)
 wholeplacevaluecomplex.prototype.times10s = function (s) { me = this.clone(); while (s-- > 0) me.mantisa.unshift(new complex(0)); return me; }  // 2017.5
 
 wholeplacevaluecomplex.prototype.times = function (top) {
-    if (!(top instanceof wholeplacevaluecomplex)) top = wholeplacevaluecomplex.parse(top);
+    if (!(top instanceof wholeplacevaluecomplex)) top = new wholeplacevaluecomplex().parse(top);
     var prod = new wholeplacevaluecomplex([]);
     for (var b = 0; b < this.mantisa.length; b++) {
         var sum = [];

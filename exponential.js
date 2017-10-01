@@ -1,27 +1,28 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2017
+// Date:    9/30/2017
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 function exponential(base, pv) {
-    if (arguments.length < 2) alert('exponential expects 2 arguments');
+    //if (arguments.length < 2) alert('exponential expects 2 arguments');
+    if (arguments.length < 2) pv = new placevalue();    //  2017.9
     if (Array.isArray(base)) alert('exponential expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-    if (!(pv instanceof placevalue)) alert('exponential expects argument 2 (pv) to be a placevalue but found ' + typeof pv);
+    if (!(pv instanceof placevalue)) { var s = 'exponential expects arg2 (pv) to be a placevalue not ' + typeof pv + ' : ' + pv; alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
     return;
 
 }
 
-exponential.parse = function (strornode) {
+exponential.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
     //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponential(a.base, placevalue.parse(JSON.stringify(a.pv))) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponential(a.base, new placevalue().parse(JSON.stringify(a.pv))) }
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new exponential(1, placevalue.parse('(' + Number(node.value) + ')'));
+        return new exponential(1, new placevalue().parse('(' + Number(node.value) + ')'));
     } else if (node.type == 'SymbolNode') {
         alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');
         console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
@@ -34,13 +35,13 @@ exponential.parse = function (strornode) {
         console.log(node)
         var kids = node.args;
         //var a = new exponential(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = exponential.parse(kids[0]);       // exponential handles unpreprocessed kid   2015.11
+        var a = new exponential().parse(kids[0]);       // exponential handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new exponential(1, new placevalue(wholeplacevalue.parse(0), 0)).sub(a);
+            var c = new exponential(1, new placevalue(new wholeplacevalue().parse(0), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new exponential(1, new placevalue(wholeplacevalue.parse(0), 0)).add(a);
         } else {
-            var b = exponential.parse(kids[1]);   // exponential handles unpreprocessed kid   2015.11
+            var b = new exponential().parse(kids[1]);   // exponential handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
@@ -49,7 +50,7 @@ exponential.parse = function (strornode) {
         console.log(node)
         var fn = node.name;
         var kids = node.args;
-        var kidaspoly = laurent.parse(kids[0])
+        var kidaspoly = new laurent().parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
         //var ten = placevalue.parse(10);
@@ -57,7 +58,7 @@ exponential.parse = function (strornode) {
         //var ones = kidaspoly.pv.get(0).toreal();
         //var exp = ten.pow(tens)
         //if (ones) exp = exp.scale(Math.exp(ones));
-        var exp = placevalue.parse('(2.718)').pow(kidaspoly.pv) //  2017.5
+        var exp = new placevalue().parse('(2.718)').pow(kidaspoly.pv) //  2017.5
         //var exp2 = ten.pow(-tens)
         //if (ones) exp2 = exp2.scale(1 / Math.exp(ones));
         //var exp2 = placevalue.parse('(2.718)').pow(kidaspoly.pv.negate())   //  2017.5
@@ -165,7 +166,7 @@ exponential.toStringCosh = function (pv, base) { // 2015.11
             if (math.sign(l) * math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-                s = s.sub(new placevalue(wholeplacevalue.parse(1), i).add(new placevalue(wholeplacevalue.parse(1), -i).scale(sign)).scale(m));
+                s = s.sub(new placevalue(new wholeplacevalue().parse(1), i).add(new placevalue(new wholeplacevalue().parse(1), -i).scale(sign)).scale(m));
             }
         }
         ret = ret.replace(/\+\-/g, '-');
@@ -222,5 +223,5 @@ exponential.prototype.eval = function (base) {
         if (this.pv.whole.get(i).toreal() != 0) sum += this.pv.whole.get(i).toreal() * pow;  // Skip 0 to avoid %    2015.8
         //alert(this.pv.exp+','+this.pv.whole.get(i)+','+(i+this.pv.exp)+','+sum)
     }
-    return new exponential(1, new placevalue(wholeplacevalue.parse('(' + sum + ')'), 0));  // interpret as number  2015.8
+    return new exponential(1, new placevalue(new wholeplacevalue().parse('(' + sum + ')'), 0));  // interpret as number  2015.8
 }

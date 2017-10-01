@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    6/30/2017
+   Date:    9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -24,7 +24,6 @@
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='fourier2.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='polynomial.js'></script>
     <script src='wholeplacevalue2.js'></script>
@@ -64,7 +63,7 @@
         function exp(op) {                              // Added Exponential Calculus    2015.11
             f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
             console.log('exp' + op);
-            var exp = f.parse($('#func').val())
+            var exp = new f().parse($('#func').val())
             var nums = [];
             var lo = exp.pv.exp-1;
             var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
@@ -116,7 +115,7 @@
             var f = e.divide(a)
             var g = d * d / (2 * f)
             output(a, b, c, d, e, f, g);
-            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); }
+            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }
             function output(a, b, c, d, e, f, g) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

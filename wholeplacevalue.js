@@ -1,26 +1,27 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/30/2017
+// Date:    9/30/2017
 // WholePlaceValue: a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
 var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k, v) { return (v === 1 / 0) ? '∞' : (v === -1 / 0) ? '-∞' : (v != v) ? '%' : v }) }  //  2017.2  ===
 
 function wholeplacevalue(man) {
+    if (arguments.length < 1) man = [];  //  2017.9
     if (!Array.isArray(man)) alert('wholeplacevalue expects array argument but found ' + typeof man + man);
     if (man.length > 0 && !(man[0] instanceof rational)) { console.trace(); alert("wholeplacevalue expects rational[] but found " + typeof man[0] + '[] :' + man); end; }
     this.mantisa = man;
     while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
         this.mantisa.pop();                             //  pop root
-    if (this.mantisa.length == 0) this.mantisa = [rational.parse(0)];
+    if (this.mantisa.length == 0) this.mantisa = [new rational().parse(0)];
     console.log('wpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
 }
 
-wholeplacevalue.parse = function (man) {
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('mantisa') != -1) return new wholeplacevalue(JSON.parse(man).mantisa.map(function (x) { return rational.parse(JSON.stringify(x)) }))
+wholeplacevalue.prototype.parse = function (man) {  //  2017.9
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('mantisa') != -1) return new wholeplacevalue(JSON.parse(man).mantisa.map(function (x) { return new rational().parse(JSON.stringify(x)) }))
     var mantisa = tokenize(man);
     for (var i = 0; i < mantisa.length; i++)
-        mantisa[i] = rational.parse(mantisa[i]);
+        mantisa[i] = new rational().parse(mantisa[i]);
     //alert(mantisa)
     return new wholeplacevalue(mantisa);
     function tokenize(n) {  //  2016.6
@@ -79,8 +80,8 @@ wholeplacevalue.prototype.is1 = function () { return this.equals(wholeplacevalue
 wholeplacevalue.prototype.above = function (other) { return this.get(0).above(other.get(0)) }  //  2017.7
 wholeplacevalue.prototype.isneg = function () { return wholeplacevalue.zero.above(this) }  //  2017.7
 
-wholeplacevalue.zero = new wholeplacevalue([rational.parse(0)]);    //  2016.5
-wholeplacevalue.one = new wholeplacevalue([rational.parse(1)]);     //  2016.5
+wholeplacevalue.zero = new wholeplacevalue([new rational().parse(0)]);    //  2017.9
+wholeplacevalue.one = new wholeplacevalue([new rational().parse(1)]);     //  2017.9
 
 wholeplacevalue.prototype.add = function (other) { return this.f(function (x, y) { return x.add(y) }, other); }
 wholeplacevalue.prototype.sub = function (other) { return this.f(function (x, y) { return x.sub(y) }, other); }
@@ -117,13 +118,13 @@ wholeplacevalue.prototype.pointadd = function (addend) {
 
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
     //alert(power instanceof rational);
-    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([rational.parse(power)]);
+    if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new rational().parse(power)]);
     //if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]);  //  0^0=1 for convenience   2016.5
     if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000
-    if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.toString()); return wholeplacevalue.parse('%') }
+    if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.toString()); return new wholeplacevalue().parse('%') }
     if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return wholeplacevalue.parse('%') }
     if (power.get(0).toreal() < 0) return wholeplacevalue.parse(0);
-    if (power.is0()) return wholeplacevalue.parse(1);//alert(JSON.stringify(power))
+    if (power.is0()) return new wholeplacevalue().parse(1);//alert(JSON.stringify(power))
     return this.times(this.pow(power.get(0).toreal() - 1));
 }
 
@@ -154,14 +155,14 @@ wholeplacevalue.prototype.times = function (top) {
 }
 
 wholeplacevalue.prototype.scale = function (scalar, trace) {
-    if (!(scalar instanceof rational)) scalar = rational.parse(scalar);
+    if (!(scalar instanceof rational)) scalar = new rational().parse(scalar);
     var ret = this.clone(trace + ' wholeplacevalue.prototype.scale >');
     ret.mantisa = ret.mantisa.map(function (x) { return x.times(scalar) });
     return ret;
 }
 
 wholeplacevalue.prototype.unscale = function (scalar, trace) {  //  2016.5
-    if (!(scalar instanceof rational)) scalar = rational.parse(scalar);
+    if (!(scalar instanceof rational)) scalar = new rational().parse(scalar);
     var ret = this.clone(trace + ' wholeplacevalue.prototype.unscale >');
     ret.mantisa = ret.mantisa.map(function (x) { return x.divide(scalar) });
     //for (var r = 0; r < ret.mantisa.length; r++)
@@ -181,7 +182,7 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return new wholeplacevalue([rational.parse(0)], 'wholeplacevalue.prototype.divide >');
+        if (c == 0) return new wholeplacevalue([new rational().parse(0)], 'wholeplacevalue.prototype.divide >');
         var d = wholeplacevalue.getDegree(den.mantisa);
         var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
         if (d.val.is0()) return quotient;
@@ -190,7 +191,7 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
         quotient = quotient.add(q2);
         return quotient;
         function shift(me, left) {
-            var ret = new wholeplacevalue([rational.parse(0)], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+            var ret = new wholeplacevalue([new rational().parse(0)], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
             for (var r = 0; r < left; r++) ret.mantisa.shift();
             return ret;
         }
@@ -213,7 +214,7 @@ wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return new wholeplacevalue([rational.parse(0)], 'wholeplacevalue.prototype.divide >');
+        if (c == 0) return new wholeplacevalue([new rational().parse(0)], 'wholeplacevalue.prototype.divide >');
         var d = wholeplacevalue.getDegreeLeft(den.mantisa);
         var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
         if (d.val.is0()) return quotient;
@@ -222,7 +223,7 @@ wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
         quotient = quotient.add(q2);
         return quotient;
         function shift(me, left) {
-            var ret = new wholeplacevalue([rational.parse(0)], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+            var ret = new wholeplacevalue([new rational().parse(0)], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
             for (var r = 0; r < left; r++) ret.mantisa.shift();
             return ret;
         }
@@ -246,13 +247,13 @@ wholeplacevalue.prototype.dividemiddle = function (den) {   // 2016.3
     try {
         var AtAinv = math.divide(I, AtA);
     } catch (e) {
-        return wholeplacevalue.parse('%0');
+        return new wholeplacevalue().parse('%0');
     }
     var Atb = math.multiply(At, b);
     var x = math.multiply(AtAinv, Atb);
     x = x.transpose().valueOf()[0];
     x.reverse();
-    return new wholeplacevalue(x.map(function (x) { return Math.round(100 * x) / 100 }).map(rational.parse));
+    return new wholeplacevalue(x.map(function (x) { return Math.round(100 * x) / 100 }).map(new rational().parse));
 }
 
 wholeplacevalue.prototype.gcd = function () {   // 2016.5

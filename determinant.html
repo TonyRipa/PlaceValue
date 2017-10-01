@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 6/30/2017
+   Date : 9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -60,10 +60,10 @@
             $('#tv').append("<h2>Classical</h2>x = " + Dx2 + ' / ' + D2 + ' = ' + (Dx2 / D2) + '<br>y = ' + Dy2 + ' / ' + D2 + ' = ' + (Dy2 / D2));
             $('#tv').append("<h2>PlaceValue</h2>x = " + Dx + ' / ' + D + ' = ' + x + '<br>y = ' + Dy + ' / ' + D + ' = ' + y);
             function determinant(a, b, c, d) {
-                var ret = wholeplacevalue.parse(1);
+                var ret = new wholeplacevalue().parse(1);
                 var values = eigenvalues(a, b, c, d);
                 for (var i = 0; i < values.length; i++) {
-                    var ev = wholeplacevalue.parse(values[i]);
+                    var ev = new wholeplacevalue().parse(values[i]);    //  2017.9
                     ev.times10();
                     if (!ev.is0()) ret = ret.times(ev);
                 }

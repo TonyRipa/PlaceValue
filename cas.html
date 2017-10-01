@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 7/31/2017
+   Date : 9/30/2017
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -66,7 +66,7 @@
         }
         function compute() {
             f = [polynomial, laurent, sparsepolynomial, multinomial, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
-            var poly = f.parse($('#a').val());
+            var poly = new f().parse($('#a').val());    //  2017.9
             var tuple = parse($('#a').val());
             $('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
         }
@@ -84,16 +84,16 @@
                 console.log('CAS: OperatorNode')
                 var kids = node.args;
                 //var a = new f(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-                var a = f.parse(kids[0]);     // f handles unpreprocessed kid 2015.11
+                var a = new f().parse(kids[0]);     // f handles unpreprocessed kid 2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    var b = f.parse(kids[1]); // f handles unpreprocessed kid 2015.11
+                    var b = new f().parse(kids[1]); // f handles unpreprocessed kid 2015.11
                 }
             } else if (node.type == 'FunctionNode') {   // exponential  2015.11
                 console.log('CAS: FunctionNode')
                 argtype = [laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, complexlaurent][$('#f')[0].selectedIndex]; //  2017.5
-                return [node.name, argtype.parse(node.args[0])];
+                return [node.name, new argtype().parse(node.args[0])];
             } else {
                 console.log('CAS: OtherNode')
                 return [f.parse(node.value || node.name)];

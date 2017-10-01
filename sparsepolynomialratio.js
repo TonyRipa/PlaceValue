@@ -1,9 +1,11 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2017
+// Date:    9/30/2017
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function sparsepolynomialratio(arg, pv) {
+    if (arguments.length < 1) base = 1;                         //  2017.9
+    if (arguments.length < 2) pv = new sparseplacevalueratio(); //  2017.9
     console.log('sparsepolynomialratio : arguments.length=' + arguments.length);
     this.base = arg;
     if (pv instanceof sparseplacevalueratio)  // 2017.6
@@ -14,10 +16,11 @@ function sparsepolynomialratio(arg, pv) {
         console.log(this.pv.toString());
     }
     else
-        alert('sparsepolynomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+        { var s = 'SparsePolynomialRatio expects arg 2 to be sparseplacevalueratio not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+        //alert('sparsepolynomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
 }
 
-sparsepolynomialratio.parse = function (strornode) {
+sparsepolynomialratio.prototype.parse = function (strornode) {  //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -27,7 +30,7 @@ sparsepolynomialratio.parse = function (strornode) {
         console.log('SymbolNode')
         var base = node.name;
         var pv = '1e1'//10;
-        return new sparsepolynomialratio(base, sparseplacevalueratio.parse(pv));
+        return new sparsepolynomialratio(base, new sparseplacevalueratio().parse(pv));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
@@ -42,7 +45,7 @@ sparsepolynomialratio.parse = function (strornode) {
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new sparsepolynomialratio(1, sparseplacevalueratio.parse(node.value));
+        return new sparsepolynomialratio(1, new sparseplacevalueratio().parse(node.value));
     }
 }
 

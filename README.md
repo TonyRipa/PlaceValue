@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2017
+Date : 9/7/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -236,6 +236,16 @@ Exponentials are nothing more than a veneer for PlaceValue.
 SparseExponential1
 ------------------------
 <i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValueRational1 datatype. SparseExponential1 is like Exponential except that it uses a sparse placeValue. Exponentials reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValueRational1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
+
+SparseExponential
+-------------------------
+<i>SparseExponential</i> is a data-type optimized for Sparse Exponentials; an application of the SparsePlaceValueRational datatype.
+
+If SparseExponential wants to calculate exp(x) * exp(y), then it asks SparsePlaceValueRational to calculate:
+
+1E1 * 1E0,1 = 1E1,1
+
+SparseExponential then formats SparsePlaceValueRational's result as exp(x+y).
 
 SparseExponentialRatio
 ------------------------
@@ -473,12 +483,12 @@ Dependencies
 ---------------
 <table>
 <tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
-<tr><td>Sparse Multinomial</td><td></td><td></td><td>depends on SparsePlaceValue.</td><td></td></tr>
 <tr><td>SparseExponential1</td><td>Sparse Polynomial Rational</td><td></td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>SparseExponential</td><td>Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
-<tr><td>Complex Sparse Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Sparse Complex Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

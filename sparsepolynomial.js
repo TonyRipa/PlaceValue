@@ -1,20 +1,19 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 2/28/2017
+// Date : 9/30/2017
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
 function sparsepolynomial(base, pv) {
-    if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
+    //if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
+    if (arguments.length < 1) base = 1;                     //  2017.9
+    if (arguments.length < 2) pv = new sparseplacevalue1(); //  2017.9
     if (Array.isArray(base)) alert('sparsepolynomial expects argument 1 (base) to be a string but found array: ' + typeof base);
-    if (!(pv instanceof sparseplacevalue1)) {   //  2017.2
-        alert('sparsepolynomial expects argument 2 (pv) to be a sparseplacevalue1 but found arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
-        console.trace();
-    }
+    if (!(pv instanceof sparseplacevalue1)) { var s = 'SparsePolynomial expects arg 2 to be SparsePlaceValue1 not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
     this.base = base;
     this.pv = pv;
 }
 
-sparsepolynomial.parse = function (strornode) {
+sparsepolynomial.prototype.parse = function (strornode) {   //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -24,7 +23,7 @@ sparsepolynomial.parse = function (strornode) {
         console.log('SymbolNode')
         var base = node.name;
         //var pv = [0, 1];
-        return new sparsepolynomial(base, sparseplacevalue1.parse('1e1'));
+        return new sparsepolynomial(base, new sparseplacevalue1().parse('1e1'));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
@@ -39,7 +38,7 @@ sparsepolynomial.parse = function (strornode) {
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new sparsepolynomial(1, sparseplacevalue1.parse(Number(node.value)));
+        return new sparsepolynomial(1, new sparseplacevalue1().parse(Number(node.value)));
     }
 }
 

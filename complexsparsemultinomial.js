@@ -1,20 +1,22 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2017
+// Date:    9/30/2017
 // ComplexSparseMultinomial : a datatype for representing complex sparse multinomials; an application of the sparseplacevaluecomplex datatype
 
 class complexsparsemultinomial extends abstractpolynomial {
 
     constructor(base, pv) {
-        if (arguments.length < 2) alert('complexsparsemultinomial expects 2 arguments');
-        if (!Array.isArray(base)) alert('complexsparsemultinomial expects argument 1 (base) to be an array but found ' + typeof base);
-        if (!(pv instanceof sparseplacevaluecomplex)) alert('complexsparsemultinomial expects argument 2 (pv) to be a sparseplacevaluecomplex');
+        //if (arguments.length < 2) alert('complexsparsemultinomial expects 2 arguments');
+        if (arguments.length < 1) base = [];                            //  2017.9
+        if (arguments.length < 2) pv = new sparseplacevaluecomplex();   //  2017.9
+        if (!Array.isArray(base)) { var s = 'complexsparsemultinomial expects arg1 (base) to be an array not ' + typeof base + ' : ' + base; alert(s); throw new Error(s); }
+        if (!(pv instanceof sparseplacevaluecomplex)) { var s = 'complexsparsemultinomial expects arg2 (pv) to be a sparsePVcomplex not ' + typeof pv + ' : ' + pv; alert(s); throw new Error(s); }
         super();
         this.base = base
         this.pv = pv;
     }
 
-    static parse(strornode) {
+    parse(strornode) {  //  2017.9
         console.log('new complexsparsemultinomial : ' + JSON.stringify(strornode))
         if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new complexsparsemultinomial(a.base, sparseplacevaluecomplex.parse(JSON.stringify(a.pv))) }
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
@@ -22,24 +24,24 @@ class complexsparsemultinomial extends abstractpolynomial {
             console.log('new complexsparsemultinomial : SymbolNode')
             if (node.name == 'i') return new complexsparsemultinomial([], sparseplacevaluecomplex.parse('i'));
             var base = [node.name];
-            var pv = sparseplacevaluecomplex.parse("1E1");  //new sparseplacevaluecomplex([[0, 1]]);
+            var pv = new sparseplacevaluecomplex().parse("1E1");  //new sparseplacevaluecomplex([[0, 1]]);
             return new complexsparsemultinomial(base, pv);
         } else if (node.type == 'OperatorNode') {
             console.log('new complexsparsemultinomial : OperatorNode')
             var kids = node.args;
-            var a = complexsparsemultinomial.parse(kids[0]);       // complexsparsemultinomial handles unpreprocessed kid   2015.11
+            var a = new complexsparsemultinomial().parse(kids[0]);       // complexsparsemultinomial handles unpreprocessed kid   2015.11
             if (node.fn == 'unaryMinus') {
                 var c = new complexsparsemultinomial([], sparseplacevaluecomplex.parse(0)).sub(a);
             } else if (node.fn == 'unaryPlus') {
                 var c = new complexsparsemultinomial([], sparseplacevaluecomplex.parse(0)).add(a);
             } else {
-                var b = complexsparsemultinomial.parse(kids[1]);   // complexsparsemultinomial handles unpreprocessed kid   2015.11
+                var b = new complexsparsemultinomial().parse(kids[1]);   // complexsparsemultinomial handles unpreprocessed kid   2015.11
                 var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             return c;
         } else if (node.type == 'ConstantNode') {
             //return new complexsparsemultinomial([1, null], sparseplacevaluecomplex.parse(Number(node.value)));
-            return new complexsparsemultinomial([], sparseplacevaluecomplex.parse(Number(node.value)));
+            return new complexsparsemultinomial([], new sparseplacevaluecomplex().parse(Number(node.value)));
         } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
             alert('Syntax Error: complexsparsemultinomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
             return complexsparsemultinomial.parse(node.args[0]);

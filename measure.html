@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 6/30/2017
+   Date : 9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -102,9 +102,9 @@
                 var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
                 var L = $('#top')[0].selectedIndex
                 var R = $('#bot')[0].selectedIndex
-                var likelihood = f.parse(shapes[R])
-                var prior = f.parse(shapes[L])
-                var conditional = (f.parse(shapes[Math.min(L, R)])).divide(f.parse(shapes[L]))
+                var likelihood = new f().parse(shapes[R])
+                var prior = new f().parse(shapes[L])
+                var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
                 var support = conditional.divide(likelihood)
                 $('#op').val('x');
                 pop(support.toString(), prior.toString());
@@ -152,7 +152,7 @@
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-            function getinput(elem) { return f.parse($(elem).val()); }
+            function getinput(elem) { return new f().parse($(elem).val()); }    //  2017.9
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    6/30/2017
+   Date:    9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -75,14 +75,14 @@
         }
         function learn() {
             if ($('#top')[0].selectedIndex == 0) {
-                var top = new placevalue(wholeplacevalue.parse(10000), 0);
-                var bot = new placevalue(wholeplacevalue.parse(11110000), 0);
+                var top = new placevalue(new wholeplacevalue().parse(10000), 0);
+                var bot = new placevalue(new wholeplacevalue().parse(11110000), 0);
             } else if ($('#top')[0].selectedIndex == 1) {
-                var top = new placevalue(wholeplacevalue.parse(10000), 0);
-                var bot = new placevalue(wholeplacevalue.parse("111100⅛0"), 0);
+                var top = new placevalue(new wholeplacevalue().parse(10000), 0);
+                var bot = new placevalue(new wholeplacevalue().parse("111100⅛0"), 0);
             } else {
-                var top = new placevalue(wholeplacevalue.parse("¼½¼000"), 0);
-                var bot = new placevalue(wholeplacevalue.parse(10000), 0);
+                var top = new placevalue(new wholeplacevalue().parse("¼½¼000"), 0);
+                var bot = new placevalue(new wholeplacevalue().parse(10000), 0);
             }
             pop(top, bot);
             $('#p2').text($('#c').val())
@@ -97,7 +97,7 @@
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.dividemiddle, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-            function getinput(elem) { return f.parse($(elem).val()); }
+            function getinput(elem) { return new f().parse($(elem).val()); }
             function getshape(elem) { return f.parse($(elem).val()); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));

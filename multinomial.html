@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    6/30/2017
+   Date:    9/30/2017
    Demo for Multinomial : a datatype for representing multinomials; an application of the WholePlaceValue2 datatype
 -->
 
@@ -18,8 +18,6 @@
         window.math || document.write("<script src='../js/math.js'><" + "/script>")
     </script>
     <script type="text/javascript" src='wholeplacevalue2.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>   <!-- polynomial depends on wholeplacevalue 2015.7 -->
-    <script type="text/javascript" src='polynomial.js'></script>        <!-- multinomial depends on polynomial 2015.7 -->
     <script type="text/javascript" src='multinomial.js'></script>
     <style>
         body,html { height:85% }
@@ -40,7 +38,7 @@
             return "<span style='white-space:nowrap'>" + x + "</span>";
         }
         function compute() {
-            var poly = multinomial.parse($('#a').val());
+            var poly = new multinomial().parse($('#a').val());  //  2017.9
             var tuple = parse($('#a').val());
             $('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
         }
@@ -60,12 +58,12 @@
                 console.log('OperatorNode')
                 var kids = node.args;
                 //var a = multinomial.parse(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-                var a = multinomial.parse(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
+                var a = new multinomial().parse(kids[0]);       // multinomial handles unpreprocessed kid   2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
                     //var b = multinomial.parse(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-                    var b = multinomial.parse(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
+                    var b = new multinomial().parse(kids[1]);   // multinomial handles unpreprocessed kid   2015.11
                 }
             }
             a.align(b);     // align    2015.7

@@ -1,17 +1,19 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    9/30/2017
 // Fourier2 : a 2d datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function fourier2(base, pv) {
-    if (arguments.length < 2) alert('fourier2 expects 2 arguments');
+    //if (arguments.length < 2) alert('fourier2 expects 2 arguments');
+    if (arguments.length < 2) pv = new complexplacevalue(); //  2017.9
+    if (arguments.length < 1) base = [1, null];             //  2017.9
     if (!Array.isArray(base)) { var s = 'fourier expects argument 1 (base) to be Array but found ' + typeof base; alert(s); throw new Error(s); }
-    if (!(pv instanceof complexplacevalue)) alert('fourier2 expects argument 2 (pv) to be a complexplacevalue but found ' + typeof pv);
+    if (!(pv instanceof complexplacevalue)) { var s = 'fourier expects argument 2 (pv) to be complexplacevalue but found ' + typeof pv + ':' + pv; alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
 }
 
-fourier2.parse = function (strornode) {  // 2016.1
+fourier2.prototype.parse = function (strornode) {   //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -39,14 +41,14 @@ fourier2.parse = function (strornode) {  // 2016.1
         var kids = node.args;
         //var a = new fourier2(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         if (kids[0].name == 'e' && node.op == '^') { var e = math.parse('exp(q)'); e.args = [kids[1]]; return fourier2.parse(e) }
-        var a = fourier2.parse(kids[0]);       // fourier2 handles unpreprocessed kid   2015.11
+        var a = new fourier2().parse(kids[0]);       // fourier2 handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
             var c = new fourier2([1, null], complexplacevalue[0]).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new fourier2(1, complexplacevalue[0]).add(a);
         } else {
             //var b = new fourier2(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-            var b = fourier2.parse(kids[1]);   // fourier2 handles unpreprocessed kid   2015.11
+            var b = new fourier2().parse(kids[1]);   // fourier2 handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
@@ -57,7 +59,7 @@ fourier2.parse = function (strornode) {  // 2016.1
         console.log(node)
         var fn = node.name;
         var kids = node.args;
-        var kidaspoly = complexlaurent.parse(kids[0])
+        var kidaspoly = new complexlaurent().parse(kids[0])
         var base = kidaspoly.base;
         var x = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [1, 0]);   // exp is 2D    2016.1
         var y = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [0, 1]);   // exp is 2D    2016.1

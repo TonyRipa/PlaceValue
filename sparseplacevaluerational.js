@@ -1,10 +1,11 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/31/2017
+// Date:    9/30/2017
 // SparsePlaceValueRational: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are rational
 
 function sparseplacevaluerational(points) {
-    if (!Array.isArray(points)) { console.trace(); alert("sparseplacevaluerational expects argument to be 2D array but found " + typeof points + points); }
+    if (arguments.length < 1) points = [];  //  2017.9
+    if (!Array.isArray(points)) { var s = 'sparseplacevaluerational expects argument to be 2D array but found ' + typeof points + " : " + JSON.stringify(points); alert(s); throw new Error(s); }
     if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevaluerational expects argument to be 2D array but found 1D array of " + typeof points[0]);
     if (points.length > 0 && !(points[0][1] instanceof wholeplacevalue))
         { var s = "SparsePVRational expects exponent to be wholeplacevalue not " + typeof points[0][1] + " " + JSON.stringify(points[0][1]); alert(s); throw new Error(s); } //  2017.7
@@ -67,15 +68,15 @@ function sparseplacevaluerational(points) {
                     points[i][1].pop();
                 }
         }
-        if (points.length == 0) points = [[rational.parse(0), wholeplacevalue.parse(0)]];
+        if (points.length == 0) points = [[new rational().parse(0), new wholeplacevalue().parse(0)]];
         points = points.map(function (point) { return [point[0], point[1].length == 0 ? [rational.parse(0)] : point[1]] });
         return points;
     }
 }
 
-sparseplacevaluerational.parse = function (arg) {
+sparseplacevaluerational.prototype.parse = function (arg) { //  2017.9
     if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [rational.parse(JSON.stringify(n)), wholeplacevalue.parse(JSON.stringify(e))] }); return new sparseplacevaluerational(points); }   //  2017.7
-    if (typeof arg == "number") return new sparseplacevaluerational([[rational.parse(arg), wholeplacevalue.parse(0)]]);
+    if (typeof arg == "number") return new sparseplacevaluerational([[new rational().parse(arg), new wholeplacevalue().parse(0)]]);
     if (arg instanceof Number) return new sparseplacevaluerational([[rational.parse(arg), [rational.parse(0)]]]);
     //var terms = arg.split('+');
     var terms = split(arg);
@@ -103,15 +104,16 @@ sparseplacevaluerational.parse = function (arg) {
         var pow = coefpow[1] || '0';
         var pows = pow.split(',')
         //if (!pows.length) pows = [0, 0];
-        return [rational.parse(coef), new wholeplacevalue(pows.map(rational.parse))];   //  2017.7
+        return [new rational().parse(coef), new wholeplacevalue(pows.map(new rational().parse))];   //  2017.7
     }
 }
 
 sparseplacevaluerational.prototype.get = function (i) { //  2017.7
-    if (i instanceof Number || typeof (i) == 'number') i = wholeplacevalue.parse('(' + i + ')');
+    if (i instanceof Number || typeof (i) == 'number') i = new wholeplacevalue().parse('(' + i + ')');
+    if (Array.isArray(i)) i = new wholeplacevalue(i);   //  2017.9
     for (var j = 0; j < this.points.length; j++)
         if (equalvectors(this.points[j][1], i)) return this.points[j][0];
-    return rational.parse(0);
+    return new rational().parse(0);
     function equalvectors(a, b) {return a.equals(b);
         //if (a.length != b.length) return false;
         //for (var i = 0; i < a.length; i++)
@@ -194,7 +196,7 @@ sparseplacevaluerational.prototype.times = function (top) {
 }
 
 sparseplacevaluerational.prototype.scale = function (scalar) {
-    if (!(scalar instanceof rational)) scalar = rational.parse(scalar);
+    if (!(scalar instanceof rational)) scalar = new rational().parse(scalar);
     var ret = this.clone();
     ret.points = ret.points.map(function (x) { return [x[0].times(scalar), x[1]]; });
     return ret;
@@ -215,7 +217,7 @@ sparseplacevaluerational.prototype.divide = function (den) {    //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevaluerational.parse(0);
+        if (c == 0) return new sparseplacevaluerational().parse(0);
         var n = num.points.slice(-1)[0];
         var d = den.points.slice(-1)[0];
         var quotient = new sparseplacevaluerational([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
@@ -247,7 +249,7 @@ sparseplacevaluerational.prototype.divideleft = function (den) {    //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevaluerational.parse(0);
+        if (c == 0) return new sparseplacevaluerational().parse(0);
         var n = num.points[0];
         var d = den.points[0];
         var quotient = new sparseplacevaluerational([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
@@ -272,16 +274,31 @@ sparseplacevaluerational.prototype.divideleft = function (den) {    //  2016.10
 sparseplacevaluerational.prototype.dividemiddle = sparseplacevaluerational.prototype.divide
 
 sparseplacevaluerational.prototype.pow = function (power) {        //  2016.11
-    if (power instanceof rational) power = new sparseplacevaluerational([[power, wholeplacevalue.parse(0)]]);   //  2017.7
-    if (!(power instanceof sparseplacevaluerational)) power = sparseplacevaluerational.parse('' + power);       //  2017.7
+    if (power instanceof rational) power = new sparseplacevaluerational([[power, new wholeplacevalue().parse(0)]]);   //  2017.7
+    if (!(power instanceof sparseplacevaluerational)) power = new sparseplacevaluerational().parse('' + power);       //  2017.7
     if (power.points.length == 1 & power.points[0][1].is0()) {//alert(JSON.stringify(power.points[0][0] instanceof rational))
         var base = this.points[0];
         //if (this.points.length == 1) return new sparseplacevaluerational([[base[0].pow(power.points[0][0]), base[1].map(x=>x.times(power.points[0][0]))]]);
         //if (this.points.length == 1) return new sparseplacevaluerational([[base[0].pow(power.points[0][0]), new wholeplacevalue(base[1].mantisa.map(x=>x.times(power.points[0][0])))]]);
         if (this.points.length == 1) return new sparseplacevaluerational([[base[0].pow(power.points[0][0]), base[1].scale(power.points[0][0])]]);
-        if (power.points[0][0].is0()) return sparseplacevaluerational.parse(1);
-        if (power.points[0][0].isneg()) return sparseplacevaluerational.parse(1).divide(this.pow(new sparseplacevaluerational([[power.points[0][0].negate(), [rational.parse(0)]]])));
-        if (power.points[0][0].isint()) return this.times(this.pow(power.sub(sparseplacevaluerational.parse(1))));
+        if (power.points[0][0].is0()) return new sparseplacevaluerational().parse(1);
+        if (power.points[0][0].isneg()) return new sparseplacevaluerational().parse(1).divide(this.pow(new sparseplacevaluerational([[power.points[0][0].negate(), [rational.parse(0)]]])));
+        if (power.points[0][0].isint()) return this.times(this.pow(power.sub(new sparseplacevaluerational().parse(1))));
+    }
+    if (this.points.length == 1) {  //  2017.9
+        var powe = power.clone();
+        for (var i = 0; i < powe.points.length; i++) {
+            var term = powe.points[i]
+            var coef = term[0];
+            //if (term[1].length == 0 || JSON.stringify(term[1]) == '[{"r":0,"i":0}]') { term[0] = complex.parse(2.718).pow(term[0]); continue; }
+            if (term[1].is0()) { term[0] = rational.parse(2.718).pow(term[0]); continue; }
+            //term[1] = term[1].map(x => x.times(coef))
+            term[1] = term[1].scale(coef);
+            term[0] = new rational().parse(1);
+        }
+        //alert(JSON.stringify(powe))
+        var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevaluerational([cur])), new sparseplacevaluerational().parse(1));
+        return ret;
     }
     return sparseplacevaluerational.parse(0 / 0);
 }

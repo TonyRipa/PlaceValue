@@ -4,10 +4,12 @@
 // ComplexPlaceValue : a datatype for representing base agnostic arithmetic via complex numbers whose digits are complex
 
 function complexplacevalue(whole, exp) {
-    if (arguments.length < 2) { var s = 'complexplacevalue expects 2 arguments'; alert(s); throw new Error(s); }
-    if (!(whole instanceof wholeplacevaluecomplex2)) { var s = 'complexplacevalue expects argument 1 (whole) to be a wpvcomplex2 not ' + typeof whole + ' ' + whole; alert(s); throw new Error(s); }
+    //if (arguments.length < 2) { var s = 'complexplacevalue expects 2 arguments'; alert(s); throw new Error(s); }
+    if (arguments.length < 1) whole = new wholeplacevaluecomplex2();    //  2017.9
+    if (arguments.length < 2) exp = [0, 0];                             //  2017.9
+    if (!(whole instanceof wholeplacevaluecomplex2)) { var s = 'complexplacevalue expects arg 1 (whole) to be a wpvcomplex2 not ' + typeof whole + ' : ' + whole; alert(s); throw new Error(s); }
     if (!(Array.isArray(exp))) { var s = 'complexplacevalue expects argument 2 (exp) to be an array but found ' + typeof exp + ' ' + exp; alert(s); throw new Error(s); }
-    if (exp[1] == null) { var s = 'complexplacevalue expects argument 2 (exp) to be an array of numbers but found ' + typeof exp + ' ' + exp; alert(s); throw new Error(s); }
+    if (exp[1] == null) { var s = 'complexplacevalue expects argument 2 (exp) to be an array of numbers but found ' + typeof exp + ' : ' + exp; alert(s); throw new Error(s); }
     this.whole = whole
     this.exp = exp
 }

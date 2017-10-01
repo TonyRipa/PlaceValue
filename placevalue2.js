@@ -1,12 +1,14 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 12/31/2016
+// Date : 9/30/2017
 // PlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(whole, exp) {
-    if (arguments.length < 2) alert('placevalue2 expects 2 arguments');
-    if (!(whole instanceof wholeplacevalue2)) alert('placevalue2 expects argument 1 (whole) to be a wholeplacevalue2 but found ' + typeof whole);
-    if (!Array.isArray(exp)) alert('placevalue2 expects argument 2 (base) to be an array but found ' + typeof base);
+    //if (arguments.length < 2) alert('placevalue2 expects 2 arguments');
+    if (arguments.length < 1) whole = new wholeplacevalue2();   //  2017.9
+    if (arguments.length < 2) exp = [0, 0];                     //  2017.9
+    if (!(whole instanceof wholeplacevalue2)) { var s = 'PlaceValue2 expects arg 1 (whole) to be a WholePV2 not ' + typeof whole + " : " + JSON.stringify(whole); alert(s); throw new Error(s); }
+    if (!Array.isArray(exp)) { var s = 'PlaceValue2 expects arg 2 (exp) to be an array but found ' + typeof exp + " : " + JSON.stringify(exp); alert(s); throw new Error(s); }
     this.whole = whole;
     this.exp = exp
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(whole)=" + Array.isArray(whole));

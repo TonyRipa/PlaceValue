@@ -1,9 +1,10 @@
 
 // Author : Anthony John Ripa
-// Date : 1/31/2017
+// Date : 9/30/2017
 // SparsePlaceValue1 : a datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
 
 function sparseplacevalue1(points) {
+    if (arguments.length < 1) points = [];  //  2017.9
     if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
     if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
     points = normal(points);
@@ -42,7 +43,7 @@ function sparseplacevalue1(points) {
     }
 }
 
-sparseplacevalue1.parse = function (arg) {
+sparseplacevalue1.prototype.parse = function (arg) {    //  2017.9
     if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { return new sparseplacevalue1(JSON.parse(arg).points); }
     if (typeof arg == "number") return new sparseplacevalue1([[arg, 0]]);    //  2d array    2016.10
     if (arg instanceof Number) return new sparseplacevalue1(arg, 0);
@@ -123,7 +124,7 @@ sparseplacevalue1.prototype.divide = function (den) {       //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevalue1.parse(0);
+        if (c == 0) return new sparseplacevalue1().parse(0);
         var n = num.points.slice(-1)[0];
         var d = den.points.slice(-1)[0];
         var quotient = new sparseplacevalue1([[n[0] / d[0], n[1] - d[1]]]);     //  Works even for non-truncating division  2016.10
@@ -141,7 +142,7 @@ sparseplacevalue1.prototype.divideleft = function (den) {   //  2017.1
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevalue1.parse(0);
+        if (c == 0) return new sparseplacevalue1().parse(0);
         var n = num.points[0];
         var d = den.points[0];
         var quotient = new sparseplacevalue1([[n[0] / d[0], n[1] - d[1]]]);     //  Works even for non-truncating division  2016.10

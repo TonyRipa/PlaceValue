@@ -1,10 +1,11 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    9/30/2017
 // SparsePlaceValueComplex : a datatype for representing base agnostic arithmetic via sparse numbers whose digits are complex
 
 function sparseplacevaluecomplex(points) {
-    if (!Array.isArray(points)) { console.trace(); alert("sparseplacevaluecomplex expects argument to be 2D array but found " + typeof points + points); }
+    if (arguments.length < 1) points = [];  //  2017.9
+    if (!Array.isArray(points)) { var s = 'sparseplacevaluecomplex expects argument to be 2D array but found ' + typeof points + JSON.stringify(points); alert(s); throw new Error(s); }
     if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevaluecomplex expects argument to be 2D array but found 1D array of " + typeof points[0]);
     if (points.length > 0 && !points[0][0] instanceof complex) alert("sparseplacevaluecomplex expects coefficients are complex but found " + typeof points[0][0]);    //  2017.4
     if (points.length > 0 && !points[0][1].every(x => x instanceof complex)) { var s = 'SparsePlaceValueComplex bad arg ' + JSON.stringify(points); alert(s); throw new Error(s); }  //  2017.4
@@ -70,7 +71,7 @@ function sparseplacevaluecomplex(points) {
     }
 }
 
-sparseplacevaluecomplex.parse = function (arg) {
+sparseplacevaluecomplex.prototype.parse = function (arg) {  //  2017.9
     if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { return new sparseplacevaluecomplex(JSON.parse(arg).points.map(function (point) { return [complex.parse(JSON.stringify(point[0])), point[1].map(function (c) { return complex.parse(JSON.stringify(c)) })] })); }
     if (typeof arg == "number") return new sparseplacevaluecomplex([[complex.parse(arg), []]]);    //  2d array    2016.10
     if (arg instanceof Number) return new sparseplacevaluecomplex([[complex.parse(arg), []]]);
@@ -190,7 +191,7 @@ sparseplacevaluecomplex.prototype.divide = function (den) {    //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevaluecomplex.parse(0);
+        if (c == 0) return new sparseplacevaluecomplex().parse(0);
         var n = num.points.slice(-1)[0];
         var d = den.points.slice(-1)[0];
         var quotient = new sparseplacevaluecomplex([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
@@ -220,7 +221,7 @@ sparseplacevaluecomplex.prototype.divideleft = function (den) {    //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevaluecomplex.parse(0);
+        if (c == 0) return new sparseplacevaluecomplex().parse(0);
         var n = num.points[0];
         var d = den.points[0];
         var quotient = new sparseplacevaluecomplex([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
@@ -254,9 +255,9 @@ sparseplacevaluecomplex.prototype.pow = function (power) {        //  2017.3
         var base = this.points[0];
         if (this.points.length == 1) return new sparseplacevaluecomplex([[base[0].pow(power.points[0][0]), base[1].map(function (x) { return x.times(power.points[0][0]) })]]);
         if (!power.points[0][0].isreal()) { var s = 'Incompatible args: Sum ^ Imaginary: (' + this + ') ^ ' + power; alert(s); throw new Error(s); }  //  2017.5
-        if (power.points[0][0].is0()) return sparseplacevaluecomplex.parse(1);
+        if (power.points[0][0].is0()) return new sparseplacevaluecomplex().parse(1);
         if (power.points[0][0].below0()) return sparseplacevaluecomplex.parse(1).divide(this.pow(new sparseplacevaluecomplex([[power.points[0][0].negate(), []]])));
-        if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(sparseplacevaluecomplex.parse(1))));
+        if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(new sparseplacevaluecomplex().parse(1))));
     }
     if (this.points.length == 1) {  //  2017.5
         var powe = power.clone();
@@ -268,7 +269,7 @@ sparseplacevaluecomplex.prototype.pow = function (power) {        //  2017.3
             term[1] = term[1].map(x => x.times(coef))
             term[0] = complex.parse(1);
         }
-        var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevaluecomplex([cur])), sparseplacevaluecomplex.parse(1));
+        var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevaluecomplex([cur])), new sparseplacevaluecomplex().parse(1));
         return ret;
     }
     return sparseplacevaluecomplex.parse('%');

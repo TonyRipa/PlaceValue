@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    6/30/2017
+   Date:    9/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -72,9 +72,9 @@
             if (f == complexexponential) s = s1 + '+' + s2;
             if (f == laplace) s = 's^' + n + '+' + k;
             //alert(s);
-            var fs = f.parse(s);
-            var fsn = fs.pointpow(f.parse(n))
-            var k = f.parse($('#k').val())
+            var fs = new f().parse(s);
+            var fsn = fs.pointpow(new f().parse(n))
+            var k = new f().parse($('#k').val())
             //alert(JSON.stringify(k))
             var fsn_k = fsn.pointadd(k)
             //alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
@@ -90,7 +90,7 @@
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
             output(a, b, c);
-	        function getinput(elem) { return f.parse($(elem).attr('data-val') || $(elem).val()); }
+	        function getinput(elem) { return new f().parse($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c);

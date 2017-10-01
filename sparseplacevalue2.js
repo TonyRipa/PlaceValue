@@ -1,11 +1,12 @@
 
 // Author : Anthony John Ripa
-// Date : 2/28/2017
+// Date : 9/30/2017
 // SparsePlaceValue2 : a 2d datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
 
 function sparseplacevalue2(points) {
-    if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue2 expects argument to be 2D array but found " + typeof points + points); }
-    if (!Array.isArray(points[0])) alert("sparseplacevalue2 expects argument to be 2D array but found 1D array of " + typeof points[0]);
+    if (arguments.length < 1) points = [];  //  2017.9
+    if (!Array.isArray(points)) { var s = 'sparseplacevalue2 expects argument to be 2D array but found ' + typeof points + ' ' + JSON.stringify(points); alert(s); throw new Error(s); }
+    if (points.length > 0 && !Array.isArray(points[0])) { var s = 'parseplacevalue2 expects argument to be 2D array but found 1D array of ' + typeof points[0]; alert(s); throw new Error(s); }
     points = normal(points);
     points = trim(points);
     points = points.map(function (x) { return [x[0], [Math.round(x[1][0] * 1000) / 1000, Math.round(x[1][1] * 1000) / 1000]] });
@@ -42,7 +43,7 @@ function sparseplacevalue2(points) {
     }
 }
 
-sparseplacevalue2.parse = function (arg) {
+sparseplacevalue2.prototype.parse = function (arg) {    //  2017.9
     if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { return new sparseplacevalue2(JSON.parse(arg).points); }
     if (typeof arg == "number") return new sparseplacevalue2([[arg, [0, 0]]]);    //  2d array    2016.10
     if (arg instanceof Number) return new sparseplacevalue2(arg, [0, 0]);
@@ -115,7 +116,7 @@ sparseplacevalue2.prototype.divide = function (den) {    //  2016.10
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevalue2.parse(0);
+        if (c == 0) return new sparseplacevalue2().parse(0);
         var n = num.points.slice(-1)[0];
         var d = den.points.slice(-1)[0];
         var quotient = new sparseplacevalue2([[n[0] / d[0], [n[1][0] - d[1][0], n[1][1] - d[1][1]]]]);     //  Works even for non-truncating division  2016.10
@@ -133,7 +134,7 @@ sparseplacevalue2.prototype.divideleft = function (den) {    //  2016.11
     var quotient = divideh(num, den, iter);
     return quotient;
     function divideh(num, den, c) {
-        if (c == 0) return sparseplacevalue2.parse(0);
+        if (c == 0) return new sparseplacevalue2().parse(0);
         var n = num.points[0];
         var d = den.points[0];
         var quotient = new sparseplacevalue2([[n[0] / d[0], [n[1][0] - d[1][0], n[1][1] - d[1][1]]]]);     //  Works even for non-truncating division  2016.10

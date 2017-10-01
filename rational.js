@@ -1,10 +1,11 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/31/2017
+// Date:    9/30/2017
 // Rational: A data-type for representing Rational Numbers
 
 function rational(num, den) {   //  2016.7
-    if (arguments.length < 1) alert('Rational expects 1 or 2 arguments');
+    //if (arguments.length < 1) alert('Rational expects 1 or 2 arguments');
+    if (arguments.length < 1) num = 0;  //  2017.9
     if (arguments.length < 2) den = 1;
     if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
     if (!(typeof den == 'number' || den instanceof Number)) { console.trace(); alert('Rational expects argument 2 (den) to be a Number but found ' + typeof den + ' ' + JSON.stringify(den)); }
@@ -31,7 +32,7 @@ function rational(num, den) {   //  2016.7
     }
 }
 
-rational.parse = function (n) {
+rational.prototype.parse = function (n) {   //  2017.9
     if (n instanceof String || typeof (n) == 'string') if (n.indexOf('d') != -1) { var x = JSON.parse(n); return new rational(x.n, x.d) }
     if (n instanceof Number || typeof n == 'number') return parsenumber(n);
     var N = n.toString();

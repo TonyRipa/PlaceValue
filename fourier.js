@@ -1,17 +1,18 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    9/30/2017
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
-    if (arguments.length < 2) { console.trace(); alert('fourier expects 2 arguments'); end; }
+    //if (arguments.length < 2) { console.trace(); alert('fourier expects 2 arguments'); end; }
+    if (arguments.length < 2) pv = new placevaluecomplex(); //  2017.9
     if (Array.isArray(base)) alert('fourier expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-    if (!(pv instanceof placevaluecomplex)) alert('fourier expects argument 2 (pv) to be a placevaluecomplex but found ' + typeof pv);
+    if (!(pv instanceof placevaluecomplex)) { var s = 'fourier expects arg2 to be PlaceValueComplex not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
 }
 
-fourier.parse = function (strornode) {
+fourier.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -38,14 +39,14 @@ fourier.parse = function (strornode) {
         console.log(node)
         var kids = node.args;
         //var a = new fourier(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = fourier.parse(kids[0]);       // fourier handles unpreprocessed kid   2015.11
+        var a = new fourier().parse(kids[0]);       // fourier handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new fourier(1, new placevaluecomplex(wholeplacevaluecomplex.parse('0'), 0)).sub(a);
+            var c = new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex().parse('0'), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new fourier(1, new placevaluecomplex(new wholeplacevaluecomplex([0]), 0)).add(a);
         } else {
             //var b = new fourier(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-            var b = fourier.parse(kids[1]);   // fourier handles unpreprocessed kid   2015.11
+            var b = new fourier().parse(kids[1]);   // fourier handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
@@ -56,10 +57,10 @@ fourier.parse = function (strornode) {
         console.log(node)
         var fn = node.name;
         var kids = node.args;
-        var kidaspoly = laurent.parse(kids[0])
+        var kidaspoly = new laurent().parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
-        var ten = placevaluecomplex.parse(10);      //  2017.5
+        var ten = new placevaluecomplex().parse(10);      //  2017.5
         var tens = kidaspoly.pv.get(1).toreal();    //  2016.7
         var ones = kidaspoly.pv.get(0).toreal();    //  2016.7
         var expi = ten.pow(tens)

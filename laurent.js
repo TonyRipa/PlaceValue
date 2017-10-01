@@ -1,82 +1,46 @@
 
 // Author : Anthony John Ripa
-// Date : 8/31/2016
+// Date : 9/30/2017
 // Laurent : a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
-    if (arguments.length < 2) alert('laurent expects 2 arguments');
+    //if (arguments.length < 2) alert('laurent expects 2 arguments');
+    if (arguments.length < 1) base = 1;                 //  2017.9
+    if (arguments.length < 2) pv = new placevalue();    //  2017.9
     if (Array.isArray(base)) alert('laurent expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-    if (!(pv instanceof placevalue)) alert('laurent expects argument 2 (pv) to be a placevalue but found ' + typeof pv);
+    if (!(pv instanceof placevalue)) { var s = 'Laurent expects arg 2 (pv) to be a placevalue but found ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
     return;
-    //console.log('laurent : arguments.length=' + arguments.length);
-    //if (arguments.length < 2) {
-    //    var base;
-    //    var pv;
-    //    if (isNaN(arg)) {
-    //        if ((arg instanceof String || typeof (arg) == 'string') && arg.indexOf('base') != -1) {    // if arg is json of laurent-object
-    //            var argObj = JSON.parse(arg);
-    //            console.log('argObj=' + JSON.stringify(argObj));
-    //            base = argObj.base;
-    //            console.log('argObj.base=' + JSON.stringify(argObj.base));
-    //            pv = argObj.pv;
-    //            console.log('argObj.pv=' + JSON.stringify(argObj.pv));
-    //        } else if(arg != arg) {    // If arg is %   2015.8
-    //            base = 1;
-    //            pv = [arg];
-    //        } else {
-    //            parse(this, arg);
-    //            return;
-    //        }
-    //    } else {
-    //        base = 1;
-    //        pv = [arg];
-    //    }
-    //    this.base = base;
-    //    this.pv = new placevalue(pv);
-    //    console.log("laurent : this.pv=" + JSON.stringify(this.pv));
-    //} else {
-    //    this.base = arg;
-    //    if (pv instanceof placevalue)
-    //        this.pv = pv;
-    //    else if (typeof pv == 'number') {
-    //        console.log("laurent: typeof pv == 'number'");
-    //        this.pv = new placevalue(pv)
-    //        console.log(this.pv.toString());
-    //    }
-    //    else
-    //        alert('laurent: bad arg typeof(arg2)=' + typeof (pv));
-    //}
 }
 
-laurent.parse = function (strornode) {
+laurent.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
     if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue(a.pv.whole.mantisa), a.pv.exp)) }
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new laurent(1, new placevalue(wholeplacevalue.parse('(' + Number(node.value) + ')'), 0));
+        return new laurent(1, new placevalue(new wholeplacevalue().parse('(' + Number(node.value) + ')'), 0));
     } else if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
         var base = node.name;
         //pv = 10;
         //me.base = base;
-        var pv = new placevalue(wholeplacevalue.parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9
+        var pv = new placevalue(new wholeplacevalue().parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9
         return new laurent(base, pv);
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
         //var a = new laurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = laurent.parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
+        var a = new laurent().parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new laurent(1, new placevalue(wholeplacevalue.parse(0), 0)).sub(a);
+            var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new laurent(1, new placevalue(wholeplacevalue.parse(0), 0)).add(a);
+            var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).add(a);
         } else {
             //var b = new laurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-            var b = laurent.parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
+            var b = new laurent().parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;

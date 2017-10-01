@@ -1,18 +1,20 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    9/30/2017
 // PlaceValueComplex : a datatype for representing base agnostic arithmetic via numbers whose digits are complex
 
 function placevaluecomplex(whole, exp) {
-    if (arguments.length < 2) alert('placevaluecomplex expects 2 arguments');
-    if (!(whole instanceof wholeplacevaluecomplex)) { console.trace(); alert('placevaluecomplex expects argument 1 (whole) to be a wholeplacevaluecomplex but found ' + typeof whole + JSON.stringify(whole)); }
+    //if (arguments.length < 2) alert('placevaluecomplex expects 2 arguments');
+    if (arguments.length < 1) whole = new wholeplacevaluecomplex(); //  2017.9
+    if (arguments.length < 2) exp = 0;  //  2017.9
+    if (!(whole instanceof wholeplacevaluecomplex)) { var s = 'PVComplex expects arg 1 (whole) to be a WholePVComplex not ' + typeof whole + JSON.stringify(whole); alert(s); throw new Error(s); }
     if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevaluecomplex expects argument 2 (exp) to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
     this.whole = whole
     this.exp = whole.is0() ? 0 : exp;   // 0 has no exp 2016.6
     console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(whole)=" + Array.isArray(whole));
 }
 
-placevaluecomplex.parse = function (man, exp) { // 2016.1
+placevaluecomplex.prototype.parse = function (man, exp) {   //  2017.9
     if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevaluecomplex(new wholeplacevaluecomplex(a.whole.mantisa.map(function (x) { return new complex(x.r, x.i) })), a.exp) }
     if (arguments.length < 2) exp = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
@@ -26,7 +28,7 @@ placevaluecomplex.parse = function (man, exp) { // 2016.1
         exp = man.exp;      // get exp from man before
         man = man.whole;    // man overwrites self 2015.8
     }
-    var whole = wholeplacevaluecomplex.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
+    var whole = new wholeplacevaluecomplex().parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
     return new placevaluecomplex(whole, exp + getexp(man));
     //console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
@@ -127,7 +129,7 @@ placevaluecomplex.prototype.pow = function (power) {	// 2015.8
     //var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
 
     if (power.exp == 0) {   //  2017.5
-        if (power.getreal(0) < 0) return placevaluecomplex.parse(1).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-power.getreal(0))]), 0)));   //  getreal 2015.12
+        if (power.getreal(0) < 0) return new placevaluecomplex().parse(1).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-power.getreal(0))]), 0)));// getreal 2015.12
         var whole = this.whole.pow(power.whole);
         var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
     } else if (power.exp == 1) {

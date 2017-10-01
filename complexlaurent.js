@@ -1,17 +1,19 @@
 
 // Author : Anthony John Ripa
-// Date : 2/14/2016
+// Date : 9/30/2017
 // ComplexLaurent : a 2d datatype for representing Complex Laurent multinomials; an application of the ComplexPlaceValue datatype
 
 function complexlaurent(base, pv) {
-    if (arguments.length < 2) alert('complexlaurent expects 2 arguments');
-    if (!Array.isArray(base)) alert('complexlaurent expects argument 1 (base) to be Array but found ' + typeof base);
-    if (!(pv instanceof complexplacevalue)) alert('complexlaurent expects argument 2 (pv) to be a complexplacevalue but found ' + typeof pv);
+    //if (arguments.length < 2) alert('complexlaurent expects 2 arguments');
+    if (arguments.length < 1) base = [];                    //  2017.9
+    if (arguments.length < 2) pv = new complexplacevalue(); //  2017.9
+    if (!Array.isArray(base)) { var s = "complexlaurent expects argument 1 (base) to be an array not " + typeof pv; alert(s); throw new Error(s); }
+    if (!(pv instanceof complexplacevalue)) { var s = "complexlaurent expects argument 2 (pv) to be a complexplacevalue not " + typeof pv; alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
 }
 
-complexlaurent.parse = function (strornode) {  // 2016.1
+complexlaurent.prototype.parse = function (strornode) { //  2017.9
     var me = new complexlaurent([null, null], complexplacevalue[0]);
     console.log('new complexlaurent : ' + JSON.stringify(strornode))
     if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new complexlaurent(a.base, new complexplacevalue(new wholeplacevaluecomplex2(a.pv.whole.mantisa), a.pv.exp)) }
@@ -31,21 +33,21 @@ complexlaurent.parse = function (strornode) {  // 2016.1
         console.log('new complexlaurent : OperatorNode')
         var kids = node.args;
         //var a = new complexlaurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = complexlaurent.parse(kids[0]);      // complexlaurent handles unpreprocessed kid  2015.11
+        var a = new complexlaurent().parse(kids[0]);      // complexlaurent handles unpreprocessed kid  2015.11
         if (node.fn == 'unaryMinus') {
             var c = new complexlaurent([null, null], complexplacevalue[0]).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new complexlaurent([null, null], complexplacevalue[0]).add(a);
         } else {
             //var b = new complexlaurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-            var b = complexlaurent.parse(kids[1]);  // complexlaurent handles unpreprocessed kid  2015.11
+            var b = new complexlaurent().parse(kids[1]);  // complexlaurent handles unpreprocessed kid  2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         me.base = c.base;
         me.pv = c.pv;
         console.log('new complexlaurent : parse2 : base = ' + JSON.stringify(me.base));
     } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
-        if (node.name == 'i') { var i = math.parse('i*q'); i.args[1] = node.args[0]; return complexlaurent.parse(i) } // interpret function i(x) as product i*x     2016.2
+        if (node.name == 'i') { var i = math.parse('i*q'); i.args[1] = node.args[0]; return new complexlaurent().parse(i) } // interpret function i(x) as product i*x     2016.2
         alert('Syntax Error: complexlaurent expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
         var k = complexlaurent.parse(node.args[0]);
         me.base = k.base;

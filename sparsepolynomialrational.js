@@ -1,21 +1,23 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2017
+// Date:    9/30/2017
 // SparsePolynomialRational : a datatype for representing sparse polynomials; an application of the SparsePlaceValueRational1 datatype
 
 class sparsepolynomialrational extends abstractpolynomial1 {
 
     constructor(base, pv) {
-        if (arguments.length < 2) alert('sparsepolynomialrational expects 2 arguments');
+        //if (arguments.length < 2) alert('sparsepolynomialrational expects 2 arguments');
+        if (arguments.length < 1) base = 1;                             //  2017.9
+        if (arguments.length < 2) pv = new sparseplacevaluerational1(); //  2017.9
         if (!(base instanceof String || typeof base == 'string' || typeof base == 'number'))
             { var s = 'SparsePolynomialRational arg1 (base) wants string not ' + typeof base + JSON.stringify(base); alert(s); throw new Error(s); }  //  2017.8
-        if (!(pv instanceof sparseplacevaluerational1)) { var s = "sparsepolynomialrational expects argument 2 (pv) to be a sparsePVrational not " + typeof pv; alert(s); throw new Error(s); } //  2017.7
+        if (!(pv instanceof sparseplacevaluerational1)) { var s = "sparsepolynomialrational expects arg 2 (pv) to be a sparsePVrational not " + typeof pv; alert(s); throw new Error(s); } //  2017.7
         super();
         this.base = base
         this.pv = pv;
     }
 
-    static parse(strornode) {
+    parse(strornode) {  //  2017.9
         console.log('new sparsepolynomialrational : ' + JSON.stringify(strornode))
         if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialrational(a.base, sparseplacevaluerational1.parse(JSON.stringify(a.pv))) }
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
@@ -23,7 +25,7 @@ class sparsepolynomialrational extends abstractpolynomial1 {
             console.log('new sparsepolynomialrational : SymbolNode')
             //var base = [node.name, null];
             var base = node.name;
-            var pv = sparseplacevaluerational1.parse("1E1");  //new sparseplacevaluerational1([[0, 1]]);
+            var pv = new sparseplacevaluerational1().parse("1E1");  //new sparseplacevaluerational1([[0, 1]]);
             return new sparsepolynomialrational(base, pv);
         } else if (node.type == 'OperatorNode') {
             console.log('new sparsepolynomialrational : OperatorNode')
@@ -40,7 +42,7 @@ class sparsepolynomialrational extends abstractpolynomial1 {
             return c;
         } else if (node.type == 'ConstantNode') {
             //return new sparsepolynomialrational([1, null], sparseplacevaluerational1.parse(Number(node.value)));
-            return new sparsepolynomialrational(1, sparseplacevaluerational1.parse(Number(node.value)));
+            return new sparsepolynomialrational(1, new sparseplacevaluerational1().parse(Number(node.value)));
         } else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
             alert('Syntax Error: sparsepolynomialrational expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
             return sparsepolynomialrational.parse(node.args[0]);
