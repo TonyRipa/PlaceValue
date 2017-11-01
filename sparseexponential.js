@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparseExponential : a datatype for representing sparse exponentials; an application of the sparseplacevalue datatype
 
 class sparseexponential extends abstractpolynomial {
@@ -22,13 +22,12 @@ class sparseexponential extends abstractpolynomial {
 
     parse(strornode) {  //  2017.9
         console.log('new sparseexponential : ' + JSON.stringify(strornode))
-        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparseexponential(a.base, sparseplacevaluerational.parse(JSON.stringify(a.pv))) }
+        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparseexponential(a.base, new sparseplacevaluerational().parse(JSON.stringify(a.pv))) } //  2017.10
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
         if (node.type == 'SymbolNode') {
             console.log('new sparseexponential : SymbolNode')
             if (node.name == 'i') return new sparseexponential([], sparseplacevaluerational.parse('i'));
             { var s = 'Syntax Error: sparseexponential expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
-            //var base = [node.name];
             //var pv = sparseplacevaluerational.parse("1E1");  //new sparseplacevaluerational([[0, 1]]);
             //return new sparseexponential(base, pv);
         } else if (node.type == 'OperatorNode') {

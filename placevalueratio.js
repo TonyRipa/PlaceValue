@@ -1,7 +1,7 @@
 
-// Author : Anthony John Ripa
-// Date : 9/30/2017
-// PlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
+// Author:  Anthony John Ripa
+// Date:    10/31/2017
+// PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 function placevalueratio(num, den) {
     //if (arguments.length < 2) alert('placevalueratio expects 2 arguments');
@@ -16,7 +16,7 @@ function placevalueratio(num, den) {
 }
 
 placevalueratio.prototype.parse = function (man) {    // 2017.9
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new placevalueratio(wholeplacevalue.parse(JSON.stringify(a.num)), wholeplacevalue.parse(JSON.stringify(a.den))) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new placevalueratio(new wholeplacevalue().parse(JSON.stringify(a.num)), new wholeplacevalue().parse(JSON.stringify(a.den))) }    //  2017.10
     var den = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -99,14 +99,6 @@ placevalueratio.prototype.reduce = function () {    //  2016.5
         me.num = num.unscale(g);
         me.den = den.unscale(g);
     }
-
-    //function gcd(a, b) {
-    //    if (a < 0 && b > 0) return gcd(-a, b);
-    //    if (a == 0) return b;
-    //    if (b == 0) return a;
-    //    if (a >= Math.abs(b)) return gcd(a % b, b);
-    //    return gcd(b % a, a);
-    //}
 
     function gcdpv(a, b) {
         if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);

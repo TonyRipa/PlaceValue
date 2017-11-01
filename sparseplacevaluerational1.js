@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePlaceValueRational1: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are rational
 
 class sparseplacevaluerational1 {
@@ -51,8 +51,8 @@ class sparseplacevaluerational1 {
 
     parse(arg) {    //  2017.9
         if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1)
-            return new sparseplacevaluerational1(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(rational.parse)));
-        if (typeof arg == "number") return new sparseplacevaluerational1([[new rational().parse(arg), new rational().parse(0)]]);    //  2d array    2016.10
+            return new sparseplacevaluerational1(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new rational().parse))); //  2017.10
+        if (typeof arg == "number") return new sparseplacevaluerational1([[new rational().parse(arg), new rational().parse(0)]]);   //  2d array    2016.10
         if (arg instanceof Number) return new sparseplacevaluerational1(arg, 0);
         var terms = split(arg);
         terms = terms.map(parseterm);
@@ -171,7 +171,7 @@ class sparseplacevaluerational1 {
 
     divide(den) {       //  2016.10
         var num = this;
-        var iter = math.max(num.points.length, den.points.length);
+        var iter = 5//math.max(num.points.length, den.points.length);
         var quotient = divideh(num, den, iter);
         return quotient;
         function divideh(num, den, c) {
@@ -201,7 +201,6 @@ class sparseplacevaluerational1 {
             var n = num.points[0];
             var d = den.points[0];
             var quotient = new sparseplacevaluerational1([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
-            //if (d.val == 0) return quotient;
             var remainder = num.sub(quotient.times(den))
             var q2 = divideh(remainder, den, c - 1);
             quotient = quotient.add(q2);

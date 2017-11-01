@@ -1,7 +1,7 @@
 
-// Author : Anthony John Ripa
-// Date : 9/30/2017
-// Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
+// Author:  Anthony John Ripa
+// Date:    10/31/2017
+// Polynomial: a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 function polynomial(arg, pv) {
     if (arguments.length < 1) arg = 1;                      //  2017.9
@@ -24,13 +24,13 @@ polynomial.prototype.parse = function (strornode) { //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial(a.base, wholeplacevalue.parse(JSON.stringify(a.pv))) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial(a.base, this.pv.parse(JSON.stringify(a.pv))) } //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
         var base = node.name;
-        //var pv = [0, 1];
-        return new polynomial(base, new wholeplacevalue().parse(10));
+        var pv = this.pv.parse(10);
+        return new polynomial(base, pv);
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;

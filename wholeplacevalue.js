@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // WholePlaceValue: a datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -9,7 +9,7 @@ var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k,
 function wholeplacevalue(man) {
     if (arguments.length < 1) man = [];  //  2017.9
     if (!Array.isArray(man)) alert('wholeplacevalue expects array argument but found ' + typeof man + man);
-    if (man.length > 0 && !(man[0] instanceof rational)) { console.trace(); alert("wholeplacevalue expects rational[] but found " + typeof man[0] + '[] :' + man); end; }
+    if (man.length > 0 && !(man[0] instanceof rational)) { var s = "wholeplacevalue wants rational[] not " + typeof man[0] + '[]: ' + JSON.stringify(man); alert(s); throw new Error(s); }//2017.10
     this.mantisa = man;
     while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
         this.mantisa.pop();                             //  pop root
@@ -165,8 +165,6 @@ wholeplacevalue.prototype.unscale = function (scalar, trace) {  //  2016.5
     if (!(scalar instanceof rational)) scalar = new rational().parse(scalar);
     var ret = this.clone(trace + ' wholeplacevalue.prototype.unscale >');
     ret.mantisa = ret.mantisa.map(function (x) { return x.divide(scalar) });
-    //for (var r = 0; r < ret.mantisa.length; r++)
-    //    ret.mantisa[r] = ret.mantisa[r].divide(scalar);
     return ret;
 }
 

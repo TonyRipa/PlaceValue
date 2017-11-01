@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
-// Fourier2 : a 2d datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
+// Date:    10/31/2017
+// Fourier2: a 2d datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function fourier2(base, pv) {
     //if (arguments.length < 2) alert('fourier2 expects 2 arguments');
@@ -123,6 +123,9 @@ fourier2.prototype.divide = function (other) {
     this.align(other);
     return new fourier2(this.base, this.pv.divide(other.pv));
 }
+
+fourier2.prototype.divideleft = fourier2.prototype.divide;      //  2017.10
+fourier2.prototype.dividemiddle = fourier2.prototype.divide;    //  2017.10
 
 fourier2.prototype.pointadd = function (other) {
     this.align(other);
@@ -351,9 +354,10 @@ fourier2.prototype.eval = function (base) {	// 2015.8
     var ei = new c(new wholeplacevaluecomplex2([[{ 'r': .54, 'i': .84 }]]), [0, 0]);
     base = ei.pow(base);
     if (isNaN(this.base[1])) {
-        alert(1)
+        //alert(1)
         return new fourier2(this.base, this.pv.eval(base));
     } else {
-        alert(2)
+        //alert(2)
+        return new fourier2(this.base, this.pv.eval(base)); //  2017.10
     }
 }

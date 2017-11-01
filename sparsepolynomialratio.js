@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function sparsepolynomialratio(arg, pv) {
@@ -24,7 +24,7 @@ sparsepolynomialratio.prototype.parse = function (strornode) {  //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, sparseplacevalueratio.parse(JSON.stringify(a.pv))) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
@@ -155,10 +155,11 @@ sparsepolynomialratio.toStringXbase = function (pv, base) {                     
     function coefficient(digit) { return (digit.is1() ? '' : digit.negate().is1() ? '-' : digit).toString(false, true) + (isFinite(digit.toreal()) ? '' : '*') }    //  2017.8
 }
 
-sparsepolynomialratio.prototype.eval = function (base) {
-    var sum = 0;
-    for (var i = 0; i < this.pv.mantisa.length; i++) {
-        sum += this.pv.get(i) * Math.pow(base, i);
-    }
-    return new sparsepolynomialratio(1, new wholeplacevalue([sum]));
+sparsepolynomialratio.prototype.eval = function (other) {
+    return new sparsepolynomialratio(1, this.pv.eval(other.pv));    //  2017.10
+    //var sum = 0;
+    //for (var i = 0; i < this.pv.mantisa.length; i++) {
+    //    sum += this.pv.get(i) * Math.pow(base, i);
+    //}
+    //return new sparsepolynomialratio(1, new wholeplacevalue([sum]));
 }

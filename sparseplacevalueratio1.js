@@ -1,14 +1,14 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
-// SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValueRational1s
+// Date:    10/31/2017
+// SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(num, den) {
     //if (arguments.length < 2) alert('sparseplacevalueratio1 expects 2 arguments');
-    if (arguments.length < 1) num = new sparseplacevaluerational1();          //  2017.9
-    if (arguments.length < 2) den = new sparseplacevaluerational1().parse(1); //  2017.9
-    if (!(num instanceof sparseplacevaluerational1)) { var s = 'SparsePVRatio1 expects arg1 to be SparsePVRational1 not ' + typeof num + " : " + JSON.stringify(num); alert(s); throw new Error(s); }
-    if (!(den instanceof sparseplacevaluerational1)) { var s = 'SparsePVRatio1 expects arg2 to be SparsePVRational1 not ' + typeof den + " : " + JSON.stringify(den); alert(s); throw new Error(s); }
+    if (arguments.length < 1) num = new sparseplacevalue1();          //  2017.9
+    if (arguments.length < 2) den = new sparseplacevalue1().parse(1); //  2017.9
+    if (!(num instanceof sparseplacevalue1)) { var s = 'SparsePVRatio1 expects arg1 to be SparsePVRational1 not ' + typeof num + " : " + JSON.stringify(num); alert(s); throw new Error(s); }
+    if (!(den instanceof sparseplacevalue1)) { var s = 'SparsePVRatio1 expects arg2 to be SparsePVRational1 not ' + typeof den + " : " + JSON.stringify(den); alert(s); throw new Error(s); }
     this.num = num;
     this.den = den;
     this.reduce();
@@ -16,7 +16,7 @@ function sparseplacevalueratio1(num, den) {
 }
 
 sparseplacevalueratio1.prototype.parse = function (man) {   // 2017.9
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio1(sparseplacevaluerational1.parse(JSON.stringify(a.num)), sparseplacevaluerational1.parse(JSON.stringify(a.den))) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio1(new sparseplacevalue1().parse(JSON.stringify(a.num)), new sparseplacevalue1().parse(JSON.stringify(a.den))) }   //  2017.10
     var den = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -31,11 +31,11 @@ sparseplacevalueratio1.prototype.parse = function (man) {   // 2017.9
     }
     var slashindex = findslash(man);
     if (slashindex == -1) {
-        var num = new sparseplacevaluerational1().parse(man);
-        var den = new sparseplacevaluerational1().parse(1);
+        var num = new sparseplacevalue1().parse(man);
+        var den = new sparseplacevalue1().parse(1);
     } else {
-        var num = sparseplacevaluerational1.parse(man.substr(0, slashindex));
-        var den = sparseplacevaluerational1.parse(man.substr(slashindex + 1));
+        var num = this.num.parse(man.substr(0, slashindex));
+        var den = this.num.parse(man.substr(slashindex + 1));
     }
     return new sparseplacevalueratio1(num, den);
     function findslash(x) { //  2016.7
@@ -85,8 +85,8 @@ sparseplacevalueratio1.prototype.reduce = function () {    //  2016.5
 
     function pulloutcommonconstants(me) {
         if (me.num.is0() && me.den.is0()) return;
-        if (me.num.is0()) { me.den = new sparseplacevaluerational1().parse(1); return }
-        if (me.den.is0()) { me.num = new sparseplacevaluerational1().parse(1); return }
+        if (me.num.is0()) { me.den = new sparseplacevalue1().parse(1); return }
+        if (me.den.is0()) { me.num = new sparseplacevalue1().parse(1); return }
         var num = me.num//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
         var den = me.den//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
         var n = num.gcd();
@@ -119,48 +119,57 @@ sparseplacevalueratio1.prototype.sub = function (subtrahend) {
 }
 
 sparseplacevalueratio1.prototype.pointsub = function (other) {
-    var first = this.num.div10s(this.den.mantisa.length - 1);
-    var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new sparseplacevalueratio1(first.pointsub(second), sparseplacevaluerational1.parse(1));
+    //var first = this.num.div10s(this.den.mantisa.length - 1);
+    //var second = other.num.div10s(other.den.mantisa.length - 1);
+    var first = this.num.divide(this.den);
+    var second = other.num.divide(other.den);
+    return new sparseplacevalueratio1(first.pointsub(second), this.num.parse(1));
 }
 
 sparseplacevalueratio1.prototype.pointadd = function (other) {
-    var first = this.num.div10s(this.den.mantisa.length - 1);
-    var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new sparseplacevalueratio1(first.pointadd(second), sparseplacevaluerational1.parse(1));
+    //var first = this.num.div10s(this.den.mantisa.length - 1);
+    //var second = other.num.div10s(other.den.mantisa.length - 1);
+    var first = this.num.divide(this.den);
+    var second = other.num.divide(other.den);
+    return new sparseplacevalueratio1(first.pointadd(second), this.num.parse(1));
 }
 
 sparseplacevalueratio1.prototype.pointtimes = function (other) {
-    var first = this.num.div10s(this.den.mantisa.length - 1);
-    var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new sparseplacevalueratio1(first.pointtimes(second), sparseplacevaluerational1.parse(1));
+    //var first = this.num.div10s(this.den.mantisa.length - 1);
+    //var second = other.num.div10s(other.den.mantisa.length - 1);
+    var first = this.num.divide(this.den);
+    var second = other.num.divide(other.den);
+    return new sparseplacevalueratio1(first.pointtimes(second), this.num.parse(1));
 }
 
 sparseplacevalueratio1.prototype.pointdivide = function (other) {
-    var first = this.num.div10s(this.den.mantisa.length - 1);
-    var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new sparseplacevalueratio1(first.pointtimes(second), sparseplacevaluerational1.parse(1));
+    //var first = this.num.div10s(this.den.mantisa.length - 1);
+    //var second = other.num.div10s(other.den.mantisa.length - 1);
+    var first = this.num.divide(this.den);
+    var second = other.num.divide(other.den);
+    return new sparseplacevalueratio1(first.pointtimes(second), this.num.parse(1));
 }
 
 sparseplacevalueratio1.prototype.pointpow = function (other) {	// 2015.12
-    var first = this.num.div10s(this.den.mantisa.length - 1);
-    var second = other.num.div10s(other.den.mantisa.length - 1);
-    return new sparseplacevalueratio1(first.pointpow(second), sparseplacevaluerational1.parse(1));
+    //var first = this.num.div10s(this.den.mantisa.length - 1);
+    //var second = other.num.div10s(other.den.mantisa.length - 1);
+    var first = this.num.divide(this.den);
+    var second = other.num.divide(other.den);
+    return new sparseplacevalueratio1(first.pointpow(second), this.num.parse(1));
 }
 
 sparseplacevalueratio1.prototype.pow = function (power) {	// 2015.8
-    if (power instanceof rational) power = new sparseplacevaluerational1([[power, rational.parse(0)]]);
-    if (!(power instanceof sparseplacevaluerational1)) power = new sparseplacevaluerational1().parse('' + power);   // 2017.9
+    if (power instanceof rational) power = new sparseplacevalue1([[power, new rational().parse(0)]]);
+    if (!(power instanceof sparseplacevalue1)) power = new sparseplacevalue1().parse('' + power);   // 2017.9
     if (!(power instanceof sparseplacevalueratio1)) power = new sparseplacevalueratio1(power);                      // 2017.9
     //if (power == -1) throw new Error();
     //alert(JSON.stringify(power));
     return new sparseplacevalueratio1(this.num.pow(power.num.divide(power.den)), this.den.pow(power.num.divide(power.den)));
-    if (power instanceof sparseplacevalueratio1) power = power.num.divide(power.den);
-    if (!(power instanceof sparseplacevaluerational1)) power = sparseplacevaluerational1.parse('(' + power + ')');  // 2015.11
-    var pow = power.get(0).abs();
-    //alert(JSON.stringify([this.num,pow,this.num.pow(pow)]))
-    if (power.get(0).ispos()) return new sparseplacevalueratio1(this.num.pow(pow), this.den.pow(pow));
-    return new sparseplacevalueratio1(this.den.pow(pow), this.num.pow(pow));
+    //if (power instanceof sparseplacevalueratio1) power = power.num.divide(power.den);
+    //if (!(power instanceof sparseplacevalue1)) power = sparseplacevalue1.parse('(' + power + ')');  // 2015.11
+    //var pow = power.get(0).abs();
+    //if (power.get(0).ispos()) return new sparseplacevalueratio1(this.num.pow(pow), this.den.pow(pow));
+    //return new sparseplacevalueratio1(this.den.pow(pow), this.num.pow(pow));
 }
 
 sparseplacevalueratio1.prototype.times = function (top) {
@@ -190,14 +199,15 @@ sparseplacevalueratio1.prototype.reciprocal = function () {
 }
 
 sparseplacevalueratio1.prototype.eval = function (base) {
-    if (base.num.is0()) return new sparseplacevalueratio1(new sparseplacevaluerational1([this.num.get(0)]), new sparseplacevaluerational1([this.den.get(0)]));
-    var num = new sparseplacevalueratio1(new sparseplacevaluerational1().parse(0), new sparseplacevaluerational1().parse(1));
+    if (base.num.is0()) return new sparseplacevalueratio1(new sparseplacevalue1([this.num.get(0)]), new sparseplacevalue1([this.den.get(0)]));
+    var num = new sparseplacevalueratio1(new sparseplacevalue1().parse(0), new sparseplacevalue1().parse(1));
     for (var i = 0; i < this.num.points.length; i++) {
-        if (!this.num.get(i).is0()) num = num.add(base.pow(i).scale(this.num.get(i)));
+        if (!this.num.points[i][0].is0()) num = num.add(base.pow(this.num.points[i][1]).scale(this.num.points[i][0]));
     }
-    var den = new sparseplacevalueratio1(new sparseplacevaluerational1().parse(0), new sparseplacevaluerational1().parse(1));
+    var den = new sparseplacevalueratio1(new sparseplacevalue1().parse(0), new sparseplacevalue1().parse(1));
     for (var i = 0; i < this.den.points.length; i++) {
-        if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
-    }
+        //if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
+        if (!this.den.points[i][0].is0()) den = den.add(base.pow(this.den.points[i][1]).scale(this.den.points[i][0]));
+    }//alert([num, den])
     return num.divide(den);
 }

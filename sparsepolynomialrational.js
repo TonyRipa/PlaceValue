@@ -1,9 +1,9 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePolynomialRational : a datatype for representing sparse polynomials; an application of the SparsePlaceValueRational1 datatype
 
-class sparsepolynomialrational extends abstractpolynomial1 {
+class sparsepolynomialrational extends abstractpolynomial {
 
     constructor(base, pv) {
         //if (arguments.length < 2) alert('sparsepolynomialrational expects 2 arguments');
@@ -19,7 +19,7 @@ class sparsepolynomialrational extends abstractpolynomial1 {
 
     parse(strornode) {  //  2017.9
         console.log('new sparsepolynomialrational : ' + JSON.stringify(strornode))
-        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialrational(a.base, sparseplacevaluerational1.parse(JSON.stringify(a.pv))) }
+        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialrational(a.base, new sparseplacevaluerational1().parse(JSON.stringify(a.pv))) } //  2017.10
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
         if (node.type == 'SymbolNode') {
             console.log('new sparsepolynomialrational : SymbolNode')
@@ -30,13 +30,13 @@ class sparsepolynomialrational extends abstractpolynomial1 {
         } else if (node.type == 'OperatorNode') {
             console.log('new sparsepolynomialrational : OperatorNode')
             var kids = node.args;
-            var a = sparsepolynomialrational.parse(kids[0]);       // sparsepolynomialrational handles unpreprocessed kid   2015.11
+            var a = this.parse(kids[0]);    //  2017.10 this
             if (node.fn == 'unaryMinus') {
                 var c = new sparsepolynomialrational(1, sparseplacevaluerational1.parse(0)).sub(a);
             } else if (node.fn == 'unaryPlus') {
                 var c = new sparsepolynomialrational(1, sparseplacevaluerational1.parse(0)).add(a);
             } else {
-                var b = sparsepolynomialrational.parse(kids[1]);   // sparsepolynomialrational handles unpreprocessed kid   2015.11
+                var b = this.parse(kids[1]);    //  2017.10 this
                 var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
             }
             return c;

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparseMultinomial : a datatype for representing sparse multinomials; an application of the sparseplacevaluerational datatype
 
 class sparsemultinomial extends abstractpolynomial {
@@ -18,11 +18,10 @@ class sparsemultinomial extends abstractpolynomial {
 
     parse(strornode) {  //  2017.9
         console.log('new sparsemultinomial : ' + JSON.stringify(strornode))
-        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsemultinomial(a.base, sparseplacevaluerational.parse(JSON.stringify(a.pv))) }
+        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsemultinomial(a.base, new sparseplacevaluerational().parse(JSON.stringify(a.pv))) } //  2017.10
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
         if (node.type == 'SymbolNode') {
             console.log('new sparsemultinomial : SymbolNode')
-            //var base = [node.name, null];
             var base = [node.name];
             var pv = new sparseplacevaluerational().parse("1E1");  //new sparseplacevaluerational([[0, 1]]);
             return new sparsemultinomial(base, pv);

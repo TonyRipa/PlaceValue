@@ -1,17 +1,19 @@
 
-// Author : Anthony John Ripa
-// Date : 9/30/2017
-// Laplace : a datatype for representing the Laplace Transform; an application of the PlaceValueComplex datatype
+// Author:  Anthony John Ripa
+// Date:    10/31/2017
+// Laplace: a datatype for representing the Laplace Transform; an application of the PlaceValueComplex datatype
 
 function laplace(base, pv) {
-    if (arguments.length < 2) alert('laplace expects 2 arguments');
+    //if (arguments.length < 2) alert('laplace expects 2 arguments');
+    if (arguments.length < 1) base = 1; //  2017.10
+    if (arguments.length < 2) pv = new placevaluecomplex(); //  2017.10
     if (Array.isArray(base)) alert('laplace expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-    if (!(pv instanceof placevaluecomplex)) alert('laplace expects argument 2 (pv) to be a placevaluecomplex but found ' + typeof pv);
+    if (!(pv instanceof placevaluecomplex)) { var s = 'laplace expects argument 2 (pv) to be a placevaluecomplex but found ' + typeof pv + ': ' + JSON.stringify(pv); alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
 }
 
-laplace.parse = function (strornode) {
+laplace.prototype.parse = function (strornode) {    //  2017.10
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
@@ -28,24 +30,24 @@ laplace.parse = function (strornode) {
             //alert('Syntax Error: laplace expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
             console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
             console.log(node)
-            //pv = 10;
             //me.base = base;
             //me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-            return new laplace(base, new placevaluecomplex(new wholeplacevaluecomplex().parse('1'), 1));  //  parse is implementation independent   2016.6
+            var pv = this.pv.parse('1E1');  //  2017.10
+            return new laplace(base, pv);
         }
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
         console.log(node)
         var kids = node.args;
         //var a = new laplace(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = laplace.parse(kids[0]);       // laplace handles unpreprocessed kid   2015.11
+        var a = new laplace().parse(kids[0]);       // laplace handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
             var c = new laplace(1, new placevaluecomplex(new wholeplacevaluecomplex().parse('0'), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new laplace(1, new placevaluecomplex(wholeplacevaluecomplex.parse('0'), 0)).add(a);
         } else {
             //var b = new laplace(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
-            var b = laplace.parse(kids[1]);   // laplace handles unpreprocessed kid   2015.11
+            var b = new laplace().parse(kids[1]);   // laplace handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;

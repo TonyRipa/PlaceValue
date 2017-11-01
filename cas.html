@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author : Anthony John Ripa
-   Date : 9/30/2017
+   Date : 10/31/2017
    Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
 -->
 
@@ -38,9 +38,9 @@
     <script type="text/javascript" src='sparseplacevalue.js'></script>
     <script type="text/javascript" src='sparseplacevaluerational.js'></script>
     <script type="text/javascript" src='sparseplacevalue1.js'></script> <!-- sparsepolynomial depends on sparseplacevalue1 2017.1 -->
+    <script type="text/javascript" src='abstractpolynomial.js'></script> <!-- sparsepolynomial depends on abstractpolynomial 2017.10 -->
     <script type="text/javascript" src='sparsepolynomial.js'></script>
     <script type="text/javascript" src='sparseplacevalue2.js'></script>
-    <script type="text/javascript" src='abstractpolynomial.js'></script>
     <script type="text/javascript" src='sparsemultinomial.js'></script>
     <script type="text/javascript" src='sparseplacevaluecomplex.js'></script>
     <script type="text/javascript" src='complexsparsemultinomial.js'></script>
@@ -96,7 +96,7 @@
                 return [node.name, new argtype().parse(node.args[0])];
             } else {
                 console.log('CAS: OtherNode')
-                return [f.parse(node.value || node.name)];
+                return [new f().parse(node.value || node.name)];
             }
             if (f == multinomial) a.align(b);     // align    2015.7
             return [node.op, a, b];

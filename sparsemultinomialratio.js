@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function sparsemultinomialratio(arg, pv) {
@@ -23,7 +23,7 @@ sparsemultinomialratio.prototype.parse = function (strornode) { //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsemultinomialratio(a.base, sparseplacevalueratio.parse(JSON.stringify(a.pv))) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsemultinomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }   //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
@@ -183,43 +183,44 @@ sparsemultinomialratio.prototype.pow = function (other) { // 2015.6
 sparsemultinomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
     //alert(JSON.stringify(pv))
     return new sparsemultinomial(base, pv).toString();
-    //alert(JSON.stringify([pv, base]));
-    console.log('sparsemultinomialratio: pv = ' + pv);
-    var x = pv.points;
-    console.log('sparsemultinomialratio.toStringXbase: x=' + x);
-    if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
-        x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return sparsemultinomialratio.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
-    }
-    var ret = '';
-    var str = x//.toString().replace('.', '');
-    var maxbase = x.length - 1// + exp;
-    for (var i = maxbase; i >= 0; i--) {
-        //var digit = Math.round(1000 * str[power].toreal()) / 1000;  // toreal  2016.8
-        var digit = str[i][0];
-        var power = str[i][1];
-        if (!digit.is0()) {
-            ret += '+';
-            if (power.is0())
-                ret += digit;
-            else if (power.is1())
-                ret += coefficient(digit) + base;
-            else
-                ret += coefficient(digit) + base + '^' + power;
-        }
-        console.log('sparsemultinomialratio.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
-    }
-    ret = ret.replace(/\+\-/g, '-');
-    if (ret[0] == '+') ret = ret.substring(1);
-    if (ret == '') ret = '0';
-    return ret;
-    function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
+    ////alert(JSON.stringify([pv, base]));
+    //console.log('sparsemultinomialratio: pv = ' + pv);
+    //var x = pv.points;
+    //console.log('sparsemultinomialratio.toStringXbase: x=' + x);
+    //if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
+    //    x.pop();                                    // Replace shift with pop because L2R 2015.7
+    //    return sparsemultinomialratio.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
+    //}
+    //var ret = '';
+    //var str = x//.toString().replace('.', '');
+    //var maxbase = x.length - 1// + exp;
+    //for (var i = maxbase; i >= 0; i--) {
+    //    //var digit = Math.round(1000 * str[power].toreal()) / 1000;  // toreal  2016.8
+    //    var digit = str[i][0];
+    //    var power = str[i][1];
+    //    if (!digit.is0()) {
+    //        ret += '+';
+    //        if (power.is0())
+    //            ret += digit;
+    //        else if (power.is1())
+    //            ret += coefficient(digit) + base;
+    //        else
+    //            ret += coefficient(digit) + base + '^' + power;
+    //    }
+    //    console.log('sparsemultinomialratio.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
+    //}
+    //ret = ret.replace(/\+\-/g, '-');
+    //if (ret[0] == '+') ret = ret.substring(1);
+    //if (ret == '') ret = '0';
+    //return ret;
+    //function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 }
 
-sparsemultinomialratio.prototype.eval = function (base) {
-    var sum = 0;
-    for (var i = 0; i < this.pv.mantisa.length; i++) {
-        sum += this.pv.get(i) * Math.pow(base, i);
-    }
-    return new sparsemultinomialratio(1, new wholeplacevalue([sum]));
+sparsemultinomialratio.prototype.eval = function (other) {
+    return new sparsepolynomialratio(1, this.pv.eval(other.pv));    //  2017.10
+    //var sum = 0;
+    //for (var i = 0; i < this.pv.mantisa.length; i++) {
+    //    sum += this.pv.get(i) * Math.pow(base, i);
+    //}
+    //return new sparsemultinomialratio(1, new wholeplacevalue([sum]));
 }

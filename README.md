@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/7/2017
+Date : 10/31/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -44,23 +44,31 @@ PlaceValue
 ---------------
 <i>PlaceValue</i> is a data-type for representing base agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
 
-The PlaceValue data-type transcends this problem by dividing in a base agnostic. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
+The PlaceValue data-type transcends this problem by dividing in a base-agnostic way. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
 
 WholePlaceValue
 ------------------------
-The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
+The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base-agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
 
 Rational
 ---------------
 <i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
 
-SparsePlaceValue1
+SparsePlaceValueNumber1
 ------------------------
-<i>SparsePlaceValue1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>SparsePlaceValueNumber1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 SparsePlaceValueRational1
 ------------------------
-<i>SparsePlaceValueRational1</i> is a version of SparsePlaceValue1 that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue1 with none of the round off errors.
+<i>SparsePlaceValueRational1</i> is a version of SparsePlaceValueNumber1 that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue1 with none of the round off errors.
+
+SparsePlaceValueComplex1
+------------------------
+<i>SparsePlaceValueComplex1</i> is a version of SparsePlaceValueNumber1 that uses complex instead of real digits.
+
+SparsePlaceValue1
+------------------------
+<i>SparsePlaceValue1</i> is a version of SparsePlaceValueNumber1 that accepts either Rational or Complex digits.
 
 PlaceValueRatio
 ------------------
@@ -97,6 +105,10 @@ SparsePolynomial then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
 SparsePolynomialRational
 ------------------------
 <i>SparsePolynomialRational</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValueRational1 datatype. SparsePolynomialRational is like SparsePolynomial except that it uses rational instead of real. Whereas for SparsePolynomial, (x^(1/3))^3 returns x^.999 due to rounding, SparsePolynomialRational returns the exact value of x.
+
+SparsePolynomialNumber
+------------------------
+<i>SparsePolynomialNumber</i> is a version of SparsePolynomial based on SpacePlaceValueNumber1.
 
 Polynomial Ratio
 -------------
@@ -482,11 +494,13 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 Dependencies
 ---------------
 <table>
-<tr><td>Sparse Polynomial</td><td></td><td></td><td>depends on SparsePlaceValue1.</td><td></td></tr>
-<tr><td>SparseExponential1</td><td>Sparse Polynomial Rational</td><td></td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Number</td><td></td><td></td><td>depends on SparsePlaceValueNumber1.</td><td></td></tr>
+<tr><td>Sparse Polynomial Rational</td><td></td><td></td><td>depends on SparsePlaceValueRational1.</td><td>depends on Rational.</td></tr>
+<tr><td></td><td></td><td></td><td>depends on SparsePlaceValueComplex1.</td><td>depends on Complex.</td></tr>
+<tr><td>SparseExponential1</td><td>Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex.</td></tr>
 <tr><td>SparseExponential</td><td>Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
-<tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValueRational1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

@@ -1,25 +1,19 @@
 
 // Author:  Anthony John Ripa
 // Date:    10/31/2017
-// SparsePlaceValue1: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
+// SparsePlaceValueComplex1: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are complex
 
-class sparseplacevalue1 {
+class sparseplacevaluecomplex1 {
 
-    constructor(arg) {
-        var points, datatype;
-        if (arguments.length < 1)[points, datatype] = [[], rational];           //  2017.10
-        if (arg === rational || arg === complex)[points, datatype] = [[], arg]; //  2017.10
-        if (Array.isArray(arg)) {                                               //  2017.10
-            points = arg;
-            if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
-            if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
-            //if (points.length > 0 && !(points[0][0] instanceof complex)) { var s = "SparsePV expects coef. is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
-            //if (points.length > 0 && !(points[0][1] instanceof complex)) { var s = "SparsePV expects power is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
-            datatype = (points.length > 0) ? points[0][0].constructor : rational;
-        }
-        this.datatype = datatype;
+    constructor(points) {
+        if (arguments.length < 1) points = [];  //  2017.9
+        if (!Array.isArray(points)) { console.trace(); alert("sparseplacevaluecomplex1 expects argument to be 2D array but found " + typeof points + points); }
+        if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevaluecomplex1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
+        if (points.length > 0 && !(points[0][0] instanceof complex)) { var s = "SparsePVcomplex expects coef. is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
+        if (points.length > 0 && !(points[0][1] instanceof complex)) { var s = "SparsePVcomplex expects power is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
         points = normal(points);
-        points = trim(this, points);
+        points = trim(points);
+        //points = points.map(function (x) { return [x[0], Math.round(x[1] * 1000) / 1000] });
         this.points = points;
         function normal(points) {
             var list = points.map(function (x) { return x.slice(0) });
@@ -47,30 +41,28 @@ class sparseplacevalue1 {
                     } else i--;
             }
         }
-        function trim(me, points) {     //  2016.10
+        function trim(points) {     //  2016.10
             for (var i = points.length - 1; i >= 0; i--)    //  2017.6  countdown because modifying array thats being iterated over
                 if (points[i][0].is0()) points.splice(i, 1);
-            if (points.length == 0) points = [[new me.datatype().parse(0), new me.datatype().parse(0)]];
+            if (points.length == 0) points = [[new complex().parse(0), new complex().parse(0)]];
             return points;
         }
     }
 
     parse(arg) {    //  2017.9
-        var me = this;
-        if (arg === '') return new this.constructor(this.datatype);                                                                 //  2017.10
         if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1)
-            return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));     //  2017.10
-        if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype().parse(0)]]);  //  2d array    2016.10
-        if (arg instanceof Number) return new this.constructor(arg, 0);
+            return new sparseplacevaluecomplex1(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new complex().parse))); //  2017.10
+        if (typeof arg == "number") return new sparseplacevaluecomplex1([[new complex().parse(arg), new complex().parse(0)]]);   //  2d array    2016.10
+        if (arg instanceof Number) return new sparseplacevaluecomplex1(arg, 0);
         var terms = split(arg);
         terms = terms.map(parseterm);
-        return new this.constructor(terms);
+        return new sparseplacevaluecomplex1(terms);
         function split(terms) {         //  2017.1
             var ret = [];
             terms = terms.toUpperCase().replace(/\s*/g, '');
             if (terms.length == 0) return ret;
             if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;
-            var num = me.datatype.regex(); //  2017.6
+            var num = complex.regex(); //  2017.6
             var reg = new RegExp('[\+\-]' + num + '(E[\+\-]?' + num + ')?', 'g');
             //var reg = new RegExp(num + 'E' + num, 'g');
             var term;
@@ -85,21 +77,20 @@ class sparseplacevalue1 {
             var coef = coefpow[0];
             var pow = coefpow[1];
             if (pow === undefined) pow = 0;
-            return [new me.datatype().parse(coef), new me.datatype().parse(pow)];
+            return [new complex().parse(coef), new complex().parse(pow)];
         }
     }
 
     get(i) { //  2017.6
-        if (i instanceof Number || typeof (i) == 'number') i = new this.datatype().parse(i);
+        if (i instanceof Number || typeof (i) == 'number') i = new complex().parse(i);
         for (var j = 0; j < this.points.length; j++)
             if (this.points[j][1].equals(i)) return this.points[j][0];
-        return new this.datatype().parse(0);
+        return new complex().parse(0);
     }
 
     tohtml() {  // Replaces toStringInternal 2015.7
         var me = this.clone();                          // Reverse will mutate  2015.9
-        //return JSON.stringify(me.points.reverse());
-        return me.points.reverse().map(x=>'[' + x + ']').join(',');
+        return JSON.stringify(me.points.reverse());
     }
 
     toString(sTag) {                                 //  sTag    2015.11
@@ -131,16 +122,16 @@ class sparseplacevalue1 {
     is1() { return this.is1term() && this.isconst() && this.points[0][0].is1(); }                           //  2017.6
     equals(other) { return this.sub(other).is0(); }                                                         //  2017.8
 
-    add(other) { return new this.constructor(this.points.concat(other.points)); }
-    sub(other) { return new this.constructor(this.points.concat(other.points.map(function (x) { return [x[0].negate(), x[1]] }))); }
-    pointadd(other) { return this.f0(this.datatype.prototype.add, other); }       //  2017.6
-    pointsub(other) { return this.f0(this.datatype.prototype.sub, other); }       //  2017.6
-    pointtimes(other) { return this.f(this.datatype.prototype.times, other); }    //  2017.6
-    pointdivide(other) { return this.f(this.datatype.prototype.divide, other); }  //  2017.6
-    pointpow(other) { return this.f0(this.datatype.prototype.pow, other); }       //  2017.6
-    clone() { return new this.constructor(this.points.slice()) }
-    negate() { return this.parse(0).sub(this); }                                    //  2017.10
-    round() { return new this.constructor(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6
+    add(other) { return new sparseplacevaluecomplex1(this.points.concat(other.points)); }
+    sub(other) { return new sparseplacevaluecomplex1(this.points.concat(other.points.map(function (x) { return [x[0].negate(), x[1]] }))); }
+    pointadd(other) { return this.f0(complex.prototype.add, other); }       //  2017.6
+    pointsub(other) { return this.f0(complex.prototype.sub, other); }       //  2017.6
+    pointtimes(other) { return this.f(complex.prototype.times, other); }    //  2017.6
+    pointdivide(other) { return this.f(complex.prototype.divide, other); }  //  2017.6
+    pointpow(other) { return this.f0(complex.prototype.pow, other); }       //  2017.6
+    clone() { return new sparseplacevaluecomplex1(this.points.slice()) }
+    negate() { return new sparseplacevaluecomplex1().parse(0).sub(this); } //  2017.6
+    round() { return new sparseplacevaluecomplex1(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6
 
     f(f, other) {  //  2017.6
         var ret = this.clone();
@@ -161,18 +152,18 @@ class sparseplacevalue1 {
         for (var i = 0; i < this.points.length; i++)
             for (var j = 0; j < top.points.length; j++)
                 points.push([this.points[i][0].times(top.points[j][0]), this.points[i][1].add(top.points[j][1])]);
-        return new this.constructor(points);
+        return new sparseplacevaluecomplex1(points);
     }
 
     scale(scalar) {
-        if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);
+        if (!(scalar instanceof complex)) scalar = new complex().parse(scalar);
         var ret = this.clone();
         ret.points = ret.points.map(function (x) { return [x[0].times(scalar), x[1]]; });
         return ret;
     }
 
     unscale(scalar) {  //  2016.5
-        if (!(scalar instanceof this.datatype)) scalar = (new this.datatype).parse(scalar);
+        if (!(scalar instanceof complex)) scalar = complex.parse(scalar);
         var ret = this.clone();
         ret.points = ret.points.map(function (x) { return [x[0].divide(scalar), x[1]]; });
         return ret;
@@ -184,11 +175,10 @@ class sparseplacevalue1 {
         var quotient = divideh(num, den, iter);
         return quotient;
         function divideh(num, den, c) {
-            //if (c == 0) return new num.constructor().parse(0);
-            if (c == 0) return new num.constructor(num.datatype);  //  2017.10
+            if (c == 0) return new sparseplacevaluecomplex1().parse(0);
             var n = num.points.slice(-1)[0];
             var d = den.points.slice(-1)[0];
-            var quotient = new num.constructor([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
+            var quotient = new sparseplacevaluecomplex1([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
             //if (d.val == 0) return quotient;
             var remainder = num.sub(quotient.times(den))
             var q2 = divideh(remainder, den, c - 1);
@@ -207,12 +197,10 @@ class sparseplacevalue1 {
         var quotient = divideh(num, den, iter);
         return quotient;
         function divideh(num, den, c) {
-            //if (c == 0) return new num.constructor().parse(0);
-            if (c == 0) return new num.constructor(num.datatype);  //  2017.10
+            if (c == 0) return new sparseplacevaluecomplex1().parse(0);
             var n = num.points[0];
             var d = den.points[0];
-            var quotient = new num.constructor([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
-            //if (d.val == 0) return quotient;
+            var quotient = new sparseplacevaluecomplex1([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
             var remainder = num.sub(quotient.times(den))
             var q2 = divideh(remainder, den, c - 1);
             quotient = quotient.add(q2);
@@ -223,45 +211,44 @@ class sparseplacevalue1 {
     dividemiddle(den) { return this.divide(den); }
 
     pow(power) {     //  2016.10
-        if (typeof power === 'number') power = (new this.datatype).parse(power);    //  2017.10
-        if (power instanceof this.datatype) power = new this.constructor([[power, (new this.datatype).parse(0)]]);
-        if (!(power instanceof this.constructor)) power = this.parse('' + power);   // 2017.6
+        if (power instanceof complex) power = new sparseplacevaluecomplex1([[power, complex.parse(0)]]);
+        if (!(power instanceof sparseplacevaluecomplex1)) power = new sparseplacevaluecomplex1().parse('' + power);   // 2017.6
         //alert(JSON.stringify(power))
         if (power.points.length == 1 & power.points[0][1].is0()) {
             //alert(0)
-            if (this.is1term()) return new this.constructor([[this.points[0][0].pow(power.points[0][0]), this.points[0][1].times(power.points[0][0])]]);
-            if (power.is0()) return this.parse(1);
-            if (power.points[0][0].isneg()) return this.parse(1).divide(this.pow(new this.constructor([[power.points[0][0].negate(), this.datatype.parse(0)]])));
-            //if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(this.constructor.parse(1))));
-            if (power.points[0][0].isint()) return this.times(this.pow(power.sub(this.parse(1))));
-            //return this.times(this.pow(power.sub(this.constructor.parse(1))));
+            if (this.is1term()) return new sparseplacevaluecomplex1([[this.points[0][0].pow(power.points[0][0]), this.points[0][1].times(power.points[0][0])]]);
+            if (power.is0()) return new sparseplacevaluecomplex1().parse(1);
+            if (power.points[0][0].isneg()) return sparseplacevaluecomplex1.parse(1).divide(this.pow(new sparseplacevaluecomplex1([[power.points[0][0].negate(), complex.parse(0)]])));
+            //if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(sparseplacevaluecomplex1.parse(1))));
+            if (power.points[0][0].isint()) return this.times(this.pow(power.sub(new sparseplacevaluecomplex1().parse(1))));
+            //return this.times(this.pow(power.sub(sparseplacevaluecomplex1.parse(1))));
         } else if (this.points.length == 1) {
             //alert(1)
             if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
             var man = this.get(0).pow(power.get(0));   //  2017.8
             var exp = power.get(1);        //  2017.8  2^(3E1)=1E3
-            return new this.constructor([[man, exp]]);
+            return new sparseplacevaluecomplex1([[man, exp]]);
         }
-        if (this.is0()) return this.parse(0);
-        if (this.is1()) return this.parse(1);
-        return this.parse(0 / 0);
+        if (this.is0()) return sparseplacevaluecomplex1.parse(0);
+        if (this.is1()) return sparseplacevaluecomplex1.parse(1);
+        return sparseplacevaluecomplex1.parse(0 / 0);
     }
 
     gcd() {   // 2016.5
         var list = [];
         for (var i = 0; i < this.points.length; i++)
             list.push(this.points[i][0]);
-        if (list.length == 0) return new this.datatype(1);
-        if (list.length == 1) return list[0].is0() ? new this.datatype(1) : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
-        return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype(0));
+        if (list.length == 0) return new complex(1);
+        if (list.length == 1) return list[0].is0() ? new complex(1) : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
+        return list.reduce(function (x, y) { return x.gcd(y) }, new complex(0));
     }
 
     eval(base) {
-        var sum = new this.datatype().parse(0);
+        var sum = new complex().parse(0);
         for (var i = 0; i < this.points.length; i++) {
             sum = sum.add(this.points[i][0].times(base.points[0][0].pow(this.points[i][1])));  //  base.points[0][0]   2016.10
         }
-        return new this.constructor([[sum, new this.datatype().parse(0)]]);
+        return new sparseplacevaluecomplex1([[sum, new complex().parse(0)]]);
     }
 
 }

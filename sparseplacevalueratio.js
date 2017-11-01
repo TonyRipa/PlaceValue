@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValueRationals
 
 function sparseplacevalueratio(num, den) {
@@ -16,7 +16,7 @@ function sparseplacevalueratio(num, den) {
 }
 
 sparseplacevalueratio.prototype.parse = function (man) {    // 2017.9
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio(sparseplacevaluerational.parse(JSON.stringify(a.num)), sparseplacevaluerational.parse(JSON.stringify(a.den))) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio(new sparseplacevaluerational().parse(JSON.stringify(a.num)), new sparseplacevaluerational().parse(JSON.stringify(a.den))) }    //  2017.10
     var den = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -88,8 +88,8 @@ sparseplacevalueratio.prototype.reduce = function () {    //  2016.5
         if (me.num.is0() && me.den.is0()) return;
         if (me.num.is0()) { me.den = new sparseplacevaluerational().parse(1); return }
         if (me.den.is0()) { me.num = sparseplacevaluerational.parse(1); return }
-        var num = me.num//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
-        var den = me.den//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
+        var num = me.num;
+        var den = me.den;
         var n = num.gcd();
         var d = den.gcd();
         var g = n.gcd(d);   // delegate to digits   2016.7

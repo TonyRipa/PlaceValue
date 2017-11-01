@@ -1,7 +1,7 @@
 
-// Author : Anthony John Ripa
-// Date : 9/30/2017
-// PolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
+// Author:  Anthony John Ripa
+// Date:    10/31/2017
+// PolynomialRatio: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function polynomialratio(arg, pv) {
     if (arguments.length < 1) base = 1;                     //  2017.9
@@ -24,7 +24,7 @@ polynomialratio.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomialratio(a.base, placevalueratio.parse(JSON.stringify(a.pv))) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomialratio(a.base, new placevalueratio().parse(JSON.stringify(a.pv))) }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
@@ -41,7 +41,6 @@ polynomialratio.prototype.parse = function (strornode) {    //  2017.9
         } else if (node.fn == 'unaryPlus') {
             var c = new polynomialratio(1, placevalueratio.parse(0)).add(a);
         } else {
-            //var b = new polynomialratio(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = polynomialratio.parse(kids[1]);    // polynomialratio handles unpreprocessed kid    2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }

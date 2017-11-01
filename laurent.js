@@ -1,7 +1,7 @@
 
-// Author : Anthony John Ripa
-// Date : 9/30/2017
-// Laurent : a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
+// Author:  Anthony John Ripa
+// Date:    10/31/2017
+// Laurent: a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
     //if (arguments.length < 2) alert('laurent expects 2 arguments');
@@ -18,7 +18,7 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue(a.pv.whole.mantisa), a.pv.exp)) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue().parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
         return new laurent(1, new placevalue(new wholeplacevalue().parse('(' + Number(node.value) + ')'), 0));
@@ -32,7 +32,6 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        //var a = new laurent(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = new laurent().parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
             var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).sub(a);

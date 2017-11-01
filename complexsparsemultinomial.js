@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // ComplexSparseMultinomial : a datatype for representing complex sparse multinomials; an application of the sparseplacevaluecomplex datatype
 
 class complexsparsemultinomial extends abstractpolynomial {
@@ -18,11 +18,11 @@ class complexsparsemultinomial extends abstractpolynomial {
 
     parse(strornode) {  //  2017.9
         console.log('new complexsparsemultinomial : ' + JSON.stringify(strornode))
-        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new complexsparsemultinomial(a.base, sparseplacevaluecomplex.parse(JSON.stringify(a.pv))) }
+        if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new complexsparsemultinomial(a.base, new sparseplacevaluecomplex().parse(JSON.stringify(a.pv))) }   //  2017.10
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
         if (node.type == 'SymbolNode') {
             console.log('new complexsparsemultinomial : SymbolNode')
-            if (node.name == 'i') return new complexsparsemultinomial([], sparseplacevaluecomplex.parse('i'));
+            if (node.name == 'i') return new complexsparsemultinomial([], this.pv.parse('i'));
             var base = [node.name];
             var pv = new sparseplacevaluecomplex().parse("1E1");  //new sparseplacevaluecomplex([[0, 1]]);
             return new complexsparsemultinomial(base, pv);
@@ -31,9 +31,9 @@ class complexsparsemultinomial extends abstractpolynomial {
             var kids = node.args;
             var a = new complexsparsemultinomial().parse(kids[0]);       // complexsparsemultinomial handles unpreprocessed kid   2015.11
             if (node.fn == 'unaryMinus') {
-                var c = new complexsparsemultinomial([], sparseplacevaluecomplex.parse(0)).sub(a);
+                var c = new complexsparsemultinomial([], this.pv.parse(0)).sub(a);
             } else if (node.fn == 'unaryPlus') {
-                var c = new complexsparsemultinomial([], sparseplacevaluecomplex.parse(0)).add(a);
+                var c = new complexsparsemultinomial([], this.pv.parse(0)).add(a);
             } else {
                 var b = new complexsparsemultinomial().parse(kids[1]);   // complexsparsemultinomial handles unpreprocessed kid   2015.11
                 var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    9/30/2017
+   Date:    10/31/2017
    Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 -->
 
@@ -25,7 +25,6 @@
     <script type="text/javascript" src='placevaluecomplex.js'></script>
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='laplace.js'></script>
-    <!--<script type="text/javascript" src='wholeplacevalue.js'></script>-->
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='polynomial.js'></script>
     <script src='wholeplacevalue2.js'></script>
@@ -97,9 +96,9 @@
             if (f == complexexponential) s = s1 + '+' + s2;
             if (f == laplace) s = 's^' + n + '+' + k;
             //alert(s);
-            var fs = f.parse(s);
-            var fsn = fs.pointpow(f.parse(n))
-            var k = f.parse(k)//$('#k').val())
+            var fs = new f().parse(s);  //  2017.10
+            var fsn = fs.pointpow(new f().parse(n))
+            var k = new f().parse(k)//$('#k').val())
             //alert(JSON.stringify(k))
             var fsn_k = fsn.pointadd(k)
             //alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
@@ -123,7 +122,7 @@
             //alert(JSON.stringify(d));
             //alert(JSON.stringify(c));
             output(a, b, c, y, p, x, xp, px, dy, d);
-	        function getinput(elem) { return f.parse($(elem).attr('data-val') || $(elem).val()); }
+	        function getinput(elem) { return new f().parse($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c, y, p, x, xp, px, dy, d) {
                 $('#c').attr('data-val', JSON.stringify(c));
                 $('#c').val(c.toString());

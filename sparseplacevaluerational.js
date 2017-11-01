@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    10/31/2017
 // SparsePlaceValueRational: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are rational
 
 function sparseplacevaluerational(points) {
@@ -75,7 +75,7 @@ function sparseplacevaluerational(points) {
 }
 
 sparseplacevaluerational.prototype.parse = function (arg) { //  2017.9
-    if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [rational.parse(JSON.stringify(n)), wholeplacevalue.parse(JSON.stringify(e))] }); return new sparseplacevaluerational(points); }   //  2017.7
+    if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [new rational().parse(JSON.stringify(n)), new wholeplacevalue().parse(JSON.stringify(e))] }); return new sparseplacevaluerational(points); }   //  2017.7
     if (typeof arg == "number") return new sparseplacevaluerational([[new rational().parse(arg), new wholeplacevalue().parse(0)]]);
     if (arg instanceof Number) return new sparseplacevaluerational([[rational.parse(arg), [rational.parse(0)]]]);
     //var terms = arg.split('+');
@@ -185,7 +185,7 @@ sparseplacevaluerational.prototype.times = function (top) {
             if (!this.points[i][0].is0() && !top.points[j][0].is0()) points.push([this.points[i][0].times(top.points[j][0]), addvectors(this.points[i][1], top.points[j][1])]); // 2017.2 0*∞=0 for easy division
     return new sparseplacevaluerational(points);
     function addvectors(a, b) { return a.add(b); //  2017.1
-        if (a.length > b.length) return addvectors(b, a);
+        //if (a.length > b.length) return addvectors(b, a);
         //var ret = []
         //for (var i = 0; i < a.length; i++)
         //    ret.push(a[i].add(b[i]));
@@ -260,14 +260,6 @@ sparseplacevaluerational.prototype.divideleft = function (den) {    //  2016.10
         return quotient;
     }
     function subvectors(a, b) { return a.sub(b);//  2017.1
-        //if (a.length > b.length) return subvectors(b, a).map(function (x) { return x.negate(); });
-        ////return math.add(a.concat(math.zeros(b.length - a.length).valueOf()), math.multiply(b, -1));
-        //var ret = []
-        //for (var i = 0; i < a.length; i++)
-        //    ret.push(a[i].sub(b[i]));
-        //for (i = a.length; i < b.length; i++)
-        //    ret.push(b[i].negate());
-        //return ret;
     }
 }
 

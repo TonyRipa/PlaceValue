@@ -1,15 +1,20 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2017
+// Date:    10/31/2017
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
-    if (arguments.length < 1) alert('complex expects 1 or 2 arguments');
+    //if (arguments.length < 1) alert('complex expects 1 or 2 arguments');
+    if (arguments.length < 1) real = 0;
     if (arguments.length < 2) imag = 0;
-    if (!(typeof real == 'number' || real instanceof Number)) { console.trace(); alert('complex expects argument 1 (real) to be a Number but found ' + typeof real + ' ' + JSON.stringify(real)); end; }    //  2016.7
+    if (!(typeof real == 'number' || real instanceof Number)) { var s = 'complex expects arg1 (real) to be a Number not ' + typeof real + ' ' + JSON.stringify(real); alert(s); throw new Error(s); }
     if (!(typeof imag == 'number' || imag instanceof Number)) { console.trace(); alert('complex expects argument 2 (imag) to be a Number but found ' + typeof imag + ' ' + JSON.stringify(imag)); end; }    //  2016.7
     this.r = real;
     this.i = imag;
+}
+
+complex.prototype.parse = function (n) {    //  2017.10
+    return complex.parse(n);
 }
 
 complex.parse = function (n) {
@@ -42,6 +47,7 @@ complex.parse = function (n) {
             if (c == '∞') ret = Infinity;
             if (c == '%') ret = NaN;
             if (c == 'i') ret = [0, 1];     // 2015.12
+            if (c == 'I') ret = [0, 1];     // 2017.10
             if (c == String.fromCharCode(777)) ret = [0, ret];
             if (c == String.fromCharCode(822)) { if (Array.isArray(ret)) { ret[0] *= -1; ret[1] *= -1; } else ret *= -1; }
             if (c == String.fromCharCode(8315)) ret = 1 / ret;
@@ -53,7 +59,21 @@ complex.parse = function (n) {
     return new complex(Number(digit));
 }
 
+complex.regex = function () {   //  2017.10
+    var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';
+    var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
+    var num = '(' + literal + '|' + dec + ')';
+    var signnum = '(' + '[\+\-]?' + num + ')';
+    var pair = '(' + String.raw`\(` + signnum + ',' + signnum + String.raw`\)` + ')';   //  2017.10 String.raw
+    var pairor1 = '(' + pair + '|' + signnum + ')';
+    //var frac = '(' + num + '/' + num + '|' + num + ')';
+    //var signfrac = '(' + '[\+\-]?' + frac + ')';
+    return pairor1;
+}
+
 complex.prototype.tohtml = function () { return this.toString(false) }
+
+complex.prototype.toreal = function () { return this.r; }   //  2017.10
 
 complex.prototype.toString = function (sTag, long) {                        //  sTag    2015.11
     if (sTag) return this.digitpair('<s>', '</s>', true, long);
@@ -131,6 +151,8 @@ complex.prototype.below = function (other) { return this.r != other.r ? this.r <
 complex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
 complex.prototype.below0 = function () { return this.below(complex.zero); }                                     //  2017.3
 complex.prototype.above0 = function () { return this.above(complex.zero); }                                     //  2017.3
+complex.prototype.isneg = complex.prototype.below0                                                              //  2017.10
+complex.prototype.isint = function () { return this.isreal() && Number.isInteger(this.r); }                     //  2017.10
 
 complex.prototype.add = function (other) { return new complex(this.r + other.r, this.i + other.i); }
 complex.prototype.sub = function (other) { return new complex(this.r - other.r, this.i - other.i); }
@@ -141,7 +163,8 @@ complex.prototype.norm = function () { return Math.sqrt(this.r * this.r + this.i
 complex.prototype.lnn = function () { return this.nor().ln() }
 complex.prototype.arg = function () { return Math.atan2(this.i, this.r) }
 complex.prototype.round = function () { return new complex(Math.round(1000 * this.r) / 1000, Math.round(1000 * this.i) / 1000) }
-complex.prototype.negate = function () { return new complex(-this.r, -this.i) }    //  2017.3
+complex.prototype.negate = function () { return new complex(-this.r, -this.i) } //  2017.3
+complex.prototype.clone = function () { return new complex(this.r, this.i); }   //  2017.10
 
 complex.prototype.times = function (y) {
     if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   //  2017.5
@@ -170,4 +193,16 @@ complex.prototype.pow = function (p) {
         console.trace();
         end;
     }
+}
+
+complex.prototype.divideleft = complex.prototype.divide;      //  2017.10
+complex.prototype.dividemiddle = complex.prototype.divide;    //  2017.10
+complex.prototype.pointadd = complex.prototype.add;           //  2017.10
+complex.prototype.pointsub = complex.prototype.sub;           //  2017.10
+complex.prototype.pointtimes = complex.prototype.times;       //  2017.10
+complex.prototype.pointdivide = complex.prototype.divide;     //  2017.10
+complex.prototype.pointpow = complex.prototype.pow;           //  2017.10
+
+complex.prototype.eval = function (base) {  //  2017.10
+    return this.clone();
 }
