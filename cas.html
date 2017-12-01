@@ -1,8 +1,8 @@
 ﻿
 <!--
-   Author : Anthony John Ripa
-   Date : 10/31/2017
-   Demo for Laurent Polynomial & Multinomial : applications of the PlaceValue datatypes
+   Author:  Anthony John Ripa
+   Date:    11/30/2017
+   Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
 <!DOCTYPE html>
@@ -19,6 +19,7 @@
     </script>
     <script type="text/javascript" src='rational.js'></script>
     <script type="text/javascript" src='complex.js'></script>
+    <script type="text/javascript" src='rationalcomplex.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
     <script type="text/javascript" src='complexplacevalue.js'></script>
     <script type="text/javascript" src='complexlaurent.js'></script>
@@ -83,7 +84,6 @@
             if (node.type == 'OperatorNode') {
                 console.log('CAS: OperatorNode')
                 var kids = node.args;
-                //var a = new f(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
                 var a = new f().parse(kids[0]);     // f handles unpreprocessed kid 2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];

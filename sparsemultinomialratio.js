@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    11/30/2017
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function sparsemultinomialratio(arg, pv) {
@@ -34,13 +34,13 @@ sparsemultinomialratio.prototype.parse = function (strornode) { //  2017.9
         console.log('OperatorNode')
         var kids = node.args;
         //var a = new sparsemultinomialratio(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
-        var a = sparsemultinomialratio.parse(kids[0]);        // sparsemultinomialratio handles unpreprocessed kid    2015.11
+        var a = this.parse(kids[0]);        // sparsemultinomialratio handles unpreprocessed kid    2015.11
         if (node.fn == 'unaryMinus') {
             var c = new sparsemultinomialratio(1, sparseplacevalueratio.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
             var c = new sparsemultinomialratio(1, sparseplacevalueratio.parse(0)).add(a);
         } else {
-            var b = sparsemultinomialratio.parse(kids[1]);    // sparsemultinomialratio handles unpreprocessed kid    2015.11
+            var b = this.parse(kids[1]);    // sparsemultinomialratio handles unpreprocessed kid    2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c

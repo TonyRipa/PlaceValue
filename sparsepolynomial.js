@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    11/30/2017
 // SparsePolynomial: a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
 class sparsepolynomial extends abstractpolynomial {
@@ -9,7 +9,7 @@ class sparsepolynomial extends abstractpolynomial {
         var base, pv;
         if (arguments.length == 0)[base, pv] = [1, new sparseplacevalue1(rational)];    //  2017.10
         if (arguments.length == 1) {                                                    //  2017.10
-            if (arg === rational || arg === complex)[base, pv] = [1, new sparseplacevalue1(arg)];
+            if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [1, new sparseplacevalue1(arg)];    //  2017.11 rationalcomplex
             else[base, pv] = [arg, new sparseplacevalue1(rational)];
         }
         if (arguments.length == 2)[base, pv] = arguments;
@@ -30,7 +30,8 @@ class sparsepolynomial extends abstractpolynomial {
         var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
         if (node.type == 'SymbolNode') {
             console.log('SymbolNode: node.name = ' + node.name);
-            if (node.name.match(this.pv.datatype.regex())) {    //  2017.10
+            console.log('SymbolNode: node.name match = ' + node.name.match(this.pv.datatype.regexfull()));
+            if (node.name.match(this.pv.datatype.regexfull())) {    //  2017.11 regexfull
                 var base = 1;
                 var pv = this.pv.parse(node.name);  //  2017.10
             } else {
@@ -65,18 +66,6 @@ class sparsepolynomial extends abstractpolynomial {
     //toString() {
     //    return sparsepolynomial.toStringXbase(this.pv, this.base);
     //}
-
-    //add(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.add(other.pv)); }
-    //sub(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.sub(other.pv)); }
-    //times(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.times(other.pv)); }
-    //divide(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.divide(other.pv)); }
-    //divideleft(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.divideleft(other.pv)); }
-    //dividemiddle(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.dividemiddle(other.pv)); }
-    //pointadd(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointadd(other.pv)); }
-    //pointsub(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointsub(other.pv)); }
-    //pointtimes(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointtimes(other.pv)); }
-    //pointdivide(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointdivide(other.pv)); }
-    //pointpow(other) { this.align(other); return new sparsepolynomial(this.base, this.pv.pointpow(other.pv)); }
 
     //align(other) {   // Consolidate alignment    2015.9
     //    if (this.pv.points.length == 1 & this.pv.points[0][1] == 0) this.base = other.base;

@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    11/30/2017
 // Rational: A data-type for representing Rational Numbers
 
 function rational(num, den) {   //  2016.7
@@ -91,7 +91,7 @@ rational.prototype.parse = function (n) {   //  2017.9
 }
 
 rational.regex = function () {  //  2017.6
-    var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚]';
+    var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';   //  2017.11 %
     var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
     var num = '(' + literal + '|' + dec + ')';
     var frac = '(' + num + '/' + num + '|' + num + ')';
@@ -99,7 +99,21 @@ rational.regex = function () {  //  2017.6
     return signfrac;
 }
 
+rational.regexfull = function () {   //  2017.11
+    return '^' + rational.regex() + '$';
+}
+
 rational.prototype.toreal = function () { return this.n / this.d; }
+
+rational.prototype.todigit = function () {
+    var IMAG = String.fromCharCode(777);
+    var NEG = String.fromCharCode(822);
+    var s = this.toString(false, false);
+    if (!(s instanceof String)) s = s.toString();
+    var len = s.length - (s.split(NEG).length - 1) - (s.split(IMAG).length - 1)
+    if (len > 1 && s[0] != '(') return '(' + s + ')';
+    return s;
+}
 
 rational.prototype.tohtml = function (short) {
     if (short) {
@@ -123,7 +137,7 @@ rational.prototype.digitpair = function (NEGBEG, NEGEND, long) {  // 2015.12
     // 185  189  777 822 8315   9321
     // ^1   1/2  ^   -   ^-     10
     var IMAG = String.fromCharCode(777);
-    var digit = [this.n, this.d]; //alert(JSON.stringify(digit));
+    var digit = [this.n, this.d];
     var num = digit[0];
     var den = digit[1];
     var a = Math.round(num * 1000) / 1000
@@ -195,8 +209,17 @@ rational.prototype.pointtimes = rational.prototype.times;       //  2017.6
 rational.prototype.pointdivide = rational.prototype.divide;     //  2017.6
 rational.prototype.negate = function () { return new rational(-this.n, this.d); }
 rational.prototype.clone = function () { return new rational(this.n, this.d); } //  2017.6
+rational.prototype.round = function () { return new rational(Math.round(this.toreal() * 1000) / 1000, 1); } //  2017.11
+rational.prototype.scale = function (c) { return new rational(c * this.n, this.d); } //  2017.11
 
-rational.prototype.pow = function (other) {
+rational.prototype.atan2 = function (other) { return new rational(Math.atan2(this.toreal(), other.toreal()), 1); }   //  2017.11
+rational.prototype.sqrt = function () { return new rational(Math.sqrt(this.n), Math.sqrt(this.d)); }   //  2017.11
+rational.prototype.log = function () { return new rational(Math.log(this.toreal()), 1); }   //  2017.11
+rational.prototype.exp = function () { return new rational(Math.exp(this.toreal()), 1); }   //  2017.11
+rational.prototype.sin = function () { return new rational(Math.sin(this.toreal()), 1); }   //  2017.11
+rational.prototype.cos = function () { return new rational(Math.cos(this.toreal()), 1); }   //  2017.11
+
+rational.prototype.pow = function (other) {//alert('rational.pow: ' + other)
     //if (other instanceof rational && other.isint()) return new rational(Math.pow(this.num, other.num), Math.pow(this.den, other.num));
     if (other instanceof rational && other.negate().is1()) return new rational(this.d, this.n); //  2017.7
     if (other instanceof rational) other = other.toreal();

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    11/30/2017
 // SparseExponential1 : a datatype for representing sparse complex exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexponential1 extends abstractpolynomial {
@@ -9,7 +9,7 @@ class sparseexponential1 extends abstractpolynomial {
         var base, pv;
         if (arguments.length == 0)[base, pv] = [1, new sparseplacevalue1(rational)];    //  2017.10
         if (arguments.length == 1) {                                                    //  2017.10
-            if (arg === rational || arg === complex)[base, pv] = [1, new sparseplacevalue1(arg)];
+            if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [1, new sparseplacevalue1(arg)];    //  2017.11
             else[base, pv] = [arg, new sparseplacevalue1(rational)];
         }
         if (arguments.length == 2)[base, pv] = arguments;
@@ -93,12 +93,6 @@ class sparseexponential1 extends abstractpolynomial {
         }
     }
 
-    //align(other) {
-    //    if (this.pv.points.length == 1 && this.pv.points[0][1].is0()) this.base = other.base;
-    //    if (other.pv.points.length == 1 && other.pv.points[0][1].is0()) other.base = this.base;
-    //    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new sparsepolynomialratio(1, sparseplacevalueratio.parse('%')) }
-    //}
-
     toString() {
         return sparseexponential1.toStringCosh(this.pv, this.base)
     }
@@ -153,8 +147,13 @@ class sparseexponential1 extends abstractpolynomial {
                 if (i == 0) continue;
                 //console.log(s.datatype)
                 var parser = new s.datatype();
-                var l = (ind == 0) ? s.get(parser.parse('i').times(parser.parse(i))).r : s.get(parser.parse('i').times(parser.parse(i))).i;
-                var r = (ind == 0) ? s.get(parser.parse('i').times(parser.parse(-i))).r : s.get(parser.parse('i').times(parser.parse(-i))).i;
+                //var l = (ind == 0) ? s.get(parser.parse('i').times(parser.parse(i))).r : s.get(parser.parse('i').times(parser.parse(i))).i;
+                var l = (ind == 0) ? s.get(parser.parse('i').scale(i)).r : s.get(parser.parse('i').scale(i)).i;
+                //alert(JSON.stringify([l instanceof Object, l instanceof Number, typeof l]))
+                if (typeof l != 'number') l = l.toreal();
+                //var r = (ind == 0) ? s.get(parser.parse('i').times(parser.parse(-i))).r : s.get(parser.parse('i').times(parser.parse(-i))).i;
+                var r = (ind == 0) ? s.get(parser.parse('i').scale(-i)).r : s.get(parser.parse('i').scale(-i)).i;
+                if (typeof r != 'number') r = r.toreal();
                 var m = Math.min(l, sign * r);
                 var al = Math.abs(l);
                 var ar = Math.abs(r);

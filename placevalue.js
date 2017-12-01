@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    11/30/2017
 // PlaceValue: a datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue(man, exp) {
@@ -142,7 +142,6 @@ placevalue.prototype.pow = function (power) {	// 2015.8
 }
 
 placevalue.align = function (a, b) {    // rename pad align 2015.9
-    //if (arguments.length < 3) offset = 0;
     if (a.whole.is0()) a.exp = b.exp;   //  2017.6
     while (a.exp > b.exp) {
         a.exp--;

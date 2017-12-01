@@ -1,15 +1,17 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
-// SparsePlaceValue1: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are real
+// Date:    11/30/2017
+// SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
 
     constructor(arg) {
         var points, datatype;
-        if (arguments.length < 1)[points, datatype] = [[], rational];           //  2017.10
-        if (arg === rational || arg === complex)[points, datatype] = [[], arg]; //  2017.10
-        if (Array.isArray(arg)) {                                               //  2017.10
+        if (arguments.length < 1)[points, datatype] = [[], rational];                                       //  2017.10
+        if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.10
+        if (Array.isArray(arg)) {                                                                           //  2017.10
+            //alert('A.IsA' + JSON.stringify(arg))
+            //throw new Error('[]')
             points = arg;
             if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
             if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
@@ -21,7 +23,7 @@ class sparseplacevalue1 {
         points = normal(points);
         points = trim(this, points);
         this.points = points;
-        function normal(points) {
+        function normal(points) {//alert(JSON.stringify(points))
             var list = points.map(function (x) { return x.slice(0) });
             sort(list);
             combineliketerms(list);
@@ -30,7 +32,6 @@ class sparseplacevalue1 {
                 for (var i = 0; i < list.length; i++)
                     for (var j = 0; j < list.length; j++)
                         if (list[i][1].below(list[j][1])) {
-                            //                    if (list[i][1] < list[j][1]) {
                             var temp = list[i];     //  Swap list[i] with list[j]. Not list[i][1] with list[j][1].  2016.10
                             list[i] = list[j];
                             list[j] = temp;
@@ -50,7 +51,7 @@ class sparseplacevalue1 {
         function trim(me, points) {     //  2016.10
             for (var i = points.length - 1; i >= 0; i--)    //  2017.6  countdown because modifying array thats being iterated over
                 if (points[i][0].is0()) points.splice(i, 1);
-            if (points.length == 0) points = [[new me.datatype().parse(0), new me.datatype().parse(0)]];
+            if (points.length == 0) points = [[new me.datatype(), new me.datatype()]];  //  2017.11 rid .parse(0)
             return points;
         }
     }
@@ -60,10 +61,14 @@ class sparseplacevalue1 {
         if (arg === '') return new this.constructor(this.datatype);                                                                 //  2017.10
         if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1)
             return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));     //  2017.10
-        if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype().parse(0)]]);  //  2d array    2016.10
+        if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype()]]);           //  2d array    2016.10
         if (arg instanceof Number) return new this.constructor(arg, 0);
+        //alert('b4split ' + arg)
         var terms = split(arg);
+        //alert('a2split ' + terms)
         terms = terms.map(parseterm);
+        //alert('terms.length = ' + terms.length)
+        if (terms.length === 0) return new this.constructor(this.datatype); //  2017.11
         return new this.constructor(terms);
         function split(terms) {         //  2017.1
             var ret = [];
@@ -85,7 +90,7 @@ class sparseplacevalue1 {
             var coef = coefpow[0];
             var pow = coefpow[1];
             if (pow === undefined) pow = 0;
-            return [new me.datatype().parse(coef), new me.datatype().parse(pow)];
+            return [new me.datatype().parse(coef), pow ? new me.datatype().parse(pow) : new me.datatype()];
         }
     }
 
@@ -93,7 +98,7 @@ class sparseplacevalue1 {
         if (i instanceof Number || typeof (i) == 'number') i = new this.datatype().parse(i);
         for (var j = 0; j < this.points.length; j++)
             if (this.points[j][1].equals(i)) return this.points[j][0];
-        return new this.datatype().parse(0);
+        return new this.datatype();
     }
 
     tohtml() {  // Replaces toStringInternal 2015.7
@@ -237,7 +242,7 @@ class sparseplacevalue1 {
             //return this.times(this.pow(power.sub(this.constructor.parse(1))));
         } else if (this.points.length == 1) {
             //alert(1)
-            if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
+            if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return this.parse('%') }
             var man = this.get(0).pow(power.get(0));   //  2017.8
             var exp = power.get(1);        //  2017.8  2^(3E1)=1E3
             return new this.constructor([[man, exp]]);
@@ -257,11 +262,11 @@ class sparseplacevalue1 {
     }
 
     eval(base) {
-        var sum = new this.datatype().parse(0);
+        var sum = new this.datatype();
         for (var i = 0; i < this.points.length; i++) {
             sum = sum.add(this.points[i][0].times(base.points[0][0].pow(this.points[i][1])));  //  base.points[0][0]   2016.10
         }
-        return new this.constructor([[sum, new this.datatype().parse(0)]]);
+        return new this.constructor([[sum, new this.datatype()]]);
     }
 
 }

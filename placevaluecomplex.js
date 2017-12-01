@@ -1,13 +1,13 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    9/30/2017
+// Date:    11/30/2017
 // PlaceValueComplex : a datatype for representing base agnostic arithmetic via numbers whose digits are complex
 
 function placevaluecomplex(whole, exp) {
     //if (arguments.length < 2) alert('placevaluecomplex expects 2 arguments');
-    if (arguments.length < 1) whole = new wholeplacevaluecomplex(); //  2017.9
+    if (arguments.length < 1) whole = new wholeplacevalue(complex); //  2017.11
     if (arguments.length < 2) exp = 0;  //  2017.9
-    if (!(whole instanceof wholeplacevaluecomplex)) { var s = 'PVComplex expects arg 1 (whole) to be a WholePVComplex not ' + typeof whole + JSON.stringify(whole); alert(s); throw new Error(s); }
+    if (!(whole instanceof wholeplacevalue)) { var s = 'PVComplex expects arg 1 (whole) to be a WholePVComplex not ' + typeof whole + JSON.stringify(whole); alert(s); throw new Error(s); }
     if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevaluecomplex expects argument 2 (exp) to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
     this.whole = whole
     this.exp = whole.is0() ? 0 : exp;   // 0 has no exp 2016.6
@@ -15,7 +15,7 @@ function placevaluecomplex(whole, exp) {
 }
 
 placevaluecomplex.prototype.parse = function (man, exp) {   //  2017.9
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevaluecomplex(new wholeplacevaluecomplex(a.whole.mantisa.map(function (x) { return new complex(x.r, x.i) })), a.exp) }
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('whole') != -1) { var a = JSON.parse(man); return new placevaluecomplex(this.whole.parse(JSON.stringify(a.whole)), a.exp) }
     if (arguments.length < 2) exp = 0;
     if (typeof (man) == "number") man = man.toString();     // 2015.11
     if (typeof (man) == "string" && man.indexOf('whole') != -1) {
@@ -28,7 +28,7 @@ placevaluecomplex.prototype.parse = function (man, exp) {   //  2017.9
         exp = man.exp;      // get exp from man before
         man = man.whole;    // man overwrites self 2015.8
     }
-    var whole = new wholeplacevaluecomplex().parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
+    var whole = this.whole.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);
     return new placevaluecomplex(whole, exp + getexp(man));
     //console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
     function getexp(x) {
@@ -118,8 +118,8 @@ placevaluecomplex.prototype.pointpow = function (power) {	// 2015.12
 
 placevaluecomplex.prototype.pow = function (power) {	// 2015.8
     if (typeof power == 'number') power = complex.parse(power);                             //  2017.5  fourier calls with number
-    if (power instanceof complex) power = new wholeplacevaluecomplex([power]);              //  2017.5
-    if (power instanceof wholeplacevaluecomplex) power = new placevaluecomplex(power, 0);   //  2017.5
+    if (power instanceof complex) power = new wholeplacevalue([power]);              //  2017.5
+    if (power instanceof wholeplacevalue) power = new placevaluecomplex(power, 0);   //  2017.5
 
     //if (power instanceof placevaluecomplex) power = power.whole;   // laurent calls wpv    2015.8
     ////if (!(power instanceof wholeplacevaluecomplex)) power = wholeplacevaluecomplex.parse(power);  // 2016.6
@@ -129,13 +129,13 @@ placevaluecomplex.prototype.pow = function (power) {	// 2015.8
     //var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
 
     if (power.exp == 0) {   //  2017.5
-        if (power.getreal(0) < 0) return new placevaluecomplex().parse(1).divide(this.pow(new placevaluecomplex(new wholeplacevaluecomplex([new complex(-power.getreal(0))]), 0)));// getreal 2015.12
+        if (power.getreal(0) < 0) return new placevaluecomplex().parse(1).divide(this.pow(new placevaluecomplex(new wholeplacevalue([new complex(-power.getreal(0))]), 0)));// getreal 2015.12
         var whole = this.whole.pow(power.whole);
         var exp = this.exp * power.getreal(0);    // exp*pow not exp^pow  2015.9    getreal 2015.12
     } else if (power.exp == 1) {
         alert(JSON.stringify(['pow=1', power, power.get(0), power.get(1)]))
         if (this.exp != 0) { alert('PVC >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevaluecomplex.parse('%') }
-        var whole = wholeplacevaluecomplex.parse(1);    //  2017.5
+        var whole = this.whole.parse(1);    //  2017.5
         var exp = power.get(1).r;                       //  2017.5  2^(3E1)=1E3
     } else { alert('PV >Bad Exponent = ' + power.toString()); return placevaluecomplex.parse('%') }
 
@@ -146,16 +146,18 @@ placevaluecomplex.align = function (a, b) {    // rename pad align 2015.9
     if (arguments.length < 3) offset = 0;
     while (a.exp > b.exp) {
         a.exp--;
-        a.whole = a.whole.times(10);    // Delegate Shift to Whole  2015.7
+        //a.whole = a.whole.times(10);    // Delegate Shift to Whole  2015.7
+        a.whole.times10();
     }
     while (b.exp > a.exp) {
         b.exp--;
-        b.whole = b.whole.times(10);    // Delegate Shift to Whole  2015.7
+        //b.whole = b.whole.times(10);    // Delegate Shift to Whole  2015.7
+        b.whole.times10();
     }
 }
 
 placevaluecomplex.prototype.times = function (top) {
-    if (!(top instanceof Object && JSON.stringify(top).indexOf('whole') != -1)) top = new placevaluecomplex(new wholeplacevaluecomplex([top]), 0);  // 2015.11
+    if (!(top instanceof Object && JSON.stringify(top).indexOf('whole') != -1)) top = new placevaluecomplex(new wholeplacevalue([top]), 0);  // 2015.11
     var whole = this.whole.times(top.whole);
     return new placevaluecomplex(whole, this.exp + top.exp);
 }
@@ -166,12 +168,12 @@ placevaluecomplex.prototype.scale = function (scalar) {   // 2015.11
 }
 
 placevaluecomplex.prototype.inverse = function () { // 2016.1
-    return new placevaluecomplex(new wholeplacevaluecomplex([1]), 0).divide(this);
+    return new placevaluecomplex(this.whole.parse(1), 0).divide(this);
 }
 
 placevaluecomplex.prototype.divide = function (denominator) {
     var me = this.clone();
-    if (!(denominator instanceof Object && JSON.stringify(denominator).indexOf('whole') != -1)) denominator = new placevaluecomplex(new wholeplacevaluecomplex([denominator]), 0);  // 2015.11
+    if (!(denominator instanceof Object && JSON.stringify(denominator).indexOf('whole') != -1)) denominator = new placevaluecomplex(new wholeplacevalue([denominator]), 0);  // 2015.11
     var pads = 0;						// 2015.11
     pads = me.whole.mantisa.length == 1 && denominator.whole.mantisa.length == 1 ? 0 : pad(me, denominator, 6);		// 2015.12
     var whole = me.whole.divide(denominator.whole);
@@ -208,13 +210,12 @@ placevaluecomplex.prototype.clone = function () {
 }
 
 placevaluecomplex.prototype.eval = function (base) {
-    //alert(JSON.stringify([this, '|', base]));
-    var c = wholeplacevaluecomplex;
+    var c = wholeplacevalue;
     var sum = new complex(0);
     for (var i = 0; i < this.whole.mantisa.length; i++) {
         //alert(JSON.stringify([this, i, this.whole.get(i), '*', base, '^', i + this.exp, '=', base.pow(i + this.exp).get(0)]));
         if (this.whole.get(i).r != 0 || this.whole.get(i).i != 0) // Only add non-zero digits; Prevents 0*∞=%.    2016.1
             sum = sum.add(this.whole.get(i).times(base.pow(i + this.exp).get(0)));  // this.get->this.whole.get, i->i+this.exp  2016.1
     }
-    return new placevaluecomplex(new wholeplacevaluecomplex([sum]), 0);
+    return new placevaluecomplex(new wholeplacevalue([sum]), 0);
 }

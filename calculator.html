@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    10/31/2017
+   Date:    11/30/2017
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -20,6 +20,7 @@
     </script>
     <script src='rational.js'></script>
     <script src='complex.js'></script>
+    <script src='rationalcomplex.js'></script>
     <script src='complexlaurent.js'></script>
     <script src='wholeplacevaluecomplex.js'></script>
     <script src='placevaluecomplex.js'></script>
@@ -41,7 +42,7 @@
     <script src='sparseplacevalue1.js'></script>
     <script src='abstractpolynomial.js'></script>
     <!--<script src='abstractpolynomial1.js'></script>-->
-    <script src='sparsepolynomialnumber.js'></script>
+    <!--<script src='sparsepolynomialnumber.js'></script>-->
     <script src='sparsepolynomial.js'></script>
     <script src='placevalueratio.js'></script>
     <script src='polynomialratio.js'></script>
@@ -66,8 +67,8 @@
         h1 { text-align: center; }
         #d { position: absolute; top: 10px; left: 10px; }
         /*#m { position: absolute; top: 10px; left: 100px; }*/
-        #f { position: absolute; top: 10px; left: 100px; }
-        #f1, #f2, #f3 { display: none; }
+        #f { position: absolute; top: 10px; left: 150px; }
+        #f1, #f2, #f3, #f4 { display: none; }
         body, input { font-family: "Arial Unicode MS" }
         #main { border-spacing: 0; float: left; margin: 10px; }
         #col3 { width: 150px }
@@ -80,11 +81,12 @@
 </head>
 <body>
     <h1>PlaceValue Calculator</h1>
-    <select id="d" size="4">
+    <select id="d" size="5">
         <optgroup label="Digit-Type">
             <option onclick="setdigit(1);clean()">Decimal</option>
             <option onclick="setdigit(2);clean()" selected>Rational</option>
             <option onclick="setdigit(3);clean()">Complex</option>
+            <option onclick="setdigit(4);clean()">RationalComplex</option>
         </optgroup>
     </select>
     <!--<select id="m" size="4">
@@ -96,15 +98,15 @@
     </select>-->
     <select id="f1" onchange="clean()">
         <optgroup label="PlaceValues">
-            <option value="6">SparsePlaceValue1</option>
-            <option value="9">SparsePlaceValue2</option>
-            <option value="5">SparsePlaceValue</option>
+            <option value="9">SparsePlaceValue1</option>
+            <option value="13">SparsePlaceValue2</option>
+            <option value="8">SparsePlaceValue</option>
         </optgroup>
         <optgroup label="Applications">
-            <option value="18">Polynomial</option>
-            <option value="19">Sparse Polynomial</option>
-            <option value="26">Multinomial</option>
-            <option value="27">Laurent Multinomial</option>
+            <option value="21">Polynomial</option>
+            <!--<option value="22">Sparse Polynomial</option>-->
+            <option value="29">Multinomial</option>
+            <option value="30">Laurent Multinomial</option>
         </optgroup>
     </select>
     <select id="f2" onchange="clean()">
@@ -112,27 +114,27 @@
             <option value="0">Rational</option>
         </optgroup>
         <optgroup label="PlaceValues">
-            <option value="2">WholePlaceValue</option>
-            <option value="3">PlaceValue</option>
-            <option value="4">PlaceValueRatio</option>
-            <option value="7">SparsePlaceValue1</option>
+            <option value="3">WholePlaceValue</option>
+            <option value="6">PlaceValue</option>
+            <option value="7">PlaceValueRatio</option>
+            <option value="10">SparsePlaceValue1</option>
             <!--<option value="14">SparsePlaceValueRational1</option>-->
-            <option value="15">SparsePlaceValueRatio1</option>
-            <option value="16">SparsePlaceValue</option>
-            <option value="17">SparsePlaceValueRatio</option>
+            <option value="18">SparsePlaceValueRatio1</option>
+            <option value="19">SparsePlaceValue</option>
+            <option value="20">SparsePlaceValueRatio</option>
         </optgroup>
         <optgroup label="Applications">
-            <option value="20">Sparse Polynomial</option>
-            <option value="22">Polynomial Ratio</option>
+            <option value="22">Sparse Polynomial</option>
+            <option value="25">Polynomial Ratio</option>
             <!--<option value="23">Sparse Polynomial Rational</option>-->
-            <option value="24">Sparse Polynomial Ratio</option>
-            <option value="25">Laurent Polynomial</option>
-            <option value="28">Sparse Multinomial</option>
-            <option value="29">Sparse Multinomial Ratio</option>
-            <option value="32">Exponential</option>
-            <option value="33">Sparse Exponential 1</option>
-            <option value="35">Sparse Exponential</option>
-            <option value="36">Exponential Ratio</option>
+            <option value="27">Sparse Polynomial Ratio</option>
+            <option value="28">Laurent Polynomial</option>
+            <option value="31">Sparse Multinomial</option>
+            <option value="32">Sparse Multinomial Ratio</option>
+            <option value="35">Exponential</option>
+            <option value="36">Sparse Exponential 1</option>
+            <option value="39">Sparse Exponential</option>
+            <option value="40">Exponential Ratio</option>
         </optgroup>
     </select>
     <select id="f3" onchange="clean()">
@@ -140,73 +142,92 @@
             <option value="1">Complex</option>
         </optgroup>
         <optgroup label="PlaceValues">
-            <option value="10">WholePlaceValue</option>
-            <option value="11">PlaceValue</option>
+            <option value="4">WholePlaceValue</option>
+            <option value="14">PlaceValue</option>
             <!--<option value="12">SparsePlaceValue1</option>-->
-            <option value="8">SparsePlaceValue1</option>
-            <option value="13">SparsePlaceValue</option>
+            <option value="11">SparsePlaceValue1</option>
+            <option value="16">SparsePlaceValue</option>
         </optgroup>
         <optgroup label="Applications">
-            <option value="21">Sparse Polynomial</option>
-            <option value="30">Laurent</option>
-            <option value="31">Sparse Multinomial</option>
-            <option value="34">Sparse Exponential 1</option>
-            <option value="37">Fourier</option>
-            <option value="38">Fourier2</option>
-            <option value="39">Exponential</option>
-            <option value="40">Sparse Exponential</option>
+            <option value="23">Sparse Polynomial</option>
+            <option value="33">Laurent</option>
+            <option value="34">Sparse Multinomial</option>
+            <option value="37">Sparse Exponential 1</option>
+            <option value="41">Fourier</option>
+            <option value="42">Fourier2</option>
+            <option value="43">Exponential</option>
+            <option value="44">Sparse Exponential</option>
         </optgroup>
     </select>
+    <select id="f4" onchange="clean()">
+        <optgroup label="Primitives">
+            <option value="2">RationalComplex</option>
+        </optgroup>
+        <optgroup label="PlaceValues">
+            <option value="5">WholePlaceValue</option>
+            <option value="12">SparsePlaceValue1</option>
+        </optgroup>
+        <optgroup label="Applications">
+            <option value="24">Sparse Polynomial</option>
+            <option value="38">Sparse Exponential 1</option>
+        </optgroup>
+</select>
     <select id='f' onchange="clean()">
         <!--
         <optgroup label="Primitives">
             <option value="0">Rational</option>
             <option value="1">Complex</option>
+            <option value="2">RationalComplex</option>
         </optgroup>
         <optgroup label="PlaceValues">
-            <option value="2">WholePlaceValue</option>
-            <option value="3">PlaceValue</option>
-            <option value="4">PlaceValueRatio</option>
-            <option value="5">SparsePlaceValue</option>
-            <option value="6">SparsePlaceValueNumber1</option>
-            <option value="7">SparsePlaceValue1 - Rational</option>
-            <option value="8">SparsePlaceValue1 - Complex</option>
-            <option value="9">SparsePlaceValue2</option>
-            <option value="10">WholePlaceValueComplex</option>
-            <option value="11">PlaceValueComplex</option>
-            <option value="12">SparsePlaceValueComplex1</option>
-            <option value="13">SparsePlaceValueComplex</option>
-            <option value="14">SparsePlaceValueRational1</option>
-            <option value="15">SparsePlaceValueRatio1</option>
-            <option value="16">SparsePlaceValueRational</option>
-            <option value="17">SparsePlaceValueRatio</option>
+            <option value="3">WholePlaceValue - Rational</option>
+            <option value="4">WholePlaceValue - Complex</option>
+            <option value="5">WholePlaceValue - RationalComplex</option>
+            <option value="6">PlaceValue</option>
+            <option value="7">PlaceValueRatio</option>
+            <option value="8">SparsePlaceValue</option>
+            <option value="9">SparsePlaceValueNumber1</option>
+            <option value="10">SparsePlaceValue1 - Rational</option>
+            <option value="11">SparsePlaceValue1 - Complex</option>
+            <option value="12">SparsePlaceValue1 - RationalComplex</option>
+            <option value="13">SparsePlaceValue2</option>
+            <option value="14">PlaceValueComplex</option>
+            <option value="15">SparsePlaceValueComplex1</option>
+            <option value="16">SparsePlaceValueComplex</option>
+            <option value="17">SparsePlaceValueRational1</option>
+            <option value="18">SparsePlaceValueRatio1</option>
+            <option value="19">SparsePlaceValueRational</option>
+            <option value="20">SparsePlaceValueRatio</option>
         </optgroup>
         <optgroup label="Applications">
-            <option value="18">Polynomial</option>
-            <option value="19">Sparse Polynomial Number</option>
-            <option value="20">Sparse Polynomial - Rational</option>
-            <option value="21">Sparse Polynomial - Complex</option>
-            <option value="22">Polynomial Ratio</option>
-            <option value="23">Sparse Polynomial Rational</option>
-            <option value="24">Sparse Polynomial Ratio</option>
-            <option value="25">Laurent Polynomial</option>
-            <option value="26">Multinomial</option>
-            <option value="27">Laurent Multinomial</option>
-            <option value="28">Sparse Multinomial</option>
-            <option value="29">Sparse Multinomial Ratio</option>
-            <option value="30">Complex Laurent</option>
-            <option value="31">Complex Sparse Multinomial</option>
-            <option value="32">Exponential</option>
-            <option value="33">Sparse Exponential 1 - Rational</option>
-            <option value="34">Sparse Exponential 1 - Complex</option>
-            <option value="35">Sparse Exponential</option>
-            <option value="36">Exponential Ratio</option>
-            <option value="37">Fourier</option>
-            <option value="38">Fourier2</option>
-            <option value="39">Complex Exponential</option>
-            <option value="40">Sparse Complex Exponential</option>
+            <option value="21">Polynomial</option>
+            <option value="22">Sparse Polynomial Number</option>
+            <option value="23">Sparse Polynomial - Rational</option>
+            <option value="24">Sparse Polynomial - Complex</option>
+            <option value="25">Sparse Polynomial - RationalComplex</option>
+            <option value="26">Polynomial Ratio</option>
+            <option value="27">Sparse Polynomial Rational</option>
+            <option value="28">Sparse Polynomial Ratio</option>
+            <option value="29">Laurent Polynomial</option>
+            <option value="30">Multinomial</option>
+            <option value="31">Laurent Multinomial</option>
+            <option value="32">Sparse Multinomial</option>
+            <option value="33">Sparse Multinomial Ratio</option>
+            <option value="34">Complex Laurent</option>
+            <option value="35">Complex Sparse Multinomial</option>
+            <option value="36">Exponential</option>
+            <option value="37">Sparse Exponential 1 - Rational</option>
+            <option value="38">Sparse Exponential 1 - Complex</option>
+            <option value="39">Sparse Exponential 1 - RationalComplex</option>
+            <option value="40">Sparse Exponential</option>
+            <option value="41">Exponential Ratio</option>
+            <option value="42">Fourier</option>
+            <option value="43">Fourier2</option>
+            <option value="44">Complex Exponential</option>
+            <option value="45">Sparse Complex Exponential</option>
         </optgroup>-->
     </select>
+    <br />
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
         <tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>^</option><option>|</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo">&nbsp;</td></tr>
@@ -214,13 +235,18 @@
     </table>
     <script type="text/javascript">
         function compute() {
-            if ($('#f')[0].value == 7) f = new sparseplacevalue1(rational);
-            else if ($('#f')[0].value == 8) f = new sparseplacevalue1(complex);
-            else if ($('#f')[0].value == 20) f = new sparsepolynomial(rational);
-            else if ($('#f')[0].value == 21) f = new sparsepolynomial(complex);
-            else if ($('#f')[0].value == 33) f = new sparseexponential1(rational);
-            else if ($('#f')[0].value == 34) f = new sparseexponential1(complex);
-            else f = new [rational, complex, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevaluenumber1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, wholeplacevaluecomplex, placevaluecomplex, sparseplacevaluecomplex1, sparseplacevaluecomplex, sparseplacevaluerational1, sparseplacevalueratio1, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomialnumber, sparsepolynomial, sparsepolynomial, polynomialratio, sparsepolynomialrational, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, sparseexponential1, sparseexponential1, sparseexponential, exponentialratio, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].value]();
+            if ($('#f')[0].value == 4) f = new wholeplacevalue(complex);
+            else if ($('#f')[0].value == 5) f = new wholeplacevalue(rationalcomplex);
+            else if ($('#f')[0].value == 10) f = new sparseplacevalue1(rational);
+            else if ($('#f')[0].value == 11) f = new sparseplacevalue1(complex);
+            else if ($('#f')[0].value == 12) f = new sparseplacevalue1(rationalcomplex);
+            else if ($('#f')[0].value == 22) f = new sparsepolynomial(rational);
+            else if ($('#f')[0].value == 23) f = new sparsepolynomial(complex);
+            else if ($('#f')[0].value == 24) f = new sparsepolynomial(rationalcomplex);
+            else if ($('#f')[0].value == 36) f = new sparseexponential1(rational);
+            else if ($('#f')[0].value == 37) f = new sparseexponential1(complex);
+            else if ($('#f')[0].value == 38) f = new sparseexponential1(rationalcomplex);
+            else f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalueratio, sparseplacevalue, sparseplacevaluenumber1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, placevaluecomplex, sparseplacevaluecomplex1, sparseplacevaluecomplex, sparseplacevaluerational1, sparseplacevalueratio1, sparseplacevaluerational, sparseplacevalueratio, polynomial, sparsepolynomial, sparsepolynomial, sparsepolynomial, polynomialratio, sparsepolynomialrational, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponential, exponentialratio, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].value]();
             var a = getinput('#a');
             var b = getinput('#b');
             var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.pow, a.eval, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
@@ -228,7 +254,7 @@
             function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); } //  2017.9
             function output(a, b, c) {
                 $('#c').attr('data-val', JSON.stringify(c));
-                $('#c').val(c);
+                $('#c').val(c.toString(false, true));   //  2017.11 (F,T)
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
                 showInternal(c, '#co');

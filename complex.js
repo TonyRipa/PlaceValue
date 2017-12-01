@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    11/30/2017
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -23,20 +23,20 @@ complex.parse = function (n) {
     if (n instanceof Number) return new complex(n, 0);  //  2017.3
     var N = n.toString();
     if (N[0] == '-') return complex.parse(N.substring(1)).negate(); //  2017.3
+    if (N[0] == '+') return complex.parse(N.substring(1));          //  2017.11
     var ret = 0;
-    var numb = '';
-    var imag = '';
-    var inparen = false;
-    var inimag = false;
-    for (var i = 0; i < N.length; i++) {
-        var c = N[i];
-        if (c == '(') { inparen = true; continue; }
-        if (c == ',') { inimag = true; continue; }
-        if (c == ')') { ret = [Number(numb), Number(imag)]; numb = ''; imag = ''; inimag = false; inparen = false; continue; }
-        if (inparen) {
-            if (inimag) imag += c; else numb += c;
-        }
-        else {
+    if (N.indexOf(',') != -1) {
+        var parts = N.slice(1, -1).split(',');
+        var re = Number(parts[0]); //if (Array.isArray(re)) re = re[0];
+        var im = Number(parts[1]); //if (Array.isArray(im)) im = im[1];
+        ret = [re, im]
+    } else {
+        ret = single(N);
+    }
+    function single(N) {
+        var ret = '';
+        for (var i = 0; i < N.length; i++) {
+            var c = N[i];
             //if (c == 'e' || c == 'E') break;    // Truncate    2015.9
             if ("0123456789.".indexOf(c) > -1) ret += c;
             var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
@@ -46,12 +46,13 @@ complex.parse = function (n) {
             if (num[c]) ret = num[c];
             if (c == '∞') ret = Infinity;
             if (c == '%') ret = NaN;
-            if (c == 'i') ret = [0, 1];     // 2015.12
-            if (c == 'I') ret = [0, 1];     // 2017.10
+            if (c == 'i') ret = N.length > 1 ? [0, ret] : [0, 1];   // 2015.12
+            if (c == 'I') ret = N.length > 1 ? [0, ret] : [0, 1];   // 2017.10
             if (c == String.fromCharCode(777)) ret = [0, ret];
             if (c == String.fromCharCode(822)) { if (Array.isArray(ret)) { ret[0] *= -1; ret[1] *= -1; } else ret *= -1; }
             if (c == String.fromCharCode(8315)) ret = 1 / ret;
         }
+        return ret;
     }
     var digit = ret;
     if (Array.isArray(digit) && digit.length == 2) return new complex(Number(digit[0]), Number(digit[1]));
@@ -63,17 +64,30 @@ complex.regex = function () {   //  2017.10
     var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';
     var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
     var num = '(' + literal + '|' + dec + ')';
-    var signnum = '(' + '[\+\-]?' + num + ')';
+    var signnum = '(' + '[\+\-]?' + num + '[iI]?' + ')';    //  2017.11
     var pair = '(' + String.raw`\(` + signnum + ',' + signnum + String.raw`\)` + ')';   //  2017.10 String.raw
     var pairor1 = '(' + pair + '|' + signnum + ')';
     //var frac = '(' + num + '/' + num + '|' + num + ')';
-    //var signfrac = '(' + '[\+\-]?' + frac + ')';
     return pairor1;
+}
+
+complex.regexfull = function () {   //  2017.11
+    return '^' + complex.regex() + '$';
 }
 
 complex.prototype.tohtml = function () { return this.toString(false) }
 
 complex.prototype.toreal = function () { return this.r; }   //  2017.10
+
+complex.prototype.todigit = function () {
+    var IMAG = String.fromCharCode(777);
+    var NEG = String.fromCharCode(822);
+    var s = this.toString(false, false);
+    if (!(s instanceof String)) s = s.toString();
+    var len = s.length - (s.split(NEG).length - 1) - (s.split(IMAG).length - 1)
+    if (len > 1 && s[0] != '(') return '(' + s + ')';
+    return s;
+}
 
 complex.prototype.toString = function (sTag, long) {                        //  sTag    2015.11
     if (sTag) return this.digitpair('<s>', '</s>', true, long);
@@ -95,7 +109,8 @@ complex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) {  // 20
     if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);
     if (real == 0) {
         if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
-        if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
+        //if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
+        if (long) return (b == 1 ? '' : b == -1 ? '-' : b) + 'i';   //  2017.11
         return b == 1 ? 'i' : b == -1 ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
     }
     //return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
@@ -165,6 +180,7 @@ complex.prototype.arg = function () { return Math.atan2(this.i, this.r) }
 complex.prototype.round = function () { return new complex(Math.round(1000 * this.r) / 1000, Math.round(1000 * this.i) / 1000) }
 complex.prototype.negate = function () { return new complex(-this.r, -this.i) } //  2017.3
 complex.prototype.clone = function () { return new complex(this.r, this.i); }   //  2017.10
+complex.prototype.scale = function (c) { return new complex(c * this.r, c * this.i); }  //  2017.11
 
 complex.prototype.times = function (y) {
     if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   //  2017.5
@@ -181,18 +197,19 @@ complex.prototype.divide = function (y) {
 }
 
 complex.prototype.pow = function (p) {
-    try {
+    if (!(p instanceof complex)) p = complex.parse(p);  //  2017.11
+    //try {
         var b = this;
         var c = complex;
         if (b.norm() == 0) var ret = new c(Math.pow(0, p.r), 0);
         else if (b.i == 0) var ret = p.times(b.ln()).exp(); //  2017.3
         else var ret = new c(Math.pow(b.norm(), p.r) * Math.exp(-p.i * b.arg()), 0).times(new c(0, p.r * b.arg() + .5 * p.i * b.lnn().r).exp());
         return ret.round();
-    } catch (e) {
-        alert(e);
-        console.trace();
-        end;
-    }
+    //} catch (e) {
+    //    alert(e);
+    //    console.trace();
+    //    end;
+    //}
 }
 
 complex.prototype.divideleft = complex.prototype.divide;      //  2017.10
