@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    12/20/2017
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -30,6 +30,7 @@ wholeplacevalue.prototype.parse = function (man) {  //  2017.9
     for (var i = 0; i < mantisa.length; i++)
         mantisa[i] = new this.datatype().parse(mantisa[i]);
     //alert(mantisa)
+    if (mantisa.length == 0) return new wholeplacevalue(this.datatype); //  2017.12
     return new wholeplacevalue(mantisa);
     function tokenize(n) {  //  2016.6
         // 185  189  777 822 8315   9321
@@ -105,12 +106,14 @@ wholeplacevalue.prototype.pointtimes = function (other) { return this.f(function
 wholeplacevalue.prototype.pointdivide = function (other) { return this.f(function (x, y) { return x.divide(y) }, other); }
 wholeplacevalue.prototype.clone = function () { return this.f(function (x) { return x }, this); }
 wholeplacevalue.prototype.negate = function () { return this.f(function (x) { return x.negate() }, this); }     //  2016.5
-//wholeplacevalue.prototype.round = function () { return this.f(function (x) { return Math.round(x * 1000) / 1000 }, this); }   // for sub 2015.9
 
 wholeplacevalue.prototype.f = function (f, other) { // template for binary operations   2015.9
     var man = [];
     for (var i = 0; i < Math.max(this.mantisa.length, other.mantisa.length) ; i++) {
-        if (!(this.get(i) instanceof this.datatype && other.get(i) instanceof this.datatype)) { console.trace(); alert('f expects Array of this.datatype but found [' + typeof this.get(i) + '] ' + JSON.stringify(this.get(i))); }
+        if (!(this.get(i) instanceof this.datatype && other.get(i) instanceof this.datatype)) {
+            var s = `f wants WPV(${this.datatype == rational ? 'rational' : this.datatype == complex ? 'complex' : 'complexrational'}) not ${typeof other.get(i)} ${JSON.stringify(other.get(i))}`;
+            alert(s); throw new Error(s);
+        }   //  2017.12
         man.push(f(this.get(i), other.get(i)));  // get obviates need to pad 2015.7
     }
     if (man.length === 0) return new wholeplacevalue(this.datatype);    //  2017.11

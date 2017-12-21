@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 11/30/2017
+Date : 12/20/2017
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -42,7 +42,7 @@ By building a data-type whose base operations are constructed to take advantage 
 
 PlaceValue
 ---------------
-<i>PlaceValue</i> is a data-type for representing base agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
+<i>PlaceValue</i> is a data-type for representing base-agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
 
 The PlaceValue data-type transcends this problem by dividing in a base-agnostic way. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
 
@@ -52,23 +52,31 @@ The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholeP
 
 Rational
 ---------------
-<i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of criminalizing number pairs like 1,0 and 0,0 respectively.
+<i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of alienating number pairs like 1,0 and 0,0 respectively.
 
-SparsePlaceValueNumber1
+WholePlaceValueComplex
 ------------------------
-<i>SparsePlaceValueNumber1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>WholePlaceValueComplex</i> is a version of WholePlaceValue that uses complex digits. For example: ii * 2 = 2&#775;2&#775;. Imaginary digits look like regular digits but with a dot on top.
+
+Complex
+-----------
+<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
 
 SparsePlaceValueRational1
 ------------------------
-<i>SparsePlaceValueRational1</i> is a version of SparsePlaceValueNumber1 that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue1 with none of the round off errors.
+<i>SparsePlaceValueRational1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValueRational1 stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 SparsePlaceValueComplex1
 ------------------------
-<i>SparsePlaceValueComplex1</i> is a version of SparsePlaceValueNumber1 that uses complex instead of real digits.
+<i>SparsePlaceValueComplex1</i> is a version of SparsePlaceValueRational1 that uses complex instead of real digits.
+
+RationalComplex
+---------------
+<i>rationalcomplex.js</i> is a datatype for representing complex numbers. It represents complex numbers as pairs of rational. It has all of the capabilities of complex.js, without the round-off errors.
 
 SparsePlaceValue1
 ------------------------
-<i>SparsePlaceValue1</i> is a version of SparsePlaceValueNumber1 that accepts either Rational, Complex, or RationalComplex digits.
+<i>SparsePlaceValue1</i> is a version of SparsePlaceValueRational1 that handles Rational, Complex, or RationalComplex digits.
 
 PlaceValueRatio
 ------------------
@@ -86,25 +94,25 @@ The PlaceValue data-type is particularly well-suited to polynomial arithmetic. P
 
 <i>polynomial.html</i> is a demo for polynomial.js.
 
-SparsePolynomial
+SparsePolynomialRational
 ------------------------
-<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue1 datatype.
+<i>SparsePolynomialRational</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValueRational1 datatype.
 
-If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue1 to calculate:
+If SparsePolynomialRational wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValueRational1 to calculate:
 
 (1E100 + 1) ^ 2 = 1E200 + 2E100 + 1
 
-SparsePolynomial then formats SparsePlaceValue1's result as x^200 + 2x^100 + 1.
+SparsePolynomialRational then formats SparsePlaceValueRational1's result as x^200 + 2x^100 + 1.
 
-If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue1 to calculate:
+If SparsePolynomialRational wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValueRational1 to calculate:
 
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
-SparsePolynomial then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
+SparsePolynomialRational then formats SparsePlaceValueRational1's result as x + 2x^.5 + 1.
 
-SparsePolynomialRational
+SparsePolynomial
 ------------------------
-<i>SparsePolynomialRational</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValueRational1 datatype. SparsePolynomialRational is like SparsePolynomial except that it uses rational instead of real. Whereas for SparsePolynomial, (x^(1/3))^3 returns x^.999 due to rounding, SparsePolynomialRational returns the exact value of x.
+<i>SparsePolynomial</i> is a version of SparsePolynomialRational that is based on SparsePlaceValue1 instead of SparsePlaceValueRational1. SparsePolynomial can handle Rational, Complex, or RationalComplex digits.
 
 Polynomial Ratio
 -------------
@@ -198,23 +206,19 @@ If SparseMultinomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks Spars
 
 SparseMultinomial2 then formats SparsePlaceValue2's result as 2x.
 
-SparsePlaceValue
+SparsePlaceValueRational
 ------------------------
-<i>SparsePlaceValue.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValue can handle as arbitrary number of dimensions such as 1E2,3,4 .
+<i>SparsePlaceValueRational.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValueRational can handle as arbitrary number of dimensions such as 1E2,3,4 .
 
 SparseMultinomial
 ------------------------
-<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue datatype.
+<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValueRational datatype.
 
 If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
 
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
 SparseMultinomial then formats SparsePlaceValue's result as x*z + y*z.
-
-SparsePlaceValueRational
-------------------------
-<i>SparsePlaceValueRational</i> is a version of SparsePlaceValue that uses rational instead of real digits. This gives all the benefits of SparsePlaceValue with none of the round off errors.
 
 SparsePlaceValueRatio
 ------------------
@@ -228,7 +232,7 @@ If SparseMultinomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it a
 
 1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
 
-SparseMultinomialRatio then formats SparsePlaceValueRatio's result as (x*y^-1+1) / (x*y^-1-1).
+SparseMultinomialRatio then formats SparsePlaceValueRatio's result as (x * y^-1+1) / (x * y^-1-1).
 
 Exponential
 -----------
@@ -243,7 +247,7 @@ Exponentials are nothing more than a veneer for PlaceValue.
 
 SparseExponential1
 ------------------------
-<i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponentials reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
+<i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponential's reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
 
 SparseExponential
 -------------------------
@@ -268,18 +272,6 @@ PlaceValueComplex
 Fourier then formats PlaceValueComplex's result as -0.5cos(2x)+.5 .
 
 Fourier is nothing more than a veneer for PlaceValueComplex.
-
-WholePlaceValueComplex
-------------------------
-The base class (by composition) for PlaceValueComplex is <i>WholePlaceValueComplex</i>. WholePlaceValueComplex is supposed to be an analogue of integers. WholePlaceValueComplex uses only positive powers of the base. For WholePlaceValueComplex, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1. We also allow for imaginary digits ii * 2 = 2̉2̉. Imaginary digits look like regular digits but with a dot on top.
-
-Complex
------------
-<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
-
-RationalComplex
----------------
-<i>rationalcomplex.js</i> is a datatype for representing complex numbers. It represents complex numbers as pairs of rational. It has all of the capabilities of complex.js, without the round-off errors.
 
 Fourier
 -----------
@@ -313,6 +305,10 @@ Whereas, placevalue extended wholeplacevalue by allowing for negative exponents 
 SparsePlaceValueComplex
 -----------------------
 <i>sparseplacevaluecomplex.js</i> can be thought of as a Sparse version of ComplexPlaceValue.  However, it is actually implemented as a Complex version of SparsePlaceValue.  As such, since SparsePlaceValue could handle an unbounded number of dimensions (i.e. is suitable for modeling multivariable systems), SparsePlaceValueComplex can model an unbounded number of mutually orthogonal complex planes. Whereas a SparsePlaceValue may look like 1E2 + 3E4,5,6 , a SparsePlaceValueComplex may look like (1,-4)E(2,9) + 3E4,(5,6),i . Here the (5,6) is the complex number 5+6i.
+
+SparsePlaceValue
+------------------------
+<i>sparseplacevalue.js</i> is a version of SparsePlaceValueRational that accepts Rational, Complex, or RationalComplex digits.
 
 ComplexSparseMultinomial
 ------------------------
@@ -350,7 +346,7 @@ This ComplexPlaceValue is then rendered by ComplexExponential.js as -sin(x)+exp(
 
 SparseComplexExponential
 -------------------------
-<i>SparseComplexExponential</i> is a data-type optimized for Complex Sparse Exponentials; an application of the SparsePlaceValueComplex datatype.
+<i>SparseComplexExponential</i> is a data-type optimized for Complex Sparse Exponentials; an application of the SparsePlaceValueComplex datatype. Whereas Complex Exponential could model 1 complex variable (like x), SparseComplexExponential can model any number of Complex Variables.
 
 If SparseComplexExponential wants to calculate exp(x) * cis(y), then it asks SparsePlaceValueComplex to calculate:
 
@@ -365,11 +361,11 @@ CAS
 
 Calculator
 --------------
-<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), Exponential mode (Exponential), Imaginary Exponential mode (Fourier), and Complex Exponential mode (Complex Exponential).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
 
 Differentiator
 ----------------
-<i>differentiator.html</i> is an extension of calculator that allows for easy input of functions to differentiate. <i>differentiator.html</i> does a text transform of an input. It replaces x with (x+h), subtracts the original, divides by h, then applies the "|" operator by 0. For example for x^2, it does ((x+h)^2-x^2)/h | 0. This is nothing more than using calculator.html in (Laurent) multinomial mode using ((x+h)^2-x^2)/h as the first argument, | as the operator, and 0 as the second argument. Notice that | allows for differentiation. | does not distribute over the other arithmetic operators. h/h | 0 yields 1, whereas (h|0)/(h|0) yields NaN. This allows for differentiation without a dependency on calculus but only algebra (actually only arithmetic). It is also more elegant. h/h yields 1 uniformly, instead of 1 sometimes except for a hole in the line at 0. Traditionally differentiation is impossible with only algebra, requiring complicated arguments to redefine the undefined hole in exactly the way it should have been defined in the first place. PlaceValue avoids undefining h/h|0 with all the mess that it causes, and instead treats division without any special cases. The only loss is that | doesn't distribute over the other arithmetic operators. The limit from calculus is seen as just a post hoc corrected version of | that needed to be defined to replace | because | never should have distributed over other arithmetic operators to begin with. h/h being 1 without exception is not a kludge but results from the underlying base agnostic arithmetic. The numerator h is represented as 10. The denominator h is represented by 10. PlaceValue performs a base-agnostic arithmetic calculation 10/10 yields 1. The base agnostic aspect of the PlaceValue datatype is its greatest strength.
+<i>differentiator.html</i> is an extension of calculator that allows for easy input of functions to differentiate. <i>differentiator.html</i> does a text transform of an input. It replaces x with (x+h), subtracts the original, divides by h, then applies the "|" operator by 0. For example for x^2, it does ((x+h)^2-x^2)/h | 0. This is nothing more than using calculator.html in (Laurent) multinomial mode using ((x+h)^2-x^2)/h as the first argument, | as the operator, and 0 as the second argument. Notice that | allows for differentiation. | does not distribute over the other arithmetic operators. h/h | 0 yields 1, whereas (h|0)/(h|0) yields NaN. This allows for differentiation without a dependency on calculus but only algebra (actually only arithmetic). It is also more elegant. h/h yields 1 uniformly, instead of 1 sometimes except for a hole in the line at 0. Traditionally differentiation is impossible with only algebra, requiring complicated arguments to redefine the undefined hole in exactly the way it should have been defined in the first place. PlaceValue avoids undefining h/h|0 with all the mess that it causes, and instead treats division without any special cases. The only loss is that | doesn't distribute over the other arithmetic operators. The limit from calculus is seen as just a post hoc corrected version of | that needed to be defined to replace | because | never should have distributed over other arithmetic operators to begin with. h/h being 1 without exception is not a kludge but results from the underlying base-agnostic arithmetic. The numerator h is represented as 10. The denominator h is represented by 10. PlaceValue performs a base-agnostic arithmetic calculation 10/10 yields 1. The base-agnostic aspect of the PlaceValue datatype is its greatest strength.
 
 Calculus
 --------
@@ -417,7 +413,7 @@ DiffEq
 ---------------
 
 <i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
-For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN * exp(x) + NaN * exp(-x). With slight modification, it now also supports Fourier, ComplexExponential, and Laplace solution.
+For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN * exp(x) + NaN * exp(-x). Meaning an arbitrary constant times exp(x) plus an arbitrary constant times exp(-x). With slight modification, diffeq.html also supports Fourier, ComplexExponential, and Laplace solution.
 
 Determinant
 -----------------------
@@ -452,7 +448,7 @@ PlaceValue Mechanics is a refactoring of Quantum Mechanics based on the PlaceVal
 <tr><td>&#8942;</td><td>&#8942;</td><td>&#8942;</td><td>&#8942;</td><td>&#8945;</td></tr>
 </table>
 
-It's a doubly infinite matrix. Almost every element is 0. It's got about 2 non-zero rows out of a countably infinite number of zero rows. It's not the most economical storage scheme. It's storage efficiency is the reciprocal of a countably infinite number.
+It's a doubly infinite matrix. Almost every element is 0. It's got about 2 non-zero rows out of a countably infinite number of zero rows. It's not the most economical storage scheme. Its storage efficiency is the reciprocal of a countably infinite number.
 
 There's also Wave Mechanics. The model is real valued functions of a real variable. You can describe an uncountably infinite number of states of which only a countable number are interesting. The sparseness is even worse than Matrix Mechanics because it's now the reciprocal of an uncountably infinite number.
 
@@ -481,7 +477,7 @@ One downside of this economy appears to be that fourier2.js as used by mechanics
 
 ConvNet
 ------------
-<i>convnet.html</i> is a demo for convolutional learning. As PlaceValue multiplication is convolutional by nature, PlaceValue division is deconvolutional by nature. There is however an unfortunate asymmetry in its naive definition of division. 1/11 = 0.1<s>1</s>1<s>1</s>... sums inverse powers of its agnostic base. This results in a convergent series when the base is greater than 1, but a divergent series when the base is less than 1. This elicits a new kind of division to restore symmetry. The old division may be called right division as new digits are continually added to the right to complete the sum. This is somewhat arbitrary, and problematic for bases less than 1. A solution is a new kind of division left division. ...1<s>1</s>1<s>1</s>1 = 1 \ 11 . For bases less than 1, this sums positive powers of its base and yields a convergent sum.
+<i>convnet.html</i> is a demo for convolutional learning. As PlaceValue multiplication is convolutional by nature, PlaceValue division is deconvolutional by nature. There is however an unfortunate asymmetry in its naive definition of division. 1/11 = 0.1<s>1</s>1<s>1</s>... sums inverse powers of its agnostic base. This results in a convergent series when the base is greater than 1, but a divergent series when the base is less than 1. This elicits a new kind of division to restore symmetry. The old division may be called right division as new digits are continually added to the right to complete the sum. This is somewhat arbitrary, and problematic for bases less than 1. A solution is a new kind of division: left division. ...1<s>1</s>1<s>1</s>1 = 1 \ 11 . For bases less than 1, this sums positive powers of its base and yields a convergent sum.
 
 What kind of division would be appropriate for deconvolution? Right division would asymmetrically magnify remainder differences indefinitely to the right in a way that is not logically convergent for convolutional learning. Left division suffers similar problems but in the other direction. They are both really overfitting noise. What deconvolution really needs is a balance between the 2 that does not accumulate error indefinitely on either side. Deconvolution needs a kind of center division that best fits noise into the middle without diverging off either end. Many plausible approaches may come to mind to suit such constraints. We take a rather naive approach of the best linear approximation of an overdetermined system. This can be understood as solving Ax=b for a matrix A with more rows than columns, and so A is not classically invertible. We solve the system via the Moore-Penrose pseudoinverse. In other words, we do a least squares approximation. Using this definition of center division, we find that 1 ÷ 11 = 1.
 
@@ -495,13 +491,13 @@ Dependencies
 ---------------
 <table>
 <tr><td>Sparse Polynomial Rational</td><td></td><td></td><td>depends on SparsePlaceValueRational1.</td><td>depends on Rational.</td></tr>
-<tr><td></td><td></td><td></td><td>depends on SparsePlaceValueComplex1.</td><td>depends on Complex.</td></tr>
-<tr><td>SparseExponential1</td><td>Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
-<tr><td>SparseExponential</td><td>Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
+<tr><td></td><td></td><td></td><td>SparsePlaceValueComplex1</td><td>depends on Complex.</td></tr>
+<tr><td>SparseExponential1</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
+<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Complex Exponential</td><td>Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

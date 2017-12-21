@@ -1,12 +1,12 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    12/20/2017
 // SparsePlaceValueRational: a datatype for representing base agnostic arithmetic via sparse numbers whose digits are rational
 
 function sparseplacevaluerational(points) {
     if (arguments.length < 1) points = [];  //  2017.9
     if (!Array.isArray(points)) { var s = 'sparseplacevaluerational expects argument to be 2D array but found ' + typeof points + " : " + JSON.stringify(points); alert(s); throw new Error(s); }
-    if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevaluerational expects argument to be 2D array but found 1D array of " + typeof points[0]);
+    if (points.length > 0 && !Array.isArray(points[0])) { var s = "SparsePVrational expects arg to be 2D array not 1D array of " + typeof points[0]; alert(s); throw new Error(s); }    //  2017.12
     if (points.length > 0 && !(points[0][1] instanceof wholeplacevalue))
         { var s = "SparsePVRational expects exponent to be wholeplacevalue not " + typeof points[0][1] + " " + JSON.stringify(points[0][1]); alert(s); throw new Error(s); } //  2017.7
     points = normal(points);
@@ -49,14 +49,6 @@ function sparseplacevaluerational(points) {
                     i--;
                 } else i--;
             function arrayequal(a1, a2) {return a1.equals(a2);
-                //if (a1.length > a2.length) return arrayequal(a2, a1);
-                //for (var i = 0; i < a1.length; i++)
-                //    if (!a1[i].equals(a2[i])) return false;
-                //    //if (a1[i] != a2[i]) return false;
-                //for (var i = a1.length; i < a2.length; i++)
-                //    if (!a2[i].is0()) return false;
-                //    //if (a2[i] != 0) return false;
-                //return true;
             }
         }
     }
@@ -315,7 +307,8 @@ sparseplacevaluerational.prototype.eval = function (base) {
             var pows = point[1];
             if (pows.mantisa.length < maxlen) return point;
             var pow = pows.mantisa.slice(-1);
-            return [point[0].times(base.pow(new wholeplacevalue(pow))), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.7
+            //return [point[0].times(base.pow(new wholeplacevalue(pow))), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.7
+            return [point[0].times(base.pow(pow[0])), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.12
         }
     }
 }

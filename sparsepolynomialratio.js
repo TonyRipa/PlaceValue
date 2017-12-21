@@ -1,14 +1,14 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
-// SparsePolynomialRatio : a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
+// Date:    12/20/2017
+// SparsePolynomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio1 datatype
 
 function sparsepolynomialratio(arg, pv) {
-    if (arguments.length < 1) base = 1;                         //  2017.9
-    if (arguments.length < 2) pv = new sparseplacevalueratio(); //  2017.9
+    if (arguments.length < 1) base = 1;                             //  2017.9
+    if (arguments.length < 2) pv = new sparseplacevalueratio1();    //  2017.12
     console.log('sparsepolynomialratio : arguments.length=' + arguments.length);
     this.base = arg;
-    if (pv instanceof sparseplacevalueratio)  // 2017.6
+    if (pv instanceof sparseplacevalueratio1)  // 2017.6
         this.pv = pv;
     else if (typeof pv == 'number') {
         console.log("sparsepolynomialratio: typeof pv == 'number'");
@@ -16,7 +16,7 @@ function sparsepolynomialratio(arg, pv) {
         console.log(this.pv.toString());
     }
     else
-        { var s = 'SparsePolynomialRatio expects arg 2 to be sparseplacevalueratio not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+        { var s = 'SparsePolynomialRatio expects arg 2 to be sparseplacevalueratio1 not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
         //alert('sparsepolynomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
 }
 
@@ -24,28 +24,28 @@ sparsepolynomialratio.prototype.parse = function (strornode) {  //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }    //  2017.10
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, new sparseplacevalueratio1().parse(JSON.stringify(a.pv))) }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
         var base = node.name;
         var pv = '1e1'//10;
-        return new sparsepolynomialratio(base, new sparseplacevalueratio().parse(pv));
+        return new sparsepolynomialratio(base, new sparseplacevalueratio1().parse(pv));
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        var a = sparsepolynomialratio.parse(kids[0]);        // sparsepolynomialratio handles unpreprocessed kid    2015.11
+        var a = this.parse(kids[0]);        //  2017.12 this
         if (node.fn == 'unaryMinus') {
-            var c = new sparsepolynomialratio(1, sparseplacevalueratio.parse(0)).sub(a);
+            var c = new sparsepolynomialratio(1, sparseplacevalueratio1.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new sparsepolynomialratio(1, sparseplacevalueratio.parse(0)).add(a);
+            var c = new sparsepolynomialratio(1, sparseplacevalueratio1.parse(0)).add(a);
         } else {
-            var b = sparsepolynomialratio.parse(kids[1]);    // sparsepolynomialratio handles unpreprocessed kid    2015.11
+            var b = this.parse(kids[1]);    //  2017.12 this
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new sparsepolynomialratio(1, new sparseplacevalueratio().parse(node.value));
+        return new sparsepolynomialratio(1, new sparseplacevalueratio1().parse(node.value));
     }
 }
 
@@ -114,7 +114,7 @@ sparsepolynomialratio.prototype.pointdivide = function (other) {
 sparsepolynomialratio.prototype.align = function (other) {    // Consolidate alignment    2015.9
     if (this.pv.num.points.length == 1 && this.pv.num.points[0][1].is0()) this.base = other.base;
     if (other.pv.num.points.length == 1 && other.pv.num.points[0][1].is0()) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new sparsepolynomialratio(1, sparseplacevalueratio.parse('%')) }
+    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new sparsepolynomialratio(1, sparseplacevalueratio1.parse('%')) }
 }
 
 sparsepolynomialratio.prototype.pow = function (other) { // 2015.6
@@ -134,7 +134,6 @@ sparsepolynomialratio.toStringXbase = function (pv, base) {                     
     var str = x//.toString().replace('.', '');
     var maxbase = x.length - 1// + exp;
     for (var i = maxbase; i >= 0; i--) {
-        //var digit = Math.round(1000 * str[power].toreal()) / 1000;  // toreal  2016.8
         var digit = str[i][0];
         var power = str[i][1];
         if (!digit.is0()) {

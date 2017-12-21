@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    12/20/2017
 // SparsePlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValueRationals
 
 function sparseplacevalueratio(num, den) {
@@ -34,8 +34,8 @@ sparseplacevalueratio.prototype.parse = function (man) {    // 2017.9
         var num = new sparseplacevaluerational().parse(man);
         var den = new sparseplacevaluerational().parse(1);
     } else {
-        var num = sparseplacevaluerational.parse(man.substr(0, slashindex));
-        var den = sparseplacevaluerational.parse(man.substr(slashindex + 1));
+        var num = new sparseplacevaluerational().parse(man.substr(0, slashindex));  //  2017.12 new
+        var den = new sparseplacevaluerational().parse(man.substr(slashindex + 1)); //  2017.12 new
     }
     return new sparseplacevalueratio(num, den);
     //console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
@@ -87,14 +87,13 @@ sparseplacevalueratio.prototype.reduce = function () {    //  2016.5
     function pulloutcommonconstants(me) {
         if (me.num.is0() && me.den.is0()) return;
         if (me.num.is0()) { me.den = new sparseplacevaluerational().parse(1); return }
-        if (me.den.is0()) { me.num = sparseplacevaluerational.parse(1); return }
+        if (me.den.is0()) { me.num = new sparseplacevaluerational().parse(1); return }  //  2017.12 new
         var num = me.num;
         var den = me.den;
         var n = num.gcd();
         var d = den.gcd();
         var g = n.gcd(d);   // delegate to digits   2016.7
         //alert([JSON.stringify(me.num), n, JSON.stringify(me.den), d, g]);
-        //if (g != Math.round(g)) return;
         me.num = num.unscale(g);
         me.den = den.unscale(g);
     }
@@ -102,7 +101,7 @@ sparseplacevalueratio.prototype.reduce = function () {    //  2016.5
     function gcdpv(a, b, count) {
         if (arguments.length < 3) count = 0;
         count++;
-        if (count == 10) return sparseplacevaluerational.parse(1);  //  2017.7
+        if (count == 10) return new sparseplacevaluerational().parse(1);  //  2017.7
         //if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
         if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b, count); }
         if (a.is0()) { "alert(2)"; return b; }
@@ -195,15 +194,20 @@ sparseplacevalueratio.prototype.reciprocal = function () {
     this.den = temp;
 }
 
-sparseplacevalueratio.prototype.eval = function (base) {
-    if (base.num.is0()) return new sparseplacevalueratio(new sparseplacevaluerational([this.num.get(0)]), new sparseplacevaluerational([this.den.get(0)]));
-    var num = new sparseplacevalueratio(new sparseplacevaluerational().parse(0), new sparseplacevaluerational().parse(1));
-    for (var i = 0; i < this.num.points.length; i++) {
-        if (!this.num.get(i).is0()) num = num.add(base.pow(i).scale(this.num.get(i)));
-    }
-    var den = new sparseplacevalueratio(new sparseplacevaluerational().parse(0), new sparseplacevaluerational().parse(1));
-    for (var i = 0; i < this.den.points.length; i++) {
-        if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
-    }
-    return num.divide(den);
+sparseplacevalueratio.prototype.eval = function (base) {    //  2017.12
+    //if (base.num.is0()) return new sparseplacevalueratio(new sparseplacevaluerational([this.num.get(0)]), new sparseplacevaluerational([this.den.get(0)]));
+    //alert(JSON.stringify([this, base]));
+    var num = this.num.eval(base.num.divide(base.den));
+    //var num = new sparseplacevalueratio(new sparseplacevaluerational().parse(0), new sparseplacevaluerational().parse(1));
+    //for (var i = 0; i < this.num.points.length; i++) {
+    //    if (!this.num.points[i][0].is0()) num = num.add(base.pow(this.num.points[i][1]).scale(this.num.points[i][0]));
+    //}
+    var den = this.den.eval(base.num.divide(base.den));
+    //var den = new sparseplacevalueratio(new sparseplacevaluerational().parse(0), new sparseplacevaluerational().parse(1));
+    //for (var i = 0; i < this.den.points.length; i++) {
+    //    //if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
+    //    if (!this.den.points[i][0].is0()) den = den.add(base.pow(this.den.points[i][1]).scale(this.den.points[i][0]));
+    //}
+    return new sparseplacevalueratio(num, den);
+    //return num.divide(den);
 }

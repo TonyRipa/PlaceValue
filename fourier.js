@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    12/20/2017
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
 
 function fourier(base, pv) {
@@ -26,12 +26,10 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
         if (base == 'i') {
             return new fourier(1, new placevaluecomplex(new wholeplacevalue([new complex(0, 1)]), 0));
         } else {
-            alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
             console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
             console.log(node)
-            //me.base = base;
-            //me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
-            return new fourier(base, new placevaluecomplex(new wholeplacevalue(complex).parse(1), 1));
+            { var s = 'Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
+            //return new fourier(base, new placevaluecomplex(new wholeplacevalue(complex).parse(1), 1));
         }
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
@@ -49,7 +47,6 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c;
-        //me.base = c.base;
         //me.pv = c.pv;
     } else if (node.type == 'FunctionNode') {
         console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
@@ -70,7 +67,7 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
         if (fn == 'cis') var pv = expi;
         else if (fn == 'cos') var pv = expi.add(expi2).scale(new complex(.5));
         else if (fn == 'sin') var pv = expi.sub(expi2).scale(new complex(0, -.5));
-        else alert('Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');    //  Check   2015.12
+        else { var s = 'Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
         return new fourier(base, pv);
     } else {
         alert('othertype')
@@ -179,16 +176,16 @@ fourier.toStringXbase = function (pv, base) {                        // added na
         return fourier.toStringXbase(new placevaluecomplex(new wholeplacevalue(x), 0), base);    //  2017.5  [x] -> x
     }
     var ret = '';
-    var str = x//.toString().replace('.', '');
+    //var str = x//.toString().replace('.', '');
     var maxbase = x.length - 1 + exp;				// exp for negative powers	2015.8
-    for (var i = str.length - 1; i >= 0 ; i--) {        // power is index because whole is L2R  2015.7 
+    for (var i = x.length - 1; i >= 0 ; i--) {        // power is index because whole is L2R  2015.7 
         var power = i + exp;
         //var digit = Math.round(1000 * str[i]) / 1000;   // power is index because whole is L2R  2015.7 
-        var digit = str[i]
+        var digit = x[i]
         if (digit['r'] != 0 || digit['i'] != 0) {
             ret += '+';
-            //coef = coefficient(digit);
-            coef = new placevaluecomplex(new wholeplacevalue(complex).parse(digit), 0).toString(false, true);
+            //coef = new placevaluecomplex(new wholeplacevalue(complex).parse(digit), 0).toString(false, true);
+            coef = digit.toString(false, true).toString();  //  2017.12
             if (coef == 'NaN' || coef.indexOf('i') != -1) coef += '*';
             //alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
             exp1 = ''; if (power != 0) exp1 = power + base; if (power == 1) exp1 = base; if (power == -1) exp1 = '-' + base;

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    12/20/2017
 // SparseExponential1 : a datatype for representing sparse complex exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexponential1 extends abstractpolynomial {
@@ -37,15 +37,14 @@ class sparseexponential1 extends abstractpolynomial {
             { var s = 'Syntax Error: sparseexponential1 expects input like 1, exp(x), cosh(y), exp(z), sinh(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
             //var base = [node.name];
             //var pv = sparseplacevalue1.parse("1E1");  //new sparseplacevalue1([[0, 1]]);
-            //return new sparseexponential1(base, pv);
         } else if (node.type == 'OperatorNode') {
             console.log('new sparseexponential1 : OperatorNode')
             var kids = node.args;
             var a = this.parse(kids[0]);       // sparseexponential1 handles unpreprocessed kid   2015.11
             if (node.fn == 'unaryMinus') {
-                var c = new sparseexponential1([], sparseplacevalue1.parse(0)).sub(a);
+                var c = this.parse('0').sub(a);
             } else if (node.fn == 'unaryPlus') {
-                var c = new sparseexponential1([], sparseplacevalue1.parse(0)).add(a);
+                var c = this.parse('0').add(a);
             } else {
                 var b = this.parse(kids[1]);   // sparseexponential1 handles unpreprocessed kid   2015.11
                 var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
@@ -183,7 +182,8 @@ class sparseexponential1 extends abstractpolynomial {
                 if (power.is0())
                     ret += digit.toString(false, true);//.toreal();
                 else {
-                    ret += coef(digit.toreal()).toString();
+                    //ret += coef(digit.toreal()).toString();
+                    ret += coef(digit.toString(false, true)).toString();    //  2017.12
                     ret += 'exp(';
                     //for (var j = 0; j < power.length; j++) {
                     ret += coef(power.toString(false, true)) + base + '+';
@@ -198,7 +198,7 @@ class sparseexponential1 extends abstractpolynomial {
         if (ret == '') ret = '0';
         return ret;
         function coef(x) {
-            return x == 1 ? '' : x == -1 ? '-' : x;
+            return x == 1 ? '' : x == -1 ? '-' : x.toString().slice(-1) == 'i' ? x + '*' : x;   //  2017.12
         }
         function sup(x) {
             if (x == 1) return '';

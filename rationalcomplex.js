@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    12/20/2017
 // Complex: A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -39,41 +39,6 @@ rationalcomplex.parse = function (n) {
         }
     }
     { var s = 'RationalComplex.parse: no match: ' + JSON.stringify(N); alert(s); throw new Error(s); }
-    //alert(JSON.stringify([N, rationalcomplex.regexfull(), N.match(rationalcomplex.regexfull())]))
-    //var ret = 0;
-    //var numb = '';
-    //var imag = '';
-    //var inparen = false;
-    //var inimag = false;
-    //for (var i = 0; i < N.length; i++) {
-    //    var c = N[i];
-    //    if (c == '(') { inparen = true; continue; }
-    //    if (c == ',') { inimag = true; continue; }
-    //    if (c == ')') { ret = [Number(numb), Number(imag)]; numb = ''; imag = ''; inimag = false; inparen = false; continue; }
-    //    if (inparen) {
-    //        if (inimag) imag += c; else numb += c;
-    //    }
-    //    else {
-    //        //if (c == 'e' || c == 'E') break;    // Truncate    2015.9
-    //        if ("0123456789.".indexOf(c) > -1) ret += c;
-    //        var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for //precision 2015.6
-    //        if (frac[c]) ret = frac[c];
-    //        if (c == 'τ') ret = 6.28;
-    //        var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, /'㉘': /28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': /46, /'㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
-    //        if (num[c]) ret = num[c];
-    //        if (c == '∞') ret = Infinity;
-    //        if (c == '%') ret = NaN;
-    //        if (c == 'i') ret = [0, 1];     // 2015.12
-    //        if (c == 'I') ret = [0, 1];     // 2017.10
-    //        if (c == String.fromCharCode(777)) ret = [0, ret];
-    //        if (c == String.fromCharCode(822)) { if (Array.isArray(ret)) { ret[0] *= -1; ret[1] *= -1; } else ret *= -1; }
-    //        if (c == String.fromCharCode(8315)) ret = 1 / ret;
-    //    }
-    //}
-    //var digit = ret;
-    //if (Array.isArray(digit) && digit.length == 2) return new rationalcomplex(new rational().parse(digit[0]), new rational().parse(digit[1]));
-    //if (Array.isArray(digit)) return new rationalcomplex(Number(digit[0]));
-    //return new rationalcomplex(new rational().parse(digit));
 }
 
 rationalcomplex.regex = function () {   //  2017.10
@@ -110,6 +75,7 @@ rationalcomplex.prototype.todigit = function () {
 
 rationalcomplex.prototype.toString = function (sTag, long) {                        //  sTag    2015.11
     if (sTag) return this.digitpair('<s>', '</s>', true, long);
+    //if (long) return this.digitpair('-', '', true, long);
     return this.digitpair('', String.fromCharCode(822), false, long);
 }
 
@@ -129,12 +95,12 @@ rationalcomplex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) 
     if (real == 0) {
         if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
         //if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
-        if (long) return (b == 1 ? '' : b == -1 ? '-' : b) + 'i';   //  2017.11
+        if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b) + 'i';   //  2017.12
         return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
     }
     //return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
     if (long == 'medium') return '(' + a + ',' + b + ')';
-    if (long) return '(' + a + '+' + (b == 1 ? '' : b) + 'i)';
+    if (long) return '(' + a.toString(false, long) + (b == 1 ? '+' : b.negate().is1() ? '-' : '+' + b) + 'i)';   //  2017.12
     return '(' + a.toString(false, long).replace('(', '').replace(')', '') + ',' + b.toString(false, long) + ')';
 }
 
@@ -181,6 +147,7 @@ rationalcomplex.zero = new rationalcomplex();   //  2017.11 Default 0
 
 rationalcomplex.prototype.equals = function (other) { return (this.r.equals(other.r)) && (this.i.equals(other.i)); }
 rationalcomplex.prototype.isreal = function () { return this.i == 0; }                                                  //  2017.5
+rationalcomplex.prototype.isimag = function () { return this.r == 0; }                                                  //  2017.12
 rationalcomplex.prototype.is0 = function () { return this.equals(rationalcomplex.zero); }
 rationalcomplex.prototype.below = function (other) { return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }  //  2017.3
 rationalcomplex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
@@ -239,6 +206,13 @@ rationalcomplex.prototype.pointsub = rationalcomplex.prototype.sub;           //
 rationalcomplex.prototype.pointtimes = rationalcomplex.prototype.times;       //  2017.10
 rationalcomplex.prototype.pointdivide = rationalcomplex.prototype.divide;     //  2017.10
 rationalcomplex.prototype.pointpow = rationalcomplex.prototype.pow;           //  2017.10
+
+rationalcomplex.prototype.gcd = function (b) {  //  2017.12
+    var rgcd = this.r.gcd(b.r);
+    var igcd = this.i.gcd(b.i);
+    if (b.isimag()) return new rationalcomplex(new rational(), igcd);
+    return new rationalcomplex(rgcd.gcd(igcd));
+}
 
 rationalcomplex.prototype.eval = function (base) {  //  2017.10
     return this.clone();

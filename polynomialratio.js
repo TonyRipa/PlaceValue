@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    12/20/2017
 // PolynomialRatio: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function polynomialratio(arg, pv) {
@@ -40,7 +40,6 @@ polynomialratio.prototype.parse = function (strornode) {    //  2017.9
         } else if (node.fn == 'unaryPlus') {
             var c = new polynomialratio(1, placevalueratio.parse(0)).add(a);
         } else {
-            //var b = polynomialratio.parse(kids[1]);    // polynomialratio handles unpreprocessed kid    2015.11
             var b = this.parse(kids[1]);    // 2017.11  this
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
@@ -152,10 +151,11 @@ polynomialratio.toStringXbase = function (pv, base) {                        // 
     function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 }
 
-polynomialratio.prototype.eval = function (base) {
-    var sum = 0;
-    for (var i = 0; i < this.pv.mantisa.length; i++) {
-        sum += this.pv.get(i) * Math.pow(base, i);
-    }
-    return new polynomialratio(1, new wholeplacevalue([sum]));
+polynomialratio.prototype.eval = function (other) { //  2017.12
+    return new polynomialratio(1, this.pv.eval(other.pv));
+    //var sum = 0;
+    //for (var i = 0; i < this.pv.mantisa.length; i++) {
+    //    sum += this.pv.get(i) * Math.pow(base, i);
+    //}
+    //return new polynomialratio(1, new wholeplacevalue([sum]));
 }
