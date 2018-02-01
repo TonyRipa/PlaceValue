@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    1/31/2018
 // SparseMultinomial : a datatype for representing sparse multinomials; an application of the sparseplacevaluerational datatype
 
 class sparsemultinomial extends abstractpolynomial {
@@ -109,7 +109,9 @@ class sparsemultinomial extends abstractpolynomial {
         return ret;
         function sup(x) {
             if (x.is1()) return '';
-            return (!x.is1()) ? '^' + x.toString(false, true) : '';
+            var pow = x.toString(false, true).toString();
+            if (pow.indexOf('/') > -1) pow = '(' + pow + ')';   //  2018.1
+            return (!x.is1()) ? '^' + pow : '';
         }
     }
 

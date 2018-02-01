@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    1/31/2018
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -29,7 +29,6 @@ wholeplacevalue.prototype.parse = function (man) {  //  2017.9
     var mantisa = tokenize(man);
     for (var i = 0; i < mantisa.length; i++)
         mantisa[i] = new this.datatype().parse(mantisa[i]);
-    //alert(mantisa)
     if (mantisa.length == 0) return new wholeplacevalue(this.datatype); //  2017.12
     return new wholeplacevalue(mantisa);
     function tokenize(n) {  //  2016.6
@@ -143,7 +142,7 @@ wholeplacevalue.prototype.pow = function (power) { // 2015.6
     if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000
     if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.toString()); return this.parse('%') }
     if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return wholeplacevalue.parse('%') }
-    if (power.get(0).toreal() < 0) return wholeplacevalue.parse(0);
+    if (power.get(0).toreal() < 0) return this.parse(0);    //  2018.1  this.parse
     if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
     return this.times(this.pow(power.get(0).toreal() - 1));
 }

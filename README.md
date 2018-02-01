@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/20/2017
+Date : 1/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -208,7 +208,7 @@ SparseMultinomial2 then formats SparsePlaceValue2's result as 2x.
 
 SparsePlaceValueRational
 ------------------------
-<i>SparsePlaceValueRational.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValueRational can handle as arbitrary number of dimensions such as 1E2,3,4 .
+<i>SparsePlaceValueRational.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValueRational can handle an arbitrary number of dimensions such as 1E2,3,4 .
 
 SparseMultinomial
 ------------------------
@@ -498,7 +498,7 @@ Dependencies
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
-<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
