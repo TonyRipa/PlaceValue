@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    2/28/2018
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -64,7 +64,6 @@ class sparseplacevalue1 {
         if (arg instanceof Number) return new this.constructor(arg, 0);
         //alert('b4split ' + arg)
         var terms = split(arg);
-        //alert('a2split ' + terms)
         terms = terms.map(parseterm);
         //alert('terms.length = ' + terms.length)
         if (terms.length === 0) return new this.constructor(this.datatype); //  2017.11
@@ -257,7 +256,7 @@ class sparseplacevalue1 {
             list.push(this.points[i][0]);
         if (list.length == 0) return new this.datatype(1);
         if (list.length == 1) return list[0].is0() ? new this.datatype().parse(1) : list[0];    //  2017.12 parse   2016.5 Disallow 0 to be a GCD for expediency
-        return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype(0));
+        return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype());           //  2018.2 Removed 0
     }
 
     eval(base) {

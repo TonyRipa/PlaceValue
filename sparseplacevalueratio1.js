@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    2/28/2018
 // SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(arg) {
@@ -125,7 +125,6 @@ sparseplacevalueratio1.prototype.sub = function (subtrahend) {
 
 sparseplacevalueratio1.prototype.pointsub = function (other) {
     //var first = this.num.div10s(this.den.mantisa.length - 1);
-    //var second = other.num.div10s(other.den.mantisa.length - 1);
     var first = this.num.divide(this.den);
     var second = other.num.divide(other.den);
     return new sparseplacevalueratio1(first.pointsub(second), this.num.parse(1));
@@ -165,7 +164,7 @@ sparseplacevalueratio1.prototype.pointpow = function (other) {	// 2015.12
 
 sparseplacevalueratio1.prototype.pow = function (power) {	// 2015.8
     if (power instanceof this.num.datatype) power = new sparseplacevalue1([[power, new this.num.datatype().parse(0)]]);
-    if (!(power instanceof sparseplacevalue1)) power = new sparseplacevalue1().parse('' + power);   // 2017.9
+    //if (!(power instanceof sparseplacevalue1)) power = new sparseplacevalue1().parse('' + power);   // 2017.9     // 2018.2 Rem
     if (!(power instanceof sparseplacevalueratio1)) power = new sparseplacevalueratio1(power);                      // 2017.9
     //if (power == -1) throw new Error();
     //alert(JSON.stringify(power));

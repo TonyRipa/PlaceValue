@@ -1,13 +1,21 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    2/28/2018
 // PolynomialRatio: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 function polynomialratio(arg, pv) {
-    if (arguments.length < 1) base = 1;                     //  2017.9
-    if (arguments.length < 2) pv = new placevalueratio();   //  2017.9
+    var base, pv;
+    if (arguments.length == 0)[base, pv] = [1, new placevalueratio(rational)];                          //  2018.2
+    if (arguments.length == 1) {                                                                        //  2018.2
+        if (arg === rational || arg === rationalcomplex)[base, pv] = [1, new placevalueratio(arg)];     //  2018.2 rationalcomplex
+        else[base, pv] = [arg, new placevalueratio(rational)];
+    }
+    if (arguments.length == 2)[base, pv] = arguments;                                                   //  2018.2
+    //if (arguments.length < 1) base = 1;                     //  2017.9
+    //if (arguments.length < 2) pv = new placevalueratio();   //  2017.9
     console.log('polynomialratio : arguments.length=' + arguments.length);
-    this.base = arg;
+    //this.base = arg;
+    this.base = base;                                                                                   //  2018.2
     if (pv instanceof Object && JSON.stringify(pv).indexOf('mantisa') != -1)  // 2015.8
         this.pv = pv;
     else if (typeof pv == 'number') {
@@ -23,29 +31,42 @@ polynomialratio.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomialratio(a.base, new placevalueratio().parse(JSON.stringify(a.pv))) }    //  2017.10
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) {
+        var a = JSON.parse(strornode);
+        var ret = new polynomialratio(a.base, this.pv.parse(JSON.stringify(a.pv)));
+        if (!(this.pv.num.datatype == ret.pv.num.datatype)) { var s = "polynomialratio.parse's arg different digit datatype\n" + this.pv.num.datatype + '\n' + ret.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
+        return ret;
+    }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'SymbolNode') {
         console.log('SymbolNode')
-        var base = node.name;
-        var pv = 10;
-        return new polynomialratio(base, new placevalueratio().parse(pv));
+        //var base = node.name;
+        //var pv = 10;
+        if (node.name.match(this.pv.num.datatype.regexfull())) {    //  2018.2
+            var base = 1;
+            var pv = this.pv.parse(node.name);
+        } else {
+            var base = node.name;
+            var pv = this.pv.parse('10');
+        }
+        //return new polynomialratio(base, this.pv.parse(pv));
+        return new polynomialratio(base, pv);                       //  2018.2
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
         //var a = polynomialratio.parse(kids[0]);        // polynomialratio handles unpreprocessed kid    2015.11
         var a = this.parse(kids[0]);    // 2017.11  this
         if (node.fn == 'unaryMinus') {
-            var c = new polynomialratio(1, placevalueratio.parse(0)).sub(a);
+            var c = new polynomialratio(1, this.pv.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new polynomialratio(1, placevalueratio.parse(0)).add(a);
+            var c = new polynomialratio(1, this.pv.parse(0)).add(a);
         } else {
             var b = this.parse(kids[1]);    // 2017.11  this
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new polynomialratio(1, new placevalueratio(new wholeplacevalue().parse('(' + Number(node.value) + ')'), new wholeplacevalue().parse(1)));
+        return new polynomialratio(1, new placevalueratio(this.pv.num.parse('(' + Number(node.value) + ')'), this.pv.num.parse(1)));    //  2018.2
     }
 }
 
@@ -111,9 +132,10 @@ polynomialratio.prototype.pointdivide = function (other) {
 }
 
 polynomialratio.prototype.align = function (other) {    // Consolidate alignment    2015.9
+    if (!(this.pv.num.datatype == other.pv.num.datatype)) { var s = "PolynomialRatio.align's arg has different digit datatype\n" + this.pv.num.datatype + '\n' + other.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
     if (this.pv.num.mantisa.length == 1) this.base = other.base;
     if (other.pv.num.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomialratio(1, placevalueratio.parse('%')) }
+    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomialratio(1, this.pv.parse('%')) }
 }
 
 polynomialratio.prototype.pow = function (other) { // 2015.6
@@ -132,7 +154,8 @@ polynomialratio.toStringXbase = function (pv, base) {                        // 
     var str = x//.toString().replace('.', '');
     var maxbase = x.length - 1// + exp;
     for (var power = maxbase; power >= 0; power--) {                // power is index because whole is L2R  2015.7 
-        var digit = Math.round(1000 * str[power].toreal()) / 1000;  // toreal  2016.8
+        //var digit = Math.round(1000 * str[power].toreal()) / 1000;  // toreal  2016.8
+        var digit = str[power].toString(false, true);   //  2018.2
         if (digit != 0) {
             ret += '+';
             if (power == 0)

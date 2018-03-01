@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    1/31/2018
+// Date:    2/28/2018
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -25,7 +25,11 @@ function wholeplacevalue(arg) {
 }
 
 wholeplacevalue.prototype.parse = function (man) {  //  2017.9
-    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('mantisa') != -1) return new wholeplacevalue(JSON.parse(man).mantisa.map(x=>new this.datatype().parse(JSON.stringify(x))))
+    if (man instanceof String || typeof (man) == 'string') if (man.indexOf('mantisa') != -1) {
+        var ret = new wholeplacevalue(JSON.parse(man).mantisa.map(x=>new this.datatype().parse(JSON.stringify(x))));
+        if (!(this.datatype == ret.datatype)) { var s = "wholeplacevalue.parse's arg different digit datatype\n" + this.datatype + '\n' + ret.datatype; alert(s); throw new Error(s); } //  2018.2
+        return ret;
+    }
     var mantisa = tokenize(man);
     for (var i = 0; i < mantisa.length; i++)
         mantisa[i] = new this.datatype().parse(mantisa[i]);
@@ -96,7 +100,6 @@ wholeplacevalue.prototype.is1 = function () { return this.equals(this.parse(1));
 wholeplacevalue.prototype.above = function (other) { return this.get(0).above(other.get(0)) }   //  2017.7
 wholeplacevalue.prototype.isneg = function () { return new wholeplacevalue().above(this) }      //  2017.7
 
-//wholeplacevalue.zero = new wholeplacevalue([new this.datatype().parse(0)]);    //  2017.9
 //wholeplacevalue.one = new wholeplacevalue([new this.datatype().parse(1)]);     //  2017.9
 
 wholeplacevalue.prototype.add = function (other) { return this.f(function (x, y) { return x.add(y) }, other); }
@@ -159,6 +162,8 @@ wholeplacevalue.prototype.div10s = function (s) { me = this.clone(); while (s-- 
 wholeplacevalue.prototype.times10s = function (s) { if (s < 0) return this.div10s(-s); me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me; }  // 2017.6
 
 wholeplacevalue.prototype.times = function (top) {
+    if (!(top instanceof wholeplacevalue)) { var s = 'wholeplacevalue.times expects arg to be a wholeplacevalue but found ' + typeof top + ' ' + JSON.stringify(top); alert(s); throw new Error(s); }   //  2018.2
+    if (!(this.datatype == top.datatype)) { var s = 'wholePV.times arg (wholeplacevalue) different digit datatype\n' + this.datatype + '\n' + top.datatype; alert(s); throw new Error(s); }             //  2018.2
     //if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);
     var prod = new wholeplacevalue(this.datatype);
     for (var b = 0; b < this.mantisa.length; b++) {

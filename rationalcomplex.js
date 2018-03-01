@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    1/31/2018
+// Date:    2/28/2018
 // Complex: A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -43,7 +43,6 @@ rationalcomplex.parse = function (n) {
 }
 
 rationalcomplex.regex = function () {   //  2017.10
-    //alert(rational.regex())
     //return rational.regex();
     var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';
     //var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
@@ -154,7 +153,9 @@ rationalcomplex.prototype.above = function (other) { return this.r != other.r ? 
 rationalcomplex.prototype.below0 = function () { return this.below(rationalcomplex.zero); }                             //  2017.3
 rationalcomplex.prototype.above0 = function () { return this.above(rationalcomplex.zero); }                             //  2017.3
 rationalcomplex.prototype.isneg = rationalcomplex.prototype.below0                                                      //  2017.10
+rationalcomplex.prototype.ispos = rationalcomplex.prototype.above0                                                      //  2018.2
 rationalcomplex.prototype.isint = function () { return this.isreal() && this.r.isint(); }                               //  2017.10
+rationalcomplex.prototype.abs = function () { return new rationalcomplex(this.r.abs(), this.i.abs()) }                  //  2018.2
 
 rationalcomplex.prototype.add = function (other) { return new rationalcomplex(this.r.add(other.r), this.i.add(other.i)); }
 rationalcomplex.prototype.sub = function (other) { return new rationalcomplex(this.r.sub(other.r), this.i.sub(other.i)); }
