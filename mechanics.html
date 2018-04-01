@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    11/30/2017
+   Date:    3/31/2018
    Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
 -->
 
@@ -28,7 +28,6 @@
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='laplace.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
-    <script type="text/javascript" src='polynomial.js'></script>
     <script src='wholeplacevalue2.js'></script>
     <script src='multinomial.js'></script>
     <script src='placevalue2.js'></script>
@@ -122,7 +121,6 @@
             var dy = px.sub(xp);
             var d = dy.divide(c);
             //alert(JSON.stringify(d));
-            //alert(JSON.stringify(c));
             output(a, b, c, y, p, x, xp, px, dy, d);
 	        function getinput(elem) { return new f().parse($(elem).attr('data-val') || $(elem).val()); }
             function output(a, b, c, y, p, x, xp, px, dy, d) {

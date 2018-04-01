@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 2/28/2018
+Date : 3/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -80,7 +80,7 @@ PlaceValueRatio
 
 SparsePlaceValueRatio1
 ------------------
-<i>SparsePlaceValueRatio1</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRational1s. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio1 would handle that as 1 / 1E1+1. SparsePlaceValueRatio1 can handle more exotic ratios such as 1 / 1E½+1 .
+<i>SparsePlaceValueRatio1</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValue1s. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio1 would handle that as 1 / 1E1+1. SparsePlaceValueRatio1 can handle more exotic ratios such as 1 / 1E½+1 .
 
 Polynomial
 -------------
@@ -90,25 +90,21 @@ The PlaceValue data-type is particularly well-suited to polynomial arithmetic. P
 
 <i>polynomial.html</i> is a demo for polynomial.js.
 
-SparsePolynomialRational
+SparsePolynomial
 ------------------------
-<i>SparsePolynomialRational</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValueRational1 datatype.
+<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue1 datatype.
 
-If SparsePolynomialRational wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValueRational1 to calculate:
+If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E100 + 1) ^ 2 = 1E200 + 2E100 + 1
 
-SparsePolynomialRational then formats SparsePlaceValueRational1's result as x^200 + 2x^100 + 1.
+SparsePolynomial then formats SparsePlaceValue1's result as x^200 + 2x^100 + 1.
 
-If SparsePolynomialRational wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValueRational1 to calculate:
+If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
-SparsePolynomialRational then formats SparsePlaceValueRational1's result as x + 2x^.5 + 1.
-
-SparsePolynomial
-------------------------
-<i>SparsePolynomial</i> is a version of SparsePolynomialRational that is based on SparsePlaceValue1 instead of SparsePlaceValueRational1. SparsePolynomial can handle Rational, Complex, or RationalComplex digits.
+SparsePolynomial then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
 
 Polynomial Ratio
 -------------
@@ -486,10 +482,10 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 Dependencies
 ---------------
 <table>
-<tr><td>Sparse Polynomial Rational</td><td></td><td></td><td>depends on SparsePlaceValueRational1.</td><td>depends on Rational.</td></tr>
+<tr><td></td><td></td><td></td><td>depends on SparsePlaceValueRational1.</td><td>depends on Rational.</td></tr>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>

@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    2/28/2018
+// Date:    3/31/2018
 // Complex: A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -148,6 +148,8 @@ rationalcomplex.prototype.equals = function (other) { return (this.r.equals(othe
 rationalcomplex.prototype.isreal = function () { return this.i == 0; }                                                  //  2017.5
 rationalcomplex.prototype.isimag = function () { return this.r == 0; }                                                  //  2017.12
 rationalcomplex.prototype.is0 = function () { return this.equals(rationalcomplex.zero); }
+rationalcomplex.prototype.is1 = function () { return this.r.is1() && this.i.is0(); }                                    //  2018.3
+rationalcomplex.prototype.isNaN = function () { return this.r.isNaN() || this.i.isNaN(); }                              //  2018.3
 rationalcomplex.prototype.below = function (other) { return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }  //  2017.3
 rationalcomplex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
 rationalcomplex.prototype.below0 = function () { return this.below(rationalcomplex.zero); }                             //  2017.3
@@ -193,11 +195,6 @@ rationalcomplex.prototype.pow = function (p) {
         else if (b.i.is0()) var ret = p.times(b.ln()).exp(); //  2017.3
         else var ret = new c(b.norm().pow(p.r).times((p.i.negate().times(b.arg())).exp())).times(new c(new rational, p.r.times(b.arg()).add(p.i.times(b.lnn().r).scale(.5))).exp());
         return ret.round();
-    //} catch (e) {
-    //    alert(e);
-    //    console.trace();
-    //    end;
-    //}
 }
 
 rationalcomplex.prototype.divideleft = rationalcomplex.prototype.divide;      //  2017.10

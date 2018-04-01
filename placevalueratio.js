@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2018
+// Date:    3/31/2018
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 function placevalueratio(arg) {
@@ -11,8 +11,6 @@ function placevalueratio(arg) {
         else[num, den] = [arg, new wholeplacevalue(arg.datatype)];
     }
     if (arguments.length == 2)[num, den] = arguments;
-    //if (arguments.length < 1) num = new wholeplacevalue();          //  2017.9
-    //if (arguments.length < 2) den = new wholeplacevalue().parse(1); //  2017.9
     if (!(num instanceof wholeplacevalue)) { var s = 'placevalueratio expects arg 1 to be a wholeplacevalue but found ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
     if (!(den instanceof wholeplacevalue)) { var s = 'placevalueratio expects arg 2 to be a wholeplacevalue but found ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
     this.num = num;
@@ -73,8 +71,14 @@ placevalueratio.prototype.toString = function (sTag) {      //  sTag    2015.11
 placevalueratio.prototype.reduce = function () {            //  2016.5
 
     //euclid(this);
+    if (this.isNaN()) fixnan(this);                         //  2018.3
     circumfixEuclid(this);
     pulloutcommonconstants(this);
+
+    function fixnan(me) {                                   //  2018.3
+        me.num = me.num.parse(0);
+        me.den = me.den.parse(0);
+    }
 
     function circumfixEuclid(me) {
         var n = me.num.gcd();
@@ -119,6 +123,8 @@ placevalueratio.prototype.reduce = function () {            //  2016.5
         return gcdpv(b.remainder(a), a);
     }
 }
+
+placevalueratio.prototype.isNaN = function () { return this.num.isNaN() || this.den.isNaN(); }  //  2018.3
 
 placevalueratio.prototype.add = function (addend) {
     if (!(this.num.datatype == addend.num.datatype)) { var s = "placevalueratio.add's arg (placevalueratio) different digit datatype\n" + this.num.datatype + '\n' + addend.num.datatype; alert(s); throw new Error(s); } //  2018.2

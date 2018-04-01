@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    11/30/2017
+   Date:    3/31/2018
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -28,7 +28,6 @@
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
-    <script type="text/javascript" src='polynomial.js'></script>
     <script src='wholeplacevalue2.js'></script>
     <script src='multinomial.js'></script>
     <script src='placevalue2.js'></script>
@@ -72,8 +71,8 @@
             if (f == fourier) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (Array.isArray(n) ? (n[0] != 0 || n[1] != 0) : (n != 0)) nums.push(i); }
             if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
             var s = '';
-            for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {
-                if (i == 0) continue;
+            for (var i = Math.max(0, nums[0]) ; i > Math.min(0, nums.slice(-1)[0]) ; i--) {    //  2018.3  >= -> >
+                //if (i == 0) continue; //  2018.3  Removed
                 var n = (i == 1) ? '' : (i == -1) ? '-' : i;
                 s += '+' + n + 'exp(' + n + '@)';
             }

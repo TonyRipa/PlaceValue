@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2018
+// Date:    3/31/2018
 // SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(arg) {
@@ -11,14 +11,12 @@ function sparseplacevalueratio1(arg) {
         else[num, den] = [arg, new sparseplacevalue1(arg.datatype)];
     }
     if (arguments.length == 2)[num, den] = arguments;
-    //if (arguments.length < 1) num = new sparseplacevalue1();          //  2017.9
-    //if (arguments.length < 2) den = new sparseplacevalue1().parse(1); //  2017.9
     if (!(num instanceof sparseplacevalue1)) { var s = 'SparsePVRatio1 expects arg1 to be SparsePlaceValue1 not ' + typeof num + " : " + JSON.stringify(num); alert(s); throw new Error(s); }
     if (!(den instanceof sparseplacevalue1)) { var s = 'SparsePVRatio1 expects arg2 to be SparsePlaceValue1 not ' + typeof den + " : " + JSON.stringify(den); alert(s); throw new Error(s); }
     this.num = num;
     this.den = den;
     this.reduce();
-    console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(num)=" + Array.isArray(num));
+    console.log('this.num = ' + JSON.stringify(this.num) + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(num)=" + Array.isArray(num));
 }
 
 sparseplacevalueratio1.prototype.parse = function (man) {   // 2017.9
@@ -64,11 +62,17 @@ sparseplacevalueratio1.prototype.toString = function (sTag) {       //  sTag    
     return this.den.toString() === '1' ? this.num.toString() : this.num.toString() + ' / ' + this.den.toString();
 }
 
-sparseplacevalueratio1.prototype.reduce = function () {    //  2016.5
+sparseplacevalueratio1.prototype.reduce = function () {     //  2016.5
 
     //euclid(this);
+    if (this.isNaN()) fixnan(this);                         //  2018.3
     circumfixEuclid(this);
     pulloutcommonconstants(this);
+
+    function fixnan(me) {                                   //  2018.3
+        me.num = me.num.parse(0);
+        me.den = me.den.parse(0);
+    }
 
     function circumfixEuclid(me) {
         var n = me.num.gcd();
@@ -92,7 +96,7 @@ sparseplacevalueratio1.prototype.reduce = function () {    //  2016.5
     function pulloutcommonconstants(me) {
         if (me.num.is0() && me.den.is0()) return;
         if (me.num.is0()) { me.den = me.num.parse(1); return }  //  2017.12 num.parse
-        if (me.den.is0()) { me.num = new sparseplacevalue1().parse(1); return }
+        if (me.den.is0()) { me.num = me.num.parse(1); return }
         var num = me.num//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
         var den = me.den//.scale(2 * 3 * 4 * 5 * 6 * 7 * 8 * 9 * 10).round();   // Large Composite
         var n = num.gcd();
@@ -114,6 +118,8 @@ sparseplacevalueratio1.prototype.reduce = function () {    //  2016.5
         "alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a);
     }
 }
+
+sparseplacevalueratio1.prototype.isNaN = function () { return this.num.isNaN() || this.den.isNaN(); }   //  2018.3
 
 sparseplacevalueratio1.prototype.add = function (addend) {
     return new sparseplacevalueratio1(this.num.times(addend.den).add(addend.num.times(this.den)), this.den.times(addend.den));

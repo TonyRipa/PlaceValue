@@ -1,10 +1,9 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    11/30/2017
+// Date:    3/31/2018
 // Rational: A data-type for representing Rational Numbers
 
 function rational(num, den) {   //  2016.7
-    //if (arguments.length < 1) alert('Rational expects 1 or 2 arguments');
     if (arguments.length < 1) num = 0;  //  2017.9
     if (arguments.length < 2) den = 1;
     if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
@@ -189,6 +188,7 @@ rational.prototype.digithelp = function (digit, NEGBEG, NEGEND, long) { //  2017
 rational.prototype.equals = function (other) { return (this.n == other.n) && (this.d == other.d); }
 rational.prototype.is0 = function () { return (this.n == 0) && (this.d != 0) }
 rational.prototype.is1 = function () { return (this.n == 1) && (this.d == 1) }  //  2017.6
+rational.prototype.isNaN = function () { return (this.n == 0) && (this.d == 0) }//  2018.3
 rational.prototype.isint = function () { return this.n % this.d == 0; }         //  2017.6
 rational.prototype.ispos = function () { return math.sign(this.n) * math.sign(this.d) > 0 }
 rational.prototype.isneg = function () { return math.sign(this.n) * math.sign(this.d) < 0 }

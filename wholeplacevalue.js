@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2018
+// Date:    3/31/2018
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -21,7 +21,7 @@ function wholeplacevalue(arg) {
     while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
         this.mantisa.pop();                             //  pop root
     if (this.mantisa.length == 0) this.mantisa = [new this.datatype().parse(0)];
-    console.log('wpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
+    //console.log('wpv : this.man = ' + JSON.stringify(this.mantisa) + ', arguments.length = ' + arguments.length);
 }
 
 wholeplacevalue.prototype.parse = function (man) {  //  2017.9
@@ -90,12 +90,12 @@ wholeplacevalue.prototype.equals = function (other) {
     var ret = true
     for (var i = 0; i < Math.max(this.mantisa.length, other.mantisa.length) ; i++)
         ret = ret && this.get(i).equals(other.get(i))   //  2017.11 delegate =
-        //ret = ret && this.get(i).toreal() == other.get(i).toreal();     //  toreal  2016.7
     return ret;
 }
 
-wholeplacevalue.prototype.is0 = function () { return this.equals(this.parse(0)); }  //  2016.5
-wholeplacevalue.prototype.is1 = function () { return this.equals(this.parse(1)); }  //  2016.5
+wholeplacevalue.prototype.is0 = function () { return this.equals(this.parse(0)); }      //  2016.5
+wholeplacevalue.prototype.is1 = function () { return this.equals(this.parse(1)); }      //  2016.5
+wholeplacevalue.prototype.isNaN = function () { return this.equals(this.parse('%')); }  //  2018.3
 
 wholeplacevalue.prototype.above = function (other) { return this.get(0).above(other.get(0)) }   //  2017.7
 wholeplacevalue.prototype.isneg = function () { return new wholeplacevalue().above(this) }      //  2017.7
@@ -170,7 +170,7 @@ wholeplacevalue.prototype.times = function (top) {
         var sum = [];
         for (var t = 0; t < top.mantisa.length; t++) {
             sum.push(this.get(b).is0() || top.get(t).is0() ? new this.datatype() : this.get(b).times(top.get(t))); // Check 0 so ∞*10=∞0 not ∞% 2015.6   // get() 2015.7
-            console.log('this.mantisa=' + this.mantisa + ' , top.mantisa=' + top.mantisa + ' , this.get(b) = ' + this.get(b) + ' , top.get(t) = ' + top.get(t) + ' , sum = ' + sum);
+            //console.log('this.mantisa=' + this.mantisa + ' , top.mantisa=' + top.mantisa + ' , this.get(b) = ' + this.get(b) + ' , top.get(t) = ' + top.get(t) + ' , sum = ' + sum);
         }
         for (var i = 0; i < b; i++) sum.unshift(new this.datatype()); // change push to unshift because L2R   2015.7
         prod = prod.add(new wholeplacevalue(sum));
