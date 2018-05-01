@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2018
+// Date:    4/30/2018
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio1 datatype
 
 function sparsepolynomialratio(arg, pv) {
@@ -78,7 +78,6 @@ sparsepolynomialratio.prototype.toString = function () {
     return num + '/' + den;
     function count(array) {
         return array.length;
-        //return array.reduce(function (prev, curr) { return prev + Math.abs(Math.sign(curr)) }, 0);
     }
 }
 
@@ -105,6 +104,11 @@ sparsepolynomialratio.prototype.divide = function (other) {
 sparsepolynomialratio.prototype.divideleft = function (other) {   //  2016.8
     this.align(other);
     return new sparsepolynomialratio(this.base, this.pv.divideleft(other.pv));
+}
+
+sparsepolynomialratio.prototype.dividemiddle = function (other) {   //  2018.4
+    this.align(other);
+    return new sparsepolynomialratio(this.base, this.pv.dividemiddle(other.pv));
 }
 
 sparsepolynomialratio.prototype.pointadd = function (other) {
@@ -137,37 +141,38 @@ sparsepolynomialratio.prototype.pow = function (other) { // 2015.6
     return new sparsepolynomialratio(this.base, this.pv.pow(other.pv));
 }
 
-sparsepolynomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
+sparsepolynomialratio.toStringXbase = function (pv, base) {     // added namespace  2015.7
+    return new sparsepolynomial1(base, pv);                     //  2018.4  outsource
     //alert(JSON.stringify([pv, base]));
-    console.log('sparsepolynomialratio: pv = ' + pv);
-    var x = pv.points;
-    console.log('sparsepolynomialratio.toStringXbase: x=' + x);
-    if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
-        x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return sparsepolynomialratio.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
-    }
-    var ret = '';
-    var str = x//.toString().replace('.', '');
-    var maxbase = x.length - 1// + exp;
-    for (var i = maxbase; i >= 0; i--) {
-        var digit = str[i][0];
-        var power = str[i][1];
-        if (!digit.is0()) {
-            ret += '+';
-            if (power.is0())
-                ret += digit;
-            else if (power.is1())
-                ret += coefficient(digit) + base;
-            else
-                ret += coefficient(digit) + base + '^' + power;
-        }
-        console.log('sparsepolynomialratio.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
-    }
-    ret = ret.replace(/\+\-/g, '-');
-    if (ret[0] == '+') ret = ret.substring(1);
-    if (ret == '') ret = '0';
-    return ret;
-    function coefficient(digit) { return (digit.is1() ? '' : digit.negate().is1() ? '-' : digit).toString(false, true) + (isFinite(digit.toreal()) ? '' : '*') }    //  2017.8
+    //console.log('sparsepolynomialratio: pv = ' + pv);
+    //var x = pv.points;
+    //console.log('sparsepolynomialratio.toStringXbase: x=' + x);
+    //if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
+    //    x.pop();                                    // Replace shift with pop because L2R 2015.7
+    //    return sparsepolynomialratio.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
+    //}
+    //var ret = '';
+    //var str = x//.toString().replace('.', '');
+    //var maxbase = x.length - 1// + exp;
+    //for (var i = maxbase; i >= 0; i--) {
+    //    var digit = str[i][0];
+    //    var power = str[i][1];
+    //    if (!digit.is0()) {
+    //        ret += '+';
+    //        if (power.is0())
+    //            ret += digit;
+    //        else if (power.is1())
+    //            ret += coefficient(digit) + base;
+    //        else
+    //            ret += coefficient(digit) + base + '^' + power;
+    //    }
+    //    console.log('sparsepolynomialratio.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
+    //}
+    //ret = ret.replace(/\+\-/g, '-');
+    //if (ret[0] == '+') ret = ret.substring(1);
+    //if (ret == '') ret = '0';
+    //return ret;
+    //function coefficient(digit) { return (digit.is1() ? '' : digit.negate().is1() ? '-' : digit).toString(false, true) + (isFinite(digit.toreal()) ? '' : '*') }    //  2017.8
 }
 
 sparsepolynomialratio.prototype.eval = function (other) {

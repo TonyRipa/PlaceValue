@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2018
+Date : 4/30/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -62,17 +62,13 @@ Complex
 -----------
 <i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
 
-SparsePlaceValueRational1
+SparsePlaceValue1
 ------------------------
-<i>SparsePlaceValueRational1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValueRational1 stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
+<i>SparsePlaceValue1</i> is a 1D data-type optimized for sparse PlaceValues. Consider 1e9 + 2e-9. We could store this like 1000000000.000000002. SparsePlaceValue1 stores it like this [[1,9],[2,-9]]. The storage gains are apparent. There are also computational gains. Furthermore, a seemingly serendipitous gain is the ability to store numbers like 1e9.5 + 2e-9. This comes in especially handy when dealing with radicals and other similar expressions.
 
 RationalComplex
 ---------------
 <i>rationalcomplex.js</i> is a datatype for representing complex numbers. It represents complex numbers as pairs of rational. It has all of the capabilities of complex.js, without the round-off errors.
-
-SparsePlaceValue1
-------------------------
-<i>SparsePlaceValue1</i> is a version of SparsePlaceValueRational1 that handles Rational, Complex, or RationalComplex digits.
 
 PlaceValueRatio
 ------------------
@@ -90,21 +86,21 @@ The PlaceValue data-type is particularly well-suited to polynomial arithmetic. P
 
 <i>polynomial.html</i> is a demo for polynomial.js.
 
-SparsePolynomial
+SparsePolynomial1
 ------------------------
-<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue1 datatype.
+<i>SparsePolynomial1</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue1 datatype.
 
-If SparsePolynomial wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue1 to calculate:
+If SparsePolynomial1 wants to calculate (x^100 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E100 + 1) ^ 2 = 1E200 + 2E100 + 1
 
-SparsePolynomial then formats SparsePlaceValue1's result as x^200 + 2x^100 + 1.
+SparsePolynomial1 then formats SparsePlaceValue1's result as x^200 + 2x^100 + 1.
 
-If SparsePolynomial wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue1 to calculate:
+If SparsePolynomial1 wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceValue1 to calculate:
 
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
-SparsePolynomial then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
+SparsePolynomial1 then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
 
 Polynomial Ratio
 -------------
@@ -143,7 +139,7 @@ WholePlaceValue2
 </pre>
 Multinomial then formats WholePlaceValue2's result as x+y.
 
-If Multinomial wants to calculate (x+y)^2, then it asks WholePlaceValue to calculate:
+If Multinomial wants to calculate (x+y)^2, then it asks WholePlaceValue2 to calculate:
 <pre>
             1
  1    1    20
@@ -482,8 +478,7 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 Dependencies
 ---------------
 <table>
-<tr><td></td><td></td><td></td><td>depends on SparsePlaceValueRational1.</td><td>depends on Rational.</td></tr>
-<tr><td>SparseExponential1</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
+<tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>

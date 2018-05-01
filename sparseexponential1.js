@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    4/30/2018
 // SparseExponential1 : a datatype for representing sparse complex exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexponential1 extends abstractpolynomial {
@@ -62,7 +62,7 @@ class sparseexponential1 extends abstractpolynomial {
             if (!ior1) { var s = 'Syntax Error: sparseexponential1 expects input like 1, exp(x), cos(x), sinh(x), cis(2x), or 1+sin(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
             var kids = node.args;
             ///var kidaspoly = complexlaurent.parse(kids[0])
-            var kidaspoly = new sparsepolynomial(this.pv.datatype).parse(kids[0])
+            var kidaspoly = new sparsepolynomial1(this.pv.datatype).parse(kids[0])  //  2018.4
             var base = kidaspoly.base;
             //var ten = new sparseplacevalue1().parse('1E1');   // exp is 2D    2016.1
             ///var iten = sparseplacevalue1.parse('1Ei');   // exp is 2D    2016.1
@@ -86,9 +86,6 @@ class sparseexponential1 extends abstractpolynomial {
             if (fn == 'sinh' | fn == 'sin') var pv = exp.sub(exp2).unscale(2);
             if (fn == 'sin') var pv = pv.unscale('i');
             return new sparseexponential1(base, pv);
-        //} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
-        //    alert('Syntax Error: sparseexponential1 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
-        //    return sparseexponential1.parse(node.args[0]);
         }
     }
 

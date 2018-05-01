@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    1/31/2018
+// Date:    4/30/2018
 // Polynomial: a datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial extends abstractpolynomial {
@@ -37,7 +37,10 @@ class polynomial extends abstractpolynomial {
         console.log(strornode)
         console.log('</strornode>')
         if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial(a.base, this.pv.parse(JSON.stringify(a.pv))) } //  2017.10
-        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+        var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2018.4
+        console.log('<node>')
+        console.log(node)
+        console.log('</node>')
         if (node.type == 'SymbolNode') {
             console.log('SymbolNode')
             //var base = node.name;
@@ -64,6 +67,7 @@ class polynomial extends abstractpolynomial {
             }
             return c
         } else if (node.type == 'ConstantNode') {
+            console.log('ConstantNode: ' + node.value)
             return new polynomial(1, this.pv.parse('(' + Number(node.value) + ')'));    //  2018.1 this.pv
         }
     }
@@ -86,7 +90,6 @@ class polynomial extends abstractpolynomial {
     //polynomial.prototype.pointsub = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointsub(other.pv)); }
     //polynomial.prototype.pointtimes = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointtimes(other.pv)); }
     //polynomial.prototype.pointdivide = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointdivide(other.pv)); }
-    //polynomial.prototype.pointpow = function (other) { this.align(other); return new polynomial(this.base, this.pv.pointpow(other.pv)); }
 
     align(other) {    // Consolidate alignment    2015.9
         if (this.pv.mantisa.length == 1) this.base = other.base;

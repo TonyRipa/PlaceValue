@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2017
+// Date:    4/30/2018
 // ExponentialRatio : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
 
 class exponentialratio extends abstractpolynomial {
@@ -54,7 +54,7 @@ class exponentialratio extends abstractpolynomial {
             var fn = node.name;
             var kids = node.args;
             //var kidaspoly = complexlaurent.parse(kids[0])
-            var kidaspoly = new sparsepolynomial().parse(kids[0])   //  2017.10
+            var kidaspoly = new sparsepolynomial1().parse(kids[0])  //  2018.4
             var base = kidaspoly.base;
             var ten = new sparseplacevalue1().parse('1E1');   // exp is 2D    2016.1
             //var iten = sparseplacevalue1.parse('1Ei');   // exp is 2D    2016.1
@@ -92,40 +92,6 @@ class exponentialratio extends abstractpolynomial {
         if (other.pv.num.points.length == 1 && other.pv.num.points[0][1].is0()) other.base = this.base;
         if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new sparsepolynomialratio(1, sparseplacevalueratio.parse('%')) }
     }
-
-    //align(other) {  // 2017.2
-    //    var base1 = this.base.slice();
-    //    var base2 = other.base.slice();
-    //    var base = [...new Set([...base1, ...base2])];
-    //    //base.sort().reverse();
-    //    //if (base[0] == 1) base.shift();
-    //    alignmulti2base(this, base);
-    //    alignmulti2base(other, base);
-    //    this.pv = new sparseplacevalueratio1(this.pv.points);     //  2017.2  Clean this's zeros
-    //    function alignmulti2base(multi, basenew) {
-    //        for (var i = 0; i < multi.pv.points.length; i++)
-    //            alignmultidigit2base(multi, i, basenew);
-    //        function alignmultidigit2base(multi, index, basenew) {
-    //            var digitpowernew = [];
-    //            var baseold = multi.base;
-    //            var digitold = multi.pv.points[index]
-    //            var digitpowerold = digitold[1];
-    //            for (var i = 0; i < basenew.length; i++) {
-    //                var letter = basenew[i];
-    //                var posinold = baseold.indexOf(letter);
-    //                if (posinold == -1) { digitpowernew.push(complex.parse(0)); }
-    //                else {  //  2017.4  manually check if defined
-    //                    //var temp = digitpowerold[posinold] | complex.parse(0);
-    //                    if (typeof digitpowerold[posinold] === 'undefined') digitpowernew.push(complex.parse(0));
-    //                    else digitpowernew.push(digitpowerold[posinold]);
-    //                }
-    //            }
-    //            if (digitpowernew.length != basenew.length) { alert('exponentialratio: alignment error'); throw new Error('exponentialratio: alignment error'); }
-    //            multi.pv.points[index][1] = digitpowernew;
-    //        }
-    //        multi.base = basenew;
-    //    }
-    //}
 
     toString() {
         if (this.pv.den.is1()) return new sparseexponential1(this.base, this.pv.num).toString();

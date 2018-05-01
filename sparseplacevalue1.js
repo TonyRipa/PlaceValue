@@ -1,22 +1,23 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2018
+// Date:    4/30/2018
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
 
     constructor(arg) {
         var points, datatype;
-        if (arguments.length < 1)[points, datatype] = [[], rational];                                       //  2017.10
-        if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.10
-        if (Array.isArray(arg)) {                                                                           //  2017.10
-            points = arg;
-            if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
-            if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
-            //if (points.length > 0 && !(points[0][0] instanceof complex)) { var s = "SparsePV expects coef. is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
-            //if (points.length > 0 && !(points[0][1] instanceof complex)) { var s = "SparsePV expects power is complex but found " + typeof points[0][0]; alert(s); throw new Error(s); } //  2017.6
-            datatype = (points.length > 0) ? points[0][0].constructor : rational;
+        if (arguments.length == 0)[points, datatype] = [[], rational];                                          //  2017.10
+        if (arguments.length == 1) {                                                                            //  2018.4
+            if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.10
+            if (Array.isArray(arg)) {                                                                           //  2017.10
+                points = arg;
+                if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
+                if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
+                datatype = (points.length > 0) ? points[0][0].constructor : rational;
+            }
         }
+        if (arguments.length == 2)[points, datatype] = arguments;                                               //  2018.4
         this.datatype = datatype;
         points = normal(points);
         points = trim(this, points);
@@ -39,7 +40,6 @@ class sparseplacevalue1 {
                 var i = list.length - 1;
                 while (i > 0)
                     if (list[i][1].equals(list[i - 1][1])) {
-                        //                if (list[i][1] == list[i - 1][1]) {
                         list[i][0] = list[i][0].add(list[i - 1][0]);
                         list.splice(i - 1, 1);
                         i--;
@@ -143,7 +143,7 @@ class sparseplacevalue1 {
     pointpow(other) { return this.f0(this.datatype.prototype.pow, other); }       //  2017.6
     clone() { return new this.constructor(this.points.slice()) }
     negate() { return this.parse(0).sub(this); }                                    //  2017.10
-    round() { return new this.constructor(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6
+    round() { return new this.constructor(this.points.filter(function (x) { return !x[1].isneg(); }), this.datatype) }  //  2018.4
 
     f(f, other) {  //  2017.6
         var ret = this.clone();
@@ -160,6 +160,7 @@ class sparseplacevalue1 {
     }
 
     times(top) {
+        if (this.datatype != top.datatype) { var s = 'SparsePV1.times mixed digit types: ' + this.datatype.toString().slice(9, 20) + " & " + top.datatype.toString().slice(9, 20); alert(s); throw new Error(s); }  //  2018.4
         var points = []
         for (var i = 0; i < this.points.length; i++)
             for (var j = 0; j < top.points.length; j++)
@@ -201,6 +202,7 @@ class sparseplacevalue1 {
     }
 
     remainder(den) {  //  2016.5
+        if (this.datatype != den.datatype) { var s = 'SparsePV1.remainder mixed digit types: ' + this.datatype.toString().slice(9, 20) + " & " + den.datatype.toString().slice(9, 20); alert(s); throw new Error(s); }  //  2018.4
         return this.sub(this.divide(den).round().times(den));   //  2017.6  round
     }
 

@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
-// SparsePolynomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
+// Date:    4/30/2018
+// SparseMultinomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
 
 function sparsemultinomialratio(arg, pv) {
     if (arguments.length < 2) pv = new sparseplacevalueratio(); //  2017.9
@@ -33,7 +33,6 @@ sparsemultinomialratio.prototype.parse = function (strornode) { //  2017.9
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        //var a = new sparsemultinomialratio(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = this.parse(kids[0]);        // sparsemultinomialratio handles unpreprocessed kid    2015.11
         if (node.fn == 'unaryMinus') {
             var c = new sparsemultinomialratio(1, sparseplacevalueratio.parse(0)).sub(a);
@@ -182,6 +181,8 @@ sparsemultinomialratio.prototype.pow = function (other) { // 2015.6
 
 sparsemultinomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
     //alert(JSON.stringify(pv))
+    if (!pv instanceof sparseplacevaluerational) { var s = "sparsemultinomialratio.toStringXbase expects argument 1 (pv) to be a sparseplacevaluerational not " + typeof pv + JSON.stringify(pv); alert(s); throw new Error(s); }
+    pv = new sparseplacevalue(rational).parse(pv.toString());   //  2018.4  Translation needed since sparsemultinomial is now based on sparseplacevalue, but sparseplacevalueratio is still based on sparseplacevaluerational
     return new sparsemultinomial(base, pv).toString();
 }
 
