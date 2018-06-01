@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    3/31/2018
+   Date:    5/31/2018
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -24,7 +24,7 @@
     <script type="text/javascript" src='complexlaurent.js'></script>
     <script type="text/javascript" src='complexexponential.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
-    <script type="text/javascript" src='placevaluecomplex.js'></script>
+    <!--    <script type="text/javascript" src='placevaluecomplex.js'></script>     2018.5  Removed -->
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
@@ -71,8 +71,10 @@
             if (f == fourier) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (Array.isArray(n) ? (n[0] != 0 || n[1] != 0) : (n != 0)) nums.push(i); }
             if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
             var s = '';
-            for (var i = Math.max(0, nums[0]) ; i > Math.min(0, nums.slice(-1)[0]) ; i--) {    //  2018.3  >= -> >
+            //for (var i = Math.max(0, nums[0]) ; i > Math.min(0, nums.slice(-1)[0]) ; i--) {   //  2018.3  >= -> >
+            for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {    //  2018.5  > -> >= need to include both endpoints so ½0.½ * 10.(-1) = ½0.(-½)
                 //if (i == 0) continue; //  2018.3  Removed
+                if (i == 0) continue;   //  2018.5  UnRemoved so zero-term isn't needlessly calculated
                 var n = (i == 1) ? '' : (i == -1) ? '-' : i;
                 s += '+' + n + 'exp(' + n + '@)';
             }

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    3/31/2018
+   Date:    5/31/2018
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -19,8 +19,8 @@
     <script src='rational.js'></script>
     <script src='complex.js'></script>
     <script src='rationalcomplex.js'></script>
-    <script src='wholeplacevaluecomplex.js'></script>
-    <script src='placevaluecomplex.js'></script>
+    <!--<script src='wholeplacevaluecomplex.js'></script>   2018.5  Removed -->
+    <!--<script src='placevaluecomplex.js'></script>        2018.5  Removed -->
     <script src='fourier.js'></script>
     <script src='wholeplacevalue.js'></script>
     <script src='placevalue.js'></script>
@@ -31,16 +31,52 @@
     <script src='laurent.js'></script>
     <script src='exponential.js'></script>
     <style>
-        h1 { text-align: center; }
-        #f { position: absolute; top: 10px; left: 10px; }
-        body, input { font-family: "Arial Unicode MS" }
-        #main { border-spacing: 0; float: left; margin: 10px; }
-        #col3 { width: 150px }
-        #ao, #bo, #co { min-width: 150px; text-align: right }
-        #augend:nth-child(1) td { color: green; }
-        #base>td { border-bottom: 1pt solid black; color: blue; }
-        #base>td table { color: blue; }
-        input { text-align: right; }
+
+        h1 {
+            text-align: center;
+        }
+
+        #f {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+
+        body, input {
+            font-family: "Arial Unicode MS"
+        }
+
+        #main {
+            border-spacing: 0;
+            float: left;
+            margin: 10px;
+        }
+
+        #col3 {
+            width: 150px
+        }
+
+        #ao, #bo, #co {
+            min-width: 150px;
+            text-align: right
+        }
+
+        #augend:nth-child(1) td {
+            color: green;
+        }
+
+        #base > td {
+            border-bottom: 1pt solid black;
+            color: blue;
+        }
+
+            #base > td table {
+                color: blue;
+            }
+
+        input {
+            text-align: right;
+        }
     </style>
 </head>
 <body>
@@ -49,7 +85,7 @@
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
     <table id="main">
         <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
+        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
         <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
     </table>
     <script type="text/javascript">

@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    11/30/2017
+   Date:    5/31/2018
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -24,7 +24,8 @@
     <script type="text/javascript" src='placevalue.js'></script>
     <style>
         output { margin: 50px; }
-        body,input { font-family: "Arial Unicode MS"; }
+        /* body,input { font-family: "Arial Unicode MS" }                           2018.5 Removed  */
+        body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
         .convtable { border-spacing: 0; float: left; margin: 10px; }
         .line td { border-bottom: 1pt solid black; }
         input { text-align: right; }
@@ -32,7 +33,7 @@
 </head>
 <body>
     <h1>PlaceValue Convolutional Network</h1>
-    <table border>
+    <table border="1">
         <tr>
             <td>
                 <select id="top" onchange="select1()"><option>Clean Edge Detection</option><option>Noisy Edge Detection</option><option>Blur Detection</option></select>
@@ -51,8 +52,8 @@
             </td>
             <td>
                 <table class="convtable">
-                    <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
-                    <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>÷</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
+                    <tr><td></td><td><input id='a' value='1' /></td><td><output id="ao"></output></td></tr>
+                    <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>÷</option><option>⊗</option><option>⊘</option></select></td><td><input id='b' value='1' ></td><td><output id="bo"></output></td></tr>
                     <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
                 </table>
             </td>
@@ -102,7 +103,7 @@
             function getinput(elem) { return new f().parse($(elem).val()); }
             function getshape(elem) { return f.parse($(elem).val()); }
             function output(a, b, c) {
-                $('#c').attr('data-val', JSON.stringify(c));
+                // $('#c').attr('data-val', JSON.stringify(c)); 2018.5  Removed
                 $('#c').val(c);
                 showInternal(a, '#ao');
                 showInternal(b, '#bo');
@@ -113,7 +114,7 @@
         function clean() {
             $('input').val('');
             $('output').html('');
-            $('[data-val]').removeAttr('data-val');
+            // $('[data-val]').removeAttr('data-val');          2018.5  Removed
         }
     </script>
 </body>

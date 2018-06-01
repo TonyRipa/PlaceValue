@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    3/31/2018
+   Date:    5/31/2018
    Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -21,7 +21,7 @@
     <script type="text/javascript" src='complexlaurent.js'></script>
     <script type="text/javascript" src='complexexponential.js'></script>
     <script type="text/javascript" src='wholeplacevaluecomplex.js'></script>
-    <script type="text/javascript" src='placevaluecomplex.js'></script>
+    <!--    <script type="text/javascript" src='placevaluecomplex.js'></script>     2018.5  Removed -->
     <script type="text/javascript" src='fourier.js'></script>
     <script type="text/javascript" src='fourier2.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
@@ -60,7 +60,8 @@
     </table>
     <script type="text/javascript">
         function exp(op) {                              // Added Exponential Calculus    2015.11
-            f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
+            //  f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12   //  2018.5  Removed
+            f = fourier2;   //  2018.5
             console.log('exp' + op);
             var exp = new f().parse($('#func').val())
             var nums = [];
@@ -86,7 +87,7 @@
             $('#a').val($('#func').val());
             $('#b').val(s.replace(/@/g, exp.base));
             $('#op').val(op);
-            $('[data-val]').removeAttr('data-val');
+            //  $('[data-val]').removeAttr('data-val');     //  2018.5  Removed
             compute();
         }
         function differentiate() {
@@ -114,9 +115,10 @@
             var f = e.divide(a)
             var g = d * d / (2 * f)
             output(a, b, c, d, e, f, g);
-            function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }
+            //  function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }     //  2018.5  Removed
+            function getinput(elem) { var a = $(elem).val(); return new f().parse(a); }
             function output(a, b, c, d, e, f, g) {
-                $('#c').attr('data-val', JSON.stringify(c));
+                //  $('#c').attr('data-val', JSON.stringify(c));    //  2018.5  Removed
                 $('#c').val(c);
                 $('#d').val(d);
                 $('#e').val(e);
@@ -133,16 +135,16 @@
             }
             eval();
         }
-        function moveanswer(from, to) {
-            $(to).val($(from).val());                           // move toString
-            $(to + 'o').html($(from + 'o').html());             // move toStringInternal
-            $(to).attr('data-val', $(from).attr('data-val'));   // move json
-        }
+        //  function moveanswer(from, to) {                         //  2018.5  Removed
+        //      $(to).val($(from).val());                           //  move toString
+        //      $(to + 'o').html($(from + 'o').html());             //  move toStringInternal
+        //      $(to).attr('data-val', $(from).attr('data-val'));   //  move json
+        //  }
         function clean() {
             $('#int').toggle($('#f')[0].selectedIndex >= 2);
             $('input').val('');
             $('td:nth-child(4)').html('&nbsp;');
-            $('[data-val]').removeAttr('data-val');
+            //  $('[data-val]').removeAttr('data-val');             //  2018.5  Removed
         }
     </script>
 </body>

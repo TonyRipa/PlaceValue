@@ -1,14 +1,14 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    1/31/2018
-   Demo for Polynomial : a datatype for representing polynomials; an application of the WholePlaceValue datatype
+   Date:    5/31/2018
+   Demo for Polynomial1 : a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 -->
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Polynomial Arithmetic</title>
+    <title>Polynomial1 Arithmetic</title>   <!--    2018.5  Renamed Polynomial-->
     <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
     <script type="text/javascript">
         window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
@@ -23,10 +23,11 @@
     <script type="text/javascript" src='wholeplacevalue.js'></script>
     <script type="text/javascript" src='placevalue.js'></script>
     <script type="text/javascript" src='abstractpolynomial.js'></script>
-    <script type="text/javascript" src='polynomial.js'></script>
+    <script type="text/javascript" src='polynomial1.js'></script>
     <style>
         body,html { height:85% }
-        body,input { font-family: "Arial Unicode MS" }
+        /* body,input { font-family: "Arial Unicode MS" }                           2018.5 Removed  */
+        body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
         .polytable { width: 95%; border-spacing: 0; float: left; margin: 10px; }
         input { text-align: right; }
         td:nth-child(2) { text-align: right; }
@@ -35,7 +36,7 @@
     </style>
 </head>
 <body>
-    <h1>Polynomial</h1>
+    <h1>Polynomial 1</h1>
     <button onclick="compute()">=</button><input id='a' value='(x+1)(x-1)' />
     <hr style="clear:both"/>
     <div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>
@@ -44,7 +45,7 @@
             return "<span style='white-space:nowrap'>" + x + "</span>";
         }
         function compute() {
-            var poly = new polynomial().parse($('#a').val());   //  2017.9
+            var poly = new polynomial1().parse($('#a').val());   //  2017.9
             var tuple = parse($('#a').val());
             $('div').append("<table class='polytable'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6
         }
@@ -61,15 +62,15 @@
         function parse(str) {
             var node = math.parse(str);
             if (node.type != 'OperatorNode') {
-                return [polynomial.parse(node.value || node.name)];
+                return [polynomial1.parse(node.value || node.name)];
             } else if (node.type == 'OperatorNode') {
                 console.log('OperatorNode')
                 var kids = node.args;
-                var a = new polynomial().parse(kids[0]);        // polynomial handles unpreprocessed kid    2015.11
+                var a = new polynomial1().parse(kids[0]);        // polynomial1 handles unpreprocessed kid    2015.11
                 if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
                     return [node.op, a];
                 } else {
-                    var b = new polynomial().parse(kids[1]);    // polynomial handles unpreprocessed kid    2015.11
+                    var b = new polynomial1().parse(kids[1]);    // polynomial1 handles unpreprocessed kid    2015.11
                 }
             }
             return [node.op, a, b]

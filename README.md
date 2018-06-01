@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2018
+Date : 5/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -78,13 +78,13 @@ SparsePlaceValueRatio1
 ------------------
 <i>SparsePlaceValueRatio1</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValue1s. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio1 would handle that as 1 / 1E1+1. SparsePlaceValueRatio1 can handle more exotic ratios such as 1 / 1E½+1 .
 
-Polynomial
+Polynomial1
 -------------
-<i>polynomial.js</i> is a datatype for representing polynomials; an application of the WholePlaceValue datatype.
+<i>polynomial1.js</i> is a 1D datatype for representing polynomials; an application of the WholePlaceValue datatype.
 
 The PlaceValue data-type is particularly well-suited to polynomial arithmetic. Polynomial arithmetic uses a placeholder x. PlaceValue arithmetic dispenses with this placeholder.
 
-<i>polynomial.html</i> is a demo for polynomial.js.
+<i>polynomial1.html</i> is a demo for polynomial1.js.
 
 SparsePolynomial1
 ------------------------
@@ -151,7 +151,7 @@ Multinomial can be thought of as nothing more than an algebraic looking interfac
 
 Laurent Polynomial
 -------------------
-<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example, 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to user interfaces for PlaceValue.
+<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example, 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial1.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to user interfaces for PlaceValue.
 
 PlaceValue2
 -------------------
@@ -253,17 +253,15 @@ SparseExponentialRatio
 
 PlaceValueComplex
 -------------------
-<i>placevaluecomplex.js</i> is a complex version of PlaceValue. PlaceValueComplex is used by <i>Fourier.js</i>. If Fourier wants to calculate sin(x)^2, then it asks PlaceValueComplex to calculate:
+<i>placevaluecomplex.js</i> is a complex version of PlaceValue. PlaceValueComplex is used by <i>Laplace.js</i>. If Laplace wants to solve 1*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks PlaceValueComplex to calculate:
 
-<s>½</s>̉0.½̉ base e<sup>xi</sup> ^ 2 = <s>¼</s>0½.0<s>¼</s> base e<sup>xi</sup>
+1 / 11 = 0.1<s>1</s>1<s>1</s> base s
 
-Fourier then formats PlaceValueComplex's result as -0.5cos(2x)+.5 .
-
-Fourier is nothing more than a veneer for PlaceValueComplex.
+Laplace then formats PlaceValueComplex's result as exp(-x) .
 
 Fourier
 -----------
-<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValueComplex datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
+<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
 If Fourier wants to calculate sin(x)*cos(x), then it asks PlaceValue to calculate:
 
 <s>½</s>̉0.½̉  * ½0.½ = <s>¼</s>̉00.0¼̉ 
@@ -349,7 +347,7 @@ CAS
 
 Calculator
 --------------
-<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial1) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
 
 Differentiator
 ----------------
@@ -381,15 +379,15 @@ If Exponential wants to integrate cosh(x), then it asks PlaceValue to calculate:
 
 Exponential then formats PlaceValue's result as sinh(x) + NaN.
 
-If Fourier wants to differentiate sin(x) + 7, then it asks PlaceValueComplex to calculate:
+If Fourier wants to differentiate sin(x) + 7, then it asks PlaceValue(Complex) to calculate:
 
 <s>½</s>̉7.½̉ ⊗ i0.<s>i</s> = ½0.½
 
-Fourier then formats PlaceValueComplex's result as cos(x) .
+Fourier then formats PlaceValue(Complex)'s result as cos(x) .
 
 Integration is achieved by reversing the pointwise multiplication with pointwise division.
 
-If Fourier wants to integrate cos(x), then it asks PlaceValueComplex to calculate:
+If Fourier wants to integrate cos(x), then it asks PlaceValue(Complex) to calculate:
 
 ½0.½ ⊘ i0.<s>i</s> = <s>½</s>̉%.½̉
 
@@ -484,10 +482,11 @@ Dependencies
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
-<tr><td>Polynomial</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
+<tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
+<tr><td>Fourier</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
+<tr><td>Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
@@ -495,7 +494,7 @@ Dependencies
 
 External Dependencies
 ----------------------
-<a target='_blank' href='http://jquery.com'>jQuery</a> & <a target='_blank' href='http://mathjs.org'>mathjs</a>
+<a target='_blank' href='http://jquery.com'>jQuery</a> & <a href='http://mathjs.org'>mathjs</a>
 
 System Requirements
 --------------------

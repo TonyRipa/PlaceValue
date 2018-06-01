@@ -1,13 +1,13 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
-// Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValueComplex datatype
+// Date:    5/31/2018
+// Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValue datatype
 
 function fourier(base, pv) {
     //if (arguments.length < 2) { console.trace(); alert('fourier expects 2 arguments'); end; }
-    if (arguments.length < 2) pv = new placevaluecomplex(); //  2017.9
+    if (arguments.length < 2) pv = new placevalue(complex); //  2017.9
     if (Array.isArray(base)) alert('fourier expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-    if (!(pv instanceof placevaluecomplex)) { var s = 'fourier expects arg2 to be PlaceValueComplex not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+    if (!(pv instanceof placevalue)) { var s = 'fourier expects arg2 to be PlaceValue(Complex) not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
     this.base = base
     this.pv = pv;
 }
@@ -16,20 +16,19 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
-    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new fourier(a.base, new placevaluecomplex(new wholeplacevalue(complex).parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }
+    if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new fourier(a.base, new placevalue(new wholeplacevalue(complex).parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }
     //alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
     if (node.type == 'ConstantNode') {
-        return new fourier(1, new placevaluecomplex(new wholeplacevalue([new complex(Number(node.value))]), 0));
+        return new fourier(1, new placevalue(new wholeplacevalue([new complex(Number(node.value))]), 0));
     } else if (node.type == 'SymbolNode') {
         var base = node.name;
         if (base == 'i') {
-            return new fourier(1, new placevaluecomplex(new wholeplacevalue([new complex(0, 1)]), 0));
+            return new fourier(1, new placevalue(new wholeplacevalue([new complex(0, 1)]), 0));
         } else {
             console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
             console.log(node)
             { var s = 'Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
-            //return new fourier(base, new placevaluecomplex(new wholeplacevalue(complex).parse(1), 1));
         }
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
@@ -38,11 +37,10 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
         //var a = new fourier(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
         var a = new fourier().parse(kids[0]);       // fourier handles unpreprocessed kid   2015.11
         if (node.fn == 'unaryMinus') {
-            var c = new fourier(1, new placevaluecomplex(new wholeplacevalue(complex).parse(0), 0)).sub(a);
+            var c = new fourier(1, new placevalue(new wholeplacevalue(complex).parse(0), 0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new fourier(1, new placevaluecomplex(new wholeplacevalue(complex), 0)).add(a);
+            var c = new fourier(1, new placevalue(new wholeplacevalue(complex), 0)).add(a);
         } else {
-            //var b = new fourier(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
             var b = new fourier().parse(kids[1]);   // fourier handles unpreprocessed kid   2015.11
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
@@ -56,12 +54,12 @@ fourier.prototype.parse = function (strornode) {    //  2017.9
         var kidaspoly = new laurent().parse(kids[0])
         //alert(kidaspoly)
         var base = kidaspoly.base;
-        var ten = new placevaluecomplex().parse(10);      //  2017.5
+        var ten = new placevalue(complex).parse(10);      //  2017.5
         var tens = kidaspoly.pv.get(1).toreal();    //  2016.7
         var ones = kidaspoly.pv.get(0).toreal();    //  2016.7
         var expi = ten.pow(tens)
         if (ones) expi = expi.scale(new complex(Math.cos(ones), Math.sin(ones))); //  2017.5
-        //var expi = placevaluecomplex.parse('(2.718)').pow(placevaluecomplex.parse('i')).pow(placevaluecomplex.parse(kidaspoly.pv.toString())) //  2017.5
+        //var expi = placevalue(complex).parse('(2.718)').pow(placevalue(complex).parse('i')).pow(placevalue(complex).parse(kidaspoly.pv.toString())) //  2017.5
         //var exp2 = ten.pow(-tens); if (ones) exp2 = exp2.scale(1 / Math.exp(ones));
         var expi2 = expi.pow(-1);                     //  2017.5
         if (fn == 'cis') var pv = expi;
@@ -159,7 +157,7 @@ fourier.toStringCos = function (pv, base) { // 2016.6
             if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
                 var n = m * 2 * sign;
                 ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-                s = s.sub(new placevaluecomplex(new wholeplacevalue([new complex(1)]), i).add(new placevaluecomplex(new wholeplacevalue([new complex(1)]), -i).scale(new complex(sign))).scale(ind == 'r' ? new complex(m) : new complex(0, m)));
+                s = s.sub(new placevalue(new wholeplacevalue([new complex(1)]), i).add(new placevalue(new wholeplacevalue([new complex(1)]), -i).scale(new complex(sign))).scale(ind == 'r' ? new complex(m) : new complex(0, m)));
             }
         }
         ret = ret.replace(/\+\-/g, '-');
@@ -173,7 +171,8 @@ fourier.toStringXbase = function (pv, base) {                        // added na
     console.log('fourier.toStringXbase: x=' + x);
     if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
         x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return fourier.toStringXbase(new placevaluecomplex(new wholeplacevalue(x), 0), base);    //  2017.5  [x] -> x
+        if (x.length == 0) x = [new this.pv.whole.datatype()];  //  2018.5
+        return fourier.toStringXbase(new placevalue(new wholeplacevalue(x), 0), base);    //  2017.5  [x] -> x
     }
     var ret = '';
     //var str = x//.toString().replace('.', '');
@@ -184,10 +183,8 @@ fourier.toStringXbase = function (pv, base) {                        // added na
         var digit = x[i]
         if (digit['r'] != 0 || digit['i'] != 0) {
             ret += '+';
-            //coef = new placevaluecomplex(new wholeplacevalue(complex).parse(digit), 0).toString(false, true);
             coef = digit.toString(false, true).toString();  //  2017.12
             if (coef == 'NaN' || coef.indexOf('i') != -1) coef += '*';
-            //alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
             exp1 = ''; if (power != 0) exp1 = power + base; if (power == 1) exp1 = base; if (power == -1) exp1 = '-' + base;
             exp2 = '';
             //exp12 = (exp1 && exp2) ? ('cis(' + exp1 + '+' + exp2 + ')') : exp1 ? ('cis(' + exp1 + ')') : exp2 ? ('cis(' + exp2 + ')') : '';
@@ -215,7 +212,7 @@ fourier.toStringXbase = function (pv, base) {                        // added na
 
 fourier.prototype.eval = function (base) {	// 2016.1
     base = base.pv;
-    var ei = new placevaluecomplex(new wholeplacevalue([new complex(.54, .84)]), 0);
+    var ei = new placevalue(new wholeplacevalue([new complex(.54, .84)]), 0);
     //alert(JSON.stringify([ei, base, ei.pow(base)]));
     base = ei.pow(base);
     return new fourier(this.base, this.pv.eval(base));

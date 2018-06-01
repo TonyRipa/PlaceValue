@@ -1,23 +1,23 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/20/2017
+// Date:    5/31/2018
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 function placevalue(arg) {
     var man, exp;
     //if (arguments.length < 1) man = new wholeplacevalue();  //  2017.9
     if (arguments.length == 0)[man, exp] = [new wholeplacevalue(rational), 0];                                          //  2017.12
-    //if (arguments.length < 2) exp = 0;  //  2017.9
     if (arguments.length == 1) {
         if (arg === rational || arg === complex || arg === rationalcomplex)[man, exp] = [new wholeplacevalue(arg), 0];  //  2017.12
         else[man, exp] = [arg, 0];
     }
     if (arguments.length == 2)[man, exp] = arguments;                                                                   //  2017.12
-    if (!(man instanceof wholeplacevalue)) alert('placevalue expects argument 1 to be a wholeplacevalue');
+    if (!(man instanceof wholeplacevalue)) { var s = 'placevalue expects argument 1 to be a wholeplacevalue but found ' + typeof man; alert(s); throw new Error(s); }   //  2018.5  added throw
     if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevalue expects argument 2 to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
-    this.whole = man
-    this.exp = exp
-    console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
+    this.whole = man;
+    //  this.exp = exp;                     //  2018.5  Removed
+    this.exp = this.whole.is0() ? 0 : exp;  //  2018.5  0 man has no exp
+    console.log('this.whole = ' + this.whole + ' = ' + JSON.stringify(this.whole) + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
 }
 
 placevalue.prototype.parse = function (man) {    // 2017.9
@@ -135,7 +135,7 @@ placevalue.prototype.pow = function (power) {	// 2015.8
     //if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
     //alert(JSON.stringify([this,power]))
     if (power.exp == 0) {   //  2017.5
-        if (power.get(0).toreal() < 0) return (new placevalue(new wholeplacevalue().parse(1), 0)).divide(this.pow(power.negate()));
+        if (power.get(0).toreal() < 0) return (new placevalue(this.whole.parse(1), 0)).divide(this.pow(power.negate()));    //  2018.5  this.whole
         var whole = this.whole.pow(power.whole);
         var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
     } else if (power.exp == 1) {    //  2017.5
