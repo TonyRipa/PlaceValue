@@ -1,9 +1,9 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2018
-// PolynomialRatio: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
+// Date:    6/30/2018
+// PolynomialRatio1: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
-function polynomialratio(arg, pv) {
+function polynomialratio1(arg, pv) {	//	2018.6	PolynomialRatio	->	PolynomialRatio1
     var base, pv;
     if (arguments.length == 0)[base, pv] = [1, new placevalueratio(rational)];                          //  2018.2
     if (arguments.length == 1) {                                                                        //  2018.2
@@ -13,28 +13,28 @@ function polynomialratio(arg, pv) {
     if (arguments.length == 2)[base, pv] = arguments;                                                   //  2018.2
     //if (arguments.length < 1) base = 1;                     //  2017.9
     //if (arguments.length < 2) pv = new placevalueratio();   //  2017.9
-    console.log('polynomialratio : arguments.length=' + arguments.length);
+    console.log('polynomialratio1 : arguments.length=' + arguments.length);
     //this.base = arg;
     this.base = base;                                                                                   //  2018.2
     if (pv instanceof Object && JSON.stringify(pv).indexOf('mantisa') != -1)  // 2015.8
         this.pv = pv;
     else if (typeof pv == 'number') {
-        console.log("polynomialratio: typeof pv == 'number'");
+        console.log("polynomialratio1: typeof pv == 'number'");
         this.pv = new wholeplacevalue([pv])
         console.log(this.pv.toString());
     }
     else
-        { var s = 'PolynomialRatio expects arg 2 to be PlaceValueRatio not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+        { var s = 'PolynomialRatio1 expects arg 2 to be PlaceValueRatio not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
 }
 
-polynomialratio.prototype.parse = function (strornode) {    //  2017.9
+polynomialratio1.prototype.parse = function (strornode) {    //  2017.9
     console.log('<strornode>')
     console.log(strornode)
     console.log('</strornode>')
     if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) {
         var a = JSON.parse(strornode);
-        var ret = new polynomialratio(a.base, this.pv.parse(JSON.stringify(a.pv)));
-        if (!(this.pv.num.datatype == ret.pv.num.datatype)) { var s = "polynomialratio.parse's arg different digit datatype\n" + this.pv.num.datatype + '\n' + ret.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
+        var ret = new polynomialratio1(a.base, this.pv.parse(JSON.stringify(a.pv)));
+        if (!(this.pv.num.datatype == ret.pv.num.datatype)) { var s = "polynomialratio1.parse's arg different digit datatype\n" + this.pv.num.datatype + '\n' + ret.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
         return ret;
     }    //  2017.10
     var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
@@ -49,36 +49,35 @@ polynomialratio.prototype.parse = function (strornode) {    //  2017.9
             var base = node.name;
             var pv = this.pv.parse('10');
         }
-        //return new polynomialratio(base, this.pv.parse(pv));
-        return new polynomialratio(base, pv);                       //  2018.2
+        //return new polynomialratio1(base, this.pv.parse(pv));
+        return new polynomialratio1(base, pv);                       //  2018.2
     } else if (node.type == 'OperatorNode') {
         console.log('OperatorNode')
         var kids = node.args;
-        //var a = polynomialratio.parse(kids[0]);        // polynomialratio handles unpreprocessed kid    2015.11
         var a = this.parse(kids[0]);    // 2017.11  this
         if (node.fn == 'unaryMinus') {
-            var c = new polynomialratio(1, this.pv.parse(0)).sub(a);
+            var c = new polynomialratio1(1, this.pv.parse(0)).sub(a);
         } else if (node.fn == 'unaryPlus') {
-            var c = new polynomialratio(1, this.pv.parse(0)).add(a);
+            var c = new polynomialratio1(1, this.pv.parse(0)).add(a);
         } else {
             var b = this.parse(kids[1]);    // 2017.11  this
             var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
         }
         return c
     } else if (node.type == 'ConstantNode') {
-        return new polynomialratio(1, new placevalueratio(this.pv.num.parse('(' + Number(node.value) + ')'), this.pv.num.parse(1)));    //  2018.2
+        return new polynomialratio1(1, new placevalueratio(this.pv.num.parse('(' + Number(node.value) + ')'), this.pv.num.parse(1)));    //  2018.2
     }
 }
 
-polynomialratio.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
+polynomialratio1.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
     return this.pv.toString() + ' base ' + this.base;
 }
 
-polynomialratio.prototype.toString = function () {
-    var num = polynomialratio.toStringXbase(this.pv.num, this.base);
+polynomialratio1.prototype.toString = function () {
+    var num = polynomialratio1.toStringXbase(this.pv.num, this.base);
     if (this.pv.den.is1()) return num;
     num = (count(this.pv.num.mantisa) < 2) ? num : '(' + num + ')';
-    var den = polynomialratio.toStringXbase(this.pv.den, this.base);
+    var den = polynomialratio1.toStringXbase(this.pv.den, this.base);
     den = (count(this.pv.den.mantisa) < 2) ? den : '(' + den + ')';
     return num + '/' + den;
     function count(array) {
@@ -86,69 +85,69 @@ polynomialratio.prototype.toString = function () {
     }
 }
 
-polynomialratio.prototype.add = function (other) {
+polynomialratio1.prototype.add = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.add(other.pv));
+    return new polynomialratio1(this.base, this.pv.add(other.pv));
 }
 
-polynomialratio.prototype.sub = function (other) {
+polynomialratio1.prototype.sub = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.sub(other.pv));
+    return new polynomialratio1(this.base, this.pv.sub(other.pv));
 }
 
-polynomialratio.prototype.times = function (other) {
+polynomialratio1.prototype.times = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.times(other.pv));
+    return new polynomialratio1(this.base, this.pv.times(other.pv));
 }
 
-polynomialratio.prototype.divide = function (other) {
+polynomialratio1.prototype.divide = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.divide(other.pv));
+    return new polynomialratio1(this.base, this.pv.divide(other.pv));
 }
 
-polynomialratio.prototype.divideleft = function (other) {   //  2016.8
+polynomialratio1.prototype.divideleft = function (other) {   //  2016.8
     this.align(other);
-    return new polynomialratio(this.base, this.pv.divideleft(other.pv));
+    return new polynomialratio1(this.base, this.pv.divideleft(other.pv));
 }
 
-polynomialratio.prototype.pointadd = function (other) {
+polynomialratio1.prototype.pointadd = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.pointadd(other.pv));
+    return new polynomialratio1(this.base, this.pv.pointadd(other.pv));
 }
 
-polynomialratio.prototype.pointsub = function (other) {
+polynomialratio1.prototype.pointsub = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.pointsub(other.pv));
+    return new polynomialratio1(this.base, this.pv.pointsub(other.pv));
 }
 
-polynomialratio.prototype.pointtimes = function (other) {
+polynomialratio1.prototype.pointtimes = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.pointtimes(other.pv));
+    return new polynomialratio1(this.base, this.pv.pointtimes(other.pv));
 }
 
-polynomialratio.prototype.pointdivide = function (other) {
+polynomialratio1.prototype.pointdivide = function (other) {
     this.align(other);
-    return new polynomialratio(this.base, this.pv.pointdivide(other.pv));
+    return new polynomialratio1(this.base, this.pv.pointdivide(other.pv));
 }
 
-polynomialratio.prototype.align = function (other) {    // Consolidate alignment    2015.9
-    if (!(this.pv.num.datatype == other.pv.num.datatype)) { var s = "PolynomialRatio.align's arg has different digit datatype\n" + this.pv.num.datatype + '\n' + other.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
+polynomialratio1.prototype.align = function (other) {    // Consolidate alignment    2015.9
+    if (!(this.pv.num.datatype == other.pv.num.datatype)) { var s = "PolynomialRatio1.align's arg has different digit datatype\n" + this.pv.num.datatype + '\n' + other.pv.num.datatype; alert(s); throw new Error(s); } //  2018.2
     if (this.pv.num.mantisa.length == 1) this.base = other.base;
     if (other.pv.num.mantisa.length == 1) other.base = this.base;
-    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomialratio(1, this.pv.parse('%')) }
+    if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomialratio1(1, this.pv.parse('%')) }
 }
 
-polynomialratio.prototype.pow = function (other) { // 2015.6
-    return new polynomialratio(this.base, this.pv.pow(other.pv));
+polynomialratio1.prototype.pow = function (other) { // 2015.6
+    return new polynomialratio1(this.base, this.pv.pow(other.pv));
 }
 
-polynomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
-    console.log('polynomialratio: pv = ' + pv);
+polynomialratio1.toStringXbase = function (pv, base) {                        // added namespace  2015.7
+    console.log('polynomialratio1: pv = ' + pv);
     var x = pv.mantisa;
-    console.log('polynomialratio.toStringXbase: x=' + x);
+    console.log('polynomialratio1.toStringXbase: x=' + x);
     if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
         x.pop();                                    // Replace shift with pop because L2R 2015.7
-        return polynomialratio.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
+        return polynomialratio1.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
     }
     var ret = '';
     var str = x//.toString().replace('.', '');
@@ -165,7 +164,7 @@ polynomialratio.toStringXbase = function (pv, base) {                        // 
             else
                 ret += coefficient(digit) + base + '^' + power;
         }
-        console.log('polynomialratio.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
+        console.log('polynomialratio1.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
     }
     ret = ret.replace(/\+\-/g, '-');
     if (ret[0] == '+') ret = ret.substring(1);
@@ -174,11 +173,11 @@ polynomialratio.toStringXbase = function (pv, base) {                        // 
     function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 }
 
-polynomialratio.prototype.eval = function (other) { //  2017.12
-    return new polynomialratio(1, this.pv.eval(other.pv));
+polynomialratio1.prototype.eval = function (other) { //  2017.12
+    return new polynomialratio1(1, this.pv.eval(other.pv));
     //var sum = 0;
     //for (var i = 0; i < this.pv.mantisa.length; i++) {
     //    sum += this.pv.get(i) * Math.pow(base, i);
     //}
-    //return new polynomialratio(1, new wholeplacevalue([sum]));
+    //return new polynomialratio1(1, new wholeplacevalue([sum]));
 }

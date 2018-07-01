@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 5/31/2018
+Date : 6/30/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -54,13 +54,9 @@ Rational
 ---------------
 <i>Rational.js</i> is used to represent fractions. WholePlaceValue uses them as its digits. In order to ensure that WholePlaceValue is able to operate without round off errors, its digits need to be immune to round off errors. Rational.js has a base ten integer representing a numerator, and another base ten integer representing a denominator. As a not to be relied on perk, Rational.js renders sufficient irrational approximations as their symbolic counterpart like τ (i.e. 2π). Other points of interest are that whereas IEEE's only representation for Infinity and NaN are as a kludge of special cases as specified by the IEEE Standard for Floating-Point Arithmetic (IEEE 754), Rational.js can handle them elegantly with neither kludges nor exceptions by simply failing to go through the pains of alienating number pairs like 1,0 and 0,0 respectively.
 
-WholePlaceValueComplex
-------------------------
-<i>WholePlaceValueComplex</i> is a version of WholePlaceValue that uses complex digits. For example: ii * 2 = 2&#775;2&#775;. Imaginary digits look like regular digits but with a dot on top.
-
 Complex
 -----------
-<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValueComplex uses Complex to represent WholePlaceValueComplex's digits. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
+<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValue can use Complex to represent WholePlaceValue's digits. For example: ii * 2 = 2́2́. Imaginary digits look like regular digits but with a dot on top. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
 
 SparsePlaceValue1
 ------------------------
@@ -102,19 +98,19 @@ If SparsePolynomial1 wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceVa
 
 SparsePolynomial1 then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
 
-Polynomial Ratio
+PolynomialRatio1
 -------------
-<i>polynomialratio.js</i> is a datatype for representing ratios of polynomials (also known as rational functions); an application of the PlaceValueRatio datatype.
+<i>polynomialratio1.js</i> is a datatype for representing ratios of polynomials (also known as rational functions); an application of the PlaceValueRatio datatype.
 
-If PolynomialRatio wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+6), then it asks PlaceValueRatio to calculate:
+If PolynomialRatio1 wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x+6), then it asks PlaceValueRatio to calculate:
 
 1<s>4</s>4<s>3</s>⑭ / 18⑫⑰6 = 1<s>5</s>7/173
 
-PolynomialRatio then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
+PolynomialRatio1 then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
 
 Sparse Polynomial Ratio
 -------------
-<i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio1 datatype.
+<i>sparsepolynomialratio.js</i> is a sparse version of PolynomialRatio1; an application of the SparsePlaceValueRatio1 datatype.
 
 If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio1 to calculate:
 
@@ -253,11 +249,7 @@ SparseExponentialRatio
 
 PlaceValueComplex
 -------------------
-<i>placevaluecomplex.js</i> is a complex version of PlaceValue. PlaceValueComplex is used by <i>Laplace.js</i>. If Laplace wants to solve 1*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks PlaceValueComplex to calculate:
-
-1 / 11 = 0.1<s>1</s>1<s>1</s> base s
-
-Laplace then formats PlaceValueComplex's result as exp(-x) .
+<i>placevaluecomplex.js</i> is a complex version of PlaceValue.
 
 Fourier
 -----------
@@ -269,6 +261,14 @@ If Fourier wants to calculate sin(x)*cos(x), then it asks PlaceValue to calculat
 Fourier then formats PlaceValue's result as 0.5sin(2x) .
 
 Fouriers are nothing more than a veneer for PlaceValue.
+
+Laplace
+--------
+<i>laplace.js</i>. If Laplace wants to solve 1*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks PlaceValue(Complex) to calculate:
+
+1 / 11 = 0.1<s>1</s>1<s>1</s> base s
+
+Laplace then formats PlaceValue(Complex)'s result as exp(-x) .
 
 WholePlaceValueComplex2
 ------------------------
@@ -342,7 +342,6 @@ SparseComplexExponential then formats SparsePlaceValueComplex's result as exp(x+
 
 CAS
 -----------
-
 <i>CAS.html</i> which stands for either Computer Algebra System (for the algebraic looking UI) or Computer Arithmetic System (for the under the hood arithmetic implementation) is a demo for Laurent Polynomial, Multinomial & Exponential.
 
 Calculator
@@ -483,10 +482,9 @@ Dependencies
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
-<tr><td>Polynomial Ratio</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
+<tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Fourier</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
-<tr><td>Laplace</td><td></td><td>depends on PlaceValueComplex</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
+<tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>

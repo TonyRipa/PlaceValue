@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    5/31/2018
+   Date:    6/30/2018
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -22,7 +22,7 @@
     <script src='complex.js'></script>
     <script src='rationalcomplex.js'></script>
     <script src='complexlaurent.js'></script>
-    <script src='wholeplacevaluecomplex.js'></script>
+	<!--<script src='wholeplacevaluecomplex.js'></script>	2018.6	Removed	-->
     <script src='placevaluecomplex.js'></script>
     <script src='fourier.js'></script>
     <script src='wholeplacevaluecomplex2.js'></script>
@@ -43,7 +43,7 @@
     <script src='sparseplacevalue.js'></script>
     <script src='sparsepolynomial1.js'></script>
     <script src='placevalueratio.js'></script>
-    <script src='polynomialratio.js'></script>
+	<script src='polynomialratio1.js'></script>		<!--	2018.6	PolynomialRatio	->	PolynomialRatio1	-->
     <script src='sparseplacevalue2.js'></script>
     <script src='sparsemultinomial.js'></script>
     <script src='sparseplacevaluecomplex.js'></script>
@@ -116,7 +116,7 @@
         <optgroup label="Applications">
             <option value="21">Polynomial 1</option>
             <option value="24">Sparse Polynomial 1</option>
-            <option value="27">Polynomial Ratio</option>
+            <option value="27">Polynomial Ratio 1</option>
             <option value="29">Sparse Polynomial Ratio</option>
             <option value="31">Laurent Polynomial</option>
             <option value="34">Sparse Multinomial</option>
@@ -164,7 +164,7 @@
         <optgroup label="Applications">
             <option value="23">Polynomial 1</option>
             <option value="26">Sparse Polynomial 1</option>
-            <option value="28">Polynomial Ratio</option>
+            <option value="28">Polynomial Ratio 1</option>
             <option value="30">Sparse Polynomial Ratio</option>
             <option value="41">Sparse Exponential 1</option>
         </optgroup>
@@ -203,8 +203,8 @@
         <option value="24">Sparse Polynomial1 - Rational</option>
         <option value="25">Sparse Polynomial1 - Complex</option>
         <option value="26">Sparse Polynomial1 - RationalComplex</option>
-        <option value="27">Polynomial Ratio - Rational</option>
-        <option value="28">Polynomial Ratio - RationalComplex</option>
+        <option value="27">Polynomial Ratio1 - Rational</option>
+        <option value="28">Polynomial Ratio1 - RationalComplex</option>
         <option value="29">Sparse Polynomial Ratio - Rational</option>
         <option value="30">Sparse Polynomial Ratio - RationalComplex</option>
         <option value="31">Laurent Polynomial</option>
@@ -257,14 +257,14 @@
                 case '24': f = new sparsepolynomial1(rational); break;
                 case '25': f = new sparsepolynomial1(complex); break;
                 case '26': f = new sparsepolynomial1(rationalcomplex); break;
-                case '27': f = new polynomialratio(rational); break;
-                case '28': f = new polynomialratio(rationalcomplex); break;
+                case '27': f = new polynomialratio1(rational); break;
+                case '28': f = new polynomialratio1(rationalcomplex); break;
                 case '29': f = new sparsepolynomialratio(rational); break;
                 case '30': f = new sparsepolynomialratio(rationalcomplex); break;
                 case '39': f = new sparseexponential1(rational); break;
                 case '40': f = new sparseexponential1(complex); break;
                 case '41': f = new sparseexponential1(rationalcomplex); break;
-                default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalue, placevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio, polynomialratio, sparsepolynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponential, exponentialratio, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].value]();
+                default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalue, placevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio1, polynomialratio1, sparsepolynomialratio, sparsepolynomialratio, laurent, multinomial, laurent2, sparsemultinomial, sparsemultinomialratio, complexlaurent, complexsparsemultinomial, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponential, exponentialratio, fourier, fourier2, complexexponential, sparsecomplexexponential][$('#f')[0].value]();
             }
             var a = getinput('#a');
             var b = getinput('#b');
