@@ -1,83 +1,89 @@
 ﻿
 <!--
-   Author:  Anthony John Ripa
-   Date:    11/30/2017
-   Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+	Author:	Anthony John Ripa
+	Date:	7/31/2018
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8">
-    <title>Determinant</title>
-    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
-    </script>
-    <script type="text/javascript" src='rational.js'></script>
-    <script type="text/javascript" src='complex.js'></script>
-    <script type="text/javascript" src='rationalcomplex.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
-    <style>
-	    input {width:30px}
-	    td {width:15px}
-    </style>
+	<meta charset="utf-8">
+	<title>Determinant</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<style>
+		input {width:30px}
+		td {width:15px}
+	</style>
 </head>
 <body>
-    <center><h1>Determinant</h1></center>
-    <table>
-	    <tr>
-		    <td><input value='2' id='a'></td>
-		    <td><input value='0' id='b'></td>
-		    <td>x</td>
-		    <td rowspan='2'>=</td>
-		    <td><input value='6' id='e'></td>
-	    </tr>
-	    <tr>
-		    <td><input value='0' id='c'></td>
-		    <td><input value='0' id='d'></td>
-		    <td>y</td>
-		    <td><input value='0' id='f'></td>
-	    </tr>
-    </table>
-    <button onclick='cramer()'>Solve Ax=b</button>
-    <div id='tv'></div>
-    <script>
-        function cramer() {
-            var a = $('#a').val();
-            var b = $('#b').val();
-            var c = $('#c').val();
-            var d = $('#d').val();
-            var e = $('#e').val();
-            var f = $('#f').val();
-            var D = determinant(a, b, c, d);
-            var Dx = determinant(e, b, f, d);
-            var Dy = determinant(a, e, c, f);
-            var x = Dx.divide(D);
-            var y = Dy.divide(D);
-            var D2 = a * d - b * c;
-            var Dx2 = e * d - b * f;
-            var Dy2 = a * f - e * c;
-            $('#tv').html("<h1>Solution by Cramer's Rule</h1>");
-            $('#tv').append("<h2>Classical</h2>x = " + Dx2 + ' / ' + D2 + ' = ' + (Dx2 / D2) + '<br>y = ' + Dy2 + ' / ' + D2 + ' = ' + (Dy2 / D2));
-            $('#tv').append("<h2>PlaceValue</h2>x = " + Dx + ' / ' + D + ' = ' + x + '<br>y = ' + Dy + ' / ' + D + ' = ' + y);
-            function determinant(a, b, c, d) {
-                var ret = new wholeplacevalue().parse(1);
-                var values = eigenvalues(a, b, c, d);
-                for (var i = 0; i < values.length; i++) {
-                    var ev = new wholeplacevalue().parse(values[i]);    //  2017.9
-                    ev.times10();
-                    if (!ev.is0()) ret = ret.times(ev);
-                }
-                return ret;
-                function eigenvalues(a, b, c, d) {
-                    return quadratic(1, -a - d, a * d - b * c);
-                    function quadratic(a, b, c) {
-                        return [(-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a)]
-                    }
-                }
-            }
-        }
-    </script>
+	<center><h1>Determinant</h1></center>
+	<table>
+		<tr>
+			<td><input value='2' id='a'></td>
+			<td><input value='0' id='b'></td>
+			<td>x</td>
+			<td rowspan='2'>=</td>
+			<td><input value='6' id='e'></td>
+		</tr>
+		<tr>
+			<td><input value='0' id='c'></td>
+			<td><input value='0' id='d'></td>
+			<td>y</td>
+			<td><input value='0' id='f'></td>
+		</tr>
+	</table>
+	<button onclick='cramer()'>Solve Ax=b</button>
+	<div id='tv'></div>
+	<script>
+		function cramer() {
+			var a = $('#a').val();
+			var b = $('#b').val();
+			var c = $('#c').val();
+			var d = $('#d').val();
+			var e = $('#e').val();
+			var f = $('#f').val();
+			var D = determinant(a, b, c, d);
+			var Dx = determinant(e, b, f, d);
+			var Dy = determinant(a, e, c, f);
+			var x = Dx.divide(D);
+			var y = Dy.divide(D);
+			var D2 = a * d - b * c;
+			var Dx2 = e * d - b * f;
+			var Dy2 = a * f - e * c;
+			$('#tv').html("<h1>Solution by Cramer's Rule</h1>");
+			$('#tv').append("<h2>Classical</h2>x = " + Dx2 + ' / ' + D2 + ' = ' + (Dx2 / D2) + '<br>y = ' + Dy2 + ' / ' + D2 + ' = ' + (Dy2 / D2));
+			$('#tv').append("<h2>PlaceValue</h2>x = " + Dx + ' / ' + D + ' = ' + x + '<br>y = ' + Dy + ' / ' + D + ' = ' + y);
+			function determinant(a, b, c, d) {
+				var ret = new wholeplacevalue(complex).parse(1);	//	2018.7	complex
+				var values = eigenvalues(a, b, c, d);
+				//alert(values)
+				for (var i = 0; i < values.length; i++) {
+					var ev = new wholeplacevalue([values[i]]);	//	2018.7	Array instead of parse
+					ev.times10();
+					if (!ev.is0()) ret = ret.times(ev);
+				}
+				console.log([a,b,c,d],values,ret.toString())
+				return ret;
+				function eigenvalues(a, b, c, d) {
+					return quadratic(1, -a - d, a * d - b * c);
+					function quadratic(a, b, c) {
+						a = new complex.parse(a.toString());	//	2018.7	Added		
+						b = new complex.parse(b.toString());	//	2018.7	Added		
+						c = new complex.parse(c.toString());	//	2018.7	Added		
+						//return [(-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a)]	//	2018.7	Removed
+						return [(b.negate().add(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2)),(b.negate().sub(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2))];	//	2018.7	Added
+					}
+				}
+			}
+		}
+	</script>
 </body>
 </html>

@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2018
+Date : 7/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -118,32 +118,32 @@ If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparseP
 
 SparsePolynomialRatio then formats SparsePlaceValueRatio1's result as 1/(x^½+1).
 
-Multinomial
+Polynomial2
 -------------
-<i>multinomial.js</i> is a datatype for representing multinomials; an application of the WholePlaceValue2 datatype.
+<i>polynomial2.js</i> is a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype.
 
-The PlaceValue data-type is particularly well-suited to multinomial arithmetic. Multinomial arithmetic uses placeholders like x & y. PlaceValue arithmetic dispenses with these placeholders.
+The WholePlaceValue2 data-type is particularly well-suited to 2-D polynomial arithmetic. Polynomial arithmetic uses placeholders like x & y. WholePlaceValue2 arithmetic dispenses with these placeholders.
 
-<i>multinomial.html</i> is a demo for multinomial.js.
+<i>polynomial2.html</i> is a demo for polynomial2.js.
 
 WholePlaceValue2
 ------------------------
-<i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Multinomial</i>. If Multinomial wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
+<i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Polynomial2</i>. If Polynomial2 wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
 <pre>
      1    1
 10 + 0 = 10
 </pre>
-Multinomial then formats WholePlaceValue2's result as x+y.
+Polynomial2 then formats WholePlaceValue2's result as x+y.
 
-If Multinomial wants to calculate (x+y)^2, then it asks WholePlaceValue2 to calculate:
+If Polynomial2 wants to calculate (x+y)^2, then it asks WholePlaceValue2 to calculate:
 <pre>
             1
  1    1    20
 10 * 10 = 100
 </pre>
-Multinomial then formats WholePlaceValue2's result as x+2xy+y .
+Polynomial2 then formats WholePlaceValue2's result as x^2+2xy+y^2 .
 
-Multinomial can be thought of as nothing more than an algebraic looking interface to an underlying arithmetic calculation in WholePlaceValue2. Multinomial can be thought of as merely aliasing the axes of WholePlaceValue2 with common names like x & y. Something similar can be said for polynomial.
+Polynomial2 can be thought of as nothing more than an algebraic looking interface to an underlying arithmetic calculation in WholePlaceValue2. Polynomial2 can be thought of as merely aliasing the axes of WholePlaceValue2 with common names like x & y. Something similar can be said for Polynomial1.
 
 Laurent Polynomial
 -------------------
@@ -206,7 +206,7 @@ SparseMultinomial then formats SparsePlaceValue's result as x*z + y*z.
 
 SparsePlaceValueRatio
 ------------------
-<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValueRationals. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 .
+<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValues. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 .
 
 Sparse Multinomial Ratio
 -------------
@@ -247,10 +247,6 @@ SparseExponentialRatio
 ------------------------
 <i>SparseExponentialRatio</i> is a data-type optimized for ratios of sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it is a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
 
-PlaceValueComplex
--------------------
-<i>placevaluecomplex.js</i> is a complex version of PlaceValue.
-
 Fourier
 -----------
 <i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
@@ -278,7 +274,7 @@ WholePlaceValueComplex2
 
 ComplexPlaceValue
 -------------------
-Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue (like PlaceValueComplex) also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the ComplexExponential data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
+Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the ComplexExponential data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -346,7 +342,7 @@ CAS
 
 Calculator
 --------------
-<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial1) , multinomial mode (Multinomial) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
+<i>calculator.html</i> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial1 & Polynomial2) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
 
 Differentiator
 ----------------
@@ -479,13 +475,13 @@ Dependencies
 <tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
-<tr><td>Multinomial</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
+<tr><td>Polynomial2</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
 </table>

@@ -1,8 +1,8 @@
 ﻿
 <!--
-   Author:  Anthony John Ripa
-   Date:    6/30/2018
-   Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValueComplex datatype
+	Author:	Anthony John Ripa
+	Date:	7/31/2018
+	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValue(Complex) datatype
 -->
 
 <html>
@@ -24,13 +24,13 @@
 	<script type="text/javascript" src='complexlaurent.js'></script>
 	<script type="text/javascript" src='complexexponential.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
-	<script type="text/javascript" src='placevaluecomplex.js'></script>
+	<!--<script type="text/javascript" src='placevaluecomplex.js'></script>			2018.7	Removed	-->
 	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='abstractpolynomial.js'></script>	<!--	2018.6	-->
 	<script type="text/javascript" src='laplace.js'></script>
 	<script type="text/javascript" src='placevalue.js'></script>
 	<script src='wholeplacevalue2.js'></script>
-	<script src='multinomial.js'></script>
+	<!--<script src='multinomial.js'></script>										2018.7	Removed	-->
 	<script src='placevalue2.js'></script>
 	<script src='laurent2.js'></script>
 	<script src='laurent.js'></script>
@@ -161,11 +161,11 @@
 		function commutator() {
 
 		}
-		function moveanswer(from, to) {
-			$(to).val($(from).val());                           // move toString
-			$(to + 'o').html($(from + 'o').html());             // move toStringInternal
-			$(to).attr('data-val', $(from).attr('data-val'));   // move json
-		}
+		//	function moveanswer(from, to) {
+		//		$(to).val($(from).val());							// move toString
+		//		$(to + 'o').html($(from + 'o').html());				// move toStringInternal
+		//		$(to).attr('data-val', $(from).attr('data-val'));	// move json
+		//	}
 		function clean() {
 			$('#int').toggle($('#f')[0].selectedIndex >= 2);
 			$('input').val('');

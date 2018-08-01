@@ -1,150 +1,149 @@
 ﻿
 <!--
-   Author:  Anthony John Ripa
-   Date:    6/30/2018
-   Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
+	Author:	Anthony John Ripa
+	Date:	7/31/2018
+	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
 <html>
 <head>
-    <title>PlaceValue Mechanics</title>
-    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-    <script type="text/javascript">
-        window.math || document.write("<script src='../js/math.js'><" + "/script>")
-    </script>
-    <script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
-    <script type="text/javascript" src='complexplacevalue.js'></script>
-    <script type="text/javascript" src='complexlaurent.js'></script>
-    <script type="text/javascript" src='complexexponential.js'></script>
+	<title>PlaceValue Mechanics</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script type="text/javascript" src='wholeplacevaluecomplex2.js'></script>
+	<script type="text/javascript" src='complexplacevalue.js'></script>
+	<script type="text/javascript" src='complexlaurent.js'></script>
+	<script type="text/javascript" src='complexexponential.js'></script>
 	<!--	<script type="text/javascript" src='wholeplacevaluecomplex.js'></script>	2018.6	Removed	-->
-	<!--	<script type="text/javascript" src='placevaluecomplex.js'></script>			2018.5	Removed	-->
-    <script type="text/javascript" src='fourier.js'></script>
-    <script type="text/javascript" src='fourier2.js'></script>
-    <script type="text/javascript" src='placevalue.js'></script>
-    <script src='wholeplacevalue2.js'></script>
-    <script src='multinomial.js'></script>
-    <script src='placevalue2.js'></script>
-    <script src='laurent2.js'></script>
-    <script src='laurent.js'></script>
-    <script src='exponential.js'></script>
-    <style>
-        h1 { text-align: center; }
-        #f { position: absolute; top: 10px; left: 10px; }
-        body, input { font-family: "Arial Unicode MS" }
-        #main { border-spacing: 0; float: left; margin: 10px; }
-        #col3 { width: 150px }
-        #ao, #bo, #co, #do, #eo, #fo, #go { min-width: 150px; text-align: right }
-        #augend:nth-child(1) td { color: green; }
-        #base>td { border-bottom: 1pt solid black; color: blue; }
-        #base>td table { color: blue; }
-        input { text-align: right; }
-    </style>
+	<script type="text/javascript" src='fourier.js'></script>
+	<script type="text/javascript" src='fourier2.js'></script>
+	<script type="text/javascript" src='placevalue.js'></script>
+	<script src='wholeplacevalue2.js'></script>
+	<script src='polynomial2.js'></script>
+	<script src='placevalue2.js'></script>
+	<script src='laurent2.js'></script>
+	<script src='laurent.js'></script>
+	<script src='exponential.js'></script>
+	<style>
+		h1 { text-align: center; }
+		#f { position: absolute; top: 10px; left: 10px; }
+		body, input { font-family: "Arial Unicode MS" }
+		#main { border-spacing: 0; float: left; margin: 10px; }
+		#col3 { width: 150px }
+		#ao, #bo, #co, #do, #eo, #fo, #go { min-width: 150px; text-align: right }
+		#augend:nth-child(1) td { color: green; }
+		#base>td { border-bottom: 1pt solid black; color: blue; }
+		#base>td table { color: blue; }
+		input { text-align: right; }
+	</style>
 </head>
 <body>
-    <h1>PlaceValue Mechanics</h1>
-    <select style="display:none" id='f' onchange="clean()"><option>Multinomial</option><option>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Fourier2</option></select>
+	<h1>PlaceValue Mechanics</h1>
+	<select style="display:none" id='f' onchange="clean()"><option>Polynomial 2</option><option>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Fourier2</option></select>
 	<p>&psi;(x)=<input id='func' value='exp(i(2x+t))'><button onclick='differentiate()'>Differentiate</button><!--<button id='int' onclick='integrate()'>Integrate</button>--></p>
-    <table id="main" border="0">
-        <tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-        <tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>|</option><option selected>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
-        <tr><td>p&psi;</td><td><input id='c' /></td><td></td><td id="co"></td></tr>
-        <tr><td>p</td><td><input id='d' /></td><td></td><td id="do"></td></tr>
-        <tr><td>E&psi;</td><td><input id='e' /></td><td></td><td id="eo"></td></tr>
-        <tr><td>E</td><td><input id='f2' /></td><td></td><td id="fo"></td></tr>
-        <tr><td>p<sup>2</sup>/2m=E</td><td><b>- <math><mfrac><mi>ħ²</mi>2m</mfrac><mfrac><mi>d²</mi>dx²</mfrac></math> Ψ = iħ<math><mfrac><mi>d</mi>dt</mfrac></math> Ψ</b></td><td></td><td id="fo"></td></tr>
-        <tr><td>p<sup>2</sup>/2E=m</td><td><input id='g' /></td><td></td><td id="go"></td></tr>
-    </table>
-    <script type="text/javascript">
-        function exp(op) {                              // Added Exponential Calculus    2015.11
-            //  f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12   //  2018.5  Removed
-            f = fourier2;   //  2018.5
-            console.log('exp' + op);
-            var exp = new f().parse($('#func').val())
-            var nums = [];
-            var lo = exp.pv.exp-1;
-            var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
-            if (f == fourier) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (Array.isArray(n) ? (n[0] != 0 || n[1] != 0) : (n != 0)) nums.push(i); }
-            if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
-            var s = '';
-            for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {
-                if (i == 0) continue;
-                var n = (i == 1) ? '' : (i == -1) ? '-' : i;
-                s += '+' + n + 'exp(' + n + '@)';
-            }
-            if (f == fourier) s = s.replace(/exp/g, 'i*cis');
-            s = s.replace(/\+\-/g, '-');
-            if (s[0] == '+') s = s.substr(1);
-            s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
-            s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
-            if (f == complexexponential) s = s1 + '+' + s2;
-            s2 = '(cis(2t)+cis(t)+1+cis(-t)+cis(-2t))(2*cis(2x)+cis(x)-cis(-x)-2*cis(-2x))';
-            if (f == fourier2) s = s2 //+ '+' + s2;
-            $('#a').val($('#func').val());
-            $('#b').val(s.replace(/@/g, exp.base));
-            $('#op').val(op);
-            //  $('[data-val]').removeAttr('data-val');     //  2018.5  Removed
-            compute();
-        }
-        function differentiate() {
-            f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
-            if ($('#f')[0].selectedIndex >= 2) exp('⊗'); else dpoly();
-            function dpoly() {
-                console.log('diffpoly');
-                $('#func').val(f.parse($('#func').val()).toString()); //  Clean func  2015.12
-                $('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
-                $('#b').val('0');
-                $('#op').val('|');
-                compute();
-            }
-        }
-        function integrate() {
-            if ($('#f')[0].selectedIndex >= 2) exp('⊘'); else alert('Only Exponential Integration is supported.');
-        }
-        function compute() {
-            f = [multinomial, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
-            var a = getinput('#a');
-            var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
-            var d = c.divide(a)
-            var e = a.pointtimes(new fourier2(['x', 't'], new complexplacevalue(new wholeplacevaluecomplex2([[-2, -2, -2, -2, -2], [-1, -1, -1, -1, -1], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2]]), [-2, -2])))
-            var f = e.divide(a)
-            var g = d * d / (2 * f)
-            output(a, b, c, d, e, f, g);
-            //  function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }     //  2018.5  Removed
-            function getinput(elem) { var a = $(elem).val(); return new f().parse(a); }
-            function output(a, b, c, d, e, f, g) {
-                //  $('#c').attr('data-val', JSON.stringify(c));    //  2018.5  Removed
-                $('#c').val(c);
-                $('#d').val(d);
-                $('#e').val(e);
-                $('#f2').val(f);
-                $('#g').val(g); // typo f->g    2016.3
-                showInternal(a, '#ao');
-                showInternal(b, '#bo');
-                showInternal(c, '#co');
-                showInternal(d, '#do');
-                showInternal(e, '#eo');
-                showInternal(f, '#fo');
-                //showInternal(f, '#go');
-                function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
-            }
-            eval();
-        }
-        //  function moveanswer(from, to) {                         //  2018.5  Removed
-        //      $(to).val($(from).val());                           //  move toString
-        //      $(to + 'o').html($(from + 'o').html());             //  move toStringInternal
-        //      $(to).attr('data-val', $(from).attr('data-val'));   //  move json
-        //  }
-        function clean() {
-            $('#int').toggle($('#f')[0].selectedIndex >= 2);
-            $('input').val('');
-            $('td:nth-child(4)').html('&nbsp;');
-            //  $('[data-val]').removeAttr('data-val');             //  2018.5  Removed
-        }
-    </script>
+	<table id="main" border="0">
+		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
+		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>|</option><option selected>⊗</option><option>⊘</option><option>⊖</option><option>⊕</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
+		<tr><td>p&psi;</td><td><input id='c' /></td><td></td><td id="co"></td></tr>
+		<tr><td>p</td><td><input id='d' /></td><td></td><td id="do"></td></tr>
+		<tr><td>E&psi;</td><td><input id='e' /></td><td></td><td id="eo"></td></tr>
+		<tr><td>E</td><td><input id='f2' /></td><td></td><td id="fo"></td></tr>
+		<tr><td>p<sup>2</sup>/2m=E</td><td><b>- <math><mfrac><mi>ħ²</mi>2m</mfrac><mfrac><mi>d²</mi>dx²</mfrac></math> Ψ = iħ<math><mfrac><mi>d</mi>dt</mfrac></math> Ψ</b></td><td></td><td id="fo"></td></tr>
+		<tr><td>p<sup>2</sup>/2E=m</td><td><input id='g' /></td><td></td><td id="go"></td></tr>
+	</table>
+	<script type="text/javascript">
+		function exp(op) {                              // Added Exponential Calculus    2015.11
+			//  f = [polynomial2, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12   //  2018.5  Removed
+			f = fourier2;   //  2018.5
+			console.log('exp' + op);
+			var exp = new f().parse($('#func').val())
+			var nums = [];
+			var lo = exp.pv.exp-1;
+			var hi = exp.pv.whole.mantisa.length + lo;  // Get exact bound  2015.12
+			if (f == fourier) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (Array.isArray(n) ? (n[0] != 0 || n[1] != 0) : (n != 0)) nums.push(i); }
+			if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
+			var s = '';
+			for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {
+				if (i == 0) continue;
+				var n = (i == 1) ? '' : (i == -1) ? '-' : i;
+				s += '+' + n + 'exp(' + n + '@)';
+			}
+			if (f == fourier) s = s.replace(/exp/g, 'i*cis');
+			s = s.replace(/\+\-/g, '-');
+			if (s[0] == '+') s = s.substr(1);
+			s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
+			s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
+			if (f == complexexponential) s = s1 + '+' + s2;
+			s2 = '(cis(2t)+cis(t)+1+cis(-t)+cis(-2t))(2*cis(2x)+cis(x)-cis(-x)-2*cis(-2x))';
+			if (f == fourier2) s = s2 //+ '+' + s2;
+			$('#a').val($('#func').val());
+			$('#b').val(s.replace(/@/g, exp.base));
+			$('#op').val(op);
+			//  $('[data-val]').removeAttr('data-val');     //  2018.5  Removed
+			compute();
+		}
+		function differentiate() {
+			f = [polynomial2, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
+			if ($('#f')[0].selectedIndex >= 2) exp('⊗'); else dpoly();
+			function dpoly() {
+				console.log('diffpoly');
+				$('#func').val(f.parse($('#func').val()).toString()); //  Clean func  2015.12
+				$('#a').val('(' + $('#func').val().replace(/x/g, '(x+h)') + '-(' + $('#func').val() + '))/h');
+				$('#b').val('0');
+				$('#op').val('|');
+				compute();
+			}
+		}
+		function integrate() {
+			if ($('#f')[0].selectedIndex >= 2) exp('⊘'); else alert('Only Exponential Integration is supported.');
+		}
+		function compute() {
+			f = [polynomial2, laurent2, exponential, fourier, fourier2][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);
+			var d = c.divide(a)
+			var e = a.pointtimes(new fourier2(['x', 't'], new complexplacevalue(new wholeplacevaluecomplex2([[-2, -2, -2, -2, -2], [-1, -1, -1, -1, -1], [0, 0, 0, 0, 0], [1, 1, 1, 1, 1], [2, 2, 2, 2, 2]]), [-2, -2])))
+			var f = e.divide(a)
+			var g = d * d / (2 * f)
+			output(a, b, c, d, e, f, g);
+			//  function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return new f().parse(a); }     //  2018.5  Removed
+			function getinput(elem) { var a = $(elem).val(); return new f().parse(a); }
+			function output(a, b, c, d, e, f, g) {
+				//  $('#c').attr('data-val', JSON.stringify(c));    //  2018.5  Removed
+				$('#c').val(c);
+				$('#d').val(d);
+				$('#e').val(e);
+				$('#f2').val(f);
+				$('#g').val(g); // typo f->g    2016.3
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				showInternal(d, '#do');
+				showInternal(e, '#eo');
+				showInternal(f, '#fo');
+				//showInternal(f, '#go');
+				function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // polynomial2s need <br>.  2015.7
+			}
+			eval();
+		}
+		//  function moveanswer(from, to) {                         //  2018.5  Removed
+		//      $(to).val($(from).val());                           //  move toString
+		//      $(to + 'o').html($(from + 'o').html());             //  move toStringInternal
+		//      $(to).attr('data-val', $(from).attr('data-val'));   //  move json
+		//  }
+		function clean() {
+			$('#int').toggle($('#f')[0].selectedIndex >= 2);
+			$('input').val('');
+			$('td:nth-child(4)').html('&nbsp;');
+			//  $('[data-val]').removeAttr('data-val');             //  2018.5  Removed
+		}
+	</script>
 </body>
 </html>
