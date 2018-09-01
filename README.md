@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2018
+Date : 8/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -42,7 +42,7 @@ By building a data-type whose base operations are constructed to take advantage 
 
 PlaceValue
 ---------------
-<i>PlaceValue</i> is a data-type for representing base-agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909.. . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
+<i>PlaceValue</i> is a data-type for representing base-agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909… . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
 
 The PlaceValue data-type transcends this problem by dividing in a base-agnostic way. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
 
@@ -108,15 +108,15 @@ If PolynomialRatio1 wants to calculate (x^4-4x^3+4x^2-3x+14)/(x^4+8x^3+12x^2+17x
 
 PolynomialRatio1 then formats PlaceValueRatio's result as (x^2-5x+7)/(x^2+7x+3).
 
-Sparse Polynomial Ratio
+Sparse Polynomial Ratio 1
 -------------
-<i>sparsepolynomialratio.js</i> is a sparse version of PolynomialRatio1; an application of the SparsePlaceValueRatio1 datatype.
+<i>sparsepolynomialratio1.js</i> is a sparse version of PolynomialRatio1; an application of the SparsePlaceValueRatio1 datatype.
 
-If SparsePolynomialRatio wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio1 to calculate:
+If SparsePolynomialRatio1 wants to calculate (x^.5-1)/(x-1), then it asks SparsePlaceValueRatio1 to calculate:
 
 1E½-1 / 1E1-1 = 1 / 1E½+1
 
-SparsePolynomialRatio then formats SparsePlaceValueRatio1's result as 1/(x^½+1).
+SparsePolynomialRatio1 then formats SparsePlaceValueRatio1's result as 1/(x^½+1).
 
 Polynomial2
 -------------
@@ -472,18 +472,18 @@ Dependencies
 ---------------
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
-<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueRational</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
+<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue Rational</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on Sparse PlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial2</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
-<tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on WholePlaceValueComplex2.</td><td></td></tr>
+<tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on Whole PlaceValueComplex2.</td><td></td></tr>
 </table>
 
 External Dependencies
