@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2018
+Date : 9/30/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -235,17 +235,17 @@ SparseExponential1
 
 SparseExponential
 -------------------------
-<i>SparseExponential</i> is a data-type optimized for Sparse Exponentials; an application of the SparsePlaceValueRational datatype.
+<i>SparseExponential</i> is a data-type optimized for Sparse Exponentials; an application of the SparsePlaceValue datatype.
 
-If SparseExponential wants to calculate exp(x) * exp(y), then it asks SparsePlaceValueRational to calculate:
+If SparseExponential wants to calculate exp(x) * exp(y), then it asks SparsePlaceValue to calculate:
 
 1E1 * 1E0,1 = 1E1,1
 
-SparseExponential then formats SparsePlaceValueRational's result as exp(x+y).
+SparseExponential then formats SparsePlaceValue's result as exp(x+y).
 
 SparseExponentialRatio
 ------------------------
-<i>SparseExponentialRatio</i> is a data-type optimized for ratios of sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it is a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
+<i>SparseExponentialRatio</i> is a data-type optimized for ratios of sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
 
 Fourier
 -----------
@@ -472,9 +472,9 @@ Dependencies
 ---------------
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
-<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue Rational</td><td>depends on Rational.</td></tr>
+<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Exponential Ratio</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Exponential Ratio 1</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on Sparse PlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>

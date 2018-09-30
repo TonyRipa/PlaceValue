@@ -1,17 +1,17 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2018
-// ExponentialRatio : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
+// Date:    9/30/2018
+// ExponentialRatio1 : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
 
-class exponentialratio extends abstractpolynomial {
+class exponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 
 	constructor(base, pv) {
-		//if (arguments.length < 2) alert('exponentialratio expects 2 arguments');
+		//if (arguments.length < 2) alert('exponentialratio1 expects 2 arguments');
 		if (arguments.length < 1) base = 1; //  2017.9
 		if (arguments.length < 2) pv = new sparseplacevalueratio1(); //  2017.9
 		if (!(base instanceof String || typeof base == 'string' || base instanceof Number || typeof base == 'number'))
-			{ var s = 'exponentialratio expects arg1 (base) to be a string or number not ' + typeof base + ': ' + JSON.stringify(base); alert(s); throw new Error(s); }
-		if (!(pv instanceof sparseplacevalueratio1)) alert('exponentialratio expects argument 2 (pv) to be a sparseplacevalueratio1');
+			{ var s = 'exponentialratio1 expects arg1 (base) to be a string or number not ' + typeof base + ': ' + JSON.stringify(base); alert(s); throw new Error(s); }
+		if (!(pv instanceof sparseplacevalueratio1)) alert('exponentialratio1 expects argument 2 (pv) to be a sparseplacevalueratio1');
 		super();
 		this.base = base
 		this.pv = pv;
@@ -22,29 +22,29 @@ class exponentialratio extends abstractpolynomial {
 	}
 
 	parse(strornode) {  //  2017.9
-		console.log('new exponentialratio : ' + JSON.stringify(strornode))
-		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponentialratio(a.base, new sparseplacevalueratio1().parse(JSON.stringify(a.pv))) }    //  2017.10
+		console.log('new exponentialratio1 : ' + JSON.stringify(strornode))
+		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponentialratio1(a.base, new sparseplacevalueratio1().parse(JSON.stringify(a.pv))) }    //  2017.10
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
 		if (node.type == 'SymbolNode') {
-			console.log('new exponentialratio : SymbolNode')
-			if (node.name == 'i') return new exponentialratio([], sparseplacevalueratio1.parse('i'));
-			{ var s = 'Syntax Error: exponentialratio expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
+			console.log('new exponentialratio1 : SymbolNode')
+			if (node.name == 'i') return new exponentialratio1([], sparseplacevalueratio1.parse('i'));
+			{ var s = 'Syntax Error: exponentialratio1 expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 		} else if (node.type == 'OperatorNode') {
-			console.log('new exponentialratio : OperatorNode')
+			console.log('new exponentialratio1 : OperatorNode')
 			var kids = node.args;
 			var a = this.parse(kids[0]);        //  2017.10 this
 			if (node.fn == 'unaryMinus') {
-				var c = new exponentialratio([], sparseplacevalueratio1.parse(0)).sub(a);
+				var c = new exponentialratio1([], sparseplacevalueratio1.parse(0)).sub(a);
 			} else if (node.fn == 'unaryPlus') {
-				var c = new exponentialratio([], sparseplacevalueratio1.parse(0)).add(a);
+				var c = new exponentialratio1([], sparseplacevalueratio1.parse(0)).add(a);
 			} else {
 				var b = this.parse(kids[1]);    //  2017.10 this
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 			}
 			return c;
 		} else if (node.type == 'ConstantNode') {
-			//return new exponentialratio([1, null], sparseplacevalueratio1.parse(Number(node.value)));
-			return new exponentialratio(1, new sparseplacevalueratio1().parse(Number(node.value)));
+			//return new exponentialratio1([1, null], sparseplacevalueratio1.parse(Number(node.value)));
+			return new exponentialratio1(1, new sparseplacevalueratio1().parse(Number(node.value)));
 		} else if (node.type == 'FunctionNode') {
 			console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
 			console.log(node)
@@ -73,17 +73,16 @@ class exponentialratio extends abstractpolynomial {
 			//else if (fn == 'cos') var pv = expi.add(expi2).scale({ 'r': .5, 'i': 0 });
 			//else if (fn == 'sinh') var pv = exp.sub(exp2).scale({ 'r': .5, 'i': 0 });
 			else if (fn == 'sinh') var pv = sinh;
-			else if (fn == 'tanh') return new exponentialratio(base, new sparseplacevalueratio1(sinh, cosh));   //  2017.8
+			else if (fn == 'tanh') return new exponentialratio1(base, new sparseplacevalueratio1(sinh, cosh));   //  2017.8
 			//else if (fn == 'sin') var pv = expi.sub(expi2).scale({ 'r': 0, 'i': -.5 });
 			else alert('Syntax Error: complexexponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');    //  Check   2015.12
-			return new exponentialratio(base, new sparseplacevalueratio1(pv, new sparseplacevalue1().parse(1)));
+			return new exponentialratio1(base, new sparseplacevalueratio1(pv, new sparseplacevalue1().parse(1)));
 		} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
-			alert('Syntax Error: exponentialratio expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
-			return exponentialratio.parse(node.args[0]);
+			alert('Syntax Error: exponentialratio1 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
+			return exponentialratio1.parse(node.args[0]);
 		}
 	}
 
-	//sparsepolynomialratio1.prototype.align = function (other) {    // Consolidate alignment    2015.9
 	align(other) {  //  2017.8
 		if (this.pv.num.points.length == 1 && this.pv.num.points[0][1].is0()) this.base = other.base;
 		if (other.pv.num.points.length == 1 && other.pv.num.points[0][1].is0()) other.base = this.base;
@@ -95,7 +94,7 @@ class exponentialratio extends abstractpolynomial {
 		if (this.pv.den.is1()) return new sparseexponential1(this.base, this.pv.num).toString();
 		if (this.pv.num.divide(this.pv.den).times(this.pv.den).equals(this.pv.num)) return new sparseexponential1(this.base, this.pv.num.divide(this.pv.den)).toString();
 		return '(' + new sparseexponential1(this.base, this.pv.num).toString() + ')/(' + new sparseexponential1(this.base, this.pv.den).toString() + ')';
-		//return exponentialratio.toStringCosh(this.pv, this.base)
+		//return exponentialratio1.toStringCosh(this.pv, this.base)
 	}
 
 	eval(base) {    //  2017.5
