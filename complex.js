@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/30/2018
+// Date:    10/31/2018
 // Complex: A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -158,10 +158,12 @@ complex.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {  // 2
 }
 
 complex.zero = new complex(0);
+complex.one = new complex(1);																					//	2018.10
 
 complex.prototype.equals = function (other) { return (this.r == other.r) && (this.i == other.i); }
 complex.prototype.isreal = function () { return this.i == 0; }                                                  //  2017.5
 complex.prototype.is0 = function () { return this.equals(complex.zero); }
+complex.prototype.is1 = function () { return this.equals(complex.one); }										//	2018.10
 complex.prototype.below = function (other) { return this.r != other.r ? this.r < other.r : this.i < other.i; }  //  2017.3
 complex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }  //  2017.3
 complex.prototype.below0 = function () { return this.below(complex.zero); }                                     //  2017.3
@@ -205,11 +207,6 @@ complex.prototype.pow = function (p) {
 		else if (b.i == 0) var ret = p.times(b.ln()).exp(); //  2017.3
 		else var ret = new c(Math.pow(b.norm(), p.r) * Math.exp(-p.i * b.arg()), 0).times(new c(0, p.r * b.arg() + .5 * p.i * b.lnn().r).exp());
 		return ret.round();
-	//} catch (e) {
-	//    alert(e);
-	//    console.trace();
-	//    end;
-	//}
 }
 
 complex.prototype.divideleft = complex.prototype.divide;      //  2017.10

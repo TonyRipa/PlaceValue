@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2018
+// Date:    10/31/2018
 // SparseMultinomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
 
 function sparsemultinomialratio(arg, pv) {
@@ -61,7 +61,6 @@ sparsemultinomialratio.prototype.toString = function () {
 	return num + '/' + den;
 	function count(array) {
 		return array.length;
-		//return array.reduce(function (prev, curr) { return prev + Math.abs(Math.sign(curr)) }, 0);
 	}
 }
 
@@ -164,7 +163,7 @@ sparsemultinomialratio.toStringXbase = function (pv, base) {                    
 	//alert(JSON.stringify(pv))
 	//if (!pv instanceof sparseplacevaluerational) { var s = "sparsemultinomialratio.toStringXbase expects argument 1 (pv) to be a sparseplacevaluerational not " + typeof pv + JSON.stringify(pv); alert(s); throw new Error(s); }	//	2018.8	Removed
 	//pv = new sparseplacevalue(rational).parse(pv.toString());   //  2018.4  Translation needed since sparsemultinomial is now based on sparseplacevalue, but sparseplacevalueratio is still based on sparseplacevaluerational		//	2018.8	Removed
-	return new sparsemultinomial(base, pv).toString();
+	return new sparsepolynomial(base, pv).toString();	//	2018.10	rename sparsemulti -> sparsepoly
 }
 
 sparsemultinomialratio.prototype.eval = function (other) {

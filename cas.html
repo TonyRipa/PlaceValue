@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2018
+	Date:	10/31/2018
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -41,12 +41,11 @@
 	<script type="text/javascript" src='sparseplacevalue1.js'></script> <!-- sparsepolynomial1 depends on sparseplacevalue1 2018.4 -->
 	<script type="text/javascript" src='sparsepolynomial1.js'></script>
 	<script type="text/javascript" src='sparseplacevalue2.js'></script>
-	<script type="text/javascript" src='sparsemultinomial.js'></script>
+	<script type="text/javascript" src='sparsepolynomial.js'></script>			<!--	2018.10	SparseMulti	->	SparsePoly	-->
 	<script type="text/javascript" src='sparseplacevaluecomplex.js'></script>
 	<script type="text/javascript" src='complexsparsemultinomial.js'></script>
 	<style>
 		body,html { height:85% }
-		/* body,input { font-family: "Arial Unicode MS" }                           2018.5 Removed  */
 		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
 		h1 { text-align: center; margin: 0px }
 		#f { position: absolute; top: 10px; left: 10px; }
@@ -57,7 +56,7 @@
 </head>
 <body>
 	<h1>Computer Algebra System</h1>
-	<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Sparse Multinomial</option><option>Complex Laurent Multinomial</option><option>Complex Sparse Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>
+	<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Complex Sparse Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>
 	<button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
 	<hr style="clear:both"/>
 	<div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>
@@ -66,7 +65,7 @@
 			return "<span style='white-space:nowrap'>" + x + "</span>";
 		}
 		function compute() {
-			f = [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsemultinomial, complexlaurent, complexsparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
+			f = [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, complexsparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
 			var poly = new f().parse($('#a').val());	//	2017.9
 			var tuple = parse($('#a').val());
 			$('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	9/30/2018
+// Date:	10/31/2018
 // SparseExponential : a datatype for representing sparse exponentials; an application of the sparseplacevalue datatype
 
 class sparseexponential extends abstractpolynomial {
@@ -47,14 +47,13 @@ class sparseexponential extends abstractpolynomial {
 			}
 			return c;
 		} else if (node.type == 'ConstantNode') {
-			//return new sparseexponential([1, null], sparseplacevalue.parse(Number(node.value)));
 			return new sparseexponential([], new sparseplacevalue().parse(Number(node.value)));
 		} else if (node.type == 'FunctionNode') {
 			console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
 			console.log(node)
 			var fn = node.name;
 			var kids = node.args;
-			var kidaspoly = new sparsemultinomial().parse(kids[0])
+			var kidaspoly = new sparsepolynomial().parse(kids[0]);				//	2018.10	SparseMulti	->	SparsePoly
 			var base = kidaspoly.base;
 			var ten = new sparseplacevalue().parse('1E1');	//	exp is 2D	2016.1
 			//var iten = sparseplacevalue.parse('1Ei');		//	exp is 2D	2016.1

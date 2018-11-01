@@ -1,6 +1,6 @@
 
-// Author:  Anthony John Ripa
-// Date:    6/30/2018
+// Author:	Anthony John Ripa
+// Date:	10/31/2018
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -11,7 +11,6 @@ function wholeplacevalue(arg) {
 	if (arguments.length < 1)[man, datatype] = [[], rational];                                      //  2017.11
 	if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg]; //  2017.11
 	if (Array.isArray(arg)) {                                                                       //  2017.11
-		//if (!Array.isArray(arg)) alert('wholeplacevalue expects array argument but found ' + typeof arg + arg);
 		man = arg;
 		//if (man.length > 0 && !(man[0] instanceof rational)) { var s = "wholeplacevalue wants rational[] not " + typeof man[0] + '[]: ' + JSON.stringify(man); alert(s); throw new Error(s); }
 		datatype = (man.length > 0) ? man[0].constructor : rational;
@@ -235,7 +234,8 @@ wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
 	var num = this;
 	var iter = 5//num.mantisa.length;
 	var quotient = divideh(num, den, iter);
-	return quotient;
+	quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error
+	return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
 	function divideh(num, den, c) {
 		if (c == 0) return new wholeplacevalue([new num.datatype()], 'wholeplacevalue.prototype.divide >');
 		var d = wholeplacevalue.getDegreeLeft(den.mantisa);

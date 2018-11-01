@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2018
+// Date:    10/31/2018
 // Laplace: a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -109,31 +109,6 @@ class laplace extends abstractpolynomial {
 		return new laplace(this.base, this.pv.inverse());
 	}
 
-	//divide(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.divide(other.pv));
-	//}
-
-	//pointadd(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.pointadd(other.pv));
-	//}
-
-	//pointsub(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.pointsub(other.pv));
-	//}
-
-	//pointtimes(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.pointtimes(other.pv));
-	//}
-
-	//pointdivide(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.pointdivide(other.pv));
-	//}
-
 	align(other) {    // Consolidate alignment    2015.9
 		if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
 		if (other.pv.whole.mantisa.length == 1 && other.pv.exp == 0) other.base = this.base;
@@ -231,7 +206,7 @@ class laplace extends abstractpolynomial {
 				if (coef == 1) coef = '';
 				if (coef == 'NaN') coef += '*';
 				//alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
-				exp1 = ''; if (pow != 0) exp1 = 'x^' + pow; if (pow == 1) exp1 = 'x'; if (pow == -1) exp1 = '-' + base;
+				var exp1 = ''; if (pow != 0) exp1 = 'x^' + pow; if (pow == 1) exp1 = 'x'; if (pow == -1) exp1 = '-' + base;	//	2018.10	added var cause strict
 				//exp2 = '';
 				ret += '+';
 				ret += exp1 ? (coef + exp1) : coef ? coef : '1';

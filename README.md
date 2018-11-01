@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/30/2018
+Date : 10/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -294,13 +294,13 @@ SparsePlaceValue
 
 ComplexSparseMultinomial
 ------------------------
-<i>ComplexSparseMultinomial</i> is a data-type optimized for Complex Sparse Multinomials; an application of the SparsePlaceValueComplex datatype.
+<i>ComplexSparseMultinomial</i> is a data-type optimized for Complex Sparse Multinomials; an application of the SparsePlaceValue(Complex) datatype.
 
-If ComplexSparseMultinomial wants to calculate (x+y*i)^2, then it asks SparsePlaceValueComplex to calculate:
+If ComplexSparseMultinomial wants to calculate (x+y*i)^2, then it asks SparsePlaceValue(Complex) to calculate:
 
 1E1+iE0,1 ^ 2 = 1E2+(0,2)E1,1+-1E0,2
 
-SparseMultinomial then formats SparsePlaceValueComplex's result as x^2+(2i)x*y-y^2.
+SparseMultinomial then formats SparsePlaceValue(Complex)'s result as x^2+(2i)x*y-y^2.
 
 ComplexLaurent
 ---------------
@@ -464,6 +464,20 @@ What kind of division would be appropriate for deconvolution? Right division wou
 
 The value of 1 ÷ 11 may not be of particular interest. Getting a filter to learn edge detection automatically may be. A simple edge may be represented by a number like 11110000. The edge is seen at the fifth position. The filter we seek would output 10000 to indicate that the edge is in position 5. So, we seek some filter f such that f x 11110000 = 10000. Solving for f : f = 10000 ÷ 11110000. This yields the desired well-known filter 1<s>1</s>.
 
+Generating Functions
+---------------------
+<i>generatingfunction.html</i> is a demo for generating functions.
+
+Consider 1/<s>1</s>1 = 11111. This expresses succinctly what generating functions express unsuccinctly and asymmetrically with 2 different data-types (sequence & function) as well as needlessly introducing a placeholder variable (x). That is, the sequence 1,1,1,1,1 has the generating function 1/(1-x).
+
+Consider 101 = 101. This expresses succinctly what generating functions express unsuccinctly and asymmetrically with 2 different data-types (sequence & function) as well as needlessly introducing a placeholder variable (x). That is, the sequence 1,0,1 has the generating function x^2+1.
+
+Generating functions could be useful if you were adept at manipulating algebraic expressions, and you wanted to translate that power into the domain of sequences. However, it requires you to pay the extra cognitive overhead of making one-way translations asymmetrically back and forth from one domain to a different domain. It also results in having twice as many theorems etc. (one for each domain).
+
+Possibly the worst part is that it moves attention away from seeing symmetries inside the domain (you can think of this as patterns intrinsic to the terrain of study) toward seeing symmetries between domains (you can think of this as patterns you see between two different maps that you made of the same terrain). In other words, we shift from studying the terrain, to studying idiosyncratic properties of maps, that have no bearing on the terrain.
+
+Using PlaceValue, we can see immediately that if 1/<s>1</s>1 = 11111 then we should also have another equation 1/11111 = <s>1</s>1 . This is an example of the so-called intrinsic symmetry (of the terrain). Trying to see this simple symmetry, using the needlessly complicated maps of the formalism of generating functions is prohibitively expensive.
+
 Summary
 ---------
 PlaceValue is an intuitive and powerful data-type that can handle a wide range of academically relevant use-cases.
@@ -473,9 +487,9 @@ Dependencies
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Exponential Ratio 1</td><td></td><td>depends on SparsePlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on SparsePlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
+<tr><td>Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on Sparse PlaceValueComplex</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2018
+	Date:	10/31/2018
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -36,7 +36,7 @@
 	<script src='sparseplacevalue.js'></script>
 	<script src='sparseplacevaluerational.js'></script>
 	<script src='abstractpolynomial.js'></script>
-	<script src='sparsemultinomial.js'></script>
+	<script src='sparsepolynomial.js'></script>			<!--	2018.10	SparseMulti	->	SparsePoly	-->
 	<style>
 		h1 { text-align: center; }
 		#f { position: absolute; top: 10px; left: 10px; }
@@ -52,7 +52,7 @@
 </head>
 <body>
 	<h1>Calculus</h1>
-	<select id='f' onchange="clean()"><option>Polynomial 2</option><option>Laurent Multinomial</option><option>Sparse Multinomial</option><option>Exponential</option><option>Fourier</option><option selected>Complex Exponential</option></select>
+	<select id='f' onchange="clean()"><option>Polynomial 2</option><option>Laurent Multinomial</option><option>Sparse Polynomial</option><option>Exponential</option><option>Fourier</option><option selected>Complex Exponential</option></select>
 	<p>f(x)=<input id='func' value='exp(x)cis(x)'><button onclick='differentiate()'>Differentiate</button><button id='int' onclick='integrate()'>Integrate</button></p>
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
@@ -61,7 +61,7 @@
 	</table>
 	<script type="text/javascript">
 		function exp(op) {                              // Added Exponential Calculus    2015.11
-			f = [polynomial2, laurent2, sparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
+			f = [polynomial2, laurent2, sparsepolynomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Establish f before dexp(  2015.12
 			console.log('exp' + op);
 			var exp = new f().parse($('#func').val())
 			var nums = [];
@@ -71,7 +71,6 @@
 			if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }
 			var s = '';
 			for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {    //  2018.5  > -> >= need to include both endpoints so ½0.½ * 10.(-1) = ½0.(-½)
-				//if (i == 0) continue; //  2018.3  Removed
 				if (i == 0) continue;   //  2018.5  UnRemoved so zero-term isn't needlessly calculated
 				var n = (i == 1) ? '' : (i == -1) ? '-' : i;
 				s += '+' + n + 'exp(' + n + '@)';
@@ -89,7 +88,7 @@
 			compute();
 		}
 		function differentiate() {
-			f = [polynomial2, laurent2, sparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
+			f = [polynomial2, laurent2, sparsepolynomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Establish f before dpoly(  2015.12
 			if ($('#f')[0].selectedIndex >= 3) exp('⊗'); else dpoly();
 			function dpoly() {
 				console.log('diffpoly');
@@ -104,7 +103,7 @@
 			if ($('#f')[0].selectedIndex >= 3) exp('⊘'); else alert('Only Exponential Integration is supported.');
 		}
 		function compute() {
-			f = [polynomial2, laurent2, sparsemultinomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
+			f = [polynomial2, laurent2, sparsepolynomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
 			var a = getinput('#a');
 			var b = getinput('#b');
 			var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);

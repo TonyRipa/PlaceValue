@@ -1,0 +1,68 @@
+
+<!--
+	Author:  Anthony John Ripa
+	Date:    10/31/2018
+	Demo for WholePlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>Generating Functions</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<script type="text/javascript" src='abstractpolynomial.js'></script>
+	<script type="text/javascript" src='polynomial1.js'></script>
+	<style>
+		output { margin: 50px; }
+		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }
+	</style>
+	<script>
+		function go() {
+			var s = new wholeplacevalue($('#i').val().split(',').map(new rational().parse));
+			var p = new polynomial1('x',s);
+			var sinverse = new wholeplacevalue().parse(1).divideleft(s);
+			var pinverse = new polynomial1('x',sinverse);
+			$('#i').html(s.tohtml());
+			$('#s').html(s.toString());
+			$('#p').html(p.toString());
+			$('#s2').html(s.is1() ? '1' : '1 / ' + sinverse.toString());
+			$('#p2').html(s.is1() ? '1' : '1 / ' + pinverse.toString());
+		}
+	</script>
+</head>
+<body>
+	<center>
+		<h1>Generating Functions</h1>
+		<input id='i' value="1,1,1,1,1" style='position:absolute;width:100px'>
+		<select onchange="$('#i').val(this.value)" style='width:150px'>
+			<option>1,1,1,1,1</option>
+			<option>1,2,3,4,5</option>
+			<option>1,2,4,8,16</option>
+			<option>1,1,2,3,5</option>
+			<option>1,0,0,0,0</option>
+			<option>1,-1,0,0,0</option>
+		</select>
+		<br><br>
+		<button onclick="go()">Go</button>
+		<br><br>
+		<table border style='text-align:right'>
+			<tr><th>PlaceValue</th><td id='s'></td><td>=</td><td id='s2'></td></tr>
+			<tr><th>Polynomial</th><td id='p'></td><td>=</td><td id='p2'></td></tr>
+		</table>
+	</center>
+	<script>
+	</script>
+</body>
+</html>
