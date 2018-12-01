@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2018
+Date : 11/30/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -190,19 +190,19 @@ If SparseMultinomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks Spars
 
 SparseMultinomial2 then formats SparsePlaceValue2's result as 2x.
 
-SparsePlaceValueRational
+SparsePlaceValue
 ------------------------
-<i>SparsePlaceValueRational.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValueRational can handle an arbitrary number of dimensions such as 1E2,3,4 .
+<i>SparsePlaceValue.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValue can handle an arbitrary number of dimensions such as 1E2,3,4 . SparsePlaceValue accepts Rational, Complex, or RationalComplex digits.
 
-SparseMultinomial
+SparsePolynomial
 ------------------------
-<i>SparseMultinomial</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValueRational datatype.
+<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue(Rational) datatype.
 
-If SparseMultinomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
+If SparsePolynomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
 
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
-SparseMultinomial then formats SparsePlaceValue's result as x*z + y*z.
+SparsePolynomial then formats SparsePlaceValue's result as x*z + y*z.
 
 SparsePlaceValueRatio
 ------------------
@@ -266,6 +266,8 @@ Laplace
 
 Laplace then formats PlaceValue(Complex)'s result as exp(-x) .
 
+Viewing the Laplace transform of exp(-x) [ which is 1/(s+1) ] as the fraction 1 / 11 has advantages. Specifically, viewing the 1/11 in the expanded form 0.1<s>1</s>1<s>1</s> . We can see from the expanded form what appear to be the Taylor Coefficients of the Taylor expansion of exp(-x) [ however without the factorial denominators ] . Specifically, what we are seeing is the derivatives of the function exp(-x) , since the Taylor coefficients are the derivatives including the factorials. Another (though perhaps not best) way to say this for those familiar with generating functions, is that the Laplace Transform is the generating function of the derivatives. Without PlaceValue this nature of the Laplace Transform would be more difficult to see (partly because of the overhead of placeholder variables). Furthermore, we can see why the Laplace Transform should be capable of representing a function: because having all the derivatives of a function at point is enough to represent a typical function, as one familiar with Taylor Series knows. Note: it should be noted that Laplace seems to have chosen a different sign convention than generating functions, further obscuring the symmetry.
+
 WholePlaceValueComplex2
 ------------------------
 <i>wholeplacevaluecomplex2.js</i> is a version of WholePlaceValue2 where the digits are allowed to be complex. One display innovation of this data-type is in its elegant representation of its complex digits. The complex digits are displayed in angle-magnitude form so as to save space. So, to represent a single digit whose value is twice the imaginary unit (a.k.a. 2i) we would render the character ② rotated by 90°. This way many such digits may be placed in a relatively small space without clutter. Apart from merely having a clutter free representation, this representation allows us to see otherwise obscured patterns. For example, Laplace's complex number s which has the property of differentiating anything that it multiplies, exposes its circular character in this representation (albeit only in 1 quadrant, for all 4 see ComplexPlaceValue). Whereas in a+bi form it looks like this:
@@ -288,10 +290,6 @@ SparsePlaceValueComplex
 -----------------------
 <i>sparseplacevaluecomplex.js</i> can be thought of as a Sparse version of ComplexPlaceValue.  However, it is actually implemented as a Complex version of SparsePlaceValue.  As such, since SparsePlaceValue could handle an unbounded number of dimensions (i.e. is suitable for modeling multivariable systems), SparsePlaceValueComplex can model an unbounded number of mutually orthogonal complex planes. Whereas a SparsePlaceValue may look like 1E2 + 3E4,5,6 , a SparsePlaceValueComplex may look like (1,-4)E(2,9) + 3E4,(5,6),i . Here the (5,6) is the complex number 5+6i.
 
-SparsePlaceValue
-------------------------
-<i>sparseplacevalue.js</i> is a version of SparsePlaceValueRational that accepts Rational, Complex, or RationalComplex digits.
-
 ComplexSparseMultinomial
 ------------------------
 <i>ComplexSparseMultinomial</i> is a data-type optimized for Complex Sparse Multinomials; an application of the SparsePlaceValue(Complex) datatype.
@@ -300,7 +298,7 @@ If ComplexSparseMultinomial wants to calculate (x+y*i)^2, then it asks SparsePla
 
 1E1+iE0,1 ^ 2 = 1E2+(0,2)E1,1+-1E0,2
 
-SparseMultinomial then formats SparsePlaceValue(Complex)'s result as x^2+(2i)x*y-y^2.
+ComplexSparseMultinomial then formats SparsePlaceValue(Complex)'s result as x^2+(2i)x*y-y^2.
 
 ComplexLaurent
 ---------------
@@ -328,13 +326,13 @@ This ComplexPlaceValue is then rendered by ComplexExponential.js as -sin(x)+exp(
 
 SparseComplexExponential
 -------------------------
-<i>SparseComplexExponential</i> is a data-type optimized for Complex Sparse Exponentials; an application of the SparsePlaceValueComplex datatype. Whereas Complex Exponential could model 1 complex variable (like x), SparseComplexExponential can model any number of Complex Variables.
+<i>SparseComplexExponential</i> is a data-type optimized for Complex Sparse Exponentials; an application of the SparsePlaceValue(Complex) datatype. Whereas Complex Exponential could model 1 complex variable (like x), SparseComplexExponential can model any number of Complex Variables.
 
-If SparseComplexExponential wants to calculate exp(x) * cis(y), then it asks SparsePlaceValueComplex to calculate:
+If SparseComplexExponential wants to calculate exp(x) * cis(y), then it asks SparsePlaceValue(Complex) to calculate:
 
 1E1 * 1E0,i = 1E1,i
 
-SparseComplexExponential then formats SparsePlaceValueComplex's result as exp(x+(i)y).
+SparseComplexExponential then formats SparsePlaceValue(Complex)'s result as exp(x+(i)y).
 
 CAS
 -----------
@@ -478,9 +476,23 @@ Possibly the worst part is that it moves attention away from seeing symmetries i
 
 Using PlaceValue, we can see immediately that if 1/<s>1</s>1 = 11111 then we should also have another equation 1/11111 = <s>1</s>1 . This is an example of the so-called intrinsic symmetry (of the terrain). Trying to see this simple symmetry, using the needlessly complicated maps of the formalism of generating functions is prohibitively expensive.
 
+The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \. I should write 1\<s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \.
+
 Summary
 ---------
 PlaceValue is an intuitive and powerful data-type that can handle a wide range of academically relevant use-cases.
+
+Future Work
+------------
+Consider a list of whole numbers. It would look something like this : [0,1,2,3,...] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the ... being at the end meaning they continue in this way (the word 'this' here is a backward reference, and so presently apprehendable). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in this way (the word 'this' here is a forward reference, and so presently unapprehendable).
+
+When the list is laid out in the same order as the reading order there are good outcomes; when it is not there are bad outcomes. This may seem so obvious as not to mention. I wouldn't write the word duck as kcud because then I have to scan forward to pronounced the d first then scan backward to pronounce the rest. Some things are so obvious they go without saying, until you see someone break the convention, then we are forced to talk about it.
+
+Apparently we inherited our number system from Arabs. They followed the convention of writing the numbers in the same order that they read in. As it happens, they read in a different order, but this shouldn't matter. Unfortunately, due to broken convention during translation, now it matters alot. When translating out of Arabic, the word order was correctly translated, but the number order was not translated. This had the unfortunate effect of reversing the number order. Whereas, the number twelve should have been translated to 21 (first the smallest digit, then the next smallest, ...) it was wrongly translated as 12. Written as 21 you know immediate the value of the 2 and move on. Now you have to read ahead just to find the value of each digit. Also instead of starting with the bounded size end we start with the unbounded sized end.
+
+I have kept this bizarre mistranslation convention in my work so the number twelve is written as 12. This has made coding a nightmare, by forcing me to break the symmetry of my code with intermittent calls to the reverse() function (as well as writing some for-loops backwards), diverting my attention off the task at hand with this constant mental overhead, of broken translation. This is all to serve the user, who I assume has likely grown up with a backwards convention.
+
+For future work, I would clean the code by removing the overhead of intermittent calls to the reverse() function (as well as rewriting backwards for-loops). This would present the number twelve as 21, which is better in the long run.
 
 Dependencies
 ---------------
@@ -490,7 +502,7 @@ Dependencies
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on Sparse PlaceValueComplex</td><td>depends on Complex.</td></tr>
+<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

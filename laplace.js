@@ -1,7 +1,7 @@
 
-// Author:  Anthony John Ripa
-// Date:    10/31/2018
-// Laplace: a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
+// Author:	Anthony John Ripa
+// Date:	11/30/2018
+// Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
 
@@ -89,22 +89,6 @@ class laplace extends abstractpolynomial {
 		return laplace.toStringCosh(this.pv, this.base);    // 2015.11
 	}
 
-	//add(other) {
-	//	//alert(JSON.stringify([this, other]));
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.add(other.pv));
-	//}
-
-	//sub(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.sub(other.pv));
-	//}
-
-	//times(other) {
-	//	this.align(other);
-	//	return new laplace(this.base, this.pv.times(other.pv));
-	//}
-
 	inverse() {
 		return new laplace(this.base, this.pv.inverse());
 	}
@@ -143,6 +127,7 @@ class laplace extends abstractpolynomial {
 			var c = 1;
 			var k = 1;
 			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }
+			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1
 			if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }
 			if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + c + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }
 			if (s1 != 0 && s3 * s1 > 0 && s1 * s5 == s3 * s3) { c = s1; k = +s3 / s1; ret += '+' + c + 'cosh(' + root(k) + 'x)'; sub([0, 0, c * k * k, 0, c * k, 0, c]); }
@@ -185,7 +170,7 @@ class laplace extends abstractpolynomial {
 		//alert(JSON.stringify([pv, pv.get(-2), pv.whole.get(0)]));
 		var x = pv.whole.mantisa;
 		var exp = pv.exp;						// exp for negative powers	2015.8
-		console.log('laplace.toStringXbase: x=' + x);
+		console.log('laplace.toStringXbase: x=' + JSON.stringify(x));
 		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 			x.pop();                                    // Replace shift with pop because L2R 2015.7
 			if (x.length == 0) x = [new this.pv.whole.datatype()];  //  2018.6

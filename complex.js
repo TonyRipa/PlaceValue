@@ -1,7 +1,7 @@
 ﻿
-// Author:  Anthony John Ripa
-// Date:    10/31/2018
-// Complex: A data-type for representing Complex Numbers
+// Author:	Anthony John Ripa
+// Date:	11/30/2018
+// Complex:	A data-type for representing Complex Numbers
 
 function complex(real, imag) {
 	if (arguments.length < 1) real = 0;
@@ -17,6 +17,7 @@ complex.prototype.parse = function (n) {    //  2017.10
 }
 
 complex.parse = function (n) {
+	if (typeof n.r != 'undefined') return new complex(n.r, n.i)	//	2018.11
 	if (n instanceof String || typeof (n) == 'string') if (n.indexOf('i') != -1 && n.indexOf('r') != -1) { var x = JSON.parse(n); return new complex(x.r, x.i) }    //  2017.3
 	if (typeof n == "number") return new complex(n, 0); //  2017.3
 	if (n instanceof Number) return new complex(n, 0);  //  2017.3
@@ -36,7 +37,6 @@ complex.parse = function (n) {
 		var ret = '';
 		for (var i = 0; i < N.length; i++) {
 			var c = N[i];
-			//if (c == 'e' || c == 'E') break;    // Truncate    2015.9
 			if ("0123456789.".indexOf(c) > -1) ret += c;
 			var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
 			if (frac[c]) ret = frac[c];
