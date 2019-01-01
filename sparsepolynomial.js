@@ -1,20 +1,35 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2018
+// Date:    12/31/2018
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 
-	constructor(base, pv) {
-		//if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
-		if (arguments.length < 1) base = [];                            //  2017.9
-		if (arguments.length < 2) pv = new sparseplacevalue();          //  2018.4
-		if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }  //  2017.7
-		if (!(pv instanceof sparseplacevalue)) { var s = "sparsepolynomial expects arg 2 (pv) to be a sparsePV not " + typeof pv; alert(s); throw new Error(s); } //  2017.7
+	constructor(arg) {			//	2018.12	Added
+		var base, pv;
+		if (arguments.length == 0)[base, pv] = [[], new sparseplacevalue(rational)];
+		if (arguments.length == 1) {
+			if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [[], new sparseplacevalue(arg)];
+			else[base, pv] = [arg, new sparseplacevalue(rational)];
+		}
+		if (arguments.length == 2)[base, pv] = arguments;
+		if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }
+		if (!(pv instanceof sparseplacevalue)){var s='sparsepolynomial wants arg 2 to be SparsePV not '+typeof pv+" : "+JSON.stringify(pv);alert(s);throw new Error(s);}
 		super();
-		this.base = base
+		this.base = base;
 		this.pv = pv;
 	}
+
+	//constructor(base, pv) {	//	2018.12	Removed
+	//	//if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
+	//	if (arguments.length < 1) base = [];                            //  2017.9
+	//	if (arguments.length < 2) pv = new sparseplacevalue();          //  2018.4
+	//	if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }  //  2017.7
+	//	if (!(pv instanceof sparseplacevalue)) { var s = "sparsepolynomial expects arg 2 (pv) to be a sparsePV not " + typeof pv; alert(s); throw new Error(s); } //  2017.7
+	//	super();
+	//	this.base = base
+	//	this.pv = pv;
+	//}
 
 	parse(strornode) {  //  2017.9
 		console.log('new sparsepolynomial : ' + JSON.stringify(strornode))
@@ -22,8 +37,13 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
 		if (node.type == 'SymbolNode') {
 			console.log('new sparsepolynomial : SymbolNode')
-			var base = [node.name];
-			var pv = new sparseplacevalue().parse("1E1");  //new sparseplacevalue([[0, 1]]);
+			if (node.name.match(this.pv.datatype.regexfull())) {    //  2018.12 regexfull
+				var base = [];
+				var pv = this.pv.parse(node.name);
+			} else {
+				var base = [node.name];
+				var pv = this.pv.parse("1E1");	//	2018.12	this.pv
+			}
 			return new sparsepolynomial(base, pv);
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparsepolynomial : OperatorNode')
@@ -41,7 +61,7 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			}
 			return c;
 		} else if (node.type == 'ConstantNode') {
-			return new sparsepolynomial([], new sparseplacevalue().parse(Number(node.value)));
+			return new sparsepolynomial([], this.pv.parse(Number(node.value)));
 		} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
 			alert('Syntax Error: sparsepolynomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
 			return sparsepolynomial.parse(node.args[0]);
@@ -52,7 +72,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		var base1 = this.base.slice();
 		var base2 = other.base.slice();
 		var base = [...new Set([...base1, ...base2])];
-		//base.sort().reverse();
 		//if (base[0] == 1) base.shift();
 		alignmulti2base(this, base);
 		alignmulti2base(other, base);
@@ -68,15 +87,16 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 				for (var i = 0; i < basenew.length; i++) {
 					var letter = basenew[i];
 					var posinold = baseold.indexOf(letter);
-					if (posinold == -1) { digitpowernew.push(new rational().parse(0)); }
+					if (posinold == -1) { digitpowernew.push(new multi.pv.datatype()); }	//	2018.12	multi.pv.datatype
 					else {  //  2017.4  manually check if defined
 						//var temp = digitpowerold[posinold] | 0;
-						if (typeof digitpowerold.mantisa[posinold] === 'undefined') digitpowernew.push(new rational().parse(0));
+						if (typeof digitpowerold.mantisa[posinold] === 'undefined') digitpowernew.push(new multi.pv.datatype());	//	2018.12	multi.pv.datatype
 						else digitpowernew.push(digitpowerold.mantisa[posinold]);
 					}
 				}
 				if (digitpowernew.length != basenew.length) { alert('SparsePolynomial: alignment error'); throw new Error('SparsePolynomial: alignment error'); }
-				multi.pv.points[index][1] = new wholeplacevalue(digitpowernew);
+				if (digitpowernew.length==0) multi.pv.points[index][1] = new wholeplacevalue(multi.pv.datatype);
+				else                         multi.pv.points[index][1] = new wholeplacevalue(digitpowernew);
 			}
 			multi.base = basenew;
 		}

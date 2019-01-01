@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2018
+// Date:	12/31/2018
 // Complex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -11,9 +11,12 @@ function rationalcomplex(real, imag) {
 	if (!(imag instanceof rational)) { var s = 'rationalcomplex expects arg2 (imag) to be a Rational not ' + typeof imag + ' ' + JSON.stringify(imag); alert(s); throw new Error(s); }	//	2016.7
 	this.r = real;
 	this.i = imag;
+	this.check();
 }
 
 rationalcomplex.prototype.parse = function (n) {	//	2017.10
+	if (!(this instanceof rationalcomplex)) throw new Error('this!=rationalcomplex' + this)
+	this.check();
 	return rationalcomplex.parse(n);
 }
 
@@ -28,7 +31,6 @@ rationalcomplex.parse = function (n) {
 	//if (N[0] == '(' && N.slice(-1) == ')') return rationalcomplex.parse(N.slice(1, -1));	//	2018.1 Added	//	2018.11 Removed so (2,3) is parsable
 	//var r = N.match(rational.regex()); if (r && r.indexOf(N) != -1) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
 	//var r = N.match(rational.regex()); if (r) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
-	//if (N.match(rational.regexfull())) alert('r' + N);
 	if (N.match(rational.regexfull())) return new rationalcomplex(new rational().parse(N));	//	2017.11
 	//if (N.match(rationalcomplex.regexfull())) alert('rc' + N);
 	if (N.match(complex.regexfull())) { var c = complex.parse(N); return new rationalcomplex(new rational().parse(c.r), new rational().parse(c.i)); }                       //  2017.11
@@ -40,6 +42,19 @@ rationalcomplex.parse = function (n) {
 		}
 	}
 	{ var s = 'RationalComplex.parse: no match: ' + JSON.stringify(N); alert(s); throw new Error(s); }
+}
+
+rationalcomplex.prototype.check = function(other) {	//	2018.12	Added Type-Checker
+	if (arguments.length === 0) {
+		if (!this.r instanceof rational) throw new Error('RationalComplex.prototype.Check 1 Fail');
+		if (!this.i instanceof rational) throw new Error('RationalComplex.prototype.Check 1 Fail');
+		return this.datatype;
+	}
+	if (!(other instanceof rationalcomplex)) throw new Error('RationalComplex.prototype.Check 2 Fail : other is ' + JSON.stringify(other));
+	var othertype = other.check();
+	var mytype = this.check();
+	if (mytype != othertype) throw new Error('RationalComplex.prototype.Check 2 Fail');
+	return mytype;
 }
 
 rationalcomplex.regex = function () {	//	2017.10
@@ -60,11 +75,12 @@ rationalcomplex.regexfull = function () {   //  2017.11
 	return '^' + rationalcomplex.regex() + '$';
 }
 
-rationalcomplex.prototype.tohtml = function () { return JSON.stringify(this) }
+rationalcomplex.prototype.tohtml = function () { this.check(); return JSON.stringify(this) }
 
-rationalcomplex.prototype.toreal = function () { return this.r.toreal(); }			//	2017.11
+rationalcomplex.prototype.toreal = function () { this.check(); return this.r.toreal(); }			//	2017.11
 
 rationalcomplex.prototype.todigit = function () {
+	this.check();
 	var IMAG = String.fromCharCode(777);
 	var NEG = String.fromCharCode(822);
 	var s = this.toString(false, false);
@@ -74,6 +90,7 @@ rationalcomplex.prototype.todigit = function () {
 }
 
 rationalcomplex.prototype.toString = function (sTag, long) {						//	sTag	2015.11
+	this.check();
 	if (sTag) return this.digitpair('<s>', '</s>', true, long);
 	//if (long) return this.digitpair('-', '', true, long);
 	return this.digitpair('', String.fromCharCode(822), false, long);
@@ -82,6 +99,7 @@ rationalcomplex.prototype.toString = function (sTag, long) {						//	sTag	2015.1
 rationalcomplex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) {	//	2015.12
 	//	185	189	822	8315	9321
 	//	^1	1/2	-	^-		10
+	this.check();
 	var IMAG = String.fromCharCode(777);
 	var digit = [this.r, this.i]; //alert(JSON.stringify(digit));
 	//if (!Array.isArray(digit)) return this.digithelp(digit, NEGBEG, NEGEND, true);
@@ -107,6 +125,7 @@ rationalcomplex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) 
 rationalcomplex.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction) {	//	2015.11
 	//	185	189	822	8315	9321
 	//	^1	1/2	-	^-		10
+	this.check();
 	var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
 	var IMAG = String.fromCharCode(777);
 	var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
@@ -144,35 +163,36 @@ rationalcomplex.prototype.digithelp = function (digit, NEGBEG, NEGEND, fraction)
 
 rationalcomplex.zero = new rationalcomplex();	//	2017.11	Default 0
 
-rationalcomplex.prototype.equals = function (other) { return (this.r.equals(other.r)) && (this.i.equals(other.i)); }
-rationalcomplex.prototype.isreal = function () { return this.i == 0; }													//	2017.5
-rationalcomplex.prototype.isimag = function () { return this.r == 0; }													//	2017.12
-rationalcomplex.prototype.is0 = function () { return this.equals(rationalcomplex.zero); }
-rationalcomplex.prototype.is1 = function () { return this.r.is1() && this.i.is0(); }									//	2018.3
-rationalcomplex.prototype.isNaN = function () { return this.r.isNaN() || this.i.isNaN(); }								//	2018.3
-rationalcomplex.prototype.below = function (other) { return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }	//	2017.3
-rationalcomplex.prototype.above = function (other) { return this.r != other.r ? this.r > other.r : this.i > other.i; }	//	2017.3
-rationalcomplex.prototype.below0 = function () { return this.below(rationalcomplex.zero); }								//	2017.3
-rationalcomplex.prototype.above0 = function () { return this.above(rationalcomplex.zero); }								//	2017.3
-rationalcomplex.prototype.isneg = rationalcomplex.prototype.below0														//	2017.10
-rationalcomplex.prototype.ispos = rationalcomplex.prototype.above0														//	2018.2
-rationalcomplex.prototype.isint = function () { return this.isreal() && this.r.isint(); }								//	2017.10
-rationalcomplex.prototype.abs = function () { return new rationalcomplex(this.r.abs(), this.i.abs()) }					//	2018.2
+rationalcomplex.prototype.equals = function (other) { this.check(other); return (this.r.equals(other.r)) && (this.i.equals(other.i)); }
+rationalcomplex.prototype.isreal = function () { this.check(); return this.i == 0; }													//	2017.5
+rationalcomplex.prototype.isimag = function () { this.check(); return this.r == 0; }													//	2017.12
+rationalcomplex.prototype.is0 = function () { this.check(); return this.equals(rationalcomplex.zero); }
+rationalcomplex.prototype.is1 = function () { this.check(); return this.r.is1() && this.i.is0(); }										//	2018.3
+rationalcomplex.prototype.isNaN = function () { this.check(); return this.r.isNaN() || this.i.isNaN(); }								//	2018.3
+rationalcomplex.prototype.below = function (other) { this.check(other); return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }	//	2017.3
+rationalcomplex.prototype.above = function (other) { this.check(other); return this.r != other.r ? this.r > other.r : this.i > other.i; }	//	2017.3
+rationalcomplex.prototype.below0 = function () { this.check(); return this.below(rationalcomplex.zero); }								//	2017.3
+rationalcomplex.prototype.above0 = function () { this.check(); return this.above(rationalcomplex.zero); }								//	2017.3
+rationalcomplex.prototype.isneg = rationalcomplex.prototype.below0																		//	2017.10
+rationalcomplex.prototype.ispos = rationalcomplex.prototype.above0																		//	2018.2
+rationalcomplex.prototype.isint = function () { this.check(); return this.isreal() && this.r.isint(); }									//	2017.10
+rationalcomplex.prototype.abs = function () { this.check(); return new rationalcomplex(this.r.abs(), this.i.abs()) }					//	2018.2
 
-rationalcomplex.prototype.add = function (other) { return new rationalcomplex(this.r.add(other.r), this.i.add(other.i)); }
-rationalcomplex.prototype.sub = function (other) { return new rationalcomplex(this.r.sub(other.r), this.i.sub(other.i)); }
-rationalcomplex.prototype.exp = function () { return this.i.is0() ? new rationalcomplex(this.r.exp()) : new rationalcomplex(this.r.exp().times(this.i.cos()), this.r.exp().times(this.i.sin())); }	//	2017.3
-rationalcomplex.prototype.ln = function () { return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i)).sqrt().log(), this.arg()) }
-rationalcomplex.prototype.nor = function () { return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i))) }
-rationalcomplex.prototype.norm = function () { return this.r.times(this.r).add(this.i.times(this.i)).sqrt(); }
-rationalcomplex.prototype.lnn = function () { return this.nor().ln() }
-rationalcomplex.prototype.arg = function () { return this.i.atan2(this.r); }
-rationalcomplex.prototype.round = function () { return new rationalcomplex(this.r.round(), this.i.round()) }
-rationalcomplex.prototype.negate = function () { return new rationalcomplex(this.r.negate(), this.i.negate()) }		//	2017.3
-rationalcomplex.prototype.clone = function () { return new rationalcomplex(this.r, this.i); }						//	2017.10
-rationalcomplex.prototype.scale = function (c) { return new rationalcomplex(this.r.scale(c), this.i.scale(c)); }	//	2017.11
+rationalcomplex.prototype.add = function (other) { this.check(other); return new rationalcomplex(this.r.add(other.r), this.i.add(other.i)); }
+rationalcomplex.prototype.sub = function (other) { this.check(other); return new rationalcomplex(this.r.sub(other.r), this.i.sub(other.i)); }
+rationalcomplex.prototype.exp = function () { this.check(); return this.i.is0() ? new rationalcomplex(this.r.exp()) : new rationalcomplex(this.r.exp().times(this.i.cos()), this.r.exp().times(this.i.sin())); }	//	2017.3
+rationalcomplex.prototype.ln = function () { this.check(); return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i)).sqrt().log(), this.arg()) }
+rationalcomplex.prototype.nor = function () { this.check(); return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i))) }
+rationalcomplex.prototype.norm = function () { this.check(); return this.r.times(this.r).add(this.i.times(this.i)).sqrt(); }
+rationalcomplex.prototype.lnn = function () { this.check(); return this.nor().ln() }
+rationalcomplex.prototype.arg = function () { this.check(); return this.i.atan2(this.r); }
+rationalcomplex.prototype.round = function () { this.check(); return new rationalcomplex(this.r.round(), this.i.round()) }
+rationalcomplex.prototype.negate = function () { this.check(); return new rationalcomplex(this.r.negate(), this.i.negate()) }		//	2017.3
+rationalcomplex.prototype.clone = function () { this.check(); return new rationalcomplex(this.r, this.i); }						//	2017.10
+rationalcomplex.prototype.scale = function (c) { this.check(); return new rationalcomplex(this.r.scale(c), this.i.scale(c)); }	//	2017.11
 
 rationalcomplex.prototype.times = function (y) {
+	this.check(y);
 	if (!(y instanceof rationalcomplex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new rationalcomplex(y.r, y.i);	//	2017.5
 	if (!(y instanceof rationalcomplex)) { var s = 'rationalcomplex.times expects argument (y) to be a rationalcomplex but found ' + typeof y + ' ' + JSON.stringify(y); alert(s); throw new Error(s); }	//	2017.5
 	var x = this;
@@ -181,6 +201,7 @@ rationalcomplex.prototype.times = function (y) {
 }
 
 rationalcomplex.prototype.divide = function (y) {
+	this.check(y);
 	var x = this;
 	var c = rationalcomplex;
 	return y.i.is0() ? x.i.is0() ? new c(x.r.divide(y.r)) : x.r.is0() ? new c(new rational, x.i.divide(y.r)) : new c(x.r.divide(y.r), x.i.divide(y.r)) : new c((x.r.times(y.r).add(x.i.times(y.i))).divide(y.r.times(y.r).add(y.i.times(y.i))), (x.i.times(y.r).sub(x.r.times(y.i))).divide(y.r.times(y.r).add(y.i.times(y.i))));
@@ -188,6 +209,7 @@ rationalcomplex.prototype.divide = function (y) {
 
 rationalcomplex.prototype.pow = function (p) {
 	if (!(p instanceof rationalcomplex)) p = rationalcomplex.parse(p);	//	2017.11
+	this.check(p);
 	//try {
 		var b = this;
 		var c = rationalcomplex;
@@ -206,6 +228,7 @@ rationalcomplex.prototype.pointdivide = rationalcomplex.prototype.divide;	//	201
 rationalcomplex.prototype.pointpow = rationalcomplex.prototype.pow;			//	2017.10
 
 rationalcomplex.prototype.gcd = function (b) {	//	2017.12
+	this.check(b);
 	var rgcd = this.r.gcd(b.r);
 	var igcd = this.i.gcd(b.i);
 	if (b.isimag()) return new rationalcomplex(new rational(), igcd);
@@ -213,5 +236,6 @@ rationalcomplex.prototype.gcd = function (b) {	//	2017.12
 }
 
 rationalcomplex.prototype.eval = function (base) {	//	2017.10
+	this.check(base);
 	return this.clone();
 }

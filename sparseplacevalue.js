@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    11/30/2018
+// Date:    12/31/2018
 // SparsePlaceValue: a datatype for representing base agnostic arithmetic via sparse numbers
 
 function sparseplacevalue(arg) {
@@ -21,6 +21,7 @@ function sparseplacevalue(arg) {
 	points = trim(this, points);
 	//points = points.map(function (x) { return [x[0], x[1].map(function (y) { return Math.round(y * 1000) / 1000 })] });
 	this.points = points;
+	this.check();
 	function normal(points) {
 		var list = points.map(function (x) { return x.slice(0) });
 		sort(list);
@@ -75,8 +76,9 @@ function sparseplacevalue(arg) {
 }
 
 sparseplacevalue.prototype.parse = function (arg) { //  2017.9
+	this.check();
 	var datatype = this.datatype;
-	if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [new datatype().parse(JSON.stringify(n)), new wholeplacevalue().parse(JSON.stringify(e))] }); return new sparseplacevalue(points); }   //  2017.7
+	if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [new datatype().parse(JSON.stringify(n)), new wholeplacevalue(datatype).parse(JSON.stringify(e))] }); return new sparseplacevalue(points); }   //  2017.7
 	if (typeof arg == "number") return new sparseplacevalue([[new datatype().parse(arg), new wholeplacevalue(datatype).parse(0)]]);	//	2018.11	WholePV(Datatype)
 	if (arg instanceof Number) return new sparseplacevalue([[new datatype().parse(arg), [new datatype.parse(0)]]]);
 	//var terms = arg.split('+');
@@ -106,7 +108,8 @@ sparseplacevalue.prototype.parse = function (arg) { //  2017.9
 		//var pows = pow.split(',')						//	2018.11	Removed
 		var pows = splitbyunparenthesizedcomma(pow);	//	2018.11	Added
 		//if (!pows.length) pows = [0, 0];
-		return [new datatype().parse(coef), new wholeplacevalue(pows.map(new datatype().parse))];   //  2017.7
+		pows = pows.map(x=>new datatype().parse(x));
+		return [new datatype().parse(coef), new wholeplacevalue(pows)];   //  2017.7
 		function splitbyunparenthesizedcomma(csv) {		//	2018.11	Added
 			var arr = csv.split(',');
 			merge(arr);
@@ -123,7 +126,28 @@ sparseplacevalue.prototype.parse = function (arg) { //  2017.9
 	}
 }
 
+sparseplacevalue.prototype.check = function(other) {	//	2018.12	Added Type-Checker
+	if (!(this instanceof sparseplacevalue)) throw new Error("Sparseplacevalue.prototype.Check 1 Fail : This isn't SparsePlaceValue");
+	var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other';
+	if (arguments.length === 0) {
+		var datatype = this.datatype;
+		if (!(this.points.every(x=>{var c=x[0];return c instanceof datatype})))
+			throw new Error('Sparseplacevalue.prototype.Check 1 Fail : Not all coefs in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
+		if (!(this.points.every(x=>{var w=x[1];return w.check()==datatype})))
+			throw new Error('Sparseplacevalue.prototype.Check 1 Fail : Not all power in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
+		return datatype;
+	}
+	if (!(other instanceof sparseplacevalue)) throw new Error("Sparseplacevalue.prototype.Check 2 Fail : Other isn't SparsePlaceValue");
+	var othertype = other.check();
+	var mytype = this.check();
+	if (mytype != othertype) {
+		throw new Error('Sparseplacevalue.prototype.Check 2 Fail : Othertype is of type ' + translate(othertype) + ', but ThisType is ' + translate(mytype));
+	}
+	return mytype;
+}
+
 sparseplacevalue.prototype.get = function (i) { //  2017.7
+	this.check();
 	if (i instanceof Number || typeof (i) == 'number') i = new wholeplacevalue(this.datatype).parse('(' + i + ')');
 	if (Array.isArray(i)) i = new wholeplacevalue(i);   //  2017.9
 	for (var j = 0; j < this.points.length; j++)
@@ -138,17 +162,20 @@ sparseplacevalue.prototype.get = function (i) { //  2017.7
 }
 
 sparseplacevalue.prototype.tohtml = function () {   // Replaces toStringInternal 2015.7
+	this.check();
 	var me = this.clone();                          // Reverse will mutate  2015.9
 	return me.points.reverse().map(x => '[' + x[0].toString(true, true) + ', ' + x[1].toString() + ']').join();
 }
 
 sparseplacevalue.prototype.toString = function () {                             //  2016.12
+	this.check();
 	var ret = "";
 	for (var i = 0 ; i < this.points.length; i++) ret += '+' + this.digit(i);   //  Plus-delimited  2016.10
 	return ret.substr(1).replace(/\+\-/g, '-');                                         //  +- becomes -    2017.1
 }
 
 sparseplacevalue.prototype.digit = function (i) {                       //  2017.2
+	this.check();
 	var digit = i < 0 ? new this.datatype.parse(0) : this.points[this.points.length - 1 - i];    //  R2L  2015.7
 	var a = digit[0].toString(false, true);
 	var b = digit[1];
@@ -156,21 +183,22 @@ sparseplacevalue.prototype.digit = function (i) {                       //  2017
 	return a + 'E' + b.mantisa.map(x=>x.toString(false,true));                 //  2017.7  map
 }
 
-sparseplacevalue.prototype.is0 = function () { return this.points.length == 0 || (this.points.length == 1 && this.points[0][0].is0()); }    //  2017.7
-sparseplacevalue.prototype.is1 = function () { return this.points.length == 1 && this.points[0][0].is1() && this.points[0][1].is0(); }      //  2017.7
+sparseplacevalue.prototype.is0 = function () { this.check(); return this.points.length == 0 || (this.points.length == 1 && this.points[0][0].is0()); }    //  2017.7
+sparseplacevalue.prototype.is1 = function () { this.check(); return this.points.length == 1 && this.points[0][0].is1() && this.points[0][1].is0(); }      //  2017.7
 
-sparseplacevalue.prototype.add = function (other) { return new sparseplacevalue(this.points.concat(other.points)); }
-sparseplacevalue.prototype.sub = function (other) { return this.add(other.negate()); }
-sparseplacevalue.prototype.pointtimes = function (other) { return this.f(this.datatype.prototype.times, other); }
-sparseplacevalue.prototype.pointdivide = function (other) { return this.f(this.datatype.prototype.divide, other); }
-sparseplacevalue.prototype.pointsub = function (other) { return this.pointadd(other.negate()); }
-sparseplacevalue.prototype.pointpow = function (other) { return this.f0(this.datatype.prototype.pow, other); }   //  2017.7
-sparseplacevalue.prototype.clone = function () { return new sparseplacevalue(this.points.slice(0)); }
-sparseplacevalue.prototype.negate = function () { return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7
-sparseplacevalue.prototype.transpose = function () { return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
-sparseplacevalue.prototype.round = function () { return new sparseplacevalue(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6
+sparseplacevalue.prototype.add = function (other) { this.check(other); return new sparseplacevalue(this.points.concat(other.points)); }
+sparseplacevalue.prototype.sub = function (other) { this.check(other); return this.add(other.negate()); }
+sparseplacevalue.prototype.pointtimes = function (other) { this.check(other); return this.f(this.datatype.prototype.times, other); }
+sparseplacevalue.prototype.pointdivide = function (other) { this.check(other); return this.f(this.datatype.prototype.divide, other); }
+sparseplacevalue.prototype.pointsub = function (other) { this.check(other); return this.pointadd(other.negate()); }
+sparseplacevalue.prototype.pointpow = function (other) { this.check(other); return this.f0(this.datatype.prototype.pow, other); }   //  2017.7
+sparseplacevalue.prototype.clone = function () { this.check(); return new sparseplacevalue(this.points.slice(0)); }
+sparseplacevalue.prototype.negate = function () { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7
+sparseplacevalue.prototype.transpose = function () { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
+sparseplacevalue.prototype.round = function () { this.check(); return new sparseplacevalue(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6
 
 sparseplacevalue.prototype.f = function (f, other) {    //  2017.7
+	this.check(other);
 	var ret = this.clone();
 	for (var i = 0; i < ret.points.length; i++)
 		ret.points[i][0] = f.call(ret.points[i][0], other.get(ret.points[i][1]));
@@ -178,6 +206,7 @@ sparseplacevalue.prototype.f = function (f, other) {    //  2017.7
 }
 
 sparseplacevalue.prototype.f0 = function (f, other) {   //  2017.7
+	this.check(other);
 	var ret = this.clone();
 	for (var i = 0; i < ret.points.length; i++)
 		ret.points[i][0] = f.call(ret.points[i][0], other.get(0));
@@ -185,6 +214,7 @@ sparseplacevalue.prototype.f0 = function (f, other) {   //  2017.7
 }
 
 sparseplacevalue.prototype.pointadd = function (addend) {
+	this.check(addend);
 	var ret = this.clone().points;
 	//var digit = rational.parse(0);
 	//for (var i = 0; i < addend.points.length; i++) if (addend.points[i][1][0].is0() && addend.points[i][1][1].is0()) digit = addend.points[i][0];
@@ -194,23 +224,19 @@ sparseplacevalue.prototype.pointadd = function (addend) {
 }
 
 sparseplacevalue.prototype.times = function (top) {
-	var points = []
+	this.check(top);
+	var points = [];
 	for (var i = 0; i < this.points.length; i++)
 		for (var j = 0; j < top.points.length; j++)
 			if (!this.points[i][0].is0() && !top.points[j][0].is0()) points.push([this.points[i][0].times(top.points[j][0]), addvectors(this.points[i][1], top.points[j][1])]); // 2017.2 0*∞=0 for easy division
+	if (points.length == 0) return new sparseplacevalue(this.datatype);	//	2018.12
 	return new sparseplacevalue(points);
 	function addvectors(a, b) { return a.add(b); //  2017.1
-		//if (a.length > b.length) return addvectors(b, a);
-		//var ret = []
-		//for (var i = 0; i < a.length; i++)
-		//    ret.push(a[i].add(b[i]));
-		//for (i = a.length; i < b.length; i++)
-		//    ret.push(b[i]);
-		//return ret;
 	}
 }
 
 sparseplacevalue.prototype.scale = function (scalar) {//alert(JSON.stringify(['scale',scalar]))
+	this.check();
 	if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);//alert(JSON.stringify(['scale',scalar]))
 	var ret = this.clone();
 	ret.points = ret.points.map(function (x) { return [x[0].times(scalar), x[1]]; });
@@ -218,6 +244,7 @@ sparseplacevalue.prototype.scale = function (scalar) {//alert(JSON.stringify(['s
 }
 
 sparseplacevalue.prototype.unscale = function (scalar) {  //  2016.5
+	this.check();
 	if (!(scalar instanceof this.datatype)) scalar = new this.datatype.parse(scalar);
 	var ret = this.clone();
 	ret.points = ret.points.map(function (x) { return [x[0].divide(scalar), x[1]]; });
@@ -227,44 +254,49 @@ sparseplacevalue.prototype.unscale = function (scalar) {  //  2016.5
 }
 
 sparseplacevalue.prototype.divide = function (den) {    //  2016.10
+	this.check(den);
 	var num = this;
 	var iter = 5//math.max(num.points.length, den.points.length);
 	var quotient = divideh(num, den, iter);
 	return quotient;
 	function divideh(num, den, c) {
-		if (c == 0) return new sparseplacevalue().parse(0);
+		num.check(den);
+		if (c == 0) return new sparseplacevalue(num.datatype).parse(0);	//	2018.12	num.datatype
 		var n = num.points.slice(-1)[0];
 		var d = den.points.slice(-1)[0];
-		var quotient = new sparseplacevalue([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
+		var quotient = new sparseplacevalue([[n[0].divide(d[0]), n[1].sub(d[1])]]);		//	2018.12	sub
 		if (d[0].is0()) return quotient;
 		var remainder = num.sub(quotient.times(den))
 		var q2 = divideh(remainder, den, c - 1);
 		quotient = quotient.add(q2);
 		return quotient;
 	}
-	function subvectors(a, b) { return a.sub(b);//  2017.1
-		//if (a.length > b.length) return subvectors(b, a).map(function (x) { return x.negate(); });
-		////return math.add(a.concat(math.zeros(b.length - a.length).valueOf()), math.multiply(b, -1));
-		//var ret = []
-		//for (var i = 0; i < a.length; i++)
-		//    ret.push(a[i].sub(b[i]));
-		//for (i = a.length; i < b.length; i++)
-		//    ret.push(b[i].negate());
-		//return ret;
-	}
+	//function subvectors(a, b) { return a.sub(b);//  2017.1	//	2018.12	Removed
+	//	//if (a.length > b.length) return subvectors(b, a).map(function (x) { return x.negate(); });
+	//	////return math.add(a.concat(math.zeros(b.length - a.length).valueOf()), math.multiply(b, -1));
+	//	//var ret = []
+	//	//for (var i = 0; i < a.length; i++)
+	//	//    ret.push(a[i].sub(b[i]));
+	//	//for (i = a.length; i < b.length; i++)
+	//	//    ret.push(b[i].negate());
+	//	//return ret;
+	//}
 }
 
 sparseplacevalue.prototype.remainder = function (den) {  //  2016.5
+	this.check(den);
 	return this.sub(this.divide(den).round().times(den));   //  2017.6  round
 }
 
 sparseplacevalue.prototype.divideleft = function (den) {    //  2016.10
+	this.check(den);
 	var num = this;
 	var iter = 5//math.max(num.points.length, den.points.length);
 	var quotient = divideh(num, den, iter);
 	return quotient;
 	function divideh(num, den, c) {
-		if (c == 0) return new sparseplacevalue().parse(0);
+		num.check(den);
+		if (c == 0) return new sparseplacevalue(num.datatype).parse(0);	//	2018.12	num.datatype
 		var n = num.points[0];
 		var d = den.points[0];
 		var quotient = new sparseplacevalue([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
@@ -283,6 +315,7 @@ sparseplacevalue.prototype.dividemiddle = sparseplacevalue.prototype.divide
 sparseplacevalue.prototype.pow = function (power) {        //  2016.11
 	if (power instanceof this.datatype) power = new sparseplacevalue([[power, new wholeplacevalue(this.datatype).parse(0)]]);   //  2017.7
 	if (!(power instanceof sparseplacevalue)) power = new sparseplacevalue(this.datatype).parse('' + power);       //  2017.7
+	this.check(power);
 	if (power.points.length == 1 & power.points[0][1].is0()) {//alert(JSON.stringify(power.points[0][0] instanceof rational))
 		var base = this.points[0];
 		//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), base[1].map(x=>x.times(power.points[0][0]))]]);
@@ -311,6 +344,7 @@ sparseplacevalue.prototype.pow = function (power) {        //  2016.11
 }
 
 sparseplacevalue.prototype.gcd = function () {   // 2016.5
+	this.check();
 	var list = [];
 	for (var i = 0; i < this.points.length; i++)
 		list.push(this.points[i][0]);
@@ -320,6 +354,7 @@ sparseplacevalue.prototype.gcd = function () {   // 2016.5
 }
 
 sparseplacevalue.prototype.eval = function (base) {
+	var mytype = this.check();	//	2018.12
 	if (base instanceof sparseplacevalue) base = base.points[0][0];
 	return new sparseplacevalue(eval(this.points, base));
 	function eval(points, base) {
@@ -331,7 +366,9 @@ sparseplacevalue.prototype.eval = function (base) {
 			if (pows.mantisa.length < maxlen) return point;
 			var pow = pows.mantisa.slice(-1);
 			//return [point[0].times(base.pow(new wholeplacevalue(pow))), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.7
-			return [point[0].times(base.pow(pow[0])), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.12
+			pows = pows.mantisa.slice(0, -1);	//	2018.12
+			if (pows.length == 0) return [point[0].times(base.pow(pow[0])), new wholeplacevalue(mytype)];  //  2018.12
+			return [point[0].times(base.pow(pow[0])), new wholeplacevalue(pows)];  //  2017.12
 		}
 	}
 }

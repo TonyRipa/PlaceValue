@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 11/30/2018
+Date : 12/31/2018
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -243,9 +243,9 @@ If SparseExponential wants to calculate exp(x) * exp(y), then it asks SparsePlac
 
 SparseExponential then formats SparsePlaceValue's result as exp(x+y).
 
-SparseExponentialRatio
+SparseExponentialRatio1
 ------------------------
-<i>SparseExponentialRatio</i> is a data-type optimized for ratios of sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
+<i>SparseExponentialRatio1</i> is a data-type optimized for ratios of Sparse Exponential Ratios; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio1 uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
 
 Fourier
 -----------
@@ -476,7 +476,7 @@ Possibly the worst part is that it moves attention away from seeing symmetries i
 
 Using PlaceValue, we can see immediately that if 1/<s>1</s>1 = 11111 then we should also have another equation 1/11111 = <s>1</s>1 . This is an example of the so-called intrinsic symmetry (of the terrain). Trying to see this simple symmetry, using the needlessly complicated maps of the formalism of generating functions is prohibitively expensive.
 
-The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \. I should write 1\<s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \.
+The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \. I should write 1\ <s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \.
 
 Summary
 ---------
@@ -484,13 +484,13 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 
 Future Work
 ------------
-Consider a list of whole numbers. It would look something like this : [0,1,2,3,...] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the ... being at the end meaning they continue in this way (the word 'this' here is a backward reference, and so presently apprehendable). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in this way (the word 'this' here is a forward reference, and so presently unapprehendable).
+Consider a list of whole numbers. It would look something like this : [0,1,2,3,...] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the ... being at the end meaning they continue in 'this' way (the word 'this' here is a backward reference to the sequence already read, and so already recognized). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in 'this' way (the word 'this' here is a forward reference to the sequence not yet read, and so not yet recognized).
 
 When the list is laid out in the same order as the reading order there are good outcomes; when it is not there are bad outcomes. This may seem so obvious as not to mention. I wouldn't write the word duck as kcud because then I have to scan forward to pronounced the d first then scan backward to pronounce the rest. Some things are so obvious they go without saying, until you see someone break the convention, then we are forced to talk about it.
 
-Apparently we inherited our number system from Arabs. They followed the convention of writing the numbers in the same order that they read in. As it happens, they read in a different order, but this shouldn't matter. Unfortunately, due to broken convention during translation, now it matters alot. When translating out of Arabic, the word order was correctly translated, but the number order was not translated. This had the unfortunate effect of reversing the number order. Whereas, the number twelve should have been translated to 21 (first the smallest digit, then the next smallest, ...) it was wrongly translated as 12. Written as 21 you know immediate the value of the 2 and move on. Now you have to read ahead just to find the value of each digit. Also instead of starting with the bounded size end we start with the unbounded sized end.
+Apparently we inherited our number system from Arabs. They followed the convention of writing the numbers in the same order that they read in. As it happens, they read in a different order, but this shouldn't matter. Unfortunately, due to broken convention during translation, now it matters a lot. When translating out of Arabic, the word order was correctly translated, but the number order was not translated. This had the unfortunate effect of reversing the number order. Whereas, the number twelve should have been translated to 21 (first the smallest digit, then the next smallest, ...) it was wrongly translated as 12. Written as 21 you know immediate the weight of the value 2 and move on. With the mistranslation, you have to read ahead just to find the weight of each digit. Also instead of starting with the bounded size end we start with the unbounded sized end.
 
-I have kept this bizarre mistranslation convention in my work so the number twelve is written as 12. This has made coding a nightmare, by forcing me to break the symmetry of my code with intermittent calls to the reverse() function (as well as writing some for-loops backwards), diverting my attention off the task at hand with this constant mental overhead, of broken translation. This is all to serve the user, who I assume has likely grown up with a backwards convention.
+I have kept this bizarre mistranslation convention in my work so the number twelve is written as 12. This has made coding inelegant, by forcing me to break the symmetry of my code with intermittent calls to the reverse() function (as well as writing some for-loops backwards), diverting my attention off the task at hand with this constant mental overhead, of broken translation. This is all to serve the user, who I assume has likely grown up with a backwards convention.
 
 For future work, I would clean the code by removing the overhead of intermittent calls to the reverse() function (as well as rewriting backwards for-loops). This would present the number twelve as 21, which is better in the long run.
 
@@ -498,9 +498,9 @@ Dependencies
 ---------------
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
-<tr><td>SparseExponential</td><td>depends on Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>SparseExponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
