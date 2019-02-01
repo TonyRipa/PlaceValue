@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2018
+Date : 1/31/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -118,14 +118,6 @@ If SparsePolynomialRatio1 wants to calculate (x^.5-1)/(x-1), then it asks Sparse
 
 SparsePolynomialRatio1 then formats SparsePlaceValueRatio1's result as 1/(x^½+1).
 
-Polynomial2
--------------
-<i>polynomial2.js</i> is a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype.
-
-The WholePlaceValue2 data-type is particularly well-suited to 2-D polynomial arithmetic. Polynomial arithmetic uses placeholders like x & y. WholePlaceValue2 arithmetic dispenses with these placeholders.
-
-<i>polynomial2.html</i> is a demo for polynomial2.js.
-
 WholePlaceValue2
 ------------------------
 <i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Polynomial2</i>. If Polynomial2 wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
@@ -144,6 +136,29 @@ If Polynomial2 wants to calculate (x+y)^2, then it asks WholePlaceValue2 to calc
 Polynomial2 then formats WholePlaceValue2's result as x^2+2xy+y^2 .
 
 Polynomial2 can be thought of as nothing more than an algebraic looking interface to an underlying arithmetic calculation in WholePlaceValue2. Polynomial2 can be thought of as merely aliasing the axes of WholePlaceValue2 with common names like x & y. Something similar can be said for Polynomial1.
+
+Polynomial2
+-------------
+<i>polynomial2.js</i> is a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype.
+
+The WholePlaceValue2 data-type is particularly well-suited to 2-D polynomial arithmetic. Polynomial arithmetic uses placeholders like x & y. WholePlaceValue2 arithmetic dispenses with these placeholders.
+
+If Polynomial2 wants to calculate (x+h)^2, then it asks WholePlaceValue2 to calculate:
+<pre>
+                   1
+       1          20
+( 10 + 0 ) ^ 2 = 100
+</pre>
+Polynomial2 then formats WholePlaceValue2's result as x^2+2x*h+h^2.
+
+If Polynomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks WholePlaceValue2 to calculate:
+<pre>
+ 1
+20 | 0 = 20
+</pre>
+Polynomial2 then formats WholePlaceValue2's result as 2x.
+
+<i>polynomial2.html</i> is a demo for polynomial2.js.
 
 Laurent Polynomial
 -------------------
@@ -173,22 +188,6 @@ SparsePlaceValue2
 000
 </pre>
 is represented as the SparsePlaceValue2: 5E2,1 .
-
-SparseMultinomial2
-------------------------
-<i>SparseMultinomial2</i> is a data-type optimized for sparse Multinomials; an application of the SparsePlaceValue2 datatype.
-
-If SparseMultinomial2 wants to calculate (x+h)^2, then it asks SparsePlaceValue2 to calculate:
-
-(1E1 + 1E0,1) ^ 2 = 1E2 + 2E1,1 + 1E0,2
-
-SparseMultinomial2 then formats SparsePlaceValue2's result as x^2+2x*h+h^2.
-
-If SparseMultinomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks SparsePlaceValue2 to calculate:
-
-2E1+1E0,1 | 0 = 2E1
-
-SparseMultinomial2 then formats SparsePlaceValue2's result as 2x.
 
 SparsePlaceValue
 ------------------------
@@ -476,7 +475,7 @@ Possibly the worst part is that it moves attention away from seeing symmetries i
 
 Using PlaceValue, we can see immediately that if 1/<s>1</s>1 = 11111 then we should also have another equation 1/11111 = <s>1</s>1 . This is an example of the so-called intrinsic symmetry (of the terrain). Trying to see this simple symmetry, using the needlessly complicated maps of the formalism of generating functions is prohibitively expensive.
 
-The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \. I should write 1\ <s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \.
+The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \ . I should write 1\ <s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \ .
 
 Summary
 ---------
@@ -502,7 +501,7 @@ Dependencies
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
 <tr><td>Sparse Multinomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Sparse Complex Exponential</td><td>depends on Complex Sparse Multinomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Complex.</td></tr>
+<tr><td>Sparse Complex Exponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2018
+// Date:	1/31/2019
 // SparseComplexExponential : a datatype for representing sparse complex exponentials; an application of the sparseplacevalue(complex) datatype
 
 class sparsecomplexexponential extends abstractpolynomial {
@@ -52,7 +52,8 @@ class sparsecomplexexponential extends abstractpolynomial {
 			var fn = node.name;
 			var kids = node.args;
 			//var kidaspoly = complexlaurent.parse(kids[0])
-			var kidaspoly = new complexsparsemultinomial().parse(kids[0])
+			//var kidaspoly = new complexsparsemultinomial().parse(kids[0])	//	2019.1	Removed
+			var kidaspoly = new sparsepolynomial(complex).parse(kids[0])	//	2019.1	Added
 			var base = kidaspoly.base;
 			//kidaspoly.pv = new sparseplacevaluecomplex().parse(kidaspoly.pv.toString()) //2018.10 temporary conversion fix because CSmulti now uses SPV //2018.11 Rem
 			//var ten = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [1, 0]);		// exp is 2D    2016.1
@@ -95,7 +96,6 @@ class sparsecomplexexponential extends abstractpolynomial {
 		var base1 = this.base.slice();
 		var base2 = other.base.slice();
 		var base = [...new Set([...base1, ...base2])];
-		//base.sort().reverse();
 		//if (base[0] == 1) base.shift();
 		alignmulti2base(this, base);
 		alignmulti2base(other, base);
