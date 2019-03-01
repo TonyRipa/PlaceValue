@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	12/31/2018
+// Date:	2/28/2019
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -12,7 +12,6 @@ function wholeplacevalue(arg) {
 	if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg]; //  2017.11
 	if (Array.isArray(arg)) {                                                                       //  2017.11
 		man = arg;
-		//if (man.length > 0 && !(man[0] instanceof rational)) { var s = "wholeplacevalue wants rational[] not " + typeof man[0] + '[]: ' + JSON.stringify(man); alert(s); throw new Error(s); }
 		//if (man.length==0) throw new Error('notype')
 		datatype = (man.length > 0) ? man[0].constructor : rational;
 	}
@@ -59,9 +58,10 @@ wholeplacevalue.prototype.parse = function (man) {  //  2017.9
 }
 
 wholeplacevalue.prototype.check = function(other) {	//	2018.12	Added Type-Checker
+	var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other';				//	2019.2	Added translate
 	if (arguments.length === 0) {
 		if (!this.mantisa.every(x=>x instanceof this.datatype))
-			throw new Error('Wholeplacevalue.prototype.Check 1 Fail : ' + JSON.stringify(this) + " should have type " + this.datatype);
+			throw new Error('Wholeplacevalue.prototype.Check 1 Fail : ' + JSON.stringify(this) + " should have type " + translate(this.datatype));	//	2019.2	Added translate
 		return this.datatype;
 	}
 	var othertype = other.check();

@@ -1,12 +1,11 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2018
+// Date:    2/28/2019
 // SparseExponentialRatio1 : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
 
 class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 
 	constructor(base, pv) {
-		//if (arguments.length < 2) alert('sparseexponentialratio1 expects 2 arguments');
 		if (arguments.length < 1) base = 1; //  2017.9
 		if (arguments.length < 2) pv = new sparseplacevalueratio1(); //  2017.9
 		if (!(base instanceof String || typeof base == 'string' || base instanceof Number || typeof base == 'number'))
@@ -83,7 +82,8 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 		}
 	}
 
-	align(other) {  //  2017.8
+	align(other) {			//	2017.8
+		this.check(other);	//	2019.2	Added Check
 		if (this.pv.num.points.length == 1 && this.pv.num.points[0][1].is0()) this.base = other.base;
 		if (other.pv.num.points.length == 1 && other.pv.num.points[0][1].is0()) other.base = this.base;
 		if (this.base != other.base) { var s = 'Different bases : ' + this.base + ' & ' + other.base; alert(s); throw new Error(s); }	//	2018.8	Added

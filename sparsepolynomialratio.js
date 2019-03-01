@@ -1,62 +1,61 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2018
-// SparseMultinomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
+// Date:    2/28/2019
+// SparsePolynomialrAtio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
 
-function sparsemultinomialratio(arg, pv) {
+function sparsepolynomialratio(arg, pv) {
 	if (arguments.length < 2) pv = new sparseplacevalueratio(); //  2017.9
-	console.log('sparsemultinomialratio : arguments.length=' + arguments.length);
+	console.log('sparsepolynomialratio : arguments.length=' + arguments.length);
 	this.base = arg;
 	if (pv instanceof sparseplacevalueratio)  // 2017.6
 		this.pv = pv;
 	else if (typeof pv == 'number') {
-		console.log("sparsemultinomialratio: typeof pv == 'number'");
+		console.log("sparsepolynomialratio: typeof pv == 'number'");
 		this.pv = new wholeplacevalue([pv])
 		console.log(this.pv.toString());
 	}
 	else
-		{ var s = "sparsemultinomialratio expects argument 2 (pv) to be a sparseplacevalueratio not " + typeof pv; alert(s); throw new Error(s); }
-		//alert('sparsemultinomialratio: bad arg2 = ' + JSON.stringify(pv) + ', typeof(arg2)=' + typeof (pv));
+		{ var s = "sparsepolynomialratio expects argument 2 (pv) to be a sparseplacevalueratio not " + typeof pv; alert(s); throw new Error(s); }
 }
 
-sparsemultinomialratio.prototype.parse = function (strornode) { //  2017.9
+sparsepolynomialratio.prototype.parse = function (strornode) { //  2017.9
 	console.log('<strornode>')
 	console.log(strornode)
 	console.log('</strornode>')
-	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsemultinomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }   //  2017.10
+	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }   //  2017.10
 	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 	if (node.type == 'SymbolNode') {
 		console.log('SymbolNode')
 		var base = node.name;
 		var pv = '1e1'//10;
-		return new sparsemultinomialratio([base], new sparseplacevalueratio().parse(pv));
+		return new sparsepolynomialratio([base], new sparseplacevalueratio().parse(pv));
 	} else if (node.type == 'OperatorNode') {
 		console.log('OperatorNode')
 		var kids = node.args;
-		var a = this.parse(kids[0]);        // sparsemultinomialratio handles unpreprocessed kid    2015.11
+		var a = this.parse(kids[0]);        // sparsepolynomialratio handles unpreprocessed kid    2015.11
 		if (node.fn == 'unaryMinus') {
-			var c = new sparsemultinomialratio(1, sparseplacevalueratio.parse(0)).sub(a);
+			var c = new sparsepolynomialratio(1, sparseplacevalueratio.parse(0)).sub(a);
 		} else if (node.fn == 'unaryPlus') {
-			var c = new sparsemultinomialratio(1, sparseplacevalueratio.parse(0)).add(a);
+			var c = new sparsepolynomialratio(1, sparseplacevalueratio.parse(0)).add(a);
 		} else {
-			var b = this.parse(kids[1]);    // sparsemultinomialratio handles unpreprocessed kid    2015.11
+			var b = this.parse(kids[1]);    // sparsepolynomialratio handles unpreprocessed kid    2015.11
 			var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 		}
 		return c
 	} else if (node.type == 'ConstantNode') {
-		return new sparsemultinomialratio([], new sparseplacevalueratio().parse(node.value));
+		return new sparsepolynomialratio([], new sparseplacevalueratio().parse(node.value));
 	}
 }
 
-sparsemultinomialratio.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
+sparsepolynomialratio.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
 	return this.pv.toString() + ' base ' + this.base;
 }
 
-sparsemultinomialratio.prototype.toString = function () {
-	var num = sparsemultinomialratio.toStringXbase(this.pv.num, this.base);
+sparsepolynomialratio.prototype.toString = function () {
+	var num = sparsepolynomialratio.toStringXbase(this.pv.num, this.base);
 	if (this.pv.den.is1()) return num;
 	num = (count(this.pv.num.points) < 2) ? num : '(' + num + ')';
-	var den = sparsemultinomialratio.toStringXbase(this.pv.den, this.base);
+	var den = sparsepolynomialratio.toStringXbase(this.pv.den, this.base);
 	den = (count(this.pv.den.points) < 2) ? den : '(' + den + ')';
 	return num + '/' + den;
 	function count(array) {
@@ -64,57 +63,57 @@ sparsemultinomialratio.prototype.toString = function () {
 	}
 }
 
-sparsemultinomialratio.prototype.add = function (other) {
+sparsepolynomialratio.prototype.add = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.add(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.add(other.pv));
 }
 
-sparsemultinomialratio.prototype.sub = function (other) {
+sparsepolynomialratio.prototype.sub = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.sub(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.sub(other.pv));
 }
 
-sparsemultinomialratio.prototype.times = function (other) {
+sparsepolynomialratio.prototype.times = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.times(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.times(other.pv));
 }
 
-sparsemultinomialratio.prototype.divide = function (other) {
+sparsepolynomialratio.prototype.divide = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.divide(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.divide(other.pv));
 }
 
-sparsemultinomialratio.prototype.divideleft = function (other) {   //  2016.8
+sparsepolynomialratio.prototype.divideleft = function (other) {   //  2016.8
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.divideleft(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.divideleft(other.pv));
 }
 
-sparsemultinomialratio.prototype.dividemiddle = function (other) {   //  2017.7
+sparsepolynomialratio.prototype.dividemiddle = function (other) {   //  2017.7
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.dividemiddle(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.dividemiddle(other.pv));
 }
 
-sparsemultinomialratio.prototype.pointadd = function (other) {
+sparsepolynomialratio.prototype.pointadd = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.pointadd(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.pointadd(other.pv));
 }
 
-sparsemultinomialratio.prototype.pointsub = function (other) {
+sparsepolynomialratio.prototype.pointsub = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.pointsub(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.pointsub(other.pv));
 }
 
-sparsemultinomialratio.prototype.pointtimes = function (other) {
+sparsepolynomialratio.prototype.pointtimes = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.pointtimes(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.pointtimes(other.pv));
 }
 
-sparsemultinomialratio.prototype.pointdivide = function (other) {
+sparsepolynomialratio.prototype.pointdivide = function (other) {
 	this.align(other);
-	return new sparsemultinomialratio(this.base, this.pv.pointdivide(other.pv));
+	return new sparsepolynomialratio(this.base, this.pv.pointdivide(other.pv));
 }
 
-sparsemultinomialratio.prototype.align = function (other) {     //  2017.7
+sparsepolynomialratio.prototype.align = function (other) {     //  2017.7
 	//alert('b4: this = ' + JSON.stringify(this) + ' , other = ' + JSON.stringify(other));
 	//alert('b4: this = ' + this.toString() + ' , other = ' + other.toString());
 	//alert('b4: this = ' + this.pv.toString() + ' base ' + this.base.toString() + ' , other = ' + other.pv.toString() + ' base ' + other.base.toString());
@@ -155,22 +154,22 @@ sparsemultinomialratio.prototype.align = function (other) {     //  2017.7
 	}
 }
 
-sparsemultinomialratio.prototype.pow = function (other) { // 2015.6
-	return new sparsemultinomialratio(this.base, this.pv.pow(other.pv));
+sparsepolynomialratio.prototype.pow = function (other) { // 2015.6
+	return new sparsepolynomialratio(this.base, this.pv.pow(other.pv));
 }
 
-sparsemultinomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
+sparsepolynomialratio.toStringXbase = function (pv, base) {                        // added namespace  2015.7
 	//alert(JSON.stringify(pv))
-	//if (!pv instanceof sparseplacevaluerational) { var s = "sparsemultinomialratio.toStringXbase expects argument 1 (pv) to be a sparseplacevaluerational not " + typeof pv + JSON.stringify(pv); alert(s); throw new Error(s); }	//	2018.8	Removed
+	//if (!pv instanceof sparseplacevaluerational) { var s = "sparsepolynomialratio.toStringXbase expects argument 1 (pv) to be a sparseplacevaluerational not " + typeof pv + JSON.stringify(pv); alert(s); throw new Error(s); }	//	2018.8	Removed
 	//pv = new sparseplacevalue(rational).parse(pv.toString());   //  2018.4  Translation needed since sparsemultinomial is now based on sparseplacevalue, but sparseplacevalueratio is still based on sparseplacevaluerational		//	2018.8	Removed
 	return new sparsepolynomial(base, pv).toString();	//	2018.10	rename sparsemulti -> sparsepoly
 }
 
-sparsemultinomialratio.prototype.eval = function (other) {
-	return new sparsemultinomialratio(this.base.slice(0, -1), this.pv.eval(other.pv));  //  2017.12
+sparsepolynomialratio.prototype.eval = function (other) {
+	return new sparsepolynomialratio(this.base.slice(0, -1), this.pv.eval(other.pv));  //  2017.12
 	//var sum = 0;
 	//for (var i = 0; i < this.pv.mantisa.length; i++) {
 	//    sum += this.pv.get(i) * Math.pow(base, i);
 	//}
-	//return new sparsemultinomialratio(1, new wholeplacevalue([sum]));
+	//return new sparsepolynomialratio(1, new wholeplacevalue([sum]));
 }

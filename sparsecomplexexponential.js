@@ -1,12 +1,11 @@
 
 // Author:	Anthony John Ripa
-// Date:	1/31/2019
+// Date:	2/28/2019
 // SparseComplexExponential : a datatype for representing sparse complex exponentials; an application of the sparseplacevalue(complex) datatype
 
 class sparsecomplexexponential extends abstractpolynomial {
 
 	constructor(base, pv) {
-		//if (arguments.length < 2) alert('sparsecomplexexponential expects 2 arguments');
 		if (arguments.length < 2) pv = new sparseplacevalue(complex);   //  2017.9
 		if (arguments.length < 1) base = [];                            //  2017.9
 		if (!Array.isArray(base)) { var s = 'sparsecomplexexponential expects argument 1 (base) to be an array but found ' + typeof base + ' : ' + base; alert(s); throw new Error(s); }
@@ -64,7 +63,7 @@ class sparsecomplexexponential extends abstractpolynomial {
 			//var tens = kidaspoly.pv.get([complex.parse(1)]).r;
 			//var iones = kidaspoly.pv.get([]).i;
 			//var itens = kidaspoly.pv.get([complex.parse(1)]).i;
-			//alert(JSON.stringify([kidaspoly, ten, iten]));
+			//alert(JSON.stringify([kidaspoly, ' | ', ten, ' | ', iten]));
 			//var exp = ten.pow(tens); if (itens != 0) exp = exp.times(iten.pow(itens));
 			//exp = exp.scale({ 'r': Math.exp(ones) * Math.cos(iones), 'i': Math.exp(ones) * Math.sin(iones) });
 			var exp = new sparseplacevalue(complex).parse('2.718').pow(kidaspoly.pv);  //  2017.5
@@ -92,7 +91,8 @@ class sparsecomplexexponential extends abstractpolynomial {
 		}
 	}
 
-	align(other) {	//	2017.2
+	align(other) {			//	2017.2
+		this.check(other)	//	2019.2	Check
 		var base1 = this.base.slice();
 		var base2 = other.base.slice();
 		var base = [...new Set([...base1, ...base2])];

@@ -1,10 +1,9 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	12/31/2018
+// Date:	2/28/2019
 // Complex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
-	//if (arguments.length < 1) alert('rationalcomplex expects 1 or 2 arguments');
 	if (arguments.length < 1) real = new rational();
 	if (arguments.length < 2) imag = new rational();
 	if (!(real instanceof rational)) { var s = 'rationalcomplex expects arg1 (real) to be a Rational not ' + typeof real + ' ' + JSON.stringify(real); alert(s); throw new Error(s); }
@@ -23,11 +22,12 @@ rationalcomplex.prototype.parse = function (n) {	//	2017.10
 rationalcomplex.parse = function (n) {
 	//alert('n = ' + n);
 	if (n instanceof String || typeof (n) == 'string') if (n.indexOf('i') != -1 && n.indexOf('r') != -1) { var x = JSON.parse(n); return new rationalcomplex(new rational().parse(JSON.stringify(x.r)), new rational().parse(JSON.stringify(x.i))) }    //  2017.3
-	if (typeof n == "number") return new rationalcomplex(new rational().parse(n));			//	2017.3
-	if (n instanceof Number) return new rationalcomplex(n, 0);								//	2017.3
+	if (typeof n == "number") return new rationalcomplex(new rational().parse(n));							//	2017.3
+	if (n instanceof Number) return new rationalcomplex(n, 0);												//	2017.3
 	var N = n.toString();
-	if (N[0] == '-') return rationalcomplex.parse(N.substring(1)).negate();					//	2017.3
-	if (N[0] == '+') return rationalcomplex.parse(N.substring(1));							//	2017.11
+	if (N[0] == '-') return rationalcomplex.parse(N.substring(1)).negate();									//	2017.3
+	if (N[0] == '+') return rationalcomplex.parse(N.substring(1));											//	2017.11
+	if (N[0] == '(' && N.slice(-1)== ')' && !N.includes(',')) return  rationalcomplex.parse(N.slice(1,-1));	//	2019.2
 	//if (N[0] == '(' && N.slice(-1) == ')') return rationalcomplex.parse(N.slice(1, -1));	//	2018.1 Added	//	2018.11 Removed so (2,3) is parsable
 	//var r = N.match(rational.regex()); if (r && r.indexOf(N) != -1) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
 	//var r = N.match(rational.regex()); if (r) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
@@ -170,7 +170,8 @@ rationalcomplex.prototype.is0 = function () { this.check(); return this.equals(r
 rationalcomplex.prototype.is1 = function () { this.check(); return this.r.is1() && this.i.is0(); }										//	2018.3
 rationalcomplex.prototype.isNaN = function () { this.check(); return this.r.isNaN() || this.i.isNaN(); }								//	2018.3
 rationalcomplex.prototype.below = function (other) { this.check(other); return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }	//	2017.3
-rationalcomplex.prototype.above = function (other) { this.check(other); return this.r != other.r ? this.r > other.r : this.i > other.i; }	//	2017.3
+//rationalcomplex.prototype.above = function (other) { this.check(other); return this.r != other.r ? this.r > other.r : this.i > other.i; }	//	2017.3		//	2019.2	Removed
+rationalcomplex.prototype.above = function (other) { this.check(other); return !this.r.equals(other.r) ? this.r.above(other.r) : this.i.above(other.i); }	//	2019.2
 rationalcomplex.prototype.below0 = function () { this.check(); return this.below(rationalcomplex.zero); }								//	2017.3
 rationalcomplex.prototype.above0 = function () { this.check(); return this.above(rationalcomplex.zero); }								//	2017.3
 rationalcomplex.prototype.isneg = rationalcomplex.prototype.below0																		//	2017.10

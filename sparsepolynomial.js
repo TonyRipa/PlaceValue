@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2018
+// Date:    2/28/2019
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -20,17 +20,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		this.pv = pv;
 	}
 
-	//constructor(base, pv) {	//	2018.12	Removed
-	//	//if (arguments.length < 2) alert('sparsepolynomial expects 2 arguments');
-	//	if (arguments.length < 1) base = [];                            //  2017.9
-	//	if (arguments.length < 2) pv = new sparseplacevalue();          //  2018.4
-	//	if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }  //  2017.7
-	//	if (!(pv instanceof sparseplacevalue)) { var s = "sparsepolynomial expects arg 2 (pv) to be a sparsePV not " + typeof pv; alert(s); throw new Error(s); } //  2017.7
-	//	super();
-	//	this.base = base
-	//	this.pv = pv;
-	//}
-
 	parse(strornode) {  //  2017.9
 		console.log('new sparsepolynomial : ' + JSON.stringify(strornode))
 		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomial(a.base, new sparseplacevalue().parse(JSON.stringify(a.pv))) } //  2017.10
@@ -48,7 +37,7 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparsepolynomial : OperatorNode')
 			var kids = node.args;
-			var a = new sparsepolynomial().parse(kids[0]);       // sparsepolynomial handles unpreprocessed kid   2015.11
+			var a = this.parse(kids[0]);												//	2019.2	this
 			if (node.fn == 'unaryMinus') {
 				//var c = new sparsepolynomial([], sparseplacevalue.parse(0)).sub(a);	//	2018.9	Removed
 				var c = new sparsepolynomial([], this.pv.parse(0)).sub(a);				//	2018.9	this.pv
@@ -56,7 +45,8 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 				//var c = new sparsepolynomial([], sparseplacevalue.parse(0)).add(a);	//	2018.9	Removed
 				var c = new sparsepolynomial([], this.pv.parse(0)).add(a);				//	2018.9	this.pv
 			} else {
-				var b = new sparsepolynomial().parse(kids[1]);   // sparsepolynomial handles unpreprocessed kid   2015.11
+				//var b = new sparsepolynomial().parse(kids[1]);	// sparsepolynomial handles unpreprocessed kid   2015.11	//	2019.2	Removed
+				var b = this.parse(kids[1]);																					//	2019.2	this
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 			}
 			return c;
@@ -68,7 +58,8 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		}
 	}
 
-	align(other) {  // 2017.2
+	align(other) {			//	2017.2
+		this.check(other);	//	2019.2	Added
 		var base1 = this.base.slice();
 		var base2 = other.base.slice();
 		var base = [...new Set([...base1, ...base2])];

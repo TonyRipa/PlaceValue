@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2018
+// Date:    2/28/2019
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -61,7 +61,6 @@ class sparseplacevalue1 {
 			return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));     //  2017.10
 		if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype()]]);           //  2d array    2016.10
 		if (arg instanceof Number) return new this.constructor(arg, 0);
-		//alert('b4split ' + arg)
 		var terms = split(arg);
 		terms = terms.map(parseterm);
 		//alert('terms.length = ' + terms.length)
@@ -89,6 +88,26 @@ class sparseplacevalue1 {
 			if (pow === undefined) pow = 0;
 			return [new me.datatype().parse(coef), pow ? new me.datatype().parse(pow) : new me.datatype()];
 		}
+	}
+
+	check(other) {	//	2019.2	Added Type-Checker
+		if (!(this instanceof sparseplacevalue1)) throw new Error("Sparseplacevalue1.Check 1 Fail : This isn't SparsePlaceValue1");
+		var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other';
+		if (arguments.length === 0) {
+			var datatype = this.datatype;
+			if (!(this.points.every(x=>{var c=x[0];return c instanceof datatype})))
+				throw new Error('Sparseplacevalue1.Check 1 Fail : Not all coefs in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
+			if (!(this.points.every(x=>{var w=x[1];return w instanceof datatype})))
+				throw new Error('Sparseplacevalue1.Check 1 Fail : Not all power in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
+			return datatype;
+		}
+		if (!(other instanceof sparseplacevalue1)) throw new Error("Sparseplacevalue1.Check 2 Fail : Other isn't SparsePlaceValue1");
+		var othertype = other.check();
+		var mytype = this.check();
+		if (mytype != othertype) {
+			throw new Error('Sparseplacevalue1.Check 2 Fail : Othertype is of type ' + translate(othertype) + ', but ThisType is ' + translate(mytype));
+		}
+		return mytype;
 	}
 
 	get(i) { //  2017.6

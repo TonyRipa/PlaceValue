@@ -1,11 +1,10 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    12/31/2018
+// Date:    2/28/2019
 // SparsePlaceValue: a datatype for representing base agnostic arithmetic via sparse numbers
 
 function sparseplacevalue(arg) {
 	var points, datatype;
-	//if (arguments.length < 1) points = [];  //  2017.9
 	if (arguments.length < 1)[points, datatype] = [[], rational];                                       //  2017.12
 	if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.12
 	if (Array.isArray(arg)) {                                                                           //  2017.12
@@ -245,7 +244,7 @@ sparseplacevalue.prototype.scale = function (scalar) {//alert(JSON.stringify(['s
 
 sparseplacevalue.prototype.unscale = function (scalar) {  //  2016.5
 	this.check();
-	if (!(scalar instanceof this.datatype)) scalar = new this.datatype.parse(scalar);
+	if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);	//	2019.2	datatype()
 	var ret = this.clone();
 	ret.points = ret.points.map(function (x) { return [x[0].divide(scalar), x[1]]; });
 	//for (var r = 0; r < ret.mantisa.length; r++)
