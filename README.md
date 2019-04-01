@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 2/28/2019
+Date : 3/31/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -195,7 +195,7 @@ SparsePlaceValue
 
 SparsePolynomial
 ------------------------
-<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue(Rational) datatype.
+<i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue datatype.
 
 If SparsePolynomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
 
@@ -294,16 +294,6 @@ Whereas, placevalue extended wholeplacevalue by allowing for negative exponents 
 SparsePlaceValueComplex
 -----------------------
 <i>sparseplacevaluecomplex.js</i> can be thought of as a Sparse version of ComplexPlaceValue.  However, it is actually implemented as a Complex version of SparsePlaceValue.  As such, since SparsePlaceValue could handle an unbounded number of dimensions (i.e. is suitable for modeling multivariable systems), SparsePlaceValueComplex can model an unbounded number of mutually orthogonal complex planes. Whereas a SparsePlaceValue may look like 1E2 + 3E4,5,6 , a SparsePlaceValueComplex may look like (1,-4)E(2,9) + 3E4,(5,6),i . Here the (5,6) is the complex number 5+6i.
-
-ComplexSparseMultinomial
-------------------------
-<i>ComplexSparseMultinomial</i> is a data-type optimized for Complex Sparse Multinomials; an application of the SparsePlaceValue(Complex) datatype.
-
-If ComplexSparseMultinomial wants to calculate (x+y*i)^2, then it asks SparsePlaceValue(Complex) to calculate:
-
-1E1+iE0,1 ^ 2 = 1E2+(0,2)E1,1+-1E0,2
-
-ComplexSparseMultinomial then formats SparsePlaceValue(Complex)'s result as x^2+(2i)x*y-y^2.
 
 ComplexLaurent
 ---------------
@@ -495,7 +485,7 @@ Dependencies
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>

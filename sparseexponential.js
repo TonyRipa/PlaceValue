@@ -1,15 +1,14 @@
 
 // Author:	Anthony John Ripa
-// Date:	2/28/2019
+// Date:	3/31/2019
 // SparseExponential : a datatype for representing sparse exponentials; an application of the sparseplacevalue datatype
 
 class sparseexponential extends abstractpolynomial {
 
-	//constructor(base, pv) {	//	2019.2	Removed
 	constructor(arg) {			//	2019.2	Arg
 		var base, pv;			//	2019.2
 		//if (arguments.length < 2) pv = new sparseplacevalue();	//  2017.9	//	2018.9	sparseplacevalue	//	2019.2	Removed
-		//if (arguments.length < 1) base = [];					//  2017.9										//	2019.2	Removed
+		//if (arguments.length < 1) base = [];						//  2017.9									//	2019.2	Removed
 		if (arguments.length == 0)[base, pv] = [[], new sparseplacevalue(rational)];	//	2019.2
 		if (arguments.length == 1) {                                                    //  2019.2
 			if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [[], new sparseplacevalue(arg)];	//	2019.2
@@ -130,7 +129,9 @@ class sparseexponential extends abstractpolynomial {
 					}
 				}
 				if (digitpowernew.length != basenew.length) { alert('SparseMultinomial: alignment error'); throw new Error('SparseMultinomial: alignment error'); }
-				multi.pv.points[index][1] = new wholeplacevalue(digitpowernew);
+				//multi.pv.points[index][1] = new wholeplacevalue(digitpowernew);									//	2019.3	Removed
+				if (digitpowernew.length==0) multi.pv.points[index][1] = new wholeplacevalue(multi.pv.datatype);	//	2019.3	Check empty to preserve datatype
+				else						 multi.pv.points[index][1] = new wholeplacevalue(digitpowernew);		//	2019.3	Check empty to preserve datatype
 			}
 			multi.base = basenew;
 		}
@@ -169,8 +170,9 @@ class sparseexponential extends abstractpolynomial {
 					var al = Math.abs(l);
 					var ar = Math.abs(r);
 					//alert([i, l, r, Math.sign(l) * Math.sign(r) == sign, al >= ar, al != 0, m, Math.sign(l) * Math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001]);
-					//if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3	//	2018.9	Removed
-					if (math.sign(l) * math.sign(r) == sign && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3					//	2018.9	Removed ar >= al
+					//if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {	//	2018.9	Removed
+					//if (math.sign(l) * math.sign(r) == sign && al != 0 && Math.abs(m) > .001) {				//	2018.9	Removed ar >= al	//	2019.3	Removed
+					if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {	//	2019.3	Added ar >= al so sinh(x)↛cosh(x)-exp(-x)
 						var n = m * 2;
 						ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base[b] + ')+';
 						//alert(JSON.stringify(s));
@@ -267,7 +269,7 @@ class sparseexponential extends abstractpolynomial {
 	}
 
 	eval(base) {    //  2017.5
-		return new this.constructor(this.base.slice(0, -1), this.pv.eval(this.yv.parse('2.718').pow(base.pv)));		//	2019.2	this.pv.parse
+		return new this.constructor(this.base.slice(0, -1), this.pv.eval(this.pv.parse('2.718').pow(base.pv)));		//	2019.3	this.pv.parse
 	}
 
 }

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2019
+// Date:    3/31/2019
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -58,12 +58,12 @@ class sparseplacevalue1 {
 		var me = this;
 		if (arg === '') return new this.constructor(this.datatype);                                                                 //  2017.10
 		if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1)
-			return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));     //  2017.10
+			return new this.constructor(JSON.parse(arg).points.map(x => x.map(y=>new this.datatype().parse(JSON.stringify(y)))));	//	2019.3	combined map
+			//return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));	//	2017.10	//	2019.3	Removed
 		if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype()]]);           //  2d array    2016.10
 		if (arg instanceof Number) return new this.constructor(arg, 0);
 		var terms = split(arg);
 		terms = terms.map(parseterm);
-		//alert('terms.length = ' + terms.length)
 		if (terms.length === 0) return new this.constructor(this.datatype); //  2017.11
 		return new this.constructor(terms);
 		function split(terms) {         //  2017.1

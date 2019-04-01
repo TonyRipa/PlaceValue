@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2019
+// Date:    3/31/2019
 // SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(arg) {
@@ -8,7 +8,8 @@ function sparseplacevalueratio1(arg) {
 	if (arguments.length == 0)[num, den] = [new sparseplacevalue1(rational), new sparseplacevalue1(rational).parse(1)]; //  2017.12
 	if (arguments.length == 1) {
 		if (arg === rational || arg === rationalcomplex)[num, den] = [new sparseplacevalue1(arg), new sparseplacevalue1(arg).parse(1)]; //  2017.12 rationalcomplex
-		else[num, den] = [arg, new sparseplacevalue1(arg.datatype)];
+		//else[num, den] = [arg, new sparseplacevalue1(arg.datatype)];			//	2019.3	Removed
+		else[num, den] = [arg, new sparseplacevalue1(arg.datatype).parse(1)];	//	2019.3	Added parse(1)
 	}
 	if (arguments.length == 2)[num, den] = arguments;
 	if (!(num instanceof sparseplacevalue1)) { var s = 'SparsePVRatio1 expects arg1 to be SparsePlaceValue1 not ' + typeof num + " : " + JSON.stringify(num); alert(s); throw new Error(s); }
@@ -20,7 +21,8 @@ function sparseplacevalueratio1(arg) {
 }
 
 sparseplacevalueratio1.prototype.parse = function (man) {   // 2017.9
-	if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio1(new sparseplacevalue1().parse(JSON.stringify(a.num)), new sparseplacevalue1().parse(JSON.stringify(a.den))) }   //  2017.10
+	//if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio1(new sparseplacevalue1().parse(JSON.stringify(a.num)), new sparseplacevalue1().parse(JSON.stringify(a.den))) }	//	2017.10	//	2019.3	Removed
+	if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio1(this.num.parse(JSON.stringify(a.num)), this.num.parse(JSON.stringify(a.den))) }	//	2019.3	this.num
 	var den = 0;
 	if (typeof (man) == "number") man = man.toString();     // 2015.11
 	if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -120,7 +122,6 @@ sparseplacevalueratio1.prototype.reduce = function () {     //  2016.5
 		var n = num.gcd();
 		var d = den.gcd();
 		var g = n.gcd(d);   // delegate to digits   2016.7
-		//alert([JSON.stringify(me.num), n, JSON.stringify(me.den), d, g]);
 		me.num = num.unscale(g);
 		me.den = den.unscale(g);
 	}
