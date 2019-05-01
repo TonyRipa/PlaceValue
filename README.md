@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2019
+Date : 4/30/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -205,7 +205,7 @@ SparsePolynomial then formats SparsePlaceValue's result as x*z + y*z.
 
 SparsePlaceValueRatio
 ------------------
-<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValues. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 .
+<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValues. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 . SparsePlaceValueRatio accepts Rational, Complex, or RationalComplex digits.
 
 Sparse Polynomial Ratio
 -------------
@@ -290,10 +290,6 @@ Whereas, placevalue extended wholeplacevalue by allowing for negative exponents 
 <tr><td>2-1i</td><td>1-1i</td><td>0-1i</td><td>-1-1i</td><td>-2-1i</td></tr>
 <tr><td>2-2i</td><td>1-2i</td><td>0-2i</td><td>-1-2i</td><td>-2-2i</td></tr>
 </table>
-
-SparsePlaceValueComplex
------------------------
-<i>sparseplacevaluecomplex.js</i> can be thought of as a Sparse version of ComplexPlaceValue.  However, it is actually implemented as a Complex version of SparsePlaceValue.  As such, since SparsePlaceValue could handle an unbounded number of dimensions (i.e. is suitable for modeling multivariable systems), SparsePlaceValueComplex can model an unbounded number of mutually orthogonal complex planes. Whereas a SparsePlaceValue may look like 1E2 + 3E4,5,6 , a SparsePlaceValueComplex may look like (1,-4)E(2,9) + 3E4,(5,6),i . Here the (5,6) is the complex number 5+6i.
 
 ComplexLaurent
 ---------------

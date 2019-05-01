@@ -1,13 +1,12 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2018
+// Date:    4/30/2019
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 function placevalue(arg) {
 	var man, exp;
 	if (arguments.length == 0)[man, exp] = [new wholeplacevalue(rational), 0];												//  2017.12
 	if (arguments.length == 1) {
-		//	if (arg === rational || arg === complex || arg === rationalcomplex)[man, exp] = [new wholeplacevalue(arg), 0];	//  2017.12
 		if ([rational, complex, rationalcomplex].includes(arg)) [man, exp] = [new wholeplacevalue(arg), 0];					//  2018.6
 		else[man, exp] = [arg, 0];
 	}
@@ -220,6 +219,10 @@ placevalue.prototype.dividemiddle = function (den) {    // 2016.3
 
 placevalue.prototype.divideleft = function (den) {      // 2016.3
 	return new placevalue(this.whole.divideleft(den.whole), this.exp - den.exp);
+}
+
+placevalue.prototype.remainder = function (den) {	//	2019.4	Added
+	return this.sub(this.divide(den).times(den));
 }
 
 placevalue.prototype.clone = function () {

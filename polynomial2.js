@@ -1,10 +1,9 @@
 
-// Author : Anthony John Ripa
-// Date : 7/31/2018
+// Author:	Anthony John Ripa
+// Date:	4/30/2019
 // Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 
 function polynomial2(base, pv) {
-	//if (arguments.length < 2) alert('polynomial2 expects 2 arguments');
 	if (arguments.length < 1) base = [1, null];             //  2017.9
 	if (arguments.length < 2) pv = new wholeplacevalue2();  //  2017.9
 	if (!Array.isArray(base)) { var s = 'Polynomial2 expects arg 1 (base) to be an array but found ' + typeof base + " : " + JSON.stringify(base); alert(s); throw new Error(s); }
@@ -93,6 +92,11 @@ polynomial2.prototype.pointtimes = function (other) {
 polynomial2.prototype.divide = function (other) {
 	this.align(other);
 	return new polynomial2(this.base, this.pv.divide(other.pv));
+}
+
+polynomial2.prototype.remainder = function (other) {	//	2019.4	Added
+	this.align(other);
+	return new polynomial2(this.base, this.pv.remainder(other.pv));
 }
 
 polynomial2.prototype.pointdivide = function (other) {

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	2/28/2019
+// Date:	4/30/2019
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -112,14 +112,31 @@ wholeplacevalue.prototype.equals = function (other) {
 	return ret;
 }
 
+wholeplacevalue.prototype.comparelittle = function (other) {					//	2019.4	Added
+	this.check(other)
+	for (var i = 0; i < this.mantisa.length + other.mantisa.length ; i++) {
+		if (this.get(i).above(other.get(i))) return 1;
+		if (this.get(i).below(other.get(i))) return -1;
+	}
+	return 0;
+}
+
+wholeplacevalue.prototype.comparebig = function (other) {						//	2019.4	Added
+	this.check(other);
+	for (var i = this.mantisa.length + other.mantisa.length; i >= 0 ; i--) {
+		if (this.get(i).above(other.get(i))) return 1;
+		if (this.get(i).below(other.get(i))) return -1;
+	}
+	return 0;
+}
+
 wholeplacevalue.prototype.is0 = function () { this.check(); return this.equals(this.parse(0)); }      //  2016.5
 wholeplacevalue.prototype.is1 = function () { this.check(); return this.equals(this.parse(1)); }      //  2016.5
 wholeplacevalue.prototype.isNaN = function () { this.check(); return this.equals(this.parse('%')); }  //  2018.3
 
-wholeplacevalue.prototype.above = function (other) { this.check(other); return this.get(0).above(other.get(0)) }   //  2017.7
-wholeplacevalue.prototype.isneg = function () { this.check(); return new wholeplacevalue().above(this) }      //  2017.7
-
-//wholeplacevalue.one = new wholeplacevalue([new this.datatype().parse(1)]);     //  2017.9
+wholeplacevalue.prototype.above = function (other) { this.check(other); return this.get(0).above(other.get(0)) }	//	2017.7
+//wholeplacevalue.prototype.isneg = function () { this.check(); return new wholeplacevalue().above(this) }			//	2017.7	//	2019.4	Removed
+wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).comparebig(this) == 1 }						//	2019.4	Added
 
 wholeplacevalue.prototype.add = function (other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 wholeplacevalue.prototype.sub = function (other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12

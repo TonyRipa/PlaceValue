@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2019
+// Date:    4/30/2019
 // SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(arg) {
@@ -155,8 +155,6 @@ sparseplacevalueratio1.prototype.pointsub = function (other) {
 }
 
 sparseplacevalueratio1.prototype.pointadd = function (other) {
-	//var first = this.num.div10s(this.den.mantisa.length - 1);
-	//var second = other.num.div10s(other.den.mantisa.length - 1);
 	var first = this.num.divide(this.den);
 	var second = other.num.divide(other.den);
 	return new sparseplacevalueratio1(first.pointadd(second), this.num.parse(1));
@@ -211,6 +209,11 @@ sparseplacevalueratio1.prototype.scale = function (scalar) {   // 2015.11
 
 sparseplacevalueratio1.prototype.divide = function (denominator) {
 	return new sparseplacevalueratio1(this.num.times(denominator.den), this.den.times(denominator.num));
+}
+
+sparseplacevalueratio1.prototype.remainder = function (den) {								//	2019.4	Added
+	this.check(den);
+	return this.sub(this.divide(den).times(den));
 }
 
 sparseplacevalueratio1.prototype.dividemiddle = sparseplacevalueratio1.prototype.divide

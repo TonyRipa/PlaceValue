@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2018
+// Date:	4/30/2019
 // Complex:	A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -74,7 +74,6 @@ complex.regexfull = function () {   //  2017.11
 	return '^' + complex.regex() + '$';
 }
 
-//  complex.prototype.tohtml = function () { return this.toString(false) }	//	2018.6	Removed
 complex.prototype.tohtml = function () { return this.toString(true) }		//	2018.6	Arg is true for (Laplace.js for Mechanics.html)
 
 complex.prototype.toreal = function () { return this.r; }   //  2017.10
@@ -183,6 +182,7 @@ complex.prototype.round = function () { return new complex(Math.round(1000 * thi
 complex.prototype.negate = function () { return new complex(-this.r, -this.i) } //  2017.3
 complex.prototype.clone = function () { return new complex(this.r, this.i); }   //  2017.10
 complex.prototype.scale = function (c) { return new complex(c * this.r, c * this.i); }  //  2017.11
+complex.prototype.remainder = function (den) { return this.sub(this.divide(den).times(den)); } //  2019.4  Added
 
 complex.prototype.times = function (y) {
 	if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   //  2017.5

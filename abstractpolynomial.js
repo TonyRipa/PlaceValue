@@ -62,6 +62,11 @@ class abstractpolynomial {
 		return new this.constructor(this.base, this.pv.dividemiddle(other.pv));
 	}
 
+	remainder(other) {	//	2019.4	Added
+		this.align(other);
+		return new this.constructor(this.base, this.pv.remainder(other.pv));
+	}
+
 	pointdivide(other) {
 		this.align(other);
 		return new this.constructor(this.base, this.pv.pointdivide(other.pv));
@@ -74,6 +79,10 @@ class abstractpolynomial {
 	pointpow(other) {
 		this.align(other);
 		return new this.constructor(this.base, this.pv.pointpow(other.pv));
+	}
+
+	round() {		//	2019.4	Added
+		return new this.constructor(this.base, this.pv.round());
 	}
 
 	eval(other) {	//	2017.10 Works for 1D & nD

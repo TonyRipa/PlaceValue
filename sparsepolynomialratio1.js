@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2018
+// Date:    4/30/2019
 // SparsePolynomialRatio1 : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio1 datatype
 
 function sparsepolynomialratio1(arg, pv) {
@@ -11,7 +11,6 @@ function sparsepolynomialratio1(arg, pv) {
 		else[base, pv] = [arg, new sparseplacevalueratio1(rational)];
 	}
 	if (arguments.length == 2)[base, pv] = arguments;                                                       //  2018.3
-	//if (arguments.length < 1) base = 1;                                                 //  2017.9
 	//if (arguments.length < 2) pv = new sparseplacevalueratio1();                        //  2017.12
 	console.log('sparsepolynomialratio1 : arguments.length=' + arguments.length);
 	//this.base = arg;
@@ -109,6 +108,11 @@ sparsepolynomialratio1.prototype.divideleft = function (other) {   //  2016.8
 sparsepolynomialratio1.prototype.dividemiddle = function (other) {   //  2018.4
 	this.align(other);
 	return new sparsepolynomialratio1(this.base, this.pv.dividemiddle(other.pv));
+}
+
+sparsepolynomialratio1.prototype.remainder = function (other) {	//	2019.4	Added
+	this.align(other);
+	return new sparsepolynomialratio1(this.base, this.pv.remainder(other.pv));
 }
 
 sparsepolynomialratio1.prototype.pointadd = function (other) {

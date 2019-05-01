@@ -1,22 +1,32 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2018
+// Date:	4/30/2019
 // SparsePlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValues
 
-function sparseplacevalueratio(num, den) {
-	//if (arguments.length < 2) alert('sparseplacevalueratio expects 2 arguments');
-	if (arguments.length < 1) num = new sparseplacevalue();				//	2017.9
-	if (arguments.length < 2) den = new sparseplacevalue().parse(1);	//	2017.9
+//function sparseplacevalueratio(num, den) {																			//	2019.4	Removed
+function sparseplacevalueratio(arg) {																					//	2019.4	Added
+	var num, den;																										//	2019.4	Added
+	//if (arguments.length < 1) num = new sparseplacevalue();			//	2017.9										//	2019.4	Removed
+	//if (arguments.length < 2) den = new sparseplacevalue().parse(1);	//	2017.9										//	2019.4	Removed
+	if (arguments.length == 0)[num, den] = [new sparseplacevalue(rational), new sparseplacevalue(rational).parse(1)];	//	2019.4	Added
+	if (arguments.length == 1) {																						//	2019.4	Added
+		if (arg === rational || arg === rationalcomplex)[num, den] = [new sparseplacevalue(arg), new sparseplacevalue(arg).parse(1)];
+		else[num, den] = [arg, new sparseplacevalue(arg.datatype).parse(1)];
+	}
+	if (arguments.length == 2)[num, den] = arguments;																	//	2019.4	Added
 	if (!(num instanceof sparseplacevalue)) { var s = 'SparsePVRatio expects arg 1 to be SparsePlaceValue not ' + typeof num + " : " + JSON.stringify(num); alert(s); throw new Error(s); }
 	if (!(den instanceof sparseplacevalue)) { var s = 'SparsePVRatio expects arg 2 to be SparsePlaceValue not ' + typeof den + " : " + JSON.stringify(den); alert(s); throw new Error(s); }
 	this.num = num;
 	this.den = den;
 	this.reduce();
+	this.check();																										//	2019.4	Added
 	console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(num)=" + Array.isArray(num));
 }
 
 sparseplacevalueratio.prototype.parse = function (man) {	//	2017.9
-	if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio(new sparseplacevalue().parse(JSON.stringify(a.num)), new sparseplacevalue().parse(JSON.stringify(a.den))) }    //  2017.10
+	this.check();											//	2019.4	Added
+	//if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio(this.num.parse(JSON.stringify(a.num)), this.num.parse(JSON.stringify(a.den))) }	//	2017.10	//	2019.4	Removed
+	if (man instanceof String || typeof (man) == 'string') if (man.indexOf('num') != -1) { var a = JSON.parse(man); return new sparseplacevalueratio(this.num.parse(JSON.stringify(a.num)), this.num.parse(JSON.stringify(a.den))) }				//	2019.4	Added
 	var den = 0;
 	if (typeof (man) == "number") man = man.toString();		//	2015.11
 	if (typeof (man) == "string" && man.indexOf('num') != -1) {
@@ -31,11 +41,15 @@ sparseplacevalueratio.prototype.parse = function (man) {	//	2017.9
 	}
 	var slashindex = findslash(man);
 	if (slashindex == -1) {
-		var num = new sparseplacevalue().parse(man);
-		var den = new sparseplacevalue().parse(1);
+		//var num = new sparseplacevalue().parse(man);	//	2019.4	Removed
+		//var den = new sparseplacevalue().parse(1);	//	2019.4	Removed
+		var num = this.num.parse(man);					//	2019.4	Added
+		var den = this.num.parse(1);					//	2019.4	Added
 	} else {
-		var num = new sparseplacevalue().parse(man.substr(0, slashindex));	//	2017.12 new
-		var den = new sparseplacevalue().parse(man.substr(slashindex + 1));	//	2017.12 new
+		//var num = new sparseplacevalue().parse(man.substr(0, slashindex));	//	2017.12 new		//	2019.4	Removed
+		//var den = new sparseplacevalue().parse(man.substr(slashindex + 1));	//	2017.12 new		//	2019.4	Removed
+		var num = this.num.parse(man.substr(0, slashindex));										//	2019.4	Added
+		var den = this.num.parse(man.substr(slashindex + 1));										//	2019.4	Added
 	}
 	return new sparseplacevalueratio(num, den);
 	//console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
@@ -50,22 +64,44 @@ sparseplacevalueratio.prototype.parse = function (man) {	//	2017.9
 	}
 }
 
+sparseplacevalueratio.prototype.check = function(other) {	//	2019.4	Added Type-Checker
+	if (!(this instanceof sparseplacevalueratio)) throw new Error("SparsePlaceValueRatio.prototype.Check 1 Fail : This isn't SparsePlaceValueRatio");
+	var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other';
+	if (arguments.length === 0) {
+		var numtype = this.num.check();
+		var dentype = this.num.check();
+		if (numtype != dentype)
+			throw new Error('SparsePlaceValueRatio.prototype.Check 1 Fail : num is ' + translate(numtype) + ' but den is ' + translate(dentype));
+		return numtype;
+	}
+	if (!(other instanceof sparseplacevalueratio)) throw new Error("SparsePlaceValueRatio.prototype.Check 2 Fail : Other isn't SparsePlaceValueRatio");
+	var othertype = other.check();
+	var mytype = this.check();
+	if (mytype != othertype) {
+		throw new Error('SparsePlaceValueRatio.prototype.Check 2 Fail : Othertype is of type ' + translate(othertype) + ', but ThisType is ' + translate(mytype));
+	}
+	return mytype;
+}
+
 sparseplacevalueratio.prototype.tohtml = function (short) {			//	Long and Short HTML	2015.11
+	this.check();													//	2019.4	Added
 	if (short) return this.toString(true);
 	return this.num.toString(true) + ' / ' + this.den;				//	Replaces toStringInternal	2015.7
 }
 
 sparseplacevalueratio.prototype.toString = function (sTag) {		//	sTag	2015.11
+	this.check();													//	2019.4	Added
 	return this.den.toString() === '1' ? this.num.toString() : this.num.toString() + ' / ' + this.den.toString();
 }
 
-sparseplacevalueratio.prototype.reduce = function () {		//	2016.5
-
+sparseplacevalueratio.prototype.reduce = function () {				//	2016.5
+	this.check();													//	2019.4	Added
 	//euclid(this);
 	circumfixEuclid(this);
 	pulloutcommonconstants(this);
 
 	function circumfixEuclid(me) {
+		me.check();													//	2019.4	Added
 		var n = me.num.gcd();
 		var d = me.den.gcd();//alert(JSON.stringify([n,d]))
 		me.num = me.num.unscale(n);
@@ -76,18 +112,22 @@ sparseplacevalueratio.prototype.reduce = function () {		//	2016.5
 	}
 
 	function euclid(ratio) {
+		ratio.check();												//	2019.4	Added
 		"alert(ratio.num + ' , ' + ratio.den)"
 		var g = gcdpv(ratio.num, ratio.den);
-		//alert(JSON.stringify(g))
+		"alert(JSON.stringify(g))"
 		if (g.points.length == 1 && g.points[0][1].is0()) return;
 		ratio.num = ratio.num.divide(g);
 		ratio.den = ratio.den.divide(g);
 	}
 
 	function pulloutcommonconstants(me) {
+		me.check();													//	2019.4	Added
 		if (me.num.is0() && me.den.is0()) return;
-		if (me.num.is0()) { me.den = new sparseplacevalue().parse(1); return }
-		if (me.den.is0()) { me.num = new sparseplacevalue().parse(1); return }	//	2017.12 new
+		//if (me.num.is0()) { me.den = new sparseplacevalue().parse(1); return }					//	2019.4	Removed
+		//if (me.den.is0()) { me.num = new sparseplacevalue().parse(1); return }	//	2017.12 new	//	2019.4	Removed
+		if (me.num.is0()) { me.den = me.num.parse(1); return }										//	2019.4	Added
+		if (me.den.is0()) { me.num = me.num.parse(1); return }										//	2019.4	Added
 		var num = me.num;
 		var den = me.den;
 		var n = num.gcd();
@@ -99,6 +139,8 @@ sparseplacevalueratio.prototype.reduce = function () {		//	2016.5
 	}
 
 	function gcdpv(a, b, count) {
+		a.check();													//	2019.4	Added
+		b.check();													//	2019.4	Added
 		if (arguments.length < 3) count = 0;
 		count++;
 		if (count == 10) return new sparseplacevalue().parse(1);	//	2017.7
@@ -107,52 +149,67 @@ sparseplacevalueratio.prototype.reduce = function () {		//	2016.5
 		if (a.is0()) { "alert(2)"; return b; }
 		if (b.is0()) { "alert(3)"; return a; }
 		if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
-		if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
-		"alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a, count);
+		//if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { alert(5 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b, count); }		//	2019.4	Removed
+		if (a.points[a.points.length - 1][1].comparebig(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }	//	2019.4	Added
+		"alert(6 + ': ' + JSON.stringify(a) + ' , ' + JSON.stringify(b))"; return gcdpv(b.remainder(a), a, count);
 	}
 }
 
 sparseplacevalueratio.prototype.add = function (addend) {
+	this.check(addend);																		//	2019.4	Added
 	return new sparseplacevalueratio(this.num.times(addend.den).add(addend.num.times(this.den)), this.den.times(addend.den));
 }
 
 sparseplacevalueratio.prototype.sub = function (subtrahend) {
+	this.check(subtrahend);																	//	2019.4	Added
 	return new sparseplacevalueratio(this.num.times(subtrahend.den).sub(subtrahend.num.times(this.den)), this.den.times(subtrahend.den));
 }
 
 sparseplacevalueratio.prototype.pointsub = function (other) {
+	this.check(other);																		//	2019.4	Added
 	var first = this.num.div10s(this.den.mantisa.length - 1);
 	var second = other.num.div10s(other.den.mantisa.length - 1);
-	return new sparseplacevalueratio(first.pointsub(second), sparseplacevalue.parse(1));
+	//return new sparseplacevalueratio(first.pointsub(second), sparseplacevalue.parse(1));	//	2019.4	Removed
+	return new sparseplacevalueratio(first.pointsub(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointadd = function (other) {
+	this.check(other);																		//	2019.4	Added
 	var first = this.num.div10s(this.den.mantisa.length - 1);
 	var second = other.num.div10s(other.den.mantisa.length - 1);
-	return new sparseplacevalueratio(first.pointadd(second), sparseplacevalue.parse(1));
+	//return new sparseplacevalueratio(first.pointadd(second), sparseplacevalue.parse(1));	//	2019.4	Removed
+	return new sparseplacevalueratio(first.pointadd(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointtimes = function (other) {
+	this.check(other);																		//	2019.4	Added
 	var first = this.num.div10s(this.den.mantisa.length - 1);
 	var second = other.num.div10s(other.den.mantisa.length - 1);
-	return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));
+	//return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));//	2019.4	Removed
+	return new sparseplacevalueratio(first.pointtimes(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointdivide = function (other) {
+	this.check(other);																		//	2019.4	Added
 	var first = this.num.div10s(this.den.mantisa.length - 1);
 	var second = other.num.div10s(other.den.mantisa.length - 1);
-	return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));
+	//return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));//	2019.4	Removed
+	return new sparseplacevalueratio(first.pointtimes(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointpow = function (other) {	//	2015.12
+	this.check(other);																		//	2019.4	Added
 	var first = this.num.div10s(this.den.mantisa.length - 1);
 	var second = other.num.div10s(other.den.mantisa.length - 1);
-	return new sparseplacevalueratio(first.pointpow(second), sparseplacevalue.parse(1));
+	//return new sparseplacevalueratio(first.pointpow(second), sparseplacevalue.parse(1));	//	2019.4	Removed
+	return new sparseplacevalueratio(first.pointpow(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pow = function (power) {	//	2015.8
+	this.check(power);																		//	2019.4	Added
 	if (power instanceof sparseplacevalueratio) power = power.num.divide(power.den);
-	if (!(power instanceof sparseplacevalue)) power = new sparseplacevalue().parse('(' + power + ')');	//	2015.11
+	//if (!(power instanceof sparseplacevalue)) power = new sparseplacevalue().parse('(' + power + ')');	//	2015.11	//	2019.4	Removed
+	if (!(power instanceof sparseplacevalue)) power = this.num.parse('(' + power + ')');								//	2019.4	Added
 	var pow = power.get(0).abs();
 	//alert(JSON.stringify([this.num,pow,this.num.pow(pow)]))
 	if (power.get(0).ispos()) return new sparseplacevalueratio(this.num.pow(pow), this.den.pow(pow));
@@ -164,37 +221,50 @@ sparseplacevalueratio.prototype.pow = function (power) {	//	2015.8
 }
 
 sparseplacevalueratio.prototype.times = function (top) {
+	this.check(top);																		//	2019.4	Added
 	return new sparseplacevalueratio(this.num.times(top.num), this.den.times(top.den))
 }
 
 sparseplacevalueratio.prototype.scale = function (scalar) {		//	2015.11
+	this.check();																			//	2019.4	Added
 	var num = this.num.scale(scalar);
 	return new sparseplacevalueratio(num, this.den);
 }
 
 sparseplacevalueratio.prototype.divide = function (denominator) {
+	this.check(denominator);																//	2019.4	Added
 	return new sparseplacevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
 }
 
-sparseplacevalueratio.prototype.dividemiddle = function (denominator) {		//	2016.5
-	return new sparseplacevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
+sparseplacevalueratio.prototype.remainder = function (den) {								//	2019.4	Added
+	this.check(den);
+	return this.sub(this.divide(den).times(den));
 }
 
-sparseplacevalueratio.prototype.divideleft = function (denominator) {		//	2016.5
-	return new sparseplacevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
-}
+//sparseplacevalueratio.prototype.dividemiddle = function (denominator) {		//	2016.5	//	2019.4	Removed
+//	return new sparseplacevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
+//}
+sparseplacevalueratio.prototype.dividemiddle = sparseplacevalueratio.prototype.divide;		//	2019.4	Added
+
+//sparseplacevalueratio.prototype.divideleft = function (denominator) {		//	2016.5		//	2019.4	Removed
+//	return new sparseplacevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
+//}
+sparseplacevalueratio.prototype.divideleft = sparseplacevalueratio.prototype.divide;		//	2019.4	Added
 
 sparseplacevalueratio.prototype.clone = function () {
+	this.check();																			//	2019.4	Added
 	return new sparseplacevalueratio(this.num.clone(), this.den.clone());
 }
 
 sparseplacevalueratio.prototype.reciprocal = function () {
+	this.check();																			//	2019.4	Added
 	var temp = this.num;
 	this.num = this.den;
 	this.den = temp;
 }
 
 sparseplacevalueratio.prototype.eval = function (base) {	//	2017.12
+	this.check(base);																		//	2019.4	Added
 	//if (base.num.is0()) return new sparseplacevalueratio(new sparseplacevalue([this.num.get(0)]), new sparseplacevalue([this.den.get(0)]));
 	//alert(JSON.stringify([this, base]));
 	var num = this.num.eval(base.num.divide(base.den));

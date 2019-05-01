@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	2/28/2019
+// Date:	4/30/2019
 // Complex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -20,7 +20,6 @@ rationalcomplex.prototype.parse = function (n) {	//	2017.10
 }
 
 rationalcomplex.parse = function (n) {
-	//alert('n = ' + n);
 	if (n instanceof String || typeof (n) == 'string') if (n.indexOf('i') != -1 && n.indexOf('r') != -1) { var x = JSON.parse(n); return new rationalcomplex(new rational().parse(JSON.stringify(x.r)), new rational().parse(JSON.stringify(x.i))) }    //  2017.3
 	if (typeof n == "number") return new rationalcomplex(new rational().parse(n));							//	2017.3
 	if (n instanceof Number) return new rationalcomplex(n, 0);												//	2017.3
@@ -191,6 +190,7 @@ rationalcomplex.prototype.round = function () { this.check(); return new rationa
 rationalcomplex.prototype.negate = function () { this.check(); return new rationalcomplex(this.r.negate(), this.i.negate()) }		//	2017.3
 rationalcomplex.prototype.clone = function () { this.check(); return new rationalcomplex(this.r, this.i); }						//	2017.10
 rationalcomplex.prototype.scale = function (c) { this.check(); return new rationalcomplex(this.r.scale(c), this.i.scale(c)); }	//	2017.11
+rationalcomplex.prototype.remainder = function (den) { return this.sub(this.divide(den).times(den)); }	//	2019.4	Added
 
 rationalcomplex.prototype.times = function (y) {
 	this.check(y);

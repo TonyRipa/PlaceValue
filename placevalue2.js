@@ -1,10 +1,9 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 6/30/2018
+// Date : 4/30/2019
 // PlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
 function placevalue2(whole, exp) {
-	//if (arguments.length < 2) alert('placevalue2 expects 2 arguments');
 	if (arguments.length < 1) whole = new wholeplacevalue2();   //  2017.9
 	if (arguments.length < 2) exp = [0, 0];                     //  2017.9
 	if (!(whole instanceof wholeplacevalue2)) { var s = 'PlaceValue2 expects arg 1 (whole) to be a WholePV2 not ' + typeof whole + " : " + JSON.stringify(whole); alert(s); throw new Error(s); }
@@ -141,6 +140,10 @@ placevalue2.prototype.divide = function (denominator) {
 			pv.exp[1]++
 		}
 	}
+}
+
+placevalue2.prototype.remainder = function (den) {	//	2019.4	Added
+	return this.sub(this.divide(den).times(den));
 }
 
 placevalue2.prototype.clone = function () {
