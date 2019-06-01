@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2019
+// Date:    5/31/2019
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -119,7 +119,6 @@ class sparseplacevalue1 {
 
 	tohtml() {  // Replaces toStringInternal 2015.7
 		var me = this.clone();                          // Reverse will mutate  2015.9
-		//return JSON.stringify(me.points.reverse());
 		return me.points.reverse().map(x=>'[' + x + ']').join(',');
 	}
 
@@ -271,13 +270,29 @@ class sparseplacevalue1 {
 		return this.parse(0 / 0);
 	}
 
-	gcd() {   // 2016.5
+	gcd(arg) {	//	2019.5
+		if (arguments.length == 0) return this.gcd0();
+		if (arguments.length == 1) return this.gcd1(arg);
+		alert('GCD Error : Too many args');
+	}
+
+	gcd0() {	//	2016.5
 		var list = [];
 		for (var i = 0; i < this.points.length; i++)
 			list.push(this.points[i][0]);
 		if (list.length == 0) return new this.datatype(1);
 		if (list.length == 1) return list[0].is0() ? new this.datatype().parse(1) : list[0];    //  2017.12 parse   2016.5 Disallow 0 to be a GCD for expediency
 		return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype());           //  2018.2 Removed 0
+	}
+
+	gcd1(b) {	//	2019.5
+		var a = this;
+		if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return a.negate().gcd(b); }
+		if (a.is0()) { "alert(2)"; return b; }
+		if (b.is0()) { "alert(3)"; return a; }
+		//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
+		if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd(b); }
+		"alert(6 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd(a);
 	}
 
 	eval(base) {

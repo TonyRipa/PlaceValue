@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2019
+Date : 5/31/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -205,17 +205,17 @@ SparsePolynomial then formats SparsePlaceValue's result as x*z + y*z.
 
 SparsePlaceValueRatio
 ------------------
-<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValues. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 . SparsePlaceValueRatio accepts Rational, Complex, or RationalComplex digits.
+<i>SparsePlaceValueRatio</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValues. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio would handle that as 1 / 1E1+1. SparsePlaceValueRatio can handle more exotic ratios such as 1 / 1E3,4+1 . SparsePlaceValueRatio accepts Rational, or RationalComplex digits.
 
 Sparse Polynomial Ratio
 -------------
-<i>sparsepolynomialratio.js</i> is a sparse version of Multinomial Ratio; an application of the SparsePlaceValueRatio datatype.
+<i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio datatype.
 
-If SparsePolynomialrAtio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it asks SparsePlaceValueRatio to calculate:
+If SparsePolynomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it asks SparsePlaceValueRatio to calculate:
 
 1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
 
-SparsePolynomialrAtio then formats SparsePlaceValueRatio's result as (x * y^-1+1) / (x * y^-1-1).
+SparsePolynomialRatio then formats SparsePlaceValueRatio's result as (x * y^-1+1) / (x * y^-1-1).
 
 Exponential
 -----------
@@ -482,7 +482,7 @@ Dependencies
 <tr><td>SparseExponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>

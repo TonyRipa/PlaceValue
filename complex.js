@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	4/30/2019
+// Date:	5/31/2019
 // Complex:	A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -22,11 +22,13 @@ complex.parse = function (n) {
 	if (typeof n == "number") return new complex(n, 0); //  2017.3
 	if (n instanceof Number) return new complex(n, 0);  //  2017.3
 	var N = n.toString();
-	if (N[0] == '-') return complex.parse(N.substring(1)).negate(); //  2017.3
-	if (N[0] == '+') return complex.parse(N.substring(1));          //  2017.11
+	if (N[0] == '-') return complex.parse(N.substring(1)).negate();				//	2017.3
+	if (N[0] == '+') return complex.parse(N.substring(1));						//	2017.11
 	var ret = 0;
 	if (N.indexOf(',') != -1) {
-		var parts = N.slice(1, -1).split(',');
+		//var parts = N.slice(1, -1).split(',');								//	2019.5	Removed
+		if (N[0] == '(' && N.slice(-1) == ')') N = N.slice(1,-1);				//	2019.5	Added
+		var parts = N.split(',');												//	2019.5	Added
 		var re = Number(parts[0]); //if (Array.isArray(re)) re = re[0];
 		var im = Number(parts[1]); //if (Array.isArray(im)) im = im[1];
 		ret = [re, im]
@@ -34,6 +36,7 @@ complex.parse = function (n) {
 		ret = single(N);
 	}
 	function single(N) {
+		if (N[0] == '(' && N.slice(-1) == ')') return single(N.slice(1,-1));	//	2019.5	Added
 		var ret = '';
 		for (var i = 0; i < N.length; i++) {
 			var c = N[i];
@@ -170,6 +173,7 @@ complex.prototype.above0 = function () { return this.above(complex.zero); }     
 complex.prototype.isneg = complex.prototype.below0                                                              //  2017.10
 complex.prototype.isint = function () { return this.isreal() && Number.isInteger(this.r); }                     //  2017.10
 
+complex.prototype.min = function (other) { return (this.below(other) ? this : other).clone() }					//	2019.5	Added
 complex.prototype.add = function (other) { return new complex(this.r + other.r, this.i + other.i); }
 complex.prototype.sub = function (other) { return new complex(this.r - other.r, this.i - other.i); }
 complex.prototype.exp = function () { return this.i == 0 ? new complex(Math.exp(this.r), 0) : new complex(Math.exp(this.r) * Math.cos(this.i), Math.exp(this.r) * Math.sin(this.i)); }  //  2017.3
@@ -200,7 +204,6 @@ complex.prototype.divide = function (y) {
 
 complex.prototype.pow = function (p) {
 	if (!(p instanceof complex)) p = complex.parse(p);  //  2017.11
-	//try {
 		var b = this;
 		var c = complex;
 		if (b.norm() == 0) var ret = new c(Math.pow(0, p.r), 0);

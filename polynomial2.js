@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	4/30/2019
+// Date:	5/31/2019
 // Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 
 function polynomial2(base, pv) {
@@ -21,7 +21,6 @@ polynomial2.prototype.parse = function (strornode) {    //  2017.9
 		console.log('new polynomial2 : SymbolNode')
 		var base = [node.name, null];
 		var pv = new wholeplacevalue2([[0, 1]]);
-		//alert(JSON.stringify([base, new wholeplacevalue2(pv, 'new polynomial2 >'), new polynomial2(base, new wholeplacevalue2(pv, 'new polynomial2 >'))]))
 		return new polynomial2(base, pv);
 		//console.log('new polynomial2 : parse1 : base = ' + JSON.stringify(me.base));
 	} else if (node.type == 'OperatorNode') {
@@ -94,6 +93,11 @@ polynomial2.prototype.divide = function (other) {
 	return new polynomial2(this.base, this.pv.divide(other.pv));
 }
 
+polynomial2.prototype.divideleft = function (other) {	//	2019.5	Added
+	this.align(other);
+	return new polynomial2(this.base, this.pv.divideleft(other.pv));
+}
+
 polynomial2.prototype.remainder = function (other) {	//	2019.4	Added
 	this.align(other);
 	return new polynomial2(this.base, this.pv.remainder(other.pv));
@@ -110,7 +114,7 @@ polynomial2.prototype.align = function (other) {    // obviate need for differen
 	if (alignHelper(this, other)) flip(this,other);	// If (this flipped) flipback;	2015.8
 	//if (shouldFlip(this.pv.mantisa, other.pv.mantisa)) flip(this, other);
 	if (this.base.toString() != other.base.toString()) alert('Different bases : ' + JSON.stringify(this) + ' & ' + JSON.stringify(other));
-	function shouldFlip(matrix1, matrix2) { return matrix1.length + matrix2.length > matrix1[0].length + matrix2[0].length }
+	//function shouldFlip(matrix1, matrix2) { return matrix1.length + matrix2.length > matrix1[0].length + matrix2[0].length }	//	2019.5	Removed
 	function flip(me, it) {
 		it.base = me.base = [me.base[1], me.base[0]];
 		me.pv.mantisa = math.transpose(me.pv.mantisa);

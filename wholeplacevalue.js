@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	4/30/2019
+// Date:	5/31/2019
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -12,7 +12,7 @@ function wholeplacevalue(arg) {
 	if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg]; //  2017.11
 	if (Array.isArray(arg)) {                                                                       //  2017.11
 		man = arg;
-		//if (man.length==0) throw new Error('notype')
+		if (man.length==0) throw new Error('notype')												//	2019.5	Added
 		datatype = (man.length > 0) ? man[0].constructor : rational;
 	}
 	this.datatype = datatype;
@@ -135,13 +135,15 @@ wholeplacevalue.prototype.is1 = function () { this.check(); return this.equals(t
 wholeplacevalue.prototype.isNaN = function () { this.check(); return this.equals(this.parse('%')); }  //  2018.3
 
 wholeplacevalue.prototype.above = function (other) { this.check(other); return this.get(0).above(other.get(0)) }	//	2017.7
-//wholeplacevalue.prototype.isneg = function () { this.check(); return new wholeplacevalue().above(this) }			//	2017.7	//	2019.4	Removed
-wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).comparebig(this) == 1 }						//	2019.4	Added
+//wholeplacevalue.prototype.isneg = function () { this.check(); return new wholeplacevalue().above(this) }			//	2017.7			//	2019.4	Removed
+//wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).comparebig(this) == 1 }		//	2019.4	Added	//	2019.5	Removed
+wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).above(this) == 1 }				//	2019.5	Added
 
 wholeplacevalue.prototype.add = function (other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 wholeplacevalue.prototype.sub = function (other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
 wholeplacevalue.prototype.pointtimes = function (other) { this.check(other); return this.f(function (x, y) { return x.times(y) }, other); }
 wholeplacevalue.prototype.pointdivide = function (other) { this.check(other); return this.f(function (x, y) { return x.divide(y) }, other); }
+wholeplacevalue.prototype.pointmin = function (other) { this.check(other); return this.f(function (x, y) { return x.min(y) }, other); }	//	2019.5	Added
 wholeplacevalue.prototype.clone = function () { this.check(); return this.f(function (x) { return x }, this); }
 wholeplacevalue.prototype.negate = function () { this.check(); return this.f(function (x) { return x.negate() }, this); }     //  2016.5
 
@@ -208,7 +210,6 @@ wholeplacevalue.prototype.times = function (top) {
 	this.check(top);
 	if (!(top instanceof wholeplacevalue)) { var s = 'wholeplacevalue.times expects arg to be a wholeplacevalue but found ' + typeof top + ' ' + JSON.stringify(top); alert(s); throw new Error(s); }   //  2018.2
 	if (!(this.datatype == top.datatype)) { var s = 'wholePV.times arg (wholeplacevalue) different digit datatype\n' + this.datatype + '\n' + top.datatype; alert(s); throw new Error(s); }             //  2018.2
-	//if (!(top instanceof wholeplacevalue)) top = new wholeplacevalue([top]);
 	var prod = new wholeplacevalue(this.datatype);
 	for (var b = 0; b < this.mantisa.length; b++) {
 		var sum = [];
@@ -330,7 +331,13 @@ wholeplacevalue.prototype.dividemiddle = function (den) {   // 2016.3
 	return new wholeplacevalue(x.map(function (x) { return Math.round(100 * x) / 100 }).map(new this.datatype().parse));
 }
 
-wholeplacevalue.prototype.gcd = function () {   // 2016.5
+wholeplacevalue.prototype.gcd = function(arg) {			//	2019.5
+	if (arguments.length == 0) return this.gcd0();
+	if (arguments.length == 1) return this.gcd1(arg);
+	alert('GCD Error : Too many args');
+}
+
+wholeplacevalue.prototype.gcd0 = function () {			//	2016.5
 	this.check();
 	var list = [];
 	for (var i = 0; i < this.mantisa.length; i++)
@@ -338,6 +345,23 @@ wholeplacevalue.prototype.gcd = function () {   // 2016.5
 	if (list.length == 0) return new this.datatype.parse(1);
 	if (list.length == 1) return list[0].is0() ? new this.datatype().parse(1) : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
 	return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype());
+}
+
+wholeplacevalue.prototype.gcd1 = function(b, count) {	//	2019.5
+	var a = this;
+	a.check();
+	b.check();
+	if (arguments.length < 2) count = 0;
+	count++;
+	if (count == 10) return a.parse(1);
+	console.log(a.toString(), b.toString());
+	//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
+	if (a.mantisa[0].isneg() && b.mantisa[0].ispos()) { "alert(1)"; return a.negate().gcd1(b,count); }
+	if (a.is0()) { "alert(2)"; return b; }
+	if (b.is0()) { "alert(3)"; return a; }
+	//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
+	if (a.mantisa[a.mantisa.length - 1].above(b.mantisa[b.mantisa.length - 1])) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b,count); }
+	"alert(6 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd1(a,count);
 }
 
 wholeplacevalue.prototype.eval = function (base) {

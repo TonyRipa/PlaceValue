@@ -1,7 +1,7 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
-// SparsePlaceValueRatio1 : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValue1s
+// Date:    5/31/2019
+// SparsePlaceValueRatio1 : a datatype for representing base-agnostic arithmetic via ratios of SparsePlaceValue1s
 
 function sparseplacevalueratio1(arg) {
 	var num, den;
@@ -107,7 +107,8 @@ sparseplacevalueratio1.prototype.reduce = function () {     //  2016.5
 
 	function euclid(ratio) {
 		"alert(ratio.num + ' , ' + ratio.den)"
-		var g = gcdpv(ratio.num, ratio.den);
+		//var g = gcdpv(ratio.num, ratio.den);	//	2019.5	Removed
+		var g = ratio.num.gcd(ratio.den);		//	2019.5	Added
 		if (g.points.length == 1 && g.points[0][1].is0()) return;
 		ratio.num = ratio.num.divide(g);
 		ratio.den = ratio.den.divide(g);
@@ -126,16 +127,16 @@ sparseplacevalueratio1.prototype.reduce = function () {     //  2016.5
 		me.den = den.unscale(g);
 	}
 
-	function gcdpv(a, b) {
-		console.log(a.toString(), b.toString());
-		//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
-		if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b); }
-		if (a.is0()) { "alert(2)"; return b; }
-		if (b.is0()) { "alert(3)"; return a; }
-		//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
-		if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
-		"alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a);
-	}
+	//function gcdpv(a, b) {	//	2019.5	Removed
+	//	console.log(a.toString(), b.toString());
+	//	//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
+	//	if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b); }
+	//	if (a.is0()) { "alert(2)"; return b; }
+	//	if (b.is0()) { "alert(3)"; return a; }
+	//	//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
+	//	if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b); }
+	//	"alert(6 + ': ' + a + ' , ' + b)"; return gcdpv(b.remainder(a), a);
+	//}
 }
 
 sparseplacevalueratio1.prototype.isNaN = function () { return this.num.isNaN() || this.den.isNaN(); }   //  2018.3
@@ -231,15 +232,14 @@ sparseplacevalueratio1.prototype.reciprocal = function () {
 
 sparseplacevalueratio1.prototype.eval = function (base) {
 	return new sparseplacevalueratio1(this.num.eval(base.num.divide(base.den)), this.den.eval(base.num.divide(base.den)));  //  2018.4
-	//if (base.num.is0()) return new sparseplacevalueratio1(new sparseplacevalue1([this.num.get(0)]), new sparseplacevalue1([this.den.get(0)]));    //  2017.12     Rem
-	var num = new sparseplacevalueratio1(new sparseplacevalue1(), new sparseplacevalue1().parse(1));
-	for (var i = 0; i < this.num.points.length; i++) {
-		if (!this.num.points[i][0].is0()) num = num.add(base.pow(this.num.points[i][1]).scale(this.num.points[i][0]));
-	}
-	var den = new sparseplacevalueratio1(new sparseplacevalue1(), new sparseplacevalue1().parse(1));
-	for (var i = 0; i < this.den.points.length; i++) {
-		//if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
-		if (!this.den.points[i][0].is0()) den = den.add(base.pow(this.den.points[i][1]).scale(this.den.points[i][0]));
-	}//alert([num, den])
-	return num.divide(den);
+	//var num = new sparseplacevalueratio1(new sparseplacevalue1(), new sparseplacevalue1().parse(1));						//	2019.5	Removed
+	//for (var i = 0; i < this.num.points.length; i++) {
+	//	if (!this.num.points[i][0].is0()) num = num.add(base.pow(this.num.points[i][1]).scale(this.num.points[i][0]));
+	//}
+	//var den = new sparseplacevalueratio1(new sparseplacevalue1(), new sparseplacevalue1().parse(1));
+	//for (var i = 0; i < this.den.points.length; i++) {
+	//	//if (!this.den.get(i).is0()) den = den.add(base.pow(i).scale(this.den.get(i)));
+	//	if (!this.den.points[i][0].is0()) den = den.add(base.pow(this.den.points[i][1]).scale(this.den.points[i][0]));
+	//}//alert([num, den])
+	//return num.divide(den);
 }

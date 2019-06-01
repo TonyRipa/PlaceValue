@@ -1,7 +1,7 @@
 
 // Author:	Anthony John Ripa
-// Date:	2/28/2019
-// AbstractPolynomial : Base Class for SparseMultinomial, ComplexSparseMultinomial
+// Date:	5/31/2019
+// AbstractPolynomial : Base Class for SparsePolynomial
 
 class abstractpolynomial {
 
@@ -83,6 +83,11 @@ class abstractpolynomial {
 
 	round() {		//	2019.4	Added
 		return new this.constructor(this.base, this.pv.round());
+	}
+
+	gcd(other) {	//	2019.5	Added
+		this.align(other);
+		return new this.constructor(this.base, this.pv.gcd(other.pv));
 	}
 
 	eval(other) {	//	2017.10 Works for 1D & nD

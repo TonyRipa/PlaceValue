@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	4/30/2019
+	Date:	5/31/2019
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -45,7 +45,6 @@
 	<script src='sparseplacevalue2.js'></script>
 	<script src='sparsepolynomial.js'></script>
 	<!--<script src='sparseplacevaluecomplex.js'></script>		2019.4	Removed	-->
-	<!--<script src='complexsparsemultinomial.js'></script>		2019.3	Removed	-->
 	<!--<script src='sparsecomplexexponential.js'></script>		2019.4	Removed	-->
 	<script src='sparseplacevalueratio1.js'></script>
 	<script src='sparsepolynomialratio1.js'></script>
@@ -117,10 +116,10 @@
 			<option value="32">Laurent Polynomial</option>
 			<option value="35">Sparse Polynomial</option>
 			<option value="38">Sparse Polynomial Ratio</option>
-			<option value="40">Exponential</option>
-			<option value="41">Sparse Exponential 1</option>
-			<option value="44">Sparse Exponential Ratio 1</option>
-			<option value="49">Sparse Exponential</option>
+			<option value="41">Exponential</option>
+			<option value="42">Sparse Exponential 1</option>
+			<option value="45">Sparse Exponential Ratio 1</option>
+			<option value="50">Sparse Exponential</option>
 		</optgroup>
 	</select>
 	<select id="f3" onchange="clean()">
@@ -137,12 +136,12 @@
 			<option value="23">Polynomial 1</option>
 			<option value="26">Sparse Polynomial 1</option>
 			<option value="36">Sparse Polynomial</option>
-			<option value="39">Laurent</option>
-			<option value="42">Sparse Exponential 1</option>
-			<option value="46">Fourier</option>
-			<option value="47">Fourier2</option>
-			<option value="48">Exponential</option>
-			<option value="50">Sparse Exponential</option>
+			<option value="40">Laurent</option>
+			<option value="43">Sparse Exponential 1</option>
+			<option value="47">Fourier</option>
+			<option value="48">Fourier2</option>
+			<option value="49">Exponential</option>
+			<option value="51">Sparse Exponential</option>
 		</optgroup>
 	</select>
 	<select id="f4" onchange="clean()">
@@ -164,9 +163,10 @@
 			<option value="29">Polynomial Ratio 1</option>
 			<option value="31">Sparse Polynomial Ratio 1</option>
 			<option value="37">Sparse Polynomial</option>
-			<option value="43">Sparse Exponential 1</option>
-			<option value="45">Sparse Exponential Ratio 1</option>
-			<option value="51">Sparse Exponential</option>
+			<option value="39">Sparse Polynomial Ratio</option>
+			<option value="44">Sparse Exponential 1</option>
+			<option value="46">Sparse Exponential Ratio 1</option>
+			<option value="52">Sparse Exponential</option>
 		</optgroup>
 </select>
 	<select id='f' onchange="clean()">
@@ -214,26 +214,27 @@
 		<option value="35">Sparse Polynomial - Rational</option>
 		<option value="36">Sparse Polynomial - Complex</option>
 		<option value="37">Sparse Polynomial - RationalComplex</option>
-		<option value="38">Sparse Polynomial Ratio</option>
-		<option value="39">Complex Laurent</option>
-		<option value="40">Exponential</option>
-		<option value="41">Sparse Exponential 1 - Rational</option>
-		<option value="42">Sparse Exponential 1 - Complex</option>
-		<option value="43">Sparse Exponential 1 - RationalComplex</option>
-		<option value="44">Sparse Exponential Ratio 1 - Rational</option>
-		<option value="45">Sparse Exponential Ratio 1 - RationalComplex</option>
-		<option value="46">Fourier</option>
-		<option value="47">Fourier2</option>
-		<option value="48">Complex Exponential</option>
-		<option value="49">Sparse Exponential - Rational</option>
-		<option value="50">Sparse Exponential - Complex</option>
-		<option value="51">Sparse Exponential - RationalComplex</option>
+		<option value="38">Sparse Polynomial Ratio - Rational</option>
+		<option value="39">Sparse Polynomial Ratio - RationalComplex</option>
+		<option value="40">Complex Laurent</option>
+		<option value="41">Exponential</option>
+		<option value="42">Sparse Exponential 1 - Rational</option>
+		<option value="43">Sparse Exponential 1 - Complex</option>
+		<option value="44">Sparse Exponential 1 - RationalComplex</option>
+		<option value="45">Sparse Exponential Ratio 1 - Rational</option>
+		<option value="46">Sparse Exponential Ratio 1 - RationalComplex</option>
+		<option value="47">Fourier</option>
+		<option value="48">Fourier2</option>
+		<option value="49">Complex Exponential</option>
+		<option value="50">Sparse Exponential - Rational</option>
+		<option value="51">Sparse Exponential - Complex</option>
+		<option value="52">Sparse Exponential - RationalComplex</option>
 	</optgroup>-->
 	</select>
 	<br />
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option>^</option><option>|</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo">&nbsp;</td></tr>
+		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option>∧</option><option>^</option><option>|</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo">&nbsp;</td></tr>
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">&uarr;</button></td><td id="co"></td></tr>
 	</table>
 	<script type="text/javascript">
@@ -270,19 +271,21 @@
 				case '35': f = new sparsepolynomial(rational); break;				//	2018.12	Added
 				case '36': f = new sparsepolynomial(complex); break;				//	2018.12	Added
 				case '37': f = new sparsepolynomial(rationalcomplex); break;		//	2018.12	Added
-				case '41': f = new sparseexponential1(rational); break;
-				case '42': f = new sparseexponential1(complex); break;
-				case '43': f = new sparseexponential1(rationalcomplex); break;
-				case '44': f = new sparseexponentialratio1(rational); break;		//	2019.3	Added
-				case '45': f = new sparseexponentialratio1(rationalcomplex); break;	//	2019.3	Added
-				case '49': f = new sparseexponential(rational); break;				//	2019.2	Added
-				case '50': f = new sparseexponential(complex); break;				//	2019.2	Added
-				case '51': f = new sparseexponential(rationalcomplex); break;		//	2019.2	Added
-				default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalue, placevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio1, polynomialratio1, sparsepolynomialratio1, sparsepolynomialratio1, laurent, polynomial2, laurent2, sparsepolynomial, sparsepolynomial, sparsepolynomial, sparsepolynomialratio, complexlaurent, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponentialratio1, sparseexponentialratio1, fourier, fourier2, complexexponential, sparseexponential, sparseexponential, sparseexponential][$('#f')[0].value]();
+				case '38': f = new sparsepolynomialratio(rational); break;			//	2019.5	Added
+				case '39': f = new sparsepolynomialratio(rationalcomplex); break;	//	2019.5	Added
+				case '42': f = new sparseexponential1(rational); break;
+				case '43': f = new sparseexponential1(complex); break;
+				case '44': f = new sparseexponential1(rationalcomplex); break;
+				case '45': f = new sparseexponentialratio1(rational); break;		//	2019.3	Added
+				case '46': f = new sparseexponentialratio1(rationalcomplex); break;	//	2019.3	Added
+				case '50': f = new sparseexponential(rational); break;				//	2019.2	Added
+				case '51': f = new sparseexponential(complex); break;				//	2019.2	Added
+				case '52': f = new sparseexponential(rationalcomplex); break;		//	2019.2	Added
+				default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalue, placevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio1, polynomialratio1, sparsepolynomialratio1, sparsepolynomialratio1, laurent, polynomial2, laurent2, sparsepolynomial, sparsepolynomial, sparsepolynomial, sparsepolynomialratio, sparsepolynomialratio, complexlaurent, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponentialratio1, sparseexponentialratio1, fourier, fourier2, complexexponential, sparseexponential, sparseexponential, sparseexponential][$('#f')[0].value]();
 			}
 			var a = getinput('#a');
 			var b = getinput('#b');
-			var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.pow, a.eval, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
+			var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.eval, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
 			output(a, b, c);
 			function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); } //  2017.9
 			function output(a, b, c) {

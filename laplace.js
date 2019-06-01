@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2018
+// Date:	5/31/2019
 // Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -99,14 +99,6 @@ class laplace extends abstractpolynomial {
 		if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return laplace.parse('0/0') }
 	}
 
-	//pow(other) { // 2015.6
-	//	return new laplace(this.base, this.pv.pow(other.pv));
-	//}
-
-	//pointpow(other) { // 2015.12
-	//	return new laplace(this.base, this.pv.pointpow(other.pv));
-	//}
-
 	static toStringCosh(pv, base) { // 2015.11
 		var s = pv.clone();
 		//var extra = new placevaluecomplex(new wholeplacevalue([0]), -1);
@@ -114,8 +106,9 @@ class laplace extends abstractpolynomial {
 		var trigimag = '';
 		//alert(JSON.stringify(s))
 		[s, trigreal] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('1'), 0)), '');
-		[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4
-		var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');
+		//[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed
+		//var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');												//	2019.5	Removed
+		var ret = trigreal;																									//	2019.5	Added
 		ret += '+' + laplace.toStringXbase(s, base);
 		if (ret[0] == '+') ret = ret.slice(1);
 		return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;

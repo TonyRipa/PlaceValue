@@ -1,10 +1,10 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	4/30/2019
+// Date:	5/31/2019
 // Rational: A data-type for representing Rational Numbers
 
-function rational(num, den) {   //  2016.7
-	if (arguments.length < 1) num = 0;  //  2017.9
+function rational(num, den) {			//	2016.7
+	if (arguments.length < 1) num = 0;	//	2017.9
 	if (arguments.length < 2) den = 1;
 	if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
 	if (!(typeof den == 'number' || den instanceof Number)) { console.trace(); alert('Rational expects argument 2 (den) to be a Number but found ' + typeof den + ' ' + JSON.stringify(den)); }
@@ -197,6 +197,7 @@ rational.prototype.below = function (other) { return this.sub(other).isneg(); } 
 
 rational.prototype.abs = function () { return new rational(Math.abs(this.n), Math.abs(this.d)) }
 
+rational.prototype.min = function (other) { return (this.below(other) ? this : other).clone() }	//	2019.5	Added
 rational.prototype.add = function (other) { return (this.d == 0 && other.d == 0) ? new rational(this.n == other.n ? this.n : 0, 0) : new rational(this.n * other.d + other.n * this.d, this.d * other.d); }
 rational.prototype.sub = function (other) { return (this.d == 0 && other.d == 0) ? new rational(this.n == -other.n ? this.n : 0, 0) : new rational(this.n * other.d - other.n * this.d, this.d * other.d); }
 rational.prototype.times = function (other) { return new rational(this.n * other.n, this.d * other.d); }

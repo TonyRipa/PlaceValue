@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	3/31/2019
+// Date:	5/31/2019
 // SparseExponential : a datatype for representing sparse exponentials; an application of the sparseplacevalue datatype
 
 class sparseexponential extends abstractpolynomial {
@@ -92,10 +92,7 @@ class sparseexponential extends abstractpolynomial {
 			//else alert('Syntax Error: complexexponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');	//	Check	2015.12	//	2019.2	Removed
 			//alert(pv)
 			return new sparseexponential(base, pv);
-		} /* else if (node.type == 'FunctionNode') {	//	Discard functions	2015.12
-			alert('Syntax Error: sparseexponential expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
-			return sparseexponential.parse(node.args[0]);
-		} */	//	2019.2	Removed
+		}
 	}
 
 	align(other) {			//	2017.2
@@ -197,7 +194,8 @@ class sparseexponential extends abstractpolynomial {
 		ret += sparseexponential.toStringXbase(s, base);
 		return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
 		function hyper(name, sign, ind) {//alert('hyper')
-			for (var b = 0; b < 1; b++) {   //  2017.5
+			//for (var b = 0; b < 1; b++) {	//	2017.5	//	2019.5	Removed
+			for (var b = 0; b < 3; b++) {				//	2019.5	Added
 				for (var i = 5; i >= -5; i--) {
 					if (i == 0) continue;
 					if (i < 0) continue;			//	2019.2

@@ -1,7 +1,7 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
-// SparsePlaceValue: a datatype for representing base agnostic arithmetic via sparse numbers
+// Date:    5/31/2019
+// SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 //function sparseplacevalue(arg) {	//	2019.4	Removed
 class sparseplacevalue {			//	2019.4	Added
@@ -276,16 +276,6 @@ class sparseplacevalue {			//	2019.4	Added
 			quotient = quotient.add(q2);
 			return quotient;
 		}
-		//function subvectors(a, b) { return a.sub(b);//  2017.1	//	2018.12	Removed
-		//	//if (a.length > b.length) return subvectors(b, a).map(function (x) { return x.negate(); });
-		//	////return math.add(a.concat(math.zeros(b.length - a.length).valueOf()), math.multiply(b, -1));
-		//	//var ret = []
-		//	//for (var i = 0; i < a.length; i++)
-		//	//    ret.push(a[i].sub(b[i]));
-		//	//for (i = a.length; i < b.length; i++)
-		//	//    ret.push(b[i].negate());
-		//	//return ret;
-		//}
 	}
 
 	remainder(den) {	//	2016.5
@@ -348,7 +338,13 @@ class sparseplacevalue {			//	2019.4	Added
 		return this.parse(0 / 0);	//	2018.11	this.parse
 	}
 
-	gcd() {   // 2016.5
+	gcd(arg) {			//	2019.5
+		if (arguments.length == 0) return this.gcd0();
+		if (arguments.length == 1) return this.gcd1(arg);
+		alert('GCD Error : Too many args');
+	}
+
+	gcd0() {			//	2016.5
 		this.check();
 		var list = [];
 		for (var i = 0; i < this.points.length; i++)
@@ -356,6 +352,23 @@ class sparseplacevalue {			//	2019.4	Added
 		if (list.length == 0) return new this.datatype().parse('1');
 		if (list.length == 1) return list[0].is0() ? new this.datatype().parse('1') : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
 		return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype().parse('0'));
+	}
+
+	gcd1(b, count) {	//	2019.5	Added
+		var a = this;
+		a.check();													//	2019.4	Added
+		b.check();													//	2019.4	Added
+		if (arguments.length < 2) count = 0;
+		count++;
+		if (count == 10) return a.parse(1);
+		if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return a.negate().gcd1(b, count); }
+		if (a.is0()) { "alert(2 + ': ' + a + ' , ' + b)"; return b; }
+		if (b.is0()) { "alert(3)"; return a; }
+		if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }
+		//if (a.points[a.points.length - 1][1].comparebig(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }	//	2019.4	Added	//	2019.5	Removed
+		if (a.points[a.points.length - 1][1].comparelittle(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }	//	2019.5	Added
+		if (a.points.length==1 && b.points.length==1) { "alert(6 + ': ' + a + ' , ' + b)"; return new sparseplacevalue([[a.points[0][0].gcd(b.points[0][0]),a.points[0][1].pointmin(b.points[0][1])]]); }	//	2019.5	Added
+		"alert(7 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd1(a, count);
 	}
 
 	eval(base) {

@@ -1,13 +1,14 @@
 
 // Author:	Anthony John Ripa
-// Date:	4/30/2019
-// SparsePlaceValueRatio : a datatype for representing base agnostic arithmetic via ratios of SparsePlaceValues
+// Date:	5/31/2019
+// SparsePlaceValueRatio : a datatype for representing base-agnostic arithmetic via ratios of SparsePlaceValues
 
 //function sparseplacevalueratio(num, den) {																			//	2019.4	Removed
 function sparseplacevalueratio(arg) {																					//	2019.4	Added
 	var num, den;																										//	2019.4	Added
 	//if (arguments.length < 1) num = new sparseplacevalue();			//	2017.9										//	2019.4	Removed
 	//if (arguments.length < 2) den = new sparseplacevalue().parse(1);	//	2017.9										//	2019.4	Removed
+	if (arguments.length == 0) throw new Error('notype');																//	2019.5	Added
 	if (arguments.length == 0)[num, den] = [new sparseplacevalue(rational), new sparseplacevalue(rational).parse(1)];	//	2019.4	Added
 	if (arguments.length == 1) {																						//	2019.4	Added
 		if (arg === rational || arg === rationalcomplex)[num, den] = [new sparseplacevalue(arg), new sparseplacevalue(arg).parse(1)];
@@ -52,7 +53,6 @@ sparseplacevalueratio.prototype.parse = function (man) {	//	2017.9
 		var den = this.num.parse(man.substr(slashindex + 1));										//	2019.4	Added
 	}
 	return new sparseplacevalueratio(num, den);
-	//console.log('this.num = ' + this.num + ', this.den = ' + this.den + ', den = ' + den + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
 	function findslash(x) {	//	2016.7
 		var depth = 0;
 		for (var i = 0; i < x.length; i++) {
@@ -114,7 +114,8 @@ sparseplacevalueratio.prototype.reduce = function () {				//	2016.5
 	function euclid(ratio) {
 		ratio.check();												//	2019.4	Added
 		"alert(ratio.num + ' , ' + ratio.den)"
-		var g = gcdpv(ratio.num, ratio.den);
+		//var g = gcdpv(ratio.num, ratio.den);						//	2019.5	Removed
+		var g = ratio.num.gcd(ratio.den);							//	2019.5	Added
 		"alert(JSON.stringify(g))"
 		if (g.points.length == 1 && g.points[0][1].is0()) return;
 		ratio.num = ratio.num.divide(g);
@@ -138,21 +139,22 @@ sparseplacevalueratio.prototype.reduce = function () {				//	2016.5
 		me.den = den.unscale(g);
 	}
 
-	function gcdpv(a, b, count) {
-		a.check();													//	2019.4	Added
-		b.check();													//	2019.4	Added
-		if (arguments.length < 3) count = 0;
-		count++;
-		if (count == 10) return new sparseplacevalue().parse(1);	//	2017.7
-		//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
-		if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b, count); }
-		if (a.is0()) { "alert(2)"; return b; }
-		if (b.is0()) { "alert(3)"; return a; }
-		if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
-		//if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { alert(5 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b, count); }		//	2019.4	Removed
-		if (a.points[a.points.length - 1][1].comparebig(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }	//	2019.4	Added
-		"alert(6 + ': ' + JSON.stringify(a) + ' , ' + JSON.stringify(b))"; return gcdpv(b.remainder(a), a, count);
-	}
+	//function gcdpv(a, b, count) {									//	2019.5	Removed
+	//	a.check();													//	2019.4	Added
+	//	b.check();													//	2019.4	Added
+	//	if (arguments.length < 3) count = 0;
+	//	count++;
+	//	//if (count == 10) return new sparseplacevalue().parse(1);	//	2017.7	//	2019.5	Removed
+	//	if (count == 10) return a.parse(1);										//	2019.5	Added
+	//	//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
+	//	if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return gcdpv(a.negate(), b, count); }
+	//	if (a.is0()) { "alert(2)"; return b; }
+	//	if (b.is0()) { "alert(3)"; return a; }
+	//	if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }
+	//	//if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { alert(5 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b, count); }		//	2019.4	Removed
+	//	if (a.points[a.points.length - 1][1].comparebig(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return gcdpv(a.remainder(b), b, count); }	//	2019.4	Added
+	//	"alert(6 + ': ' + JSON.stringify(a) + ' , ' + JSON.stringify(b))"; return gcdpv(b.remainder(a), a, count);
+	//}
 }
 
 sparseplacevalueratio.prototype.add = function (addend) {
