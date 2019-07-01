@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2019
+// Date:    6/30/2019
 // SparseExponentialRatio1 : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
 
 class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
@@ -78,21 +78,22 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 			//var expi2 = expi.pow(-1)
 			//alert(JSON.stringify(['ones', ones, 'itens', itens, 'tens', tens, 'exp', exp.whole, 'exp2', exp2.whole, 'exp.add(exp2)', exp.add(exp2), 'exp.add(exp2).scale({ r: .5, i: 0 })', exp.add(exp2).scale({ 'r': .5, 'i': 0 })]));
 			//alert(JSON.stringify(['expi', expi.whole, 'expi2', expi2.whole, 'expi.add(expi2)', expi.add(expi2), 'expi.add(expi2).scale({ r: .5, i: 0 })', expi.add(expi2).scale({ 'r': .5, 'i': 0 })]));
-			//var cosh = exp.add(exp2).scale(.5);			//	2019.3	Removed
-			//var sinh = exp.sub(exp2).scale(.5);			//	2019.3	Removed
-			var cosh = exp.add(exp2).unscale(2);			//	2019.3	Unscale
-			var sinh = exp.sub(exp2).unscale(2);			//	2019.3	Unscale
-			//if (fn == 'exp') var pv = exp;				//	2019.3	Removed
-			if (fn == 'exp' | fn == 'cis') var pv = exp;	//	2019.3	Added cis
+			//var cosh = exp.add(exp2).scale(.5);						//	2019.3	Removed
+			//var sinh = exp.sub(exp2).scale(.5);						//	2019.3	Removed
+			var cosh = exp.add(exp2).unscale(2);						//	2019.3	Unscale
+			var sinh = exp.sub(exp2).unscale(2);						//	2019.3	Unscale
+			if (fn == 'sin' | fn == 'tan') sinh = sinh.unscale('i');	//	2019.6	Added
+			//if (fn == 'exp') var pv = exp;							//	2019.3	Removed
+			if (fn == 'exp' | fn == 'cis') var pv = exp;				//	2019.3	Added cis
 			//else if (fn == 'cis') var pv = expi;
 			//else if (fn == 'cosh') var pv = exp.add(exp2).scale({ 'r': .5, 'i': 0 });
-			//else if (fn == 'cosh') var pv = cosh;			//	2019.3	Removed
-			if (fn == 'cosh' | fn == 'cos') var pv = cosh;	//	2019.3	-Else +Cos
+			//else if (fn == 'cosh') var pv = cosh;						//	2019.3	Removed
+			if (fn == 'cosh' | fn == 'cos') var pv = cosh;				//	2019.3	-Else +Cos
 			//else if (fn == 'cos') var pv = expi.add(expi2).scale({ 'r': .5, 'i': 0 });
 			//else if (fn == 'sinh') var pv = exp.sub(exp2).scale({ 'r': .5, 'i': 0 });
-			//else if (fn == 'sinh') var pv = sinh;			//	2019.3	Removed
-			if (fn == 'sinh' | fn == 'sin') var pv = sinh;	//	2019.3	-Else +Sin
-			if (fn == 'sin') pv = pv.unscale('i');			//	2019.3
+			//else if (fn == 'sinh') var pv = sinh;						//	2019.3	Removed
+			if (fn == 'sinh' | fn == 'sin') var pv = sinh;				//	2019.3	-Else +Sin
+			//if (fn == 'sin') pv = pv.unscale('i');					//	2019.3	//	2019.6	Removed
 			//else if (fn == 'tanh') return new sparseexponentialratio1(base, new sparseplacevalueratio1(sinh, cosh));			//	2017.8	//	2019.3	Removed
 			if (fn == 'tanh' | fn == 'tan') return new sparseexponentialratio1(base, new sparseplacevalueratio1(sinh, cosh));	//	2017.8	//	2019.3	-Else +Tan
 			//else if (fn == 'sin') var pv = expi.sub(expi2).scale({ 'r': 0, 'i': -.5 });
@@ -116,7 +117,6 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 		if (this.pv.den.is1()) return new sparseexponential1(this.base, this.pv.num).toString();
 		if (this.pv.num.divide(this.pv.den).times(this.pv.den).equals(this.pv.num)) return new sparseexponential1(this.base, this.pv.num.divide(this.pv.den)).toString();
 		return '(' + new sparseexponential1(this.base, this.pv.num).toString() + ')/(' + new sparseexponential1(this.base, this.pv.den).toString() + ')';
-		//return sparseexponentialratio1.toStringCosh(this.pv, this.base)
 	}
 
 	eval(base) {    //  2017.5
