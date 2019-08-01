@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/30/2019
+// Date:    7/31/2019
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 //function sparseplacevalue(arg) {	//	2019.4	Removed
@@ -39,17 +39,6 @@ class sparseplacevalue {			//	2019.4	Added
 						}
 				function compare(a, b) {
 					return a[1].comparelittle(b[1]);											//	2019.4	Added
-					//if (a[1].length > b[1].length) ret = -compare(b, a);
-					//if (JSON.stringify(a[1]) == JSON.stringify(b[1])) ret = a[0].sub(b[0]).toreal();
-					//for (var i = 0; i < a[1].mantisa.length + b[1].mantisa.length ; i++) {	//	2019.4	Removed
-					//	if (a[1].get(i).above(b[1].get(i))) return 1;
-					//	if (a[1].get(i).below(b[1].get(i))) return -1;
-					//}
-					//for (i = a[1].mantisa.length; i < b[1].mantisa.length ; i++) {
-					//    if (b[1].get(i).isneg()) ret = 1;
-					//    if (b[1].get(i).ispos()) ret = -1;
-					//}
-					//return 0;																	//	2019.4	Removed
 				}
 			}
 			function combineliketerms(list) {
@@ -193,8 +182,10 @@ class sparseplacevalue {			//	2019.4	Added
 	pointdivide(other) { this.check(other); return this.f(this.datatype.prototype.divide, other); }
 	pointsub(other) { this.check(other); return this.pointadd(other.negate()); }
 	pointpow(other) { this.check(other); return this.f0(this.datatype.prototype.pow, other); }   //  2017.7
-	clone() { this.check(); return new sparseplacevalue(this.points.slice(0)); }
-	negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7
+	//clone() { this.check(); return new sparseplacevalue(this.points.slice(0)); }																//	2019.7	Removed
+	clone() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.slice(0) : this.datatype); }							//	2019.7
+	//negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7		//	2019.7	Removed
+	negate() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.map(x=>[x[0].negate(),x[1]]) : this.datatype); }	//	2019.7
 	transpose() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
 	//round() { this.check(); return new sparseplacevalue(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6		//	2019.4	Removed
 	round() { this.check(); var a = this.points.filter(x=>!x[1].isneg()); return new sparseplacevalue(a.length ? a : this.datatype) }	//	2019.4	Added
@@ -230,7 +221,8 @@ class sparseplacevalue {			//	2019.4	Added
 		var points = [];
 		for (var i = 0; i < this.points.length; i++)
 			for (var j = 0; j < top.points.length; j++)
-				if (!this.points[i][0].is0() && !top.points[j][0].is0()) points.push([this.points[i][0].times(top.points[j][0]), addvectors(this.points[i][1], top.points[j][1])]); // 2017.2 0*∞=0 for easy division
+				points.push([this.points[i][0].times(top.points[j][0]), addvectors(this.points[i][1], top.points[j][1])]);	//	Added	2019.7
+				//if (!this.points[i][0].is0() && !top.points[j][0].is0()) points.push([this.points[i][0].times(top.points[j][0]), addvectors(this.points[i][1], top.points[j][1])]); // 2017.2 0*∞=0 for easy division	// 2019.7 Corrected Division & Removed Hack
 		if (points.length == 0) return new sparseplacevalue(this.datatype);	//	2018.12
 		return new sparseplacevalue(points);
 		function addvectors(a, b) { return a.add(b); //  2017.1
@@ -255,6 +247,12 @@ class sparseplacevalue {			//	2019.4	Added
 		return ret;
 	}
 
+	withoutmsb() {	//	2019.7
+		var me = this.clone();
+		me.points.pop();
+		return me;
+	}
+
 	divide(den) {    //  2016.10
 		this.check(den);
 		var num = this;
@@ -268,7 +266,8 @@ class sparseplacevalue {			//	2019.4	Added
 			var d = den.points.slice(-1)[0];
 			var quotient = new sparseplacevalue([[n[0].divide(d[0]), n[1].sub(d[1])]]);		//	2018.12	sub
 			if (d[0].is0()) return quotient;
-			var remainder = num.sub(quotient.times(den))
+			//var remainder = num.sub(quotient.times(den))	//	2019.7	Removed
+			var remainder = num.withoutmsb().sub(quotient.times(den).withoutmsb());	//	2019.7	Added
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
 			return quotient;

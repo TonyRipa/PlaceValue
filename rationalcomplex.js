@@ -1,7 +1,7 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
-// Complex:	A data-type for representing Complex Numbers as pairs of Rationals
+// Date:	7/31/2019
+// RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
 	if (arguments.length < 1) real = new rational();
@@ -111,7 +111,8 @@ rationalcomplex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) 
 	if (real == 0) {
 		if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';	//	2017.4	medium
 		//if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
-		if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b) + 'i';		//	2017.12
+		//if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b) + 'i';		//	2017.12		//	2019.7	Removed
+		if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b.toString(false, long)) + 'i';	//	2019.7	Added
 		return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
 	}
 	//return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
@@ -211,7 +212,6 @@ rationalcomplex.prototype.divide = function (y) {
 rationalcomplex.prototype.pow = function (p) {
 	if (!(p instanceof rationalcomplex)) p = rationalcomplex.parse(p);	//	2017.11
 	this.check(p);
-	//try {
 		var b = this;
 		var c = rationalcomplex;
 		if (b.norm().is0()) var ret = new c(new rational().pow(p.r));

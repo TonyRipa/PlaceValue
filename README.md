@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2019
+Date : 7/31/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -231,6 +231,10 @@ Exponentials are nothing more than a veneer for PlaceValue.
 SparseExponential1
 ------------------------
 <i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponential's reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
+
+SparseExpression1
+------------------------
+<i>SparseExpression1</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue1 datatype. SparseExpression1 can represent whatever SparsePolynomial1 or SparseExponential1 can. It does this by using bases like x or e^x.
 
 SparseExponential
 -------------------------
@@ -483,6 +487,7 @@ Dependencies
 ---------------
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
+<tr><td>SparseExpression1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
@@ -494,7 +499,7 @@ Dependencies
 <tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial2</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
-<tr><td>Complex Exponential &amp; Fourier2</td><td>depends on ComplexLaurent</td><td>depends on ComplexPlaceValue</td><td>depends on Whole PlaceValueComplex2.</td><td></td></tr>
+<tr><td>Complex Exponential &amp; Fourier2</td><td>depends on Complex Laurent</td><td>depends on ComplexPlaceValue</td><td>depends on Whole PlaceValueComplex2.</td><td></td></tr>
 </table>
 
 External Dependencies
