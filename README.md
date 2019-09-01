@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2019
+Date : 8/31/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -215,7 +215,7 @@ If SparsePolynomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it as
 
 1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
 
-SparsePolynomialRatio then formats SparsePlaceValueRatio's result as (x * y^-1+1) / (x * y^-1-1).
+SparsePolynomialRatio then formats SparsePlaceValueRatio's result as (x \* y^-1+1) / (x * y^-1-1).
 
 Exponential
 -----------
@@ -251,6 +251,10 @@ If SparseExponential wants to calculate exp(x) * cis(y), then it asks SparsePlac
 1E1 * 1E0,i = 1E1,i
 
 SparseExponential then formats SparsePlaceValue's result as exp(x+(i)y).
+
+SparseExpression
+------------------------
+<i>SparseExpression</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue datatype. SparseExpression can represent whatever SparsePolynomial or SparseExponential can. It does this by using bases like x or e^x.
 
 SparseExponentialRatio1
 ------------------------
@@ -489,6 +493,7 @@ Dependencies
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExpression1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExponential</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
+<tr><td>SparseExpression</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
