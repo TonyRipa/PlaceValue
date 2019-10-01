@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2019
+// Date:    9/30/2019
 // SparseExponential1 : a datatype for representing sparse exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexponential1 extends abstractpolynomial {
@@ -33,8 +33,6 @@ class sparseexponential1 extends abstractpolynomial {
 			console.log('new sparseexponential1 : SymbolNode')
 			if (node.name == 'i' && this.pv.datatype !== rational) return new sparseexponential1(1, this.pv.parse('i'));
 			{ var s = 'Syntax Error: sparseexponential1 expects input like 1, exp(x), cosh(y), exp(z), sinh(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
-			//var base = [node.name];
-			//var pv = sparseplacevalue1.parse("1E1");  //new sparseplacevalue1([[0, 1]]);
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexponential1 : OperatorNode')
 			var kids = node.args;
@@ -107,9 +105,11 @@ class sparseexponential1 extends abstractpolynomial {
 			return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
 			function hyper(name, sign) {
 				//for (var i = 4; i >= -4; i--) {								//	2019.8	Removed
-				for (var index = s.points.length - 1; index >= 0; index--) {	//	2019.8	Added
-					var i = s.points[index][1].toreal();						//	2019.8	Added
+				//for (var index = s.points.length - 1; index >= 0; index--) {	//	2019.8	Added	//	2019.9	Removed
+				//	var i = s.points[index][1].toreal();						//	2019.8	Added	//	2019.9	Removed
+				for (var i of s.points.map(coef_pow => coef_pow[1].toreal())) {	//	2019.9	Added
 					if (i == 0) continue;
+					if (i < 0) continue;										//	2019.9	Added
 					//var l = s.get([0, i]).r;
 					//var r = s.get([0, -i]).r;
 					var l = s.get(i).toreal();
@@ -143,8 +143,9 @@ class sparseexponential1 extends abstractpolynomial {
 			return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
 			function hyper(name, sign, ind) {//alert('hyper')
 				//for (var i = 5; i >= -5; i--) {								//	2019.8	Removed
-				for (var index = s.points.length - 1; index >= 0; index--) {	//	2019.8	Added
-					var i = s.points[index][1].times({'r':0,'i':-1}).toreal();	//	2019.8	Added
+				//for (var index = s.points.length - 1; index >= 0; index--) {	//	2019.8	Added	//	2019.9	Removed
+				//	var i = s.points[index][1].times({'r':0,'i':-1}).toreal();	//	2019.8	Added	//	2019.9	Removed
+				for (var i of s.points.map(coef_pow => coef_pow[1].times('i').toreal())) {	//	2019.9	Added
 					if (i == 0) continue;
 					//console.log(s.datatype)
 					var parser = new s.datatype();

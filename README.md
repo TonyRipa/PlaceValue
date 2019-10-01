@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2019
+Date : 9/30/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -232,10 +232,6 @@ SparseExponential1
 ------------------------
 <i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponential's reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
 
-SparseExpression1
-------------------------
-<i>SparseExpression1</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue1 datatype. SparseExpression1 can represent whatever SparsePolynomial1 or SparseExponential1 can. It does this by using bases like x or e^x.
-
 SparseExponential
 -------------------------
 <i>SparseExponential</i> is a data-type optimized for Sparse Exponentials; an application of the SparsePlaceValue datatype.
@@ -252,10 +248,6 @@ If SparseExponential wants to calculate exp(x) * cis(y), then it asks SparsePlac
 
 SparseExponential then formats SparsePlaceValue's result as exp(x+(i)y).
 
-SparseExpression
-------------------------
-<i>SparseExpression</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue datatype. SparseExpression can represent whatever SparsePolynomial or SparseExponential can. It does this by using bases like x or e^x.
-
 SparseExponentialRatio1
 ------------------------
 <i>SparseExponentialRatio1</i> is a data-type optimized for ratios of Sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio1 uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
@@ -263,6 +255,18 @@ SparseExponentialRatio1
 SparseExponentialRatio
 ------------------------
 <i>SparseExponentialRatio.js</i> is a data-type optimized for ratios of Sparse Exponentials. Whereas, SparseExponentialRatio1 uses SparsePlaceValueRatio1, SparseExponentialRatio uses SparsePlaceValueRatio. Therefore, SparseExponentialRatio1 can handle 1D situations such as tan(x), while SparseExponentialRatio can handle an arbitrary number of variables such as tan(x+y+z). SparseExponentialRatio accepts Rational, & RationalComplex.
+
+SparseExpression1
+------------------------
+<i>SparseExpression1</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue1 datatype. SparseExpression1 can represent whatever SparsePolynomial1 or SparseExponential1 can. It does this by using bases like x or e^x.
+
+SparseExpression
+------------------------
+<i>SparseExpression</i> is a data-type optimized for sparse Polynomials & Exponentials; an application of the SparsePlaceValue datatype. SparseExpression can represent whatever SparsePolynomial or SparseExponential can. It does this by using bases like x or e^x.
+
+SparseExpressionRatio1
+------------------------
+<i>SparseExpressionRatio1</i> is a data-type optimized for ratios of Sparse Expressions; an application of the SparsePlaceValueRatio1 datatype. SparseExpressionRatio1 can represent whatever SparsePolynomialRatio1 or SparseExponentialRatio1 can. It does this by using bases like x or e^x.
 
 Fourier
 -----------
@@ -496,6 +500,7 @@ Dependencies
 <tr><td>SparseExpression</td><td>depends on Sparse Polynomial</td><td></td><td>depends on SparsePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
+<tr><td>Sparse Expression Ratio 1</td><td></td><td>depends on Sparse PlaceValueRatio1</td><td>depends on SparsePlaceValue1</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Polynomial Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Sparse Exponential Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>

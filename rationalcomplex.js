@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	7/31/2019
+// Date:	9/30/2019
 // RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 function rationalcomplex(real, imag) {
@@ -110,7 +110,6 @@ rationalcomplex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) 
 	if (-.01 < imag && imag < .01) return long ? a.toString(false, long) : a.toString(false, false);	//this.digithelp(real, NEGBEG, NEGEND, true);
 	if (real == 0) {
 		if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';	//	2017.4	medium
-		//if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
 		//if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b) + 'i';		//	2017.12		//	2019.7	Removed
 		if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b.toString(false, long)) + 'i';	//	2019.7	Added
 		return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
@@ -194,8 +193,9 @@ rationalcomplex.prototype.scale = function (c) { this.check(); return new ration
 rationalcomplex.prototype.remainder = function (den) { return this.sub(this.divide(den).times(den)); }	//	2019.4	Added
 
 rationalcomplex.prototype.times = function (y) {
+	if (!(y instanceof rationalcomplex)) y = rationalcomplex.parse(y);	//	2019.9	Added
 	this.check(y);
-	if (!(y instanceof rationalcomplex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new rationalcomplex(y.r, y.i);	//	2017.5
+	//if (!(y instanceof rationalcomplex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new rationalcomplex(y.r, y.i); // 2019.9 Removed
 	if (!(y instanceof rationalcomplex)) { var s = 'rationalcomplex.times expects argument (y) to be a rationalcomplex but found ' + typeof y + ' ' + JSON.stringify(y); alert(s); throw new Error(s); }	//	2017.5
 	var x = this;
 	var c = rationalcomplex;

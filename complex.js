@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	9/30/2019
 // Complex:	A data-type for representing Complex Numbers
 
 function complex(real, imag) {
@@ -111,7 +111,6 @@ complex.prototype.digitpair = function (NEGBEG, NEGEND, fraction, long) {  // 20
 	if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);
 	if (real == 0) {
 		if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
-		//if (long) return '(' + (b == 1 ? '' : b == -1 ? '-' : b) + 'i)';
 		if (long) return (b == 1 ? '' : b == -1 ? '-' : b) + 'i';   //  2017.11
 		return b == 1 ? 'i' : b == -1 ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
 	}
@@ -189,7 +188,8 @@ complex.prototype.scale = function (c) { return new complex(c * this.r, c * this
 complex.prototype.remainder = function (den) { return this.sub(this.divide(den).times(den)); } //  2019.4  Added
 
 complex.prototype.times = function (y) {
-	if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   //  2017.5
+	//if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   // 2017.5	// 2019.9 Removed
+	if (!(y instanceof complex)) y = complex.parse(y);	//	2019.9	Added
 	if (!(y instanceof complex)) { var s = 'complex.times expects argument (y) to be a Complex but found ' + typeof y + ' ' + JSON.stringify(y); alert(s); throw new Error(s); }    //  2017.5
 	var x = this;
 	var c = complex;

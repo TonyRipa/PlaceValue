@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/31/2019
+// Date:    9/30/2019
 // SparseExpression1 : a datatype for representing sparse polynomials & exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexpression1 extends abstractpolynomial {
@@ -34,7 +34,7 @@ class sparseexpression1 extends abstractpolynomial {
 			console.log('new sparseexpression1 : SymbolNode')
 			if (node.name == 'i' && this.pv.datatype !== rational) return new this.constructor(1, this.pv.parse('i'));
 			return new this.constructor(node.name.toLowerCase(), this.pv.parse('1E1'));
-			{ var s = 'Syntax Error: sparseexpression1 expects input like 1, exp(x), cosh(y), exp(z), sinh(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
+			//{ var s = 'Syntax Error: sparseexpression1 expects input like 1, exp(x), cosh(y), exp(z), sinh(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); } // 2019.9 Removed
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexpression1 : OperatorNode')
 			var kids = node.args;
