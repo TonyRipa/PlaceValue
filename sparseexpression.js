@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	8/31/2019
+// Date:	10/31/2019
 // SparseExpression : a datatype for representing sparse expressions; an application of the SparsePlaceValue datatype
 
 class sparseexpression extends abstractpolynomial {
@@ -32,7 +32,6 @@ class sparseexpression extends abstractpolynomial {
 			console.log('new sparseexpression : SymbolNode')
 			if (node.name == 'i' && this.pv.datatype !== rational) return new this.constructor([], this.pv.parse('i'));
 			return new this.constructor([node.name.toLowerCase()], this.pv.parse('1E1'));
-			//{ var s = 'Syntax Error: sparseexpression expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexpression : OperatorNode')
 			var kids = node.args;
@@ -64,7 +63,8 @@ class sparseexpression extends abstractpolynomial {
 			if (fn == 'cosh' | fn == 'cos') var pv = exp.add(exp2).unscale(2);
 			if (fn == 'sinh' | fn == 'sin') var pv = exp.sub(exp2).unscale(2);
 			if (fn == 'sin') var pv = pv.unscale('i');
-			return new this.constructor([base[0].toUpperCase()], pv);
+			//return new this.constructor([base[0].toUpperCase()], pv);		//	2019.10	Removed
+			return new this.constructor(base.map(b=>b.toUpperCase()), pv);	//	2019.10	Added
 		}
 	}
 
