@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	11/30/2019
 // Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 
 function polynomial2(base, pv) {
@@ -16,13 +16,13 @@ function polynomial2(base, pv) {
 polynomial2.prototype.parse = function (strornode) {    //  2017.9
 	console.log('new polynomial2 : ' + JSON.stringify(strornode))
 	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new polynomial2(a.base, new wholeplacevalue2(a.pv.mantisa)) }
-	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+	//	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;	//	2019.11	Removed
+	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode;	//	2019.11 Added
 	if (node.type == 'SymbolNode') {
 		console.log('new polynomial2 : SymbolNode')
 		var base = [node.name, null];
 		var pv = new wholeplacevalue2([[0, 1]]);
 		return new polynomial2(base, pv);
-		//console.log('new polynomial2 : parse1 : base = ' + JSON.stringify(me.base));
 	} else if (node.type == 'OperatorNode') {
 		console.log('new polynomial2 : OperatorNode')
 		var kids = node.args;

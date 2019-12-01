@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2019
+Date : 11/30/2019
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -230,7 +230,7 @@ Exponentials are nothing more than a veneer for PlaceValue.
 
 SparseExponential1
 ------------------------
-<i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponential's reliance on PlaceValue's integer powers of the base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of the base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
+<i>SparseExponential1</i> is a data-type optimized for sparse Exponentials; an application of the SparsePlaceValue1 datatype. SparseExponential1 is like Exponential except that it uses a sparse PlaceValue. Exponential's reliance on PlaceValue's integer powers of its base (like 100 means base^2) allows for integer powers of e^x (like e^2x). However, SparseExponential1's reliance on SparsePlaceValue1's non-integer powers of its base (like 1E2.5 means base^2.5) allows for non-integer powers of e^x (like e^2.5x).
 
 SparseExponential
 -------------------------

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2018
+	Date:	11/30/2019
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -16,10 +16,10 @@
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
 	</script>
+	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script src='rational.js'></script>
 	<script src='complex.js'></script>
 	<script src='rationalcomplex.js'></script>
-	<!--<script src='placevaluecomplex.js'></script>        2018.5  Removed -->
 	<script src='fourier.js'></script>
 	<script src='wholeplacevalue.js'></script>
 	<script src='placevalue.js'></script>
@@ -84,8 +84,8 @@
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">↑</button></td><td id="bo">&nbsp;</td></tr>
-		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">↑</button></td><td id="co"></td></tr>
+		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><!--<button onclick="moveanswer('#b','#a')">↑</button>--></td><td id="bo">&nbsp;</td></tr>
+		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><!--<button onclick="moveanswer('#c','#b')">↑</button>--></td><td id="co"></td></tr>
 	</table>
 	<script type="text/javascript">
 		function differentiate() {

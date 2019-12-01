@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2018
+	Date:	11/30/2019
 	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValue(Complex) datatype
 -->
 
@@ -16,6 +16,7 @@
 	<script type="text/javascript">
 		window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")
 	</script>
+	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
@@ -161,11 +162,6 @@
 		function commutator() {
 
 		}
-		//	function moveanswer(from, to) {
-		//		$(to).val($(from).val());							// move toString
-		//		$(to + 'o').html($(from + 'o').html());				// move toStringInternal
-		//		$(to).attr('data-val', $(from).attr('data-val'));	// move json
-		//	}
 		function clean() {
 			$('#int').toggle($('#f')[0].selectedIndex >= 2);
 			$('input').val('');

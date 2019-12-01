@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	3/31/2019
+	Date:	11/30/2019
 	Demo for Polynomial1 : a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 -->
 
@@ -17,6 +17,7 @@
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
 	</script>
+	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
@@ -61,7 +62,6 @@
 		function parse(str) {
 			var node = math.parse(str);
 			if (node.type != 'OperatorNode') {
-				//return [polynomial1.parse(node.value || node.name)];		//	2019.3	Removed
 				return [new polynomial1().parse(node.value || node.name)];	//	2019.3	new polynomial1().parse
 			} else if (node.type == 'OperatorNode') {
 				console.log('OperatorNode')

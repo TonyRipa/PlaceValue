@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	11/30/2019
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -98,11 +98,11 @@ wholeplacevalue.prototype.toString = function (sTag) {                          
 	return ret;
 }
 
-wholeplacevalue.prototype.digit = function (i, sTag) {                          //  sTag    2015.11
-	this.check();
-	if (sTag) return this.digithelp(i, '<s>', '</s>', true);
-	return this.digithelp(i, '', String.fromCharCode(822), false);
-}
+//wholeplacevalue.prototype.digit = function (i, sTag) {                          //  sTag    2015.11	//	2019.11	Removed
+//	this.check();
+//	if (sTag) return this.digithelp(i, '<s>', '</s>', true);
+//	return this.digithelp(i, '', String.fromCharCode(822), false);
+//}
 
 wholeplacevalue.prototype.equals = function (other) {
 	this.check();
@@ -180,7 +180,6 @@ wholeplacevalue.prototype.pointadd = function (addend) {
 }
 
 wholeplacevalue.prototype.pow = function (power) { // 2015.6
-	//alert(power instanceof this.datatype);
 	if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype().parse(power)]);
 	this.check(power);
 	//if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]);  //  0^0=1 for convenience   2016.5

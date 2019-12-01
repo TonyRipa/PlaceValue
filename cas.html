@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	4/30/2019
+	Date:	11/30/2019
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -17,6 +17,7 @@
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
 	</script>
+	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
@@ -41,7 +42,6 @@
 	<script type="text/javascript" src='sparseplacevalue2.js'></script>
 	<script type="text/javascript" src='sparsepolynomial.js'></script>
 	<!--<script type="text/javascript" src='sparseplacevaluecomplex.js'></script>	2019.4	Removed	-->
-	<!--<script type="text/javascript" src='complexsparsemultinomial.js'></script>	2019.3	Removed	-->
 	<style>
 		body,html { height:85% }
 		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
@@ -54,7 +54,8 @@
 </head>
 <body>
 	<h1>Computer Algebra System</h1>
-	<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>
+	<!--<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>-->	<!-- 2019.11 Removed -->
+	<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Polynomial 2</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>	<!--2019.11 Added-->
 	<button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
 	<hr style="clear:both"/>
 	<div style="margin:auto;clear:both;overflow:scroll;width:95%;height:100%;border:5px solid #00aeef"></div>

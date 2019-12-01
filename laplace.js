@@ -1,12 +1,11 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	11/30/2019
 // Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
 
 	constructor(base, pv) {
-		//if (arguments.length < 2) alert('laplace expects 2 arguments');
 		if (arguments.length < 1) base = 1; //  2017.10
 		if (arguments.length < 2) pv = new placevalue(complex);     //      2018.6
 		if (Array.isArray(base)) alert('laplace expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
@@ -117,11 +116,13 @@ class laplace extends abstractpolynomial {
 			//alert(JSON.stringify([s, r]));
 			var s0, s1, s2, s3, s4, s5, s6, s7;
 			[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)];
-			var c = 1;
+			//var c = 1;	//	2019.11	Removed
+			var c;			//	2019.11	Added
 			var k = 1;
 			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }
 			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1
-			if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }
+			//if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Removed
+			if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + coef(c) + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Added
 			if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + c + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }
 			if (s1 != 0 && s3 * s1 > 0 && s1 * s5 == s3 * s3) { c = s1; k = +s3 / s1; ret += '+' + c + 'cosh(' + root(k) + 'x)'; sub([0, 0, c * k * k, 0, c * k, 0, c]); }
 			if (s1 == 0 && s2 == 0 && s3 != 0 && s5 != 0 && s3 * s5 > 0 && (s3 / 2) * (s7 / 6) == (s5 / 4) * (s5 / 4)) { c = (s3 / 2); k = +(s5 / 4) / (s3 / 2); ret += '+' + rnd(c / root(k)) + 'xsinh(' + root(k) + 'x)'; sub([6 * c * k * k, 0, +4 * c * k, 0, 2 * c, 0, 0]); }
@@ -139,6 +140,7 @@ class laplace extends abstractpolynomial {
 			function rnd(num) { return Math.round(num * 1000) / 1000 }
 			function root(num) { return Math.round(Math.sqrt(num) * 1000) / 1000 }
 			function sub(array) { s = s.sub(new placevalue(new wholeplacevalue(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
+			function coef(x) { return x==1 ? '' : x }	//	2019.11	Added
 		}
 		//function hyper(name, sign, ind) {
 		//    for (var i = 5; i >= -5; i--) {

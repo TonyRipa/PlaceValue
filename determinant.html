@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2018
+	Date:	11/30/2019
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -14,6 +14,7 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
+	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
@@ -64,7 +65,6 @@
 			function determinant(a, b, c, d) {
 				var ret = new wholeplacevalue(complex).parse(1);	//	2018.7	complex
 				var values = eigenvalues(a, b, c, d);
-				//alert(values)
 				for (var i = 0; i < values.length; i++) {
 					var ev = new wholeplacevalue([values[i]]);	//	2018.7	Array instead of parse
 					ev.times10();
@@ -75,9 +75,12 @@
 				function eigenvalues(a, b, c, d) {
 					return quadratic(1, -a - d, a * d - b * c);
 					function quadratic(a, b, c) {
-						a = new complex.parse(a.toString());	//	2018.7	Added		
-						b = new complex.parse(b.toString());	//	2018.7	Added		
-						c = new complex.parse(c.toString());	//	2018.7	Added		
+						//a = new complex.parse(a.toString());	//	2018.7	Added	//	2019.11	Removed
+						//b = new complex.parse(b.toString());	//	2018.7	Added	//	2019.11	Removed
+						//c = new complex.parse(c.toString());	//	2018.7	Added	//	2019.11	Removed
+						a = new complex().parse(a.toString());	//	2018.7	Added	//	2019.11	Added
+						b = new complex().parse(b.toString());	//	2018.7	Added	//	2019.11	Added
+						c = new complex().parse(c.toString());	//	2018.7	Added	//	2019.11	Added
 						//return [(-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a)]	//	2018.7	Removed
 						return [(b.negate().add(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2)),(b.negate().sub(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2))];	//	2018.7	Added
 					}
