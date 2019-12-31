@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2019
+// Date:    12/31/2019
 // SparseExpressionRatio : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio datatype
 
 class sparseexpressionratio extends abstractpolynomial {
@@ -14,7 +14,7 @@ class sparseexpressionratio extends abstractpolynomial {
 		}
 		if (arguments.length == 2)[base, pv] = arguments;
 		if (!Array.isArray(base)) { var s = 'sparseexpressionratio expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }
-		if (!(pv instanceof sparseplacevalueratio)) { var s = 'sparseexpressionratio expects argument 2 (pv) to be a sparseplacevalueratio not ' + typeof base +':'+base; alert(s); throw new Error(s); }
+		if (!(pv instanceof sparseplacevalueratio)) { var s = 'sparseexpressionratio expects argument 2 to be a sparseplacevalueratio not ' + typeof base +':'+base; alert(s); throw new Error(s); }
 		super();
 		this.base = base;
 		this.pv = pv;
@@ -35,7 +35,8 @@ class sparseexpressionratio extends abstractpolynomial {
 		function parsenode(node) {
 			if (node.type == 'SymbolNode') {
 				console.log('new sparseexpressionratio : SymbolNode')
-				if (node.name == 'i') return new this.constructor([], sparseplacevalueratio.parse('i'));
+				//if (node.name == 'i') return new this.constructor([], sparseplacevalueratio.parse('i'));					//	2019.12	Removed
+				if (node.name.match(this.pv.num.datatype.regexfull())) return new this.constructor([], this.pv.parse('i'));	//	2019.12	Added
 				return new this.constructor([node.name.toLowerCase()], this.pv.parse('1E1'));
 			} else if (node.type == 'OperatorNode') {
 				console.log('new sparseexpressionratio : OperatorNode')
