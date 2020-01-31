@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2019
+// Date:	1/31/2020
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -8,18 +8,23 @@ var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k,
 
 function wholeplacevalue(arg) {
 	var man, datatype;
-	if (arguments.length < 1)[man, datatype] = [[], rational];                                      //  2017.11
-	if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg]; //  2017.11
-	if (Array.isArray(arg)) {                                                                       //  2017.11
-		man = arg;
-		if (man.length==0) throw new Error('notype')												//	2019.5	Added
-		datatype = (man.length > 0) ? man[0].constructor : rational;
+	//if (arguments.length < 1)[man, datatype] = [[], rational];										//	2017.11	//	2020.1	Removed
+	if (arguments.length == 0)[man, datatype] = [[], rational];											//	2020.1	Added
+	if (arguments.length == 1) {																		//	2020.1	Added
+		if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg];	//	2017.11
+		if (Array.isArray(arg)) {																		//	2017.11
+			man = arg;
+			if (man.length==0) throw new Error('notype')												//	2019.5	Added
+			datatype = (man.length > 0) ? man[0].constructor : rational;
+		}
 	}
+	if (arguments.length == 2)[man, datatype] = arguments;												//	2020.1	Added
 	this.datatype = datatype;
 	this.mantisa = man;
-	while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12
+	//while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12	//	2020.1	Removed
+	while (this.mantisa.length > 1 && this.get(this.mantisa.length - 1).is0())							//	2020.1 Added
 		this.mantisa.pop();                             //  pop root
-	if (this.mantisa.length == 0) this.mantisa = [new this.datatype().parse(0)];
+	//if (this.mantisa.length == 0) this.mantisa = [new this.datatype().parse(0)];						//	2020.1	Removed
 	this.check();
 }
 
@@ -192,7 +197,6 @@ wholeplacevalue.prototype.pow = function (power) { // 2015.6
 }
 
 wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
-	//	if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype(power)]);		//	2018.6	Removed
 	if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype().parse(power)]);	//	2018.6	Added
 	this.check(power);
 	var ret = this.clone();
@@ -213,10 +217,12 @@ wholeplacevalue.prototype.times = function (top) {
 	for (var b = 0; b < this.mantisa.length; b++) {
 		var sum = [];
 		for (var t = 0; t < top.mantisa.length; t++) {
-			sum.push(this.get(b).is0() || top.get(t).is0() ? new this.datatype() : this.get(b).times(top.get(t))); // Check 0 so ∞*10=∞0 not ∞% 2015.6   // get() 2015.7
+			//sum.push(this.get(b).is0() || top.get(t).is0() ? new this.datatype() : this.get(b).times(top.get(t))); // Check 0 so ∞*10=∞0 not ∞% 2015.6   // get() 2015.7	//	2020.1	Removed
+			sum.push(this.get(b).times(top.get(t)));	//	2020.1	Added
 		}
 		for (var i = 0; i < b; i++) sum.unshift(new this.datatype()); // change push to unshift because L2R   2015.7
-		prod = prod.add(new wholeplacevalue(sum));
+		//prod = prod.add(new wholeplacevalue(sum));				//	2020.1	Removed
+		prod = prod.add(new wholeplacevalue(sum,this.datatype));	//	2020.1	Added
 	}
 	return prod;
 }
@@ -251,7 +257,8 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
 	var quotient = divideh(num, den, iter);
 	return quotient;
 	function divideh(num, den, c) {
-		if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)], 'wholeplacevalue.prototype.divide >');
+		//if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
+		if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)]);											//	2020.1	Added
 		var d = wholeplacevalue.getDegree(den);		//	2018.6	arg=den
 		var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
 		if (d.val.is0()) return quotient;
@@ -260,7 +267,8 @@ wholeplacevalue.prototype.divide = function (den) { // 2015.8
 		quotient = quotient.add(q2);
 		return quotient;
 		function shift(me, left) {
-			var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+			//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
+			var ret = new wholeplacevalue([new me.datatype()]).add(me);																				//	2020.1	Added
 			for (var r = 0; r < left; r++) ret.mantisa.shift();
 			return ret;
 		}
@@ -272,11 +280,18 @@ wholeplacevalue.prototype.remainder = function (den) {  //  2016.5
 	return this.sub(this.divide(den).times(den));
 }
 
-wholeplacevalue.getDegreeLeft = function (man) {
-	for (var i = 0 ; i < man.length ; i++)
-		if (!man[i].is0()) return { 'deg': i, 'val': man[i] };
-	return { 'deg': 0, 'val': man[this.datatype.parse(0)] };
+wholeplacevalue.getDegreeLeft = function (me) {			//	2020.1	Added
+	me.check(); 
+	for (var i = 0 ; i < me.mantisa.length; i++)
+		if (!me.get(i).is0()) return { 'deg': i, 'val': me.get(i) };
+	return { 'deg': 0, 'val': me.get(0) };
 }
+
+//wholeplacevalue.getDegreeLeft = function (man) {		//	2020.1	Removed
+//	for (var i = 0 ; i < man.length ; i++)
+//		if (!man[i].is0()) return { 'deg': i, 'val': man[i] };
+//	return { 'deg': 0, 'val': man[this.datatype.parse(0)] };
+//}
 
 wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
 	this.check(den);
@@ -287,8 +302,10 @@ wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
 	return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
 	function divideh(num, den, c) {
 		num.check(den);
-		if (c == 0) return new wholeplacevalue([new num.datatype()], 'wholeplacevalue.prototype.divide >');
-		var d = wholeplacevalue.getDegreeLeft(den.mantisa);
+		//if (c == 0) return new wholeplacevalue([new num.datatype()], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
+		if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added
+		//var d = wholeplacevalue.getDegreeLeft(den.mantisa);	//	2020.1	Removed
+		var d = wholeplacevalue.getDegreeLeft(den);				//	2020.1	Added
 		var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
 		if (d.val.is0()) return quotient;
 		var remainder = num.sub(quotient.times(den), 'wholeplacevalue.prototype.divide >')
@@ -296,7 +313,8 @@ wholeplacevalue.prototype.divideleft = function (den) { // 2016.3
 		quotient = quotient.add(q2);
 		return quotient;
 		function shift(me, left) {
-			var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');
+			//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
+			var ret = new wholeplacevalue([new me.datatype()]).add(me);	//	2020.1	Removed
 			for (var r = 0; r < left; r++) ret.mantisa.shift();
 			return ret;
 		}

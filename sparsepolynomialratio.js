@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2019
+// Date:    1/31/2020
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
 
 //function sparsepolynomialratio(arg, pv) {												//	2019.5	Removed
@@ -41,7 +41,8 @@ class sparsepolynomialratio extends abstractpolynomial {									//	2019.5	Added
 		console.log(strornode)
 		console.log('</strornode>')
 		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new sparsepolynomialratio(a.base, new sparseplacevalueratio().parse(JSON.stringify(a.pv))) }   //  2017.10
-		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
+		//var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;						//	2020.1	Removed
+		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode;	//	2020.1	Added
 		if (node.type == 'SymbolNode') {
 			console.log('SymbolNode')
 			//var base = node.name;																//	2019.5	Removed
@@ -73,7 +74,9 @@ class sparsepolynomialratio extends abstractpolynomial {									//	2019.5	Added
 		} else if (node.type == 'ConstantNode') {
 			console.log('ConstantNode : ->' + node.value + '<-');									//	2019.5	Added
 			//return new sparsepolynomialratio([], new sparseplacevalueratio().parse(node.value));	//	2019.5	Removed
-			return new sparsepolynomialratio([], this.pv.parse(node.value));						//	2019.5	Added
+			//return new sparsepolynomialratio([], this.pv.parse(node.value));						//	2019.5	Added	//	2020.1	Removed
+			if (node.value != 'undefined') return new sparsepolynomialratio([], this.pv.parse(node.value));				//	2020.1	Added
+			return new sparsepolynomialratio(this.pv.num.datatype);														//	2020.1	Added
 		}
 	}
 
@@ -92,61 +95,6 @@ class sparsepolynomialratio extends abstractpolynomial {									//	2019.5	Added
 			return array.length;
 		}
 	}
-
-	//add(other) {								//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.add(other.pv));
-	//}
-
-	//sub(other) {								//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.sub(other.pv));
-	//}
-
-	//times(other) {							//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.times(other.pv));
-	//}
-
-	//divide(other) {							//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.divide(other.pv));
-	//}
-
-	//divideleft(other) {   //  2016.8			//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.divideleft(other.pv));
-	//}
-
-	//dividemiddle(other) {   //  2017.7		//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.dividemiddle(other.pv));
-	//}
-
-	//remainder(other) {	//	2019.4	Added	//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.remainder(other.pv));
-	//}
-
-	//pointadd(other) {							//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.pointadd(other.pv));
-	//}
-
-	//pointsub(other) {							//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.pointsub(other.pv));
-	//}
-
-	//pointtimes(other) {						//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.pointtimes(other.pv));
-	//}
-
-	//pointdivide(other) {						//	2019.5	Removed
-	//	this.align(other);
-	//	return new sparsepolynomialratio(this.base, this.pv.pointdivide(other.pv));
-	//}
 
 	align(other) {     //  2017.7
 		//alert('b4: this = ' + this.toString() + ' , other = ' + other.toString());

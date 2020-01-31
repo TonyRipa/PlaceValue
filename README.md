@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2019
+Date : 1/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -120,7 +120,7 @@ SparsePolynomialRatio1 then formats SparsePlaceValueRatio1's result as 1/(x^½+1
 
 WholePlaceValue2
 ------------------------
-<i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Polynomial2</i>. If Polynomial2 wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
+<i>WholePlaceValue2</i> is a 2D version of WholePlaceValue. Whereas WholePlaceValue can be used to represent base-agnostic arithmetic for 1 base, WholePlaceValue2 can be used to represent base agnostic arithmetic for 2 bases. WholePlaceValue2 is used by <i>Polynomial2</i>. If Polynomial2 wants to calculate x+y, then it asks WholePlaceValue2 to calculate:
 <pre>
      1    1
 10 + 0 = 10
@@ -334,6 +334,12 @@ It can be differentiated by pointwise multiplication by <i>s</i>. Yielding:
 </table>
 
 This ComplexPlaceValue is then rendered by ComplexExponential.js as -sin(x)+exp(x).
+
+Zero
+-----------
+<i>Zero.html</i> demonstrates PlaceValue's automatic & natural ability to model what can be called weak & strong zero for use in such things as indicator functions, something real numbers could not handle both uniformly and correctly. Normally, if you want a multiplicative coefficient value to alternately select values that you want and reject values that you don't want you use 0 & 1. This works great to reject a value like 3, you just give it a coefficient of 0, and get a contribution of 0 * 3 = 0. However, if you want to reject a value like infinity, this does not work so well. 0 * ∞ = % . This has lead some authors to write that they mean strongly zero, as opposed to this weakly zero which can be subverted by some inputs. It is a nice idea. However, it is often merely assumed that strongly zero works though there doesn't seem to be a number that it corresponds to, or that we must invoke a new ad hoc operator which maps any input (even undefined) to the number zero. Proofs that this operator plays nice are usually non-existent and left to the reader.
+
+PlaceValue automatically comes with instances which would correspond to these strong and weak zero, and not in an ad hoc way (in fact, it would require extra work to get rid of them, and that work would be ad hoc). First, let's consider 0 * ∞ = % . This would be represented by PlaceValue internally as [0] * [∞] = [%] . These would be 1-digit PlaceValues. What PlaceValue X would we need to satisfy X * Y = X , for all (even exotic) Y ? It is hard to find a 1-digit PlaceValue that works. Similarly, for more than 1 digit. However, we don't need so many digits. A 0-digit PlaceValue suffices. [] * [∞] = [] . The so-called strong zero is merely the PlaceValue [] .
 
 CAS
 -----------

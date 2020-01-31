@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/31/2019
+// Date:    1/31/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 //function sparseplacevalue(arg) {	//	2019.4	Removed
@@ -73,7 +73,6 @@ class sparseplacevalue {			//	2019.4	Added
 		if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1) { var points = JSON.parse(arg).points; points = points.map(point => { var n = point[0]; var e = point[1]; return [new datatype().parse(JSON.stringify(n)), new wholeplacevalue(datatype).parse(JSON.stringify(e))] }); return new sparseplacevalue(points); }   //  2017.7
 		if (typeof arg == "number") return new sparseplacevalue([[new datatype().parse(arg), new wholeplacevalue(datatype).parse(0)]]);	//	2018.11	WholePV(Datatype)
 		if (arg instanceof Number) return new sparseplacevalue([[new datatype().parse(arg), [new datatype.parse(0)]]]);
-		//var terms = arg.split('+');
 		var terms = split(arg);
 		terms = terms.map(parseterm);
 		if (terms.length === 0) return new this.constructor(this.datatype); //  2019.4	Added
@@ -82,10 +81,11 @@ class sparseplacevalue {			//	2019.4	Added
 			var ret = [];
 			terms = terms.toUpperCase().replace(/\s*/g, '');
 			if (terms.length == 0) return ret;
-			//if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;
+			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;							//	2020.1	Added
 			var num = datatype.regex(); //  2017.6
 			//var reg = new RegExp('[\+\-]' + num + '(E[\+\-]?' + num + ')?', 'g');
-			var reg = new RegExp(num + '(E' + num + '(,' + num + ')*' + ')?', 'g');   //  2017.7
+			//var reg = new RegExp(num + '(E' + num + '(,' + num + ')*' + ')?', 'g');	//	2017.7	//	2020.1	Removed
+			var reg = new RegExp('[\+\-]' + num + '(E' + num + '(,' + num + ')*' + ')?', 'g');		//	2020.1	Added
 			var term;
 			while (term = reg.exec(terms))
 				ret.push(term[0]);

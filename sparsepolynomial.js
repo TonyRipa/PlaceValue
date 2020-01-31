@@ -1,12 +1,13 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2019
+// Date:    1/31/2020
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 
 	constructor(arg) {			//	2018.12	Added
 		var base, pv;
+		if (arguments.length == 0) throw new Error('notype');							//	2020.1	Added
 		if (arguments.length == 0)[base, pv] = [[], new sparseplacevalue(rational)];
 		if (arguments.length == 1) {
 			if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [[], new sparseplacevalue(arg)];
@@ -39,7 +40,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			var kids = node.args;
 			var a = this.parse(kids[0]);												//	2019.2	this
 			if (node.fn == 'unaryMinus') {
-				//var c = new sparsepolynomial([], sparseplacevalue.parse(0)).sub(a);	//	2018.9	Removed
 				var c = new sparsepolynomial([], this.pv.parse(0)).sub(a);				//	2018.9	this.pv
 			} else if (node.fn == 'unaryPlus') {
 				//var c = new sparsepolynomial([], sparseplacevalue.parse(0)).add(a);	//	2018.9	Removed
@@ -51,7 +51,10 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			}
 			return c;
 		} else if (node.type == 'ConstantNode') {
-			return new sparsepolynomial([], this.pv.parse(Number(node.value)));
+			console.log('ConstantNode : ->' + node.value + '<-');										//	2020.1	Added
+			//return new sparsepolynomial([], this.pv.parse(Number(node.value)));						//	2020.1	Removed
+			if (node.value != 'undefined') return new sparsepolynomial([], this.pv.parse(node.value));	//	2020.1	Added
+			return new sparsepolynomial(this.pv.datatype);												//	2020.1	Added
 		} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
 			alert('Syntax Error: sparsepolynomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
 			return sparsepolynomial.parse(node.args[0]);

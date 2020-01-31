@@ -1,0 +1,85 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	1/31/2020
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PlaceValue Zeros</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script type="text/javascript" src='digit.js'></script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<style>
+		output { margin: 50px; }
+		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }
+		.table { border-spacing: 0; float: left; margin: 10px; }
+		.line td { border-bottom: 1pt solid black; }
+		input { text-align: right; }
+	</style>
+</head>
+<body>
+	<center>
+		<h1>PlaceValue Zeros</h1>
+		<table border="1">
+			<tr>
+				<td>
+					<select id="top" onclick="go()" size='2'><option selected>Weak Zero</option><option>Strong Zero</option></select>
+					<p id="p" style="display:inline"></p>
+				</td>
+				<td>
+					<table class="table">
+						<tr><td></td><td><input id='a' value='0' /></td><td><output id="ao"></output></td></tr>
+						<tr class="line"><td><select id='op'><option>+</option><option>-</option><option selected>x</option><option>/</option><option>÷</option><option>⊗</option><option>⊘</option></select></td><td><input id='b' value='∞' ></td><td><output id="bo"></output></td></tr>
+						<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</center>
+	<script type="text/javascript">
+		var f = wholeplacevalue;
+		function go() {
+			if ($('#top')[0].selectedIndex == 0) {
+				var top = new wholeplacevalue().parse('0');
+				var bot = new wholeplacevalue().parse('∞');
+			} else {
+				var top = new wholeplacevalue().parse('');
+				var bot = new wholeplacevalue().parse('∞');
+			}
+			pop(top, bot);
+		}
+		function pop(top, bot) {
+			$('#a').val(top);
+			$('#b').val(bot);
+			compute();
+		}
+		function compute() {
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = [a.add, a.sub, a.times, a.divide, a.dividemiddle, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+			output(a, b, c);
+			function getinput(elem) { return new f().parse($(elem).val()); }
+			function output(a, b, c) {
+				$('#c').val(c);
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html('Internal Representation : [' + pv.mantisa.map(x=>x.toString()) + ']'); }
+			}
+		}
+	</script>
+</body>
+</html>
