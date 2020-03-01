@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 1/31/2020
+Date : 2/29/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -414,13 +414,23 @@ PlaceValue can represent multiple measure scales, as in a unit cube 1000, and a 
 
 Measure
 ------------
-<i>measure.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of the conditional probability of being on a line-segment in a plane given that you are on another line-segment in that plane.
+<i>measure.html</i> demonstrates an application of PlaceValue to problems in measure theory. Measure theory typically chooses a certain region to normalize as the unit measure. All other regions are assigned a compatible real number that represents the measure of that region. However, since there are only a relatively small amount of real numbers, this poses problems. For example, many different sets of many different sizes are all labeled as a set of measure zero.
 
-The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
+If we assign a measure of 1 to the unit-square, then we are forced not only to label a single point as having a measure of 0, but we are also forced to label a unit line-segment as having measure 0. Attempting to circumvent this issue by instead normalizing by assigning a measure of 1 to the unit line-segment forces us to label a unit-square as having measure ∞. Either normalization is unsatisfactory. This raises problems in, for example, the problem of the conditional probability of being on a line-segment in a plane given that you are on another line-segment in that plane.
 
-In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
+PlaceValue being larger avoids these rounding errors. Using PlaceValue we can model the measure of a point as the PlaceValue 1. Similarly, we can model the measure of a unit line-segment as the PlaceValue 10. Similarly, we can model the measure of a unit-square as the PlaceValue 100. 1, 10, and 100 represent the zeroth, first, and second powers of an arbitrary base respectively. In general we can model a unit n-dimensional object as 10^n.
+
+The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
 
 measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox. Using PlaceValue, the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π).
+
+Fractal
+------------
+<i>fractal.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of defining measures over fractals.
+
+In measure.html, we saw that we can model the measure of a unit n-dimensional object as 10^n. This is well-modeled as a PlaceValue.
+
+Fractals are not of integer dimension. For example, Cantor Dust is lg<sub>3</sub>2 ~ ⅗ dimensional. We can model the measure of a unit Cantor-Dust as the SparsePlaceValue 1E⅗.
 
 PlaceValue Mechanics
 ----------------------

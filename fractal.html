@@ -1,0 +1,118 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	2/29/2020
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PlaceValue Fractal</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script src='digit.js'></script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<script type="text/javascript" src='sparseplacevalue1.js'></script>
+	<style>
+		output { margin: 50px; }
+		body,input { font-family:"Arial Unicode MS"}
+		.measuretable { border-spacing: 0; float: left; margin: 10px; }
+		.line > td { border-bottom: 1pt solid black; }
+		input { text-align: right; }
+		#kind {float:left}
+		h1 {text-align:center}
+	</style>
+</head>
+<body>
+	<select id="kind" onchange="select1()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
+	<h1>PlaceValue Fractal</h1>
+	<table border="1" class="measuretable">
+		<tr>
+			<td>
+				<svg width="243px" height="243px">
+					<image width="243" height="243"
+				    	xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPMAAADzBAMAAACh2D0MAAAABGdBTUEAALGPC/xhBQAAACBjSFJNAAB6JgAAgIQAAPoAAACA6AAAdTAAAOpgAAA6mAAAF3CculE8AAAAElBMVEUAAAB/f3//AAAAAP8A/wD////9dXRaAAAAAWJLR0QF+G/pxwAAAAd0SU1FB+QCHBMgLJgyHRsAAAEISURBVHja7dzBicMwFEVRp4NxB0kJ6WDSf1PRbMTMRngxxOB7HloITHR4/CDwxtvtto81Mjczi0eLHD1w246e+O/52pqtm3Rz1s3WaDT6enTzNmu2btLNWTdbo9FoNBqNRqPRaPRn6OY7V7N1k27OutkajUZfj27eZs3WTbo562ZrNBqNRqPRaDQajUaj0Wg0Go1Go9FoNBqNRqPRaDQajUajj9CPxz7WyNzMPJ8/6/fmSBa/+mPdz2z9eu1jjczNzOLRIkcP/I7+zU6km7Nutkaj0dejm7dZs3WTbs662RqNRqPRaDQajUajP0M3v6vQbN2km7Nutkaj0dejm7dZs3WTbs76vNZvJcytJdh+jwUAAAAldEVYdGRhdGU6Y3JlYXRlADIwMjAtMDItMjhUMTk6MzI6NDQrMDM6MDA6OrcuAAAAJXRFWHRkYXRlOm1vZGlmeQAyMDIwLTAyLTI4VDE5OjMyOjQ0KzAzOjAwS2cPkgAAAABJRU5ErkJggg==" />
+				</svg>
+			</td>
+			<td id="td1">
+				P(
+				<select id="top" onchange="select1()"><option>Blue Cantor Dust</option><option>Red Cantor Dust</option><option>Green Cantor Dust²</option><option>Black Cantor Dust²</option><option>Gray Rectangle</option></select>
+				|
+				<select id="bot" onchange="select1()"><option>Blue Cantor Dust</option><option>Red Cantor Dust</option><option>Green Cantor Dust²</option><option>Black Cantor Dust²</option><option>Gray Rectangle</option></select>
+				)
+				=
+				<p id="p" style="display:inline"></p>
+			</td>
+			<td>
+				<table class="measuretable">
+					<tr><td></td><td><input id='a' value='½E⅗' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
+					<tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='½E⅗' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
+					<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		var f = sparseplacevalue1;
+		function select1() {
+			$('#td1').css('background-color', '#EEEEEE');
+			$('#td2').css('background-color', 'white');
+			if ($('#kind')[0].selectedIndex == 0)
+				var shapes = ['½E⅗', '1E⅗', '¼E1.2', '1E1.2', '1E2'];
+			else if ($('#kind')[0].selectedIndex == 1)
+				var shapes = ['½E-1.4', '1E-1.4', '¼E-⅘', '1E-⅘', '1'];
+			else {
+				var shapes = ['½E-1.4', '1E-1.4', '¼E-⅘', '1E-⅘', '1'];
+				var L = $('#top')[0].selectedIndex
+				var R = $('#bot')[0].selectedIndex
+				var likelihood = new f().parse(shapes[R])
+				var prior = new f().parse(shapes[L])
+				var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
+				var support = conditional.divide(likelihood)
+				$('#op').val('x');
+				pop(support.toString(), prior.toString());
+				$('#p').text($('#c').val())
+				return;
+			}
+			var botindex = $('#bot')[0].selectedIndex
+			var topindex = $('#top')[0].selectedIndex
+			topindex = Math.min(topindex, botindex);
+			var top = shapes[topindex];
+			var bot = shapes[botindex];
+			$('#op').val('/');
+			pop(top, bot);
+			$('#p').text($('#c').val())
+		}
+		function pop(top, bot) {
+			$('#a').val(top);
+			$('#b').val(bot);
+			compute();
+		}
+		function compute() {
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+			output(a, b, c);
+			function getinput(elem) { return new f().parse($(elem).val()); }
+			function output(a, b, c) {
+				$('#c').attr('data-val', JSON.stringify(c));
+				$('#c').val(c);
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
+			}
+		}
+	</script>
+</body>
+</html>
