@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 2/29/2020
+Date : 3/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -418,7 +418,9 @@ Measure
 
 If we assign a measure of 1 to the unit-square, then we are forced not only to label a single point as having a measure of 0, but we are also forced to label a unit line-segment as having measure 0. Attempting to circumvent this issue by instead normalizing by assigning a measure of 1 to the unit line-segment forces us to label a unit-square as having measure ∞. Either normalization is unsatisfactory. This raises problems in, for example, the problem of the conditional probability of being on a line-segment in a plane given that you are on another line-segment in that plane.
 
-PlaceValue being larger avoids these rounding errors. Using PlaceValue we can model the measure of a point as the PlaceValue 1. Similarly, we can model the measure of a unit line-segment as the PlaceValue 10. Similarly, we can model the measure of a unit-square as the PlaceValue 100. 1, 10, and 100 represent the zeroth, first, and second powers of an arbitrary base respectively. In general we can model a unit n-dimensional object as 10^n.
+PlaceValue being larger avoids these rounding errors. Using PlaceValue we can model the measure of a point as the PlaceValue 1. Similarly, we can model the measure of a unit line-segment as the PlaceValue 10. Similarly, we can model the measure of a unit-square as the PlaceValue 100. 1, 10, and 100 represent the zeroth, first, and second powers of an arbitrary base respectively. In general, we can model a unit n-dimensional object as 10^n.
+
+Negative powers are also useful, and come up frequently. Any time we want to talk about "per unit-length" it comes up. One per unit-length is .1 . One per unit-area is .01 . In general, One per unit-n-dimensional object is 10^-n.
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
 
@@ -431,6 +433,15 @@ Fractal
 In measure.html, we saw that we can model the measure of a unit n-dimensional object as 10^n. This is well-modeled as a PlaceValue.
 
 Fractals are not of integer dimension. For example, Cantor Dust is lg<sub>3</sub>2 ~ ⅗ dimensional. We can model the measure of a unit Cantor-Dust as the SparsePlaceValue 1E⅗.
+
+Dirac Delta Function
+--------------------
+<i>delta.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of differentiating the unit-step function.
+
+We start with a more mundane example. As we saw in measure.html, PlaceValue can accommodate different size-scales e.g. points, lines, planes, without overflow or underflow. Assume we have a function that looks like a unit-square. To integrate, we get the width. Then we get the height. Then we get their product. The width is a unit-length. The height is a unit-length. The unit-length is represented by the PlaceValue 10. Their product is the PlaceValue 100. This represents a unit-area. The unit-area is the answer to that integration problem.
+
+As we saw in measure.html, PlaceValue can accommodate different size-scales e.g. points, lines, planes, without overflow or underflow. This is particularly handy for the Dirac Delta Function. The Dirac Delta Function is supposed to have such a large value at x=0 that integrating past x=0 contributes a unit amount of area, even though the width is only that of a point. This is difficult if you are stuck working with a data-type such as real numbers. This is not a problem for the relatively larger data-type of PlaceValue. For PlaceValue, a point may be represented by the PlaceValue 1, a unit-line-segment by the PlaceValue 10, and a unit-square by the PlaceValue 100. If you want the product to be a unit-area i.e. 100, while the width is a point i.e. 1, then you set the height to be 100.
+The Dirac Delta Function is 0 everywhere, except at x=0, where the value is the PlaceValue 100.
 
 PlaceValue Mechanics
 ----------------------
@@ -457,6 +468,8 @@ PlaceValue Mechanics (like the rest of PlaceValue arithmetic), depends only on a
 Say, you want to apply a momentum operator to our state .10<s>1</s>0&hellip;. Simply multiply by i0, yielding i.0<s>i</s>0i&hellip;. It's basically the constant i, times Laplace's derivative operator s (in this case 10 base s), times our state of interest. Had we simply wanted the derivative of our state it would be 10 * .10<s>1</s>0&hellip; = 1.0<s>1</s>01&hellip;
 
 The position operator is almost as beautiful. It shifts right instead of left (i.e. .1 instead of 10), but has the necessity of pointwise scaling by .012345&hellip; . Applied to our state .10<s>1</s>0&hellip; the position operator yields .030<s>5</s>0&hellip; .
+
+Those already familiar with Taylor's Series, Laplace Transform, Generating Functions, and Exponential Generating Functions may have an alternate explanation for the simplicity of these operators, including the pointwise scaling. If you imagine a sequence of Taylor coefficients of a function, where the nth slot represents the coefficient of the nth power of x. If I shift the sequence by 1 spot, I have just multiplied by x (or divided if I shift the other way). If I take the derivative of the function, then by the power-rule ( Dx^n = nx^(n-1) ) each element will first be scaled by its power of x (which also corresponds to its position in the sequence) then it will be shifted by 1. Differentiating is scaling and shifting. Integrating is the reverse. Now the same holds for Exponential Generating Functions (i.e. the Laplace Transform of a function), except for the fact that since in an Exponential Generating Function the nth slot represents not the nth coefficient of x^n, but the nth coefficient of x^n/n!. Now shifting is differentiating. Now multiplying by x is scaling and shifting.
 
 We actually have enough now to show Heisenberg's Uncertainty Principle. And do just that in <i>Mechanics.html</i>. For pedagogical simplicity (and without loss of generality) we do it with the pseudo-momentum operator 10, and the true momentum operator i0. Formally, we show xp-px=iħ. Or in natural units, xp-px=i. Furthermore, since the factor i plays no interesting part in xp-px (while it does play an interesting part in the Schrodinger Equation with the sign of p^2), we also show a simplified construction with xp-px=1.
 

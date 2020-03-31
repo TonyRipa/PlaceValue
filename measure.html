@@ -1,175 +1,200 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    11/30/2019
+   Date:    3/31/2020
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PlaceValue Measure</title>
-    <script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
-    <script type="text/javascript">
-        window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
-    </script>
-    <script src='digit.js'></script>    <!--    2019.11 Added   -->
-    <script type="text/javascript" src='rational.js'></script>
-    <script type="text/javascript" src='complex.js'></script>
-    <script type="text/javascript" src='rationalcomplex.js'></script>
-    <script type="text/javascript" src='wholeplacevalue.js'></script>
-    <script type="text/javascript" src='placevalue.js'></script>
-    <style>
-        output { margin: 50px; }
-        body,input { font-family:"Arial Unicode MS"}
-        .measuretable { border-spacing: 0; float: left; margin: 10px; }
-        .line > td { border-bottom: 1pt solid black; }
-        input { text-align: right; }
-        #kind {float:left}
-        h1 {text-align:center}
-    </style>
+	<title>PlaceValue Measure</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src='digit.js'></script>    <!--    2019.11 Added   -->
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<script type="text/javascript" src='placevalue.js'></script>
+	<style>
+		output { margin: 50px; }
+		body,input { font-family:"Arial Unicode MS"}
+		.measuretable { border-spacing: 0; float: left; margin: 10px; }
+		.line > td { border-bottom: 1pt solid black; }
+		input { text-align: right; }
+		#kind {float:left}
+		h1 {text-align:center}
+	</style>
 </head>
 <body>
-    <select id="kind" onchange="selector()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
-    <h1>PlaceValue Measure</h1>
-    <table border="1" class="measuretable">
-        <tr>
-            <td>
-                <a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
-            </td>
-            <td>
-                <svg width="300px" height="201px" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="00" width="300" height="201" style="fill  :rgb(  34 , 177 ,  76 )" />
-                    <rect x="50" width="200" height="201" style="fill  :rgb(  63 ,  72 , 204 )" />
-                    <line x1="050" y1="100" x2="250" y2="100" style="stroke:rgb( 237 ,  28 ,  36 )" />
-                    <line x1="100" y1="100" x2="200" y2="100" style="stroke:rgb(  0  ,  0  ,  0  )" />
-                    <circle cx="150" cy="100" r="1" style="stroke:rgb( 255 , 255 , 255 )" />
-                </svg>
-            </td>
-            <td id="td1">
-                P(
-                <select id="top" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
-                |
-                <select id="bot" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
-                )
-                =
-                <p id="p" style="display:inline"></p>
-            </td>
-            <td rowspan="2">
-                <table class="measuretable">
-                    <tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
-                    <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
-                    <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
-                </table>
-            </td>
-        </tr>
-        <tr>
-            <td>
-                <a href="http://wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox">Borel<br />Paradox</a>
-            </td>
-            <td>
-                <svg width="300px" height="300px" viewBox="0 0 580 580" version="1.1" xmlns="http://www.w3.org/2000/svg">
-                    <circle cx="290" cy="288" r="285" fill="magenta" />
-                    <ellipse cx="290" cy="288" ry="285" rx="060" stroke="red" stroke-width="5" fill-opacity="0" transform="rotate(-8 290 288)" />
-                    <ellipse cx="290" cy="288" rx="285" ry="110" stroke="blue" stroke-width="5" fill-opacity="0" transform="rotate(-6 290 288)" />
-                    <circle cx="360" cy="389" r="33" />
-                </svg>
-            </td>
-            <td id="td2">
-                P(
-                <select id="top2" onchange="select2()"><option>Black Dot</option></select>
-                |
-                <select id="bot2" onchange="select2()"><option>Red Circle</option><option>Blue Circle</option></select>
-                )
-                =
-                <p id="p2" style="display:inline"></p>
-            </td>
-        </tr>
-    </table>
-    <script type="text/javascript">
-        var f = placevalue;
-        select = 1;
-        function selector() {   //  2016.12
-            if (select == 1) select1();
-            else select2();
-        }
-        function select1() {
-            select = 1;
-            $('#td1').css('background-color', '#EEEEEE');
-            $('#td2').css('background-color', 'white');
-            if ($('#kind')[0].selectedIndex == 0)   //  2016.3
-                var shapes = [1, 10, 20, 400, 600];
-            else if ($('#kind')[0].selectedIndex == 1)
-                var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
-            else {
-                var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
-                var L = $('#top')[0].selectedIndex
-                var R = $('#bot')[0].selectedIndex
-                var likelihood = new f().parse(shapes[R])
-                var prior = new f().parse(shapes[L])
-                var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
-                var support = conditional.divide(likelihood)
-                $('#op').val('x');
-                pop(support.toString(), prior.toString());
-                $('#p').text($('#c').val())
-                return;
-            }
-            var botindex = $('#bot')[0].selectedIndex
-            var topindex = $('#top')[0].selectedIndex
-            topindex = Math.min(topindex, botindex);
-            var top = shapes[topindex];
-            var bot = shapes[botindex];
-            $('#op').val('/');
-            pop(top, bot);
-            $('#p').text($('#c').val())
-        }
-        function select2() {
-            select = 2;
-            $('#td2').css('background-color', '#EEEEEE');
-            $('#td1').css('background-color', 'white');
-            if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
-                var topshapes = [1];
-                var botshapes = ["τ0", "τ0"];           // τ -> τ0  2016.4
-            } else if ($('#kind')[0].selectedIndex == 1) {
-                var topshapes = [".0(.0796)"];
-                var botshapes = ["0.½", "0.½"];
-            } else {                                    //  2016.4
-                $('#op').val('x');
-                pop("τ0", ".0(.0253)");
-                $('#p2').text($('#c').val())
-                return;
-            }
-            var top = topshapes[$('#top2')[0].selectedIndex];
-            var bot = botshapes[$('#bot2')[0].selectedIndex];
-            $('#op').val('/');
-            pop(top, bot);
-            $('#p2').text($('#c').val())
-        }
-        function pop(top, bot) {
-            $('#a').val(top);
-            $('#b').val(bot);
-            compute();
-        }
-        function compute() {
-            var a = getinput('#a');
-            var b = getinput('#b');
-            var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
-            output(a, b, c);
-            function getinput(elem) { return new f().parse($(elem).val()); }    //  2017.9
-            function output(a, b, c) {
-                $('#c').attr('data-val', JSON.stringify(c));
-                $('#c').val(c);
-                showInternal(a, '#ao');
-                showInternal(b, '#bo');
-                showInternal(c, '#co');
-                function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
-            }
-        }
-        function clean() {
-            $('input').val('');
-            $('output').html('');
-            $('[data-val]').removeAttr('data-val');
-        }
-    </script>
+	<select id="kind" onchange="selector()" size="3"><option selected>Measure Ratio</option><option>Probability Ratio</option><option>Bayes Law</option></select>
+	<h1>PlaceValue Measure</h1>
+	<table border="1" class="measuretable">
+		<tr>
+			<td>
+				<a href="http://wikipedia.org/wiki/Conditional_probability">Conditional<br />Probability</a>
+			</td>
+			<td>
+				<svg width="300px" height="201px" xmlns="http://www.w3.org/2000/svg">
+					<rect x="00" width="300" height="201" style="fill  :rgb(  34 , 177 ,  76 )" />
+					<rect x="50" width="200" height="201" style="fill  :rgb(  63 ,  72 , 204 )" />
+					<line x1="050" y1="100" x2="250" y2="100" style="stroke:rgb( 237 ,  28 ,  36 )" />
+					<line x1="100" y1="100" x2="200" y2="100" style="stroke:rgb(  0  ,  0  ,  0  )" />
+					<circle cx="150" cy="100" r="1" style="stroke:rgb( 255 , 255 , 255 )" />
+				</svg>
+			</td>
+			<td id="td1">
+				P(
+				<select id="top" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
+				|
+				<select id="bot" onchange="select1()"><option>White Dot</option><option>Black Line</option><option>Red Line</option><option>Blue Square</option><option>Green Rectangle</option></select>
+				)
+				=
+				<p id="p" style="display:inline"></p>
+			</td>
+			<td rowspan="2">
+				<table class="measuretable">
+					<tr><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
+					<tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
+					<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+				</table>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<a href="http://wikipedia.org/wiki/Borel%E2%80%93Kolmogorov_paradox">Borel<br />Paradox</a>
+			</td>
+			<td>
+				<svg width="300px" height="300px" viewBox="0 0 580 580" version="1.1" xmlns="http://www.w3.org/2000/svg">
+					<circle cx="290" cy="288" r="285" fill="magenta" />
+					<ellipse cx="290" cy="288" ry="285" rx="060" stroke="red" stroke-width="5" fill-opacity="0" transform="rotate(-8 290 288)" />
+					<ellipse cx="290" cy="288" rx="285" ry="110" stroke="blue" stroke-width="5" fill-opacity="0" transform="rotate(-6 290 288)" />
+					<circle cx="360" cy="389" r="33" />
+				</svg>
+			</td>
+			<td id="td2">
+				P(
+				<select id="top2" onchange="select2()"><option>Black Dot</option></select>
+				|
+				<select id="bot2" onchange="select2()"><option disabled>Black Dot</option><option>Red Circle</option><option>Blue Circle</option></select>
+				)
+				=
+				<p id="p2" style="display:inline"></p>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		var f = placevalue;
+		select = 1;
+		function selector() {   //  2016.12
+			if (select == 1) select1();
+			else select2();
+		}
+		function select1() {
+			select = 1;
+			$('#td1').css('background-color', '#EEEEEE');
+			$('#td2').css('background-color', 'white');
+			if ($('#kind')[0].selectedIndex == 0)   //  2016.3
+				var shapes = [1, 10, 20, 400, 600];
+			else if ($('#kind')[0].selectedIndex == 1)
+				var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
+			else {
+				var shapes = [".0⅙", ".⅙", ".⅓", "⅔", 1];
+				var L = $('#top')[0].selectedIndex
+				var R = $('#bot')[0].selectedIndex
+				var likelihood = new f().parse(shapes[R])
+				var prior = new f().parse(shapes[L])
+				var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
+				var support = conditional.divide(likelihood)
+				$('#op').val('x');
+				//pop(support.toString(), prior.toString());//	-2020.3
+				pop(shapes[L], support.toString());			//	+2020.3
+				$('#p').text($('#c').val())
+				return;
+			}
+			var botindex = $('#bot')[0].selectedIndex
+			var topindex = $('#top')[0].selectedIndex
+			topindex = Math.min(topindex, botindex);
+			var top = shapes[topindex];
+			var bot = shapes[botindex];
+			$('#op').val('/');
+			pop(top, bot);
+			$('#p').text($('#c').val())
+		}
+		function select2() {
+			select = 2;
+			$('#td2').css('background-color', '#EEEEEE');
+			$('#td1').css('background-color', 'white');
+			/*	-2020.3
+			if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
+			    var topshapes = [1];
+			    var botshapes = ["τ0", "τ0"];           // τ -> τ0  2016.4
+			} else if ($('#kind')[0].selectedIndex == 1) {
+			    var topshapes = [".0(.0796)"];
+			    var botshapes = ["0.½", "0.½"];
+			} else {                                    //  2016.4
+			    $('#op').val('x');
+			    pop("τ0", ".0(.0253)");
+			    $('#p2').text($('#c').val())
+			    return;
+			}
+			var top = topshapes[$('#top2')[0].selectedIndex];
+			var bot = botshapes[$('#bot2')[0].selectedIndex];
+			*/
+			if ($('#kind')[0].selectedIndex == 0)                       //  +2020.3
+				var shapes = [1, "τ0", "τ0"];
+			else if ($('#kind')[0].selectedIndex == 1)
+				var shapes = [".0(.0796)", "0.½", "0.½"];
+			else {
+				var shapes = [".0(.0796)", "0.½", "0.½"];
+				var L = $('#top2')[0].selectedIndex
+				var R = $('#bot2')[0].selectedIndex
+				var likelihood = new f().parse(shapes[R])
+				var prior = new f().parse(shapes[L])
+				var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
+				var support = conditional.divide(likelihood)
+				$('#op').val('x');
+				pop(shapes[L], support.toString());
+				$('#p2').text($('#c').val())
+				return;
+			}
+			var botindex = $('#bot2')[0].selectedIndex
+			var topindex = $('#top2')[0].selectedIndex
+			topindex = Math.min(topindex, botindex);
+			var top = shapes[topindex];
+			var bot = shapes[botindex];
+			$('#op').val('/');
+			pop(top, bot);
+			$('#p2').text($('#c').val())
+		}
+		function pop(top, bot) {
+			$('#a').val(top);
+			$('#b').val(bot);
+			compute();
+		}
+		function compute() {
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = [a.add, a.sub, a.times, a.divide, a.pointtimes, a.pointdivide, a.pointsub][$('#op')[0].selectedIndex].call(a, b);
+			output(a, b, c);
+			function getinput(elem) { return new f().parse($(elem).val()); }    //  2017.9
+			function output(a, b, c) {
+				$('#c').attr('data-val', JSON.stringify(c));
+				$('#c').val(c);
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
+			}
+		}
+		function clean() {
+			$('input').val('');
+			$('output').html('');
+			$('[data-val]').removeAttr('data-val');
+		}
+	</script>
 </body>
 </html>
