@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2020
+Date : 4/30/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -341,6 +341,10 @@ Zero
 
 PlaceValue automatically comes with instances which would correspond to these strong and weak zero, and not in an ad hoc way (in fact, it would require extra work to get rid of them, and that work would be ad hoc). First, let's consider 0 * ∞ = % . This would be represented by PlaceValue internally as [0] * [∞] = [%] . These would be 1-digit PlaceValues. What PlaceValue X would we need to satisfy X * Y = X , for all (even exotic) Y ? It is hard to find a 1-digit PlaceValue that works. Similarly, for more than 1 digit. However, we don't need so many digits. A 0-digit PlaceValue suffices. [] * [∞] = [] . The so-called strong zero is merely the PlaceValue [] .
 
+Synthetic Division
+-----------
+<i>SyntheticDivision.html</i> is an implementation of Synthetic Division using PlaceValue. Synthetic Division is something of a high-school trick to divide polynomials using the same kind of long-division that one would ordinarily use to divide integers. I call it a trick because it is a one-off curiosity that is not taught as part of a broader approach. Failing to write the x's and paying attention only to the position is Synthetic Division. Also, failing to write the x's and paying attention only to the position is PlaceValue Division. This makes PlaceValue Division the same thing as Synthetic Division. When I say same thing, I do not mean same in the sense that Polynomial Division is the same as Synthetic Division (though this is true because they amount to the same thing apart from the x's) ; I mean same in an even stronger sense because the mapping is extremely direct (you deal only with the coefficients, and you deal with them the same way). A benefit of PlaceValue is that its division is not a one-off trick, but a necessary part of a coherent whole.
+
 CAS
 -----------
 <i>CAS.html</i> which stands for either Computer Algebra System (for the algebraic looking UI) or Computer Arithmetic System (for the under the hood arithmetic implementation) is a demo for Laurent Polynomial, Multinomial & Exponential.
@@ -424,7 +428,25 @@ Negative powers are also useful, and come up frequently. Any time we want to tal
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
 
-measure.html demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox. Using PlaceValue, the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ<sup>-1</sup> (where τ=2π).
+Borel's Paradox
+------------
+<i>measure.html</i> demonstrates an application of PlaceValue and possible resolution of the Borel-Kolmogorov Paradox.
+
+Traditionally, calculating the probability of being on a point on a latitudinal great circle is .τ⁻¹ (where τ=2π). Whereas, the probability of being on a point on a longitudinal great circle is different by a factor of cos(θ). This is because the limit of rings, and lunes are different. Traditional approaches are not robust to reparameterization, and so are not well-defined.
+
+The PlaceValue representation of a circle is always τ0. There’s no 2 ways about it. Using PlaceValue, the conditional probability of being on a point on either a longitudinal or latitudinal great circle is .τ⁻¹ .
+
+Coordinate-free geometry solves the problem immediately by symmetry. Problems arise by assuming that we need coordinate geometry. This is false. We do not. But what if we did? I could set up a lat-long coordinate system. And tell you I’m on the prime meridian. The problem is immediately solved by symmetry. Problems arise assuming that the coordinates change the probability. This is false. They do not. But what if they did?  Maybe I’m rounding degrees between –0.5° & +0.5° to 0°.  Now I’m more likely away from the pole by a factor of cos(θ). But where’s the pole? By symmetry, equally likely anywhere on the circle. Object that I can’t presume uniformity. This point is unconcedable. My lack of prior knowledge guarantees by the Principle of Indifference a uniform prior.
+
+One way to look at this, is the difference between exact and approximate methods. If I say that I'm at a latitude of 0° (exactly), then you should search uniformly for me on the Prime Meridian. If I say that I'm at a latitude of 0° (approximately), then you should search uniformly between a latitude of –0.5° & +0.5° which is thicker near the equator.
+
+The Traditional Approach is entirely unsatisfying. It says that we need information that we don't have and so can't proceed. This is completely un-Bayesian. Go with whatever prior you have no matter how Naive. If completely uniformed go with an uninformed prior. If you think the uniform prior is too naive, then use a more informative prior. If you think the uniform prior is too presumptuous, use a less presumptuous prior (if there is one). If you can't decide which prior to use then average your favorite candidate priors. If you're leaning toward one then use a weighted prior. Different people may disagree on priors; that is also fine. They need not agree.
+
+One might object that this is neither a situation of priors, nor a situation of approximation. Both traditional methods are valid, and so both must be right. Actually, what it shows is that traditional methods are inadequate and/or broken.
+
+Before Calculus was invented, people tried to understand the concept of instantaneous velocity. Algebra gave 0/0. 0/0 is indeterminate. 0/0 could be 1. 0/0 could be 2. Many speculated that there was no such thing as an instantaneous velocity. One must first choose a step-size to compute rise over run. Others knew by various arguments that for example the derivative of x^2 must be 2x, and a correct Calculus when it comes must give 2x as the answer; if it gives 3x we will know that it is wrong. Calculus came and the derivative of x^2 was 2x. Calculus well-handles finite indeterminate forms. Calculus does not quite well-handle small indeterminate forms, like when the answer is 0. Probability Density functions are such a problem. This led Kolmogorov to say "The concept of a conditional probability with regard to an isolated hypothesis whose probability equals 0 is inadmissible." Sour Grapes. Basically, he thinks that if it is not well-defined with limits, then the concept itself is not well-defined. Had Kolmogorov lived centuries ago he may have been among those who claimed that if it is not well-defined with algebra, then the concept itself is not well-defined. Unfortunately, this simply is not the case. If the problem does not map uniquely to our current framework, that does not mean that the problem itself is not well-defined. In fact, it suggests current techniques are insufficient. Algebra could not handle indeterminate forms. Calculus could well-handle only indeterminate forms that are not small. PlaceValue handles all of these cases, whether they are small or not. Before PlaceValue, by symmetry, we knew how to resolve Borel's Paradox. Using PlaceValue, we now get the answer formally, that we had already gotten informally.
+
+Finally, PlaceValue's answer has the advantage of following immediately from the Definition of Probability: P(A|B) = μ(A) / μ(B) = 1 / τ0 .
 
 Fractal
 ------------

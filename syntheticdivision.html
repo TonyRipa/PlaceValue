@@ -1,0 +1,101 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	4/30/2020
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Synthetic Division</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script type="text/javascript" src='digit.js'></script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<style>
+		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }
+		input { text-align: right; }
+	</style>
+</head>
+<body>
+	<center>
+		<h1>Synthetic Division</h1>
+		<table border="1" cellpadding="10">
+			<tr>
+				<th>Polynomial Division</th>
+				<th></th>
+				<th>Synthetic Division i.e. PlaceValue Division</th>
+			</tr>
+			<tr>
+				<td rowspan='2'>
+					<table>
+						<tr>
+							<td></td>
+							<td>
+								<input size='1' id='q2' readonly>x^2+<input size='1' id='q1' readonly>x+<input size='1' id='q0' readonly>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<input size='1' id='d1' value='1'>x+<input size='1' id='d0' value='1'>
+							</td>
+							<td style='border-left: thin solid black;border-top: thin solid black'>
+								<input size='1' id='n2' value='1'>x^2+<input size='1' id='n1' value='0'>x+<input size='1' id='n0' value='-1'>
+							</td>
+						</tr>
+					</table>
+				</td>
+				<td style='text-align: center'>←</td>
+				<td rowspan='2'>
+					<table>
+						<tr>
+							<td></td>
+							<td><input id='c' readonly></td>
+						</tr>
+						<tr>
+							<td><input id='b' readonly></td>
+							<td style='border-left: thin solid black;border-top: thin solid black'><input id='a' readonly></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+			<tr>
+				<td><button onclick="go()">Go →</button></td>
+			</tr>
+		</table>
+	</center>
+	<script type="text/javascript">
+		var f = wholeplacevalue;
+		function go() {
+			var top = new wholeplacevalue().parse($('#n2').val() + '('+$('#n1').val() + ')('+$('#n0').val()+')');
+			var bot = new wholeplacevalue().parse($('#d1').val() + '('+$('#d0').val()+')');
+			pop(top, bot);
+		}
+		function pop(top, bot) {
+			$('#a').val(top);
+			$('#b').val(bot);
+			compute();
+		}
+		function compute() {
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = a.divide(b);
+			$('#c').val(c);
+			$('#q0').val(c.get(0).toreal())
+			$('#q1').val(c.get(1).toreal())
+			$('#q2').val(c.get(2).toreal())
+			function getinput(elem) { return new f().parse($(elem).val()); }
+		}
+	</script>
+</body>
+</html>
