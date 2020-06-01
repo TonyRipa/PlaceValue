@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
+// Date:    5/31/2020
 // Laurent: a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
@@ -23,10 +23,16 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
 		return new laurent(1, new placevalue(new wholeplacevalue().parse('(' + Number(node.value) + ')'), 0));
 	} else if (node.type == 'SymbolNode') {
 		console.log('SymbolNode')
-		var base = node.name;
+		//var base = node.name;																							//	-2020.5
 		//pv = 10;
-		//me.base = base;
-		var pv = new placevalue(new wholeplacevalue().parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9
+		//var pv = new placevalue(new wholeplacevalue().parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9	//	-2020.5
+		if (node.name.match(this.pv.whole.datatype.regexfull())) {														//	+2020.5
+			var base = 1;
+			var pv = this.pv.parse(node.name);
+		} else {
+			var base = node.name;
+			var pv = this.pv.parse('10');
+		}
 		return new laurent(base, pv);
 	} else if (node.type == 'OperatorNode') {
 		console.log('OperatorNode')
@@ -75,6 +81,7 @@ laurent.prototype.align = function (other) {    // Consolidate alignment    2015
 }
 
 laurent.prototype.pow = function (other) { // 2015.6
+	this.align(other);	//	+2020.5
 	return new laurent(this.base, this.pv.pow(other.pv));
 }
 

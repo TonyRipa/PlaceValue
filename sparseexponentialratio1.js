@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2019
+// Date:    5/31/2020
 // SparseExponentialRatio1 : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio1 datatype
 
 class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
@@ -34,7 +34,8 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode; //  2017.2  ''=0
 		if (node.type == 'SymbolNode') {
 			console.log('new sparseexponentialratio1 : SymbolNode')
-			if (node.name == 'i') return new sparseexponentialratio1([], sparseplacevalueratio1.parse('i'));
+			//if (node.name == 'i') return new sparseexponentialratio1([], sparseplacevalueratio1.parse('i'));					//	-2020.5
+			if (node.name.match(this.pv.num.datatype.regexfull())) return new this.constructor(1, this.pv.parse(node.name));	//	+2020.5
 			{ var s = 'Syntax Error: sparseexponentialratio1 expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexponentialratio1 : OperatorNode')
@@ -69,8 +70,9 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 			var ten = new sparseplacevalue1().parse('1E1');   // exp is 2D    2016.1
 			//var iten = sparseplacevalue1.parse('1Ei');   // exp is 2D    2016.1
 			//alert(JSON.stringify([kidaspoly, ones, tens, itens]));
-			//var exp = new sparseplacevalue1().parse('2.718').pow(kidaspoly.pv);	//	2017.5	//	2019.3	Removed
-			var exp = this.pv.num.parse('2.718').pow(kidaspoly.pv.times(ior1));		//	2019.3	this.pv.num,ior1
+			//var exp = new sparseplacevalue1().parse('2.718').pow(kidaspoly.pv);			//	2017.5	//	2019.3	Removed
+			//var exp = this.pv.num.parse('2.718').pow(kidaspoly.pv.times(ior1));			//	2019.3	this.pv.num,ior1	//	-2020.5
+			var exp = kidaspoly.pv.times(ior1).exponential();																//	+2020.5
 			//alert(JSON.stringify([exp, kidaspoly.pv]));
 			//var expi = sparseplacevalueratio1.parse('2.718').pow(kidaspoly.pv.times(sparseplacevalueratio1.parse('i')));  //  2017.5
 			var exp2 = exp.pow(-1)
@@ -100,10 +102,7 @@ class sparseexponentialratio1 extends abstractpolynomial {	//	2018.9	Renamed
 			//else alert('Syntax Error: complexexponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');    //  Check   2015.12	//	2019.3	Removed
 			//return new sparseexponentialratio1(base, new sparseplacevalueratio1(pv, new sparseplacevalue1().parse(1)));	//	2019.3	Removed
 			return new sparseexponentialratio1(base, new sparseplacevalueratio1(pv));										//	2019.3	-sparseplacevalueratio1(pv)
-		} /* else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
-			alert('Syntax Error: sparseexponentialratio1 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
-			return sparseexponentialratio1.parse(node.args[0]);
-		} */	//	2019.3	Removed
+		}
 	}
 
 	align(other) {			//	2017.8

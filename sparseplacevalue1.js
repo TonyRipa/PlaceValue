@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2019
+// Date:    5/31/2020
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -59,7 +59,6 @@ class sparseplacevalue1 {
 		if (arg === '') return new this.constructor(this.datatype);                                                                 //  2017.10
 		if (arg instanceof String || typeof (arg) == 'string') if (arg.indexOf('points') != -1)
 			return new this.constructor(JSON.parse(arg).points.map(x => x.map(y=>new this.datatype().parse(JSON.stringify(y)))));	//	2019.3	combined map
-			//return new this.constructor(JSON.parse(arg).points.map(x => x.map(JSON.stringify).map(new this.datatype().parse)));	//	2017.10	//	2019.3	Removed
 		if (typeof arg == "number") return new this.constructor([[new this.datatype().parse(arg), new this.datatype()]]);           //  2d array    2016.10
 		if (arg instanceof Number) return new this.constructor(arg, 0);
 		var terms = split(arg);
@@ -68,7 +67,8 @@ class sparseplacevalue1 {
 		return new this.constructor(terms);
 		function split(terms) {         //  2017.1
 			var ret = [];
-			terms = terms.toUpperCase().replace(/\s*/g, '');
+			//terms = terms.toUpperCase().replace(/\s*/g, '');	//	-2020.5
+			terms = terms.replace(/\s*/g, '');					//	+2020.5
 			if (terms.length == 0) return ret;
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;
 			var num = me.datatype.regex(); //  2017.6
@@ -139,7 +139,8 @@ class sparseplacevalue1 {
 		var digit = i < 0 ? 0 : this.points[this.points.length - 1 - i]; // R2L  2015.7
 		var coef = digit[0];
 		var pow = digit[1];
-		var a = coef.toString(false, true); //  2017.6  long
+		//var a = coef.toString(false, true);	//	2017.6 long	//	-2020.5
+		var a = coef.toString(false, long);						//	+2020.5
 		var b = pow.toString(false, true);  //  2017.6  long
 		if (-.01 < pow && pow < .01) return a
 		return a + 'E' + b;     //  E-notation  2016.10
@@ -261,13 +262,29 @@ class sparseplacevalue1 {
 		} else if (this.points.length == 1) {
 			//alert(1)
 			if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return this.parse('%') }
-			var man = this.get(0).pow(power.get(0));   //  2017.8
-			var exp = power.get(1);        //  2017.8  2^(3E1)=1E3
-			return new this.constructor([[man, exp]]);
+			//var man = this.get(0).pow(power.get(0));	//	2017.8					//	-2020.5
+			//var exp = power.get(1);						//	2017.8	2^(3E1)=1E3	//	-2020.5
+			//return new this.constructor([[man, exp]]);							//	-2020.5
+			var ret = [];										//	+2020.5
+			for (var i = 0 ; i < power.points.length; i++) {	//	+2020.5
+				if (power.points[i][1].is0()) {	ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }
+				var taylor = new this.constructor(this.datatype);
+				for (var t = 0 ; t < 4 ; t++) {
+					taylor = taylor.add(new sparseplacevalue1([[this.get(0).log().pow(t).scale(1/math.factorial(t)),new this.datatype().parse(t)]]));
+				}
+				ret.push(taylor.pow(power.get(1)));
+			}
+			return ret.reduce((acc, cur) => acc.times(cur), this.parse(1));	//	+2020.5
 		}
 		if (this.is0()) return this.parse(0);
 		if (this.is1()) return this.parse(1);
 		return this.parse(0 / 0);
+	}
+
+	exponential() {	//	+2020.5
+		var man = this.get(0).exp();
+		var exp = this.get(1);
+		return new this.constructor([[man, exp]]);
 	}
 
 	gcd(arg) {	//	2019.5

@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    1/31/2020
+// Date:    5/31/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 //function sparseplacevalue(arg) {	//	2019.4	Removed
@@ -79,7 +79,8 @@ class sparseplacevalue {			//	2019.4	Added
 		return new sparseplacevalue(terms);
 		function split(terms) {         //  2017.1
 			var ret = [];
-			terms = terms.toUpperCase().replace(/\s*/g, '');
+			//terms = terms.toUpperCase().replace(/\s*/g, '');	//	-2020.5
+			terms = terms.replace(/\s*/g, '');					//	+2020.5
 			if (terms.length == 0) return ret;
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;							//	2020.1	Added
 			var num = datatype.regex(); //  2017.6
@@ -92,13 +93,13 @@ class sparseplacevalue {			//	2019.4	Added
 			return ret;
 		}
 		function parseterm(term) {      //  Parse a scientific notation (E-notation) expression   2016.10
+			if (term == '+e') return [new datatype().parse('e'), new wholeplacevalue(datatype)];		//	+2020.5
 			term = term.toUpperCase();
 			if (term == 'INFINITY') return [new datatype().parse('1/0'), [new datatype().parse(0)]]; //  2017.2  0->[0]
 			if (term == '-INFINITY') return [new datatype().parse('-1/0'), [new datatype().parse(0)]];
 			var coefpow = term.split('E')
 			var coef = coefpow[0];
 			var pow = coefpow[1] || '0';
-			//var pows = pow.split(',')						//	2018.11	Removed
 			var pows = splitbyunparenthesizedcomma(pow);	//	2018.11	Added
 			//if (!pows.length) pows = [0, 0];
 			pows = pows.map(x=>new datatype().parse(x));
@@ -153,7 +154,8 @@ class sparseplacevalue {			//	2019.4	Added
 	tohtml() {   // Replaces toStringInternal 2015.7
 		this.check();
 		var me = this.clone();                          // Reverse will mutate  2015.9
-		return me.points.reverse().map(x => '[' + x[0].toString(true, true) + ', ' + x[1].toString() + ']').join();
+		//return me.points.reverse().map(x => '[' + x[0].toString(true, true) + ', ' + x[1].toString() + ']').join();	//	-2020.5
+		return me.points.reverse().map(x => '[' + x[0].toString(true) + ', ' + x[1].toString() + ']').join();			//	+2020.5
 	}
 
 	toString() {                             //  2016.12
@@ -166,7 +168,8 @@ class sparseplacevalue {			//	2019.4	Added
 	digit(i) {                       //  2017.2
 		this.check();
 		var digit = i < 0 ? new this.datatype.parse(0) : this.points[this.points.length - 1 - i];    //  R2L  2015.7
-		var a = digit[0].toString(false, true);
+		//var a = digit[0].toString(false, true);	//	-2020.5
+		var a = digit[0].toString(false);			//	+2020.5
 		var b = digit[1];
 		if (b.is0()) return a;             //  Every 2017.1
 		return a + 'E' + b.mantisa.map(x=>x.toString(false,true));                 //  2017.7  map
@@ -303,11 +306,11 @@ class sparseplacevalue {			//	2019.4	Added
 
 	dividemiddle(den) { return this.divide(den); }
 
-	pow(power) {        //  2016.11
+	pow(power) {		//  2016.11
 		if (power instanceof this.datatype) power = new sparseplacevalue([[power, new wholeplacevalue(this.datatype).parse(0)]]);   //  2017.7
 		if (!(power instanceof sparseplacevalue)) power = new sparseplacevalue(this.datatype).parse('' + power);       //  2017.7
 		this.check(power);
-		if (power.points.length == 1 & power.points[0][1].is0()) {//alert(JSON.stringify(power.points[0][0] instanceof rational))
+		if (power.points.length == 1 & power.points[0][1].is0()) {//alert(power.points[0][1])
 			var base = this.points[0];
 			//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), base[1].map(x=>x.times(power.points[0][0]))]]);
 			//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), new wholeplacevalue(base[1].mantisa.map(x=>x.times(power.points[0][0])))]]);
@@ -318,20 +321,41 @@ class sparseplacevalue {			//	2019.4	Added
 		}
 		if (this.points.length == 1) {  //  2017.9
 			var powe = power.clone();
+			var ret = [];																							//	+2020.5
 			for (var i = 0; i < powe.points.length; i++) {
-				var term = powe.points[i]
-				var coef = term[0];
+				//var term = powe.points[i]																			//	-2020.5
+				//var coef = term[0];																				//	-2020.5
 				//if (term[1].length == 0 || JSON.stringify(term[1]) == '[{"r":0,"i":0}]') { term[0] = complex.parse(2.718).pow(term[0]); continue; }
-				if (term[1].is0()) { term[0] = new this.datatype().parse(2.718).pow(term[0]); continue; }
+				//if (term[1].is0()) { term[0] = new this.datatype().parse(2.718).pow(term[0]); continue; }			//	-2020.5
+				if (power.points[i][1].is0()) { ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }	//	+2020.5
 				//term[1] = term[1].map(x => x.times(coef))
-				term[1] = term[1].scale(coef);
-				term[0] = new this.datatype().parse(1);
+				//term[1] = term[1].scale(coef);																	//	-2020.5
+				//term[0] = new this.datatype().parse(1);															//	-2020.5
+				var taylor = new sparseplacevalue(this.datatype);													//	+2020.5
+				for (var t = 0 ; t < 4 ; t++) {																		//	+2020.5
+					taylor = taylor.add(new sparseplacevalue([[this.get(0).log().pow(t).scale(1/math.factorial(t)),power.points[i][1].scale(t)]]));
+				}
+				ret.push(taylor.pow(power.get(1)));																	//	+2020.5
 			}
 			//alert(JSON.stringify(powe))
-			var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevalue([cur])), this.parse(1));	//	2018.11 this.parse
+			//var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevalue([cur])), this.parse(1));	//	2018.11 this.parse	//	-2020.5
+			ret = ret.reduce((acc, cur) => acc.times(cur), this.parse(1));											//	+2020.5
 			return ret;
 		}
 		return this.parse(0 / 0);	//	2018.11	this.parse
+	}
+
+	exponential() {			//  +2020.5
+		var powe = this.clone();
+		for (var i = 0; i < powe.points.length; i++) {
+			var term = powe.points[i]
+			var coef = term[0];
+			if (term[1].is0()) { term[0] = term[0].exp(); continue; }
+			term[1] = term[1].scale(coef);
+			term[0] = new this.datatype().parse(1);
+		}
+		var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevalue([cur])), this.parse(1));
+		return ret;
 	}
 
 	gcd(arg) {			//	2019.5

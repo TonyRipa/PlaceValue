@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/23/2018
+	Date:	5/31/2020
 	Demo for Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 -->
 
@@ -53,11 +53,11 @@
 		function parse(str) {
 			var node = math.parse(str);
 			if (node.type != 'OperatorNode') {
-				return [polynomial2.parse(node.value || node.name)];
+				//return [polynomial2.parse(node.value || node.name)];		//	-2020.5
+				return [new polynomial2().parse(node.value || node.name)];	//	+2020.5
 			} else if (node.type == 'OperatorNode') {
 				console.log('OperatorNode')
 				var kids = node.args;
-				//var a = polynomial2.parse(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 				var a = new polynomial2().parse(kids[0]);		//	polynomial2 handles unpreprocessed kid	2015.11
 				if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
 					return [node.op, a];

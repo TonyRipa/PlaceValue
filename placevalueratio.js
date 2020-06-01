@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
+// Date:    5/31/2020
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 function placevalueratio(arg) {
@@ -91,7 +91,6 @@ placevalueratio.prototype.reduce = function () {            //  2016.5
 
 	function euclid(ratio) {
 		var g = gcdpv(ratio.num, ratio.den);
-		//alert(g);
 		//for (var i = 0; i < g.mantisa.length; i++)
 		//    if (g.get(i) != Math.round(g.get(i))) return;
 		if (g.mantisa.length == 1) return;
@@ -167,7 +166,8 @@ placevalueratio.prototype.pointpow = function (other) {	// 2015.12
 placevalueratio.prototype.pow = function (power) {	// 2015.8
 	if (power instanceof placevalueratio) power = power.num;
 	if (!(power instanceof wholeplacevalue)) power = this.num.parse('(' + power + ')');  // 2015.11
-	var pow = power.get(0).abs();
+	var pow = power.get(0).abs();	//	-2020.5
+	var pow = power;				//	+2020.5
 	if (power.get(0).ispos()) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
 	return new placevalueratio(this.den.pow(pow), this.num.pow(pow));
 	//if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12

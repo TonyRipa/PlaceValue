@@ -1,9 +1,8 @@
 
 // Author:  Anthony John Ripa
-// Date:    1/31/2020
+// Date:    5/31/2020
 // SparsePolynomialRatio : a datatype for representing rational expressions; an application of the SparsePlaceValueRatio datatype
 
-//function sparsepolynomialratio(arg, pv) {												//	2019.5	Removed
 class sparsepolynomialratio extends abstractpolynomial {									//	2019.5	Added
 
 	constructor(arg) {
@@ -52,7 +51,8 @@ class sparsepolynomialratio extends abstractpolynomial {									//	2019.5	Added
 				var pv = this.pv.parse(node.name);
 			} else {
 				var base = [node.name];
-				var pv = this.pv.parse('1e1');
+				//var pv = this.pv.parse('1e1');	//	-2020.5
+				var pv = this.pv.parse('1E1');		//	+2020.5
 			}
 			//return new sparsepolynomialratio([base], new sparseplacevalueratio().parse(pv));	//	2019.5	Removed
 			return new sparsepolynomialratio(base, pv);											//	2019.5	Added

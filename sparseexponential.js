@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	5/31/2020
 // SparseExponential : a datatype for representing sparse exponentials; an application of the sparseplacevalue datatype
 
 class sparseexponential extends abstractpolynomial {
@@ -40,7 +40,6 @@ class sparseexponential extends abstractpolynomial {
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexponential : OperatorNode')
 			var kids = node.args;
-			//var a = sparseexponential.parse(kids[0]);		//	sparseexponential handles unpreprocessed kid	2015.11	//	2018.9	Removed
 			var a = this.parse(kids[0]);																				//	2018.9	this
 			if (node.fn == 'unaryMinus') {
 				//var c = new sparseexponential([], sparseplacevalue.parse(0)).sub(a);	//	2018.9	Removed
@@ -72,7 +71,8 @@ class sparseexponential extends abstractpolynomial {
 			//var ten = new sparseplacevalue().parse('1E1');	//	exp is 2D	2016.1	//	2019.2	Removed
 			//var iten = sparseplacevalue.parse('1Ei');		//	exp is 2D	2016.1
 			//var exp = new sparseplacevalue().parse('2.718').pow(kidaspoly.pv);	//	2017.5	//	2019.2	Removed
-			var exp = this.pv.parse('2.718').pow(kidaspoly.pv.times(ior1));	//	2019.2	this.pv,times(ior1)
+			//var exp = this.pv.parse('2.718').pow(kidaspoly.pv.times(ior1));		//	2019.2	this.pv,times(ior1)	//	-2020.5
+			var exp = kidaspoly.pv.times(ior1).exponential();														//	+2020.5
 			//alert(JSON.stringify([kidaspoly, ten, exp]));
 			//var expi = sparseplacevalue.parse('2.718').pow(kidaspoly.pv.times(sparseplacevalue.parse('i')));	//	2017.5
 			var exp2 = exp.pow(-1)
@@ -241,7 +241,8 @@ class sparseexponential extends abstractpolynomial {
 				if (power.is0())
 					ret += digit.toString(false, true);
 				else {
-					ret += coef(digit).toString(false, true);	//	2018.9	added (false,true)
+					//ret += coef(digit).toString(false, true);	//	2018.9	added (false,true)	//	-2020.5
+					ret += coef(digit).toString(false);											//	+2020.5
 					ret += 'exp(';
 					for (var j = 0; j < power.mantisa.length; j++) {
 						if (!power.get(j).is0()) ret += coef(power.get(j).toString(false, true)) + base[j] + '+';

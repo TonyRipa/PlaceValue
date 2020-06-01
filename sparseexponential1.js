@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2019
+// Date:    5/31/2020
 // SparseExponential1 : a datatype for representing sparse exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexponential1 extends abstractpolynomial {
@@ -65,7 +65,8 @@ class sparseexponential1 extends abstractpolynomial {
 			///alert(JSON.stringify([kidaspoly, ones, tens, itens]));
 			//var exp = kidaspoly.pv//sparseplacevalue1.parse('2.718').pow(kidaspoly.pv);  //  2017.5
 			//var exp = new sparseplacevalue1().parse('2.718').pow(kidaspoly.pv);  //  2017.5
-			var exp = new sparseplacevalue1(this.pv.datatype).parse('2.718').pow(kidaspoly.pv.times(ior1));  //  2017.10
+			//var exp = new sparseplacevalue1(this.pv.datatype).parse('2.718').pow(kidaspoly.pv.times(ior1));		//	2017.10	//	-2020.5
+			var exp = kidaspoly.pv.times(ior1).exponential();														//	+2020.5
 			///alert(JSON.stringify(exp))
 			///var expi = sparseplacevalue1.parse('2.718').pow(kidaspoly.pv.times(sparseplacevalue1.parse('i')));  //  2017.5
 			var exp2 = exp.pow(-1)
@@ -86,7 +87,6 @@ class sparseexponential1 extends abstractpolynomial {
 	}
 
 	toString() {
-		//return sparseexponential1.toStringCosh(this.pv, this.base)			//	2019.8	Removed
 		return toStringCosh(this.pv, this.base)									//	2019.8	Added
 		//static toStringCosh(pv, base) { // 2015.11							//	2019.8	Removed
 		function toStringCosh(pv, base) {										//	2019.8	Added
@@ -186,7 +186,8 @@ class sparseexponential1 extends abstractpolynomial {
 						ret += digit.toString(false, true);//.toreal();
 					else {
 						//ret += coef(digit.toreal()).toString();
-						ret += coef(digit.toString(false, true)).toString();    //  2017.12
+						//ret += coef(digit.toString(false, true)).toString();	//	2017.12	//	-2020.5
+						ret += coef(digit.toString(false)).toString();			//	2017.12	//	+2020.5
 						ret += 'exp(';
 						//for (var j = 0; j < power.length; j++) {
 						ret += coef(power.toString(false, true)) + base + '+';

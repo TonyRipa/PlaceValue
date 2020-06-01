@@ -3,7 +3,6 @@
 // Date:	5/31/2019
 // SparsePlaceValueRatio : a datatype for representing base-agnostic arithmetic via ratios of SparsePlaceValues
 
-//function sparseplacevalueratio(num, den) {																			//	2019.4	Removed
 function sparseplacevalueratio(arg) {																					//	2019.4	Added
 	var num, den;																										//	2019.4	Added
 	//if (arguments.length < 1) num = new sparseplacevalue();			//	2017.9										//	2019.4	Removed
@@ -212,7 +211,8 @@ sparseplacevalueratio.prototype.pow = function (power) {	//	2015.8
 	if (power instanceof sparseplacevalueratio) power = power.num.divide(power.den);
 	//if (!(power instanceof sparseplacevalue)) power = new sparseplacevalue().parse('(' + power + ')');	//	2015.11	//	2019.4	Removed
 	if (!(power instanceof sparseplacevalue)) power = this.num.parse('(' + power + ')');								//	2019.4	Added
-	var pow = power.get(0).abs();
+	//var pow = power.get(0).abs();	//	-2020.5
+	var pow = power;				//	+2020.5
 	//alert(JSON.stringify([this.num,pow,this.num.pow(pow)]))
 	if (power.get(0).ispos()) return new sparseplacevalueratio(this.num.pow(pow), this.den.pow(pow));
 	return new sparseplacevalueratio(this.den.pow(pow), this.num.pow(pow));

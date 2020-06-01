@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2019
+// Date:	5/31/2020
 // Complex:	A data-type for representing Complex Numbers
 
 //function complex(real, imag) {	//	2019.11	Removed
@@ -30,7 +30,6 @@ class complex extends digit {		//	2019.11	Added
 		if (N[0] == '+') return complex.parse(N.substring(1));						//	2017.11
 		var ret = 0;
 		if (N.indexOf(',') != -1) {
-			//var parts = N.slice(1, -1).split(',');								//	2019.5	Removed
 			if (N[0] == '(' && N.slice(-1) == ')') N = N.slice(1,-1);				//	2019.5	Added
 			var parts = N.split(',');												//	2019.5	Added
 			var re = Number(parts[0]); //if (Array.isArray(re)) re = re[0];
@@ -47,6 +46,7 @@ class complex extends digit {		//	2019.11	Added
 				if ("0123456789.".indexOf(c) > -1) ret += c;
 				var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
 				if (frac[c]) ret = frac[c];
+				if (c == 'e') ret = 2.718;	//	+2020.5
 				if (c == 'τ') ret = 6.28;
 				var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
 				if (num[c]) ret = num[c];
@@ -67,7 +67,8 @@ class complex extends digit {		//	2019.11	Added
 	}
 
 	static regex() {   //  2017.10
-		var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';
+		//var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';	//	-2020.5
+		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';		//	+2020.5
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
 		var signnum = '(' + '[\+\-]?' + num + '[iI]?' + ')';    //  2017.11
@@ -111,7 +112,8 @@ class complex extends digit {		//	2019.11	Added
 		var a = Math.round(real * 1000) / 1000
 		var b = Math.round(imag * 1000) / 1000
 		//if (real != real) return '%';
-		if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);
+		//if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);	//	-2020.5
+		if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, long);	//	+2020.5
 		if (real == 0) {
 			if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
 			if (long) return (b == 1 ? '' : b == -1 ? '-' : b) + 'i';   //  2017.11
@@ -180,6 +182,7 @@ class complex extends digit {		//	2019.11	Added
 	sub(other) { return new complex(this.r - other.r, this.i - other.i); }
 	exp() { return this.i == 0 ? new complex(Math.exp(this.r), 0) : new complex(Math.exp(this.r) * Math.cos(this.i), Math.exp(this.r) * Math.sin(this.i)); }  //  2017.3
 	ln() { return new complex(Math.log(Math.sqrt(this.r * this.r + this.i * this.i)), Math.atan2(this.i, this.r)) }
+	log() { return this.ln() }	//	+2020.5
 	nor() { return new complex(this.r * this.r + this.i * this.i) }
 	norm() { return Math.sqrt(this.r * this.r + this.i * this.i) }
 	lnn() { return this.nor().ln() }
@@ -187,7 +190,8 @@ class complex extends digit {		//	2019.11	Added
 	round() { return new complex(Math.round(1000 * this.r) / 1000, Math.round(1000 * this.i) / 1000) }
 	negate() { return new complex(-this.r, -this.i) } //  2017.3
 	clone() { return new complex(this.r, this.i); }   //  2017.10
-	scale(c) { return new complex(c * this.r, c * this.i); }  //  2017.11
+	//scale(c) { return new complex(c * this.r, c * this.i); }	//	2017.11	//	-2020.5
+	scale(c) { return c instanceof complex ? this.times(c) : new complex(c * this.r, c * this.i); }	//	+2020.5
 	remainder(den) { return this.sub(this.divide(den).times(den)); } //  2019.4  Added
 
 	times(y) {

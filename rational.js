@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2019
+// Date:	5/31/2020
 // Rational: A data-type for representing Rational Numbers
 
 //function rational(num, den) {	//	2016.7	//	2019.11	Removed
@@ -77,6 +77,7 @@ class rational extends digit {				//	2019.11.Added
 				var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
 				var fracnumden = { '⅛': [1, 8], '⅙': [1, 6], '⅕': [1, 5], '¼': [1, 4], '⅓': [1, 3], '⅜': [3, 8], '⅖': [2, 5], '½': [1, 2], '⅗': [3, 5], '⅔': [2, 3], '¾': [3, 4], '⅘': [4, 5], '⅚': [5, 6] }
 				if (frac[c]) ret = fracnumden[c];
+				if (c == 'e') ret = 2.718;	//	+2020.5
 				if (c == 'τ') ret = 6.28;
 				var num = { '⑩': 10, '⑪': 11, '⑫': 12, '⑬': 13, '⑭': 14, '⑮': 15, '⑯': 16, '⑰': 17, '⑱': 18, '⑲': 19, '⑳': 20, '㉑': 21, '㉒': 22, '㉓': 23, '㉔': 24, '㉕': 25, '㉖': 26, '㉗': 27, '㉘': 28, '㉙': 29, '㉚': 30, '㉛': 31, '㉜': 32, '㉝': 33, '㉞': 34, '㉟': 35, '㊱': 36, '㊲': 37, '㊳': 38, '㊴': 39, '㊵': 40, '㊶': 41, '㊷': 42, '㊸': 43, '㊹': 44, '㊺': 45, '㊻': 46, '㊼': 47, '㊽': 48, '㊾': 49, '㊿': 50 }
 				if (num[c]) ret = num[c];
@@ -93,7 +94,8 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	static regex() {  //  2017.6
-		var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';   //  2017.11 %
+		//var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//  2017.11 %	//	-2020.5
+		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//	+2020.5
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
 		var frac = '(' + num + '/' + num + '|' + num + ')';
@@ -127,7 +129,8 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	toString(sTag, long) {   //  2015.11 sTag    2017.6  long
-		if (long) return this.d == 1 ? this.n : this.n + '/' + this.d;  //  2017.7
+		//if (long) return this.d == 1 ? this.n : this.n + '/' + this.d;		//	2017.7	//	-2020.5
+		if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;	//	2017.7	//	+2020.5
 		var NEGBEG = long ? '-' : sTag ? '<s>' : '';
 		var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
 		var candidate1 = this.digitpair(NEGBEG, NEGEND, long)//.toString().replace('(', '').replace(')', '');
@@ -215,7 +218,8 @@ class rational extends digit {				//	2019.11.Added
 	negate() { return new rational(-this.n, this.d); }
 	clone() { return new rational(this.n, this.d); } //  2017.6
 	round() { return new rational(Math.round(this.toreal() * 1000) / 1000, 1); } //  2017.11
-	scale(c) { return new rational(c * this.n, this.d); } //  2017.11
+	//scale(c) { return new rational(c * this.n, this.d); }	//	2017.11								//	-2020.5
+	scale(c) { return c instanceof rational ? this.times(c) : new rational(c * this.n, this.d); }	//	+2020.5
 
 	atan2(other) { return new rational(Math.atan2(this.toreal(), other.toreal()), 1); }   //  2017.11
 	sqrt() { return new rational(Math.sqrt(this.n), Math.sqrt(this.d)); }   //  2017.11
@@ -225,7 +229,6 @@ class rational extends digit {				//	2019.11.Added
 	cos() { return new rational(Math.cos(this.toreal()), 1); }   //  2017.11
 
 	pow(other) {//alert('rational.pow: ' + other)
-		//if (other instanceof rational && other.isint()) return new rational(Math.pow(this.num, other.num), Math.pow(this.den, other.num));
 		if (other instanceof rational && other.negate().is1()) return new rational(this.d, this.n); //  2017.7
 		if (other instanceof rational) other = other.toreal();
 		return new rational(Math.pow(this.toreal(), other));

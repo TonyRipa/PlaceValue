@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
+// Date:    5/31/2020
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 function placevalue(arg) {
@@ -14,7 +14,6 @@ function placevalue(arg) {
 	if (!(man instanceof wholeplacevalue)) { var s = 'placevalue expects argument 1 to be a wholeplacevalue but found ' + typeof man; alert(s); throw new Error(s); }   //  2018.5  added throw
 	if (!(exp instanceof Number) && !(typeof exp == 'number')) { var s = 'placevalue expects argument 2 to be a number but found ' + typeof exp; alert(s); throw new Error(s); }
 	this.whole = man;
-	//  this.exp = exp;                     //  2018.5  Removed
 	this.exp = this.whole.is0() ? 0 : exp;  //  2018.5  0 man has no exp
 	console.log('this.whole = ' + this.whole + ' = ' + JSON.stringify(this.whole) + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
 }
@@ -40,8 +39,9 @@ placevalue.prototype.parse = function (man) {    // 2017.9
 	function getexp(x) {
 		if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
 		if (x.mantisa) return 0;  // To check for wholeplacevalue-like objects, replace (x instanceof wholeplacevalue) with (x.mantisa)    2015.9
-		if (x.toString().toUpperCase().indexOf('E') != -1) {    // Recognize 2e3    2015.9
-			x = x.toString().toUpperCase();
+		//if (x.toString().toUpperCase().indexOf('E') != -1) {	// Recognize 2e3	2015.9	//	-2020.5
+		if (x.toString().indexOf('E') != -1) {	//	+2020.5
+			//x = x.toString().toUpperCase();	//	-2020.5
 			return Number(x.substr(1 + x.indexOf('E'))) + getexp(x.substr(0, x.indexOf('E')))
 		}
 		var NEGATIVE = String.fromCharCode(822); var MINUS = String.fromCharCode(8315); var ONE = String.fromCharCode(185);
@@ -142,9 +142,22 @@ placevalue.prototype.pow = function (power) {	// 2015.8
 		var whole = this.whole.pow(power.whole);
 		var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
 	} else if (power.exp == 1) {    //  2017.5
-		if (this.exp != 0) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }
-		var whole = new wholeplacevalue().parse(1);   //  2017.5
-		var exp = power.get(1).toreal();        //  2017.5  2^(3E1)=1E3
+		//if (this.exp != 0) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }	//	-2020.5
+		//var whole = new wholeplacevalue().parse(1);	//	2017.5				//	-2020.5
+		//var exp = power.get(1).toreal();				//	2017.5	2^(3E1)=1E3	//	-2020.5
+		return this.pow(this.parse(power.toString()))	//	+2020.5
+	} else { alert('PV >Bad Exponent = ' + power.toString()); return placevalue.parse('%') }
+	return new placevalue(whole, exp);
+}
+
+placevalue.prototype.exponential = function () {	//	+2020.5
+	if (this.exp == 0) {
+		if (this.get(1).toreal() < 0) return (new placevalue(this.whole.parse(1), 0)).divide(this.negate().exponential());
+		var whole = this.whole.exponential();
+		var exp = 0;
+	} else if (this.exp == 1) {
+		var whole = new wholeplacevalue().parse(1);
+		var exp = this.get(1).toreal();
 	} else { alert('PV >Bad Exponent = ' + power.toString()); return placevalue.parse('%') }
 	return new placevalue(whole, exp);
 }

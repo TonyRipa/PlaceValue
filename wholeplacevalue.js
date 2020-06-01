@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	1/31/2020
+// Date:	5/31/2020
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -53,7 +53,8 @@ wholeplacevalue.prototype.parse = function (man) {  //  2017.9
 			if (inparen)
 				numb += c;
 			else {
-				if (c == '.' || c == 'e' || c == 'E') break;    // Truncate    2015.9
+				//if (c == '.' || c == 'e' || c == 'E') break;    // Truncate    2015.9	//	-2020.5
+				if (c == '.' || c == 'E') break;	//	+2020.5
 				if ([String.fromCharCode(185), String.fromCharCode(777), String.fromCharCode(822), String.fromCharCode(8315)].indexOf(c) > -1) ret[ret.length - 1] += c;
 				else ret.push(c);
 			}
@@ -102,12 +103,6 @@ wholeplacevalue.prototype.toString = function (sTag) {                          
 	for (var i = 0 ; i < this.mantisa.length; i++) ret = this.get(i).todigit() + ret;   //  2017.11 todigit
 	return ret;
 }
-
-//wholeplacevalue.prototype.digit = function (i, sTag) {                          //  sTag    2015.11	//	2019.11	Removed
-//	this.check();
-//	if (sTag) return this.digithelp(i, '<s>', '</s>', true);
-//	return this.digithelp(i, '', String.fromCharCode(822), false);
-//}
 
 wholeplacevalue.prototype.equals = function (other) {
 	this.check();
@@ -188,12 +183,34 @@ wholeplacevalue.prototype.pow = function (power) { // 2015.6
 	if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype().parse(power)]);
 	this.check(power);
 	//if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]);  //  0^0=1 for convenience   2016.5
-	if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000
+	if (power.mantisa.length == 1) {		//	+2020.5
+		if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return wholeplacevalue.parse('%') }
+		//if (power.get(0).toreal() < 0) return this.parse(0);		//	2018.1	this.parse		//	-2020.5
+		if (power.get(0).toreal() < 0) return this.parse(1).divide(this.pow(power.negate()));	//	+2020.5
+		if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
+		return this.times(this.pow(power.get(0).toreal() - 1));
+	} else if (this.mantisa.length == 1) {	//	+2020.5
+		//if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000	//	-2020.5
+		var ret = [];											//	+2020.5
+		for (var i = 0; i < 2 ; i++) {							//	+2020.5
+			if (i == 0) { ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }
+			var taylor = new this.constructor(this.datatype);
+			for (var t = 0 ; t < 4 ; t++ ) {
+				var taylorterm = this.parse(1);
+				if (this.get(0).toString() != 'e') taylorterm = taylorterm.scale(this.get(0).log().pow(t));
+				taylorterm = taylorterm.scale(1/math.factorial(t));
+				taylorterm = taylorterm.times10s(t);
+				taylor = taylor.add(taylorterm);
+			}
+			ret.push(taylor.pow(power.get(1).toreal()));
+		}
+		return ret.reduce((acc, cur) => acc.times(cur));	//	+2020.5
+	}
 	if (power.mantisa.length > 1) { alert('WPV >Bad Exponent = ' + power.toString()); return this.parse('%') }
-	if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return wholeplacevalue.parse('%') }
-	if (power.get(0).toreal() < 0) return this.parse(0);    //  2018.1  this.parse
-	if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
-	return this.times(this.pow(power.get(0).toreal() - 1));
+}
+
+wholeplacevalue.prototype.exponential = function (power) {	//	+2020.5
+	return this.parse('10').pow(this.get(1).toreal()).scale(this.parse('e').pow(this.get(0)));
 }
 
 wholeplacevalue.prototype.pointpow = function (power) { // 2015.12
@@ -359,7 +376,8 @@ wholeplacevalue.prototype.gcd0 = function () {			//	2016.5
 	var list = [];
 	for (var i = 0; i < this.mantisa.length; i++)
 		list.push(this.get(i));
-	if (list.length == 0) return new this.datatype.parse(1);
+	//if (list.length == 0) return new this.datatype.parse(1);	//	-2020.5
+	if (list.length == 0) return new this.datatype().parse(1);	//	+2020.5
 	if (list.length == 1) return list[0].is0() ? new this.datatype().parse(1) : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
 	return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype());
 }

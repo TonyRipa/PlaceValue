@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2019
+// Date:    5/31/2020
 // SparseExpression1 : a datatype for representing sparse polynomials & exponentials; an application of the SparsePlaceValue1 datatype
 
 class sparseexpression1 extends abstractpolynomial {
@@ -32,9 +32,8 @@ class sparseexpression1 extends abstractpolynomial {
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'SymbolNode') {
 			console.log('new sparseexpression1 : SymbolNode')
-			if (node.name == 'i' && this.pv.datatype !== rational) return new this.constructor(1, this.pv.parse('i'));
+			if (node.name.match(this.pv.datatype.regexfull())) return new this.constructor(1, this.pv.parse(node.name));	//	+2020.5
 			return new this.constructor(node.name.toLowerCase(), this.pv.parse('1E1'));
-			//{ var s = 'Syntax Error: sparseexpression1 expects input like 1, exp(x), cosh(y), exp(z), sinh(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); } // 2019.9 Removed
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexpression1 : OperatorNode')
 			var kids = node.args;
@@ -60,7 +59,8 @@ class sparseexpression1 extends abstractpolynomial {
 			var kids = node.args;
 			var kidaspoly = new sparsepolynomial1(this.pv.datatype).parse(kids[0]);
 			var base = kidaspoly.base;
-			var exp = new sparseplacevalue1(this.pv.datatype).parse('2.718').pow(kidaspoly.pv.times(ior1));
+			//var exp = new sparseplacevalue1(this.pv.datatype).parse('2.718').pow(kidaspoly.pv.times(ior1));	//	-2020.5
+			var exp = kidaspoly.pv.times(ior1).exponential();													//	+2020.5
 			var exp2 = exp.pow(-1)
 			if (fn == 'exp' | fn == 'cis') var pv = exp;
 			if (fn == 'cosh' | fn == 'cos') var pv = exp.add(exp2).unscale(2);
@@ -134,7 +134,8 @@ class sparseexpression1 extends abstractpolynomial {
 			var ret = '';
 			for (var i = points.length - 1; i >= 0 ; i--) {
 				var power = points[i][1].toString(false, true);
-				var digit = points[i][0].toString(false, true);
+				//var digit = points[i][0].toString(false, true);	//	-2020.5
+				var digit = points[i][0].toString(false);			//	+2020.5
 				if (digit != 0) {
 					ret += '+';
 					if (power == 0)

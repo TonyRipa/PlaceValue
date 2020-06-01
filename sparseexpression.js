@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	10/31/2019
+// Date:	5/31/2020
 // SparseExpression : a datatype for representing sparse expressions; an application of the SparsePlaceValue datatype
 
 class sparseexpression extends abstractpolynomial {
@@ -30,7 +30,8 @@ class sparseexpression extends abstractpolynomial {
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode == '' ? '0' : strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'SymbolNode') {
 			console.log('new sparseexpression : SymbolNode')
-			if (node.name == 'i' && this.pv.datatype !== rational) return new this.constructor([], this.pv.parse('i'));
+			//if (node.name == 'i' && this.pv.datatype !== rational) return new this.constructor([], this.pv.parse('i'));	//	-2020.5
+			if (node.name.match(this.pv.datatype.regexfull())) return new this.constructor([], this.pv.parse(node.name));	//	+2020.5
 			return new this.constructor([node.name.toLowerCase()], this.pv.parse('1E1'));
 		} else if (node.type == 'OperatorNode') {
 			console.log('new sparseexpression : OperatorNode')
@@ -57,13 +58,13 @@ class sparseexpression extends abstractpolynomial {
 			var kids = node.args;
 			var kidaspoly = new sparsepolynomial(this.pv.datatype).parse(kids[0]);
 			var base = kidaspoly.base;
-			var exp = this.pv.parse('2.718').pow(kidaspoly.pv.times(ior1));
+			//var exp = this.pv.parse('2.718').pow(kidaspoly.pv.times(ior1));		//	-2020.5
+			var exp = this.pv.parse('2.718').exponential(kidaspoly.pv.times(ior1));	//	+2020.5
 			var exp2 = exp.pow(-1)
 			if (fn == 'exp' | fn == 'cis') var pv = exp;
 			if (fn == 'cosh' | fn == 'cos') var pv = exp.add(exp2).unscale(2);
 			if (fn == 'sinh' | fn == 'sin') var pv = exp.sub(exp2).unscale(2);
 			if (fn == 'sin') var pv = pv.unscale('i');
-			//return new this.constructor([base[0].toUpperCase()], pv);		//	2019.10	Removed
 			return new this.constructor(base.map(b=>b.toUpperCase()), pv);	//	2019.10	Added
 		}
 	}
@@ -177,7 +178,8 @@ class sparseexpression extends abstractpolynomial {
 					if (power.is0())
 						ret += digit.toString(false, true);
 					else {
-						ret += coef(digit).toString(false, true);
+						//ret += coef(digit).toString(false, true);	//	-2020.5
+						ret += coef(digit).toString(false);			//	+2020.5
 						for (var j = 0; j < power.mantisa.length; j++) {
 							if (!power.get(j).is0())
 								if (base[j] == base[j].toLowerCase()) ret += base[j] + sup(power.get(j).toString(false, true));

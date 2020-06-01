@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    2/28/2019
+// Date:    5/31/2020
 // Polynomial1: a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
@@ -60,25 +60,6 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		}
 	}
 
-	//polynomial1.prototype.tohtml = function () { // Replacement for toStringInternal 2015.7
-	//    return this.pv.tohtml(true) + ' base ' + this.base;
-	//}
-	//
-	//polynomial1.prototype.toString = function () {
-	//    return polynomial1.toStringXbase(this.pv, this.base);
-	//}
-	//
-	//polynomial1.prototype.add = function (other) { this.align(other); return new polynomial1(this.base, this.pv.add(other.pv)); }
-	//polynomial1.prototype.sub = function (other) { this.align(other); return new polynomial1(this.base, this.pv.sub(other.pv)); }
-	//polynomial1.prototype.times = function (other) { this.align(other); return new polynomial1(this.base, this.pv.times(other.pv)); }
-	//polynomial1.prototype.divide = function (other) { this.align(other); return new polynomial1(this.base, this.pv.divide(other.pv)); }
-	//polynomial1.prototype.divideleft = function (other) { this.align(other); return new polynomial1(this.base, this.pv.divideleft(other.pv)); }
-	//polynomial1.prototype.dividemiddle = function (other) { this.align(other); return new polynomial1(this.base, this.pv.dividemiddle(other.pv)); }
-	//polynomial1.prototype.pointadd = function (other) { this.align(other); return new polynomial1(this.base, this.pv.pointadd(other.pv)); }
-	//polynomial1.prototype.pointsub = function (other) { this.align(other); return new polynomial1(this.base, this.pv.pointsub(other.pv)); }
-	//polynomial1.prototype.pointtimes = function (other) { this.align(other); return new polynomial1(this.base, this.pv.pointtimes(other.pv)); }
-	//polynomial1.prototype.pointdivide = function (other) { this.align(other); return new polynomial1(this.base, this.pv.pointdivide(other.pv)); }
-
 	align(other) {			//	Consolidate alignment	2015.9
 		this.check(other);	//	2019.2	Added Check
 		if (this.pv.mantisa.length == 1) this.base = other.base;
@@ -106,7 +87,8 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		var maxbase = x.length - 1
 		for (var power = maxbase; power >= 0; power--) {                    // power is index because whole is L2R  2015.7 
 			//var digit = Math.round(1000 * str[power].toreal()) / 1000;      // toreal  2016.7 
-			var digit = str[power].toString(false, true);
+			//var digit = str[power].toString(false, true);		//	-2020.5
+			var digit = str[power].toString(false,'medium');	//	+2020.5
 			if (digit != 0) {
 				ret += '+';
 				if (power == 0)

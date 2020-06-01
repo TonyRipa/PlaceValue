@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2019
+// Date:    5/31/2020
 // SparseExponentialRatio : a datatype for representing ratios of exponentials; an application of the sparseplacevalueratio datatype
 
 class sparseexponentialratio extends abstractpolynomial {
@@ -35,7 +35,8 @@ class sparseexponentialratio extends abstractpolynomial {
 		function parsenode(node) {
 			if (node.type == 'SymbolNode') {
 				console.log('new sparseexponentialratio : SymbolNode')
-				if (node.name == 'i') return new this.constructor([], sparseplacevalueratio.parse('i'));
+				//if (node.name == 'i') return new this.constructor([], sparseplacevalueratio.parse('i'));							//	-2020.5
+				if (node.name.match(this.pv.num.datatype.regexfull())) return new this.constructor([], this.pv.parse(node.name));	//	+2020.5
 				{ var s = 'Syntax Error: sparseexponentialratio expects input like 1, cis(x), cos(y), exp(z), sin(2x), or 1+cosh(y) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 			} else if (node.type == 'OperatorNode') {
 				console.log('new sparseexponentialratio : OperatorNode')
@@ -60,7 +61,8 @@ class sparseexponentialratio extends abstractpolynomial {
 				if (fn == 'cis' | fn == 'cos' | fn == 'sin' | fn == 'tan') var ior1 = this.pv.num.parse('i');
 				if (!ior1) { var s = 'Syntax Error: SparseExpRatio expects input like 1, exp(x), cos(x), sinh(x), cis(2x), or 1+sin(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 				var arg = new sparsepolynomial(this.pv.num.datatype).parse(node.args[0]);
-				var exp = this.pv.num.parse('2.718').pow(arg.pv.times(ior1));
+				//var exp = this.pv.num.parse('2.718').pow(arg.pv.times(ior1));			//	-2020.5
+				var exp = arg.pv.times(ior1).exponential();								//	+2020.5
 				var exp2 = exp.pow(-1)
 				var cos = exp.add(exp2).unscale(2);
 				var sin = exp.sub(exp2).unscale(2);

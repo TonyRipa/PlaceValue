@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	12/31/2019
+// Date:	5/31/2020
 // RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 class rationalcomplex extends digit {	//	2019.12
@@ -59,7 +59,8 @@ class rationalcomplex extends digit {	//	2019.12
 	}
 
 	static regex() {	//	2017.10
-		var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';
+		//var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';	//	-2020.5
+		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚iI]';	//	-2020.5
 		//var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var dec = rational.regex();
 		var num = '(' + literal + '|' + dec + ')';
@@ -122,7 +123,7 @@ class rationalcomplex extends digit {	//	2019.12
 		return '(' + a.toString(false, long).replace('(', '').replace(')', '') + ',' + b.toString(false, long) + ')';
 	}
 
-	//digithelp(digit, NEGBEG, NEGEND, fraction) {	//	2015.11		//	2019.12	Added
+	//digithelp(digit, NEGBEG, NEGEND, fraction) {	//	2015.11		//	2019.12	Removed
 	//	//	185	189	822	8315	9321
 	//	//	^1	1/2	-	^-		10
 	//	this.check();
@@ -171,7 +172,6 @@ class rationalcomplex extends digit {	//	2019.12
 	is1() { this.check(); return this.r.is1() && this.i.is0(); }										//	2018.3
 	isNaN() { this.check(); return this.r.isNaN() || this.i.isNaN(); }									//	2018.3
 	below(other) { this.check(other); return !this.r.equals(other.r) ? this.r.below(other.r) : this.i.below(other.i); }	//	2017.3
-	//rationalcomplex.prototype.above = function (other) { this.check(other); return this.r != other.r ? this.r > other.r : this.i > other.i; }	//	2017.3		//	2019.2	Removed
 	above(other) { this.check(other); return !this.r.equals(other.r) ? this.r.above(other.r) : this.i.above(other.i); }	//	2019.2
 	below0() { this.check(); return this.below(rationalcomplex.zero()); }								//	2017.3
 	above0() { this.check(); return this.above(rationalcomplex.zero()); }								//	2017.3
@@ -185,6 +185,7 @@ class rationalcomplex extends digit {	//	2019.12
 	sub(other) { this.check(other); return new rationalcomplex(this.r.sub(other.r), this.i.sub(other.i)); }
 	exp() { this.check(); return this.i.is0() ? new rationalcomplex(this.r.exp()) : new rationalcomplex(this.r.exp().times(this.i.cos()), this.r.exp().times(this.i.sin())); }	//	2017.3
 	ln() { this.check(); return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i)).sqrt().log(), this.arg()) }
+	log() { return this.ln(); }																			//	+2020.5
 	nor() { this.check(); return new rationalcomplex(this.r.times(this.r).add(this.i.times(this.i))) }
 	norm() { this.check(); return this.r.times(this.r).add(this.i.times(this.i)).sqrt(); }
 	lnn() { this.check(); return this.nor().ln() }
