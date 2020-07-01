@@ -1,9 +1,8 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    6/30/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
-//function sparseplacevalue(arg) {	//	2019.4	Removed
 class sparseplacevalue {			//	2019.4	Added
 
 	constructor(arg) {
@@ -165,6 +164,17 @@ class sparseplacevalue {			//	2019.4	Added
 		return ret.substr(1).replace(/\+\-/g, '-');                                         //  +- becomes -    2017.1
 	}
 
+	tosvg() {								//	+2020.6
+		var ret = '';
+		for (var [coef,power] of this.points) {
+			var color = 256*(1-coef.toreal());
+			var x = power.get(0);
+			var y = power.get(1);
+			ret += `<rect width="50" height="50" x="${50*x}" y="${50*y}" fill='rgb(${color},${color},${color})'/>`;
+		}
+		return `<svg width='${(1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50}'><g stroke='#789'>${ret}</g></sgv>`
+	}
+
 	digit(i) {                       //  2017.2
 		this.check();
 		var digit = i < 0 ? new this.datatype.parse(0) : this.points[this.points.length - 1 - i];    //  R2L  2015.7
@@ -259,7 +269,8 @@ class sparseplacevalue {			//	2019.4	Added
 	divide(den) {    //  2016.10
 		this.check(den);
 		var num = this;
-		var iter = 5//math.max(num.points.length, den.points.length);
+		//var iter = 5//math.max(num.points.length, den.points.length);	//	-2020.6
+		var iter = math.max(5, num.points.length, den.points.length);	//	+2020.6
 		var quotient = divideh(num, den, iter);
 		return quotient;
 		function divideh(num, den, c) {

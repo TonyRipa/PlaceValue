@@ -1,0 +1,110 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	6/30/2020
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PlaceValue Convolutional Network</title>
+	<script type="text/javascript" src='https://code.jquery.com/jquery-latest.js'></script>
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
+	</script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<script type="text/javascript">
+		window.math || document.write("<script src='../js/math.js'><" + "/script>")
+	</script>
+	<script src='digit.js'></script>
+	<script type="text/javascript" src='rational.js'></script>
+	<script type="text/javascript" src='complex.js'></script>
+	<script type="text/javascript" src='rationalcomplex.js'></script>
+	<script type="text/javascript" src='wholeplacevalue.js'></script>
+	<script type="text/javascript" src='sparseplacevalue.js'></script>
+	<style>
+		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }
+		input { text-align: right; }
+	</style>
+</head>
+<body>
+	<h1>PlaceValue Convolution</h1>
+	<center>
+		<button onclick="compute()">Go</button>
+		<br>
+		<br>
+		<table border>
+			<tr>
+				<td><button onclick='setinput("#a","");$("#adiv").html("")'>Clear</button><input id='a' onchange='mem["#a"]=0' value='1E0,0+1E2,0 +1E0,1+1E1,1+1E2,1 +1E0,2+1E2,2' /><div id='adiv'></div></td>
+				<td></td>
+				<td></td>
+			</tr>
+			<tr>
+				<td></td>
+				<td style='text-align:center'>
+					<svg id='rot' width="202" height="202">
+						<ellipse ry="100" rx="100" cy="101" cx="101" stroke="#000" fill="#9ACEE6"/>
+						<g font-family="Helvetica, Arial, sans-serif" font-size="24" stroke-width="0">
+							<text x="103.5" y="110">Product</text>
+							<text x="30.5" y="61" transform="rotate(-120.265, 67.2999, 52.9999)">Factor</text>
+							<text x="24.5" y="158" transform="rotate(120.007, 61.2992, 149.999)">Factor</text>
+						</g>
+					</svg><br>
+					<input id='theta' oninput='rot(this.value)' type='range' min='-120' max='120'>
+				</td>
+				<td><input id='b' value='' onchange='mem["#b"]=0'><button onclick='setinput("#b","");$("#bdiv").html("")'>Clear</button><div id='bdiv'></div></td>
+			</tr>
+			<tr>
+				<td><button onclick='setinput("#c","");$("#cdiv").html("")'>Clear</button><input id='c' value='.25E2+.5E1+.25' onchange='mem["#c"]=0' /><div id='cdiv'></div></td>
+				<td></td>
+				<td></td>
+			</tr>
+		</table>
+	</center>
+	<script type="text/javascript">
+		var f = sparseplacevalue;
+		var mem = [];
+		function setinput(elem,val) { mem[elem]=val; return $(elem).val(val); }
+		function getinput(elem) { return $(elem).val(); }
+		function getparsedinput(elem) { return mem[elem] || new f().parse(getinput(elem)); }
+		function rot(angle) { $('#rot').css('transform','rotate('+angle+'deg)'); }
+		function findempty() {
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = getinput('#c');
+			if (a=='' && b!='' && c!='') return 'a';
+			if (a!='' && b=='' && c!='') return 'b';
+			if (a!='' && b!='' && c=='') return 'c';
+			return false;
+		}
+		function findpointer() {
+			var theta = $('#theta').val();
+			if (theta<-60) return ['a','b','c'];
+			if (theta>60) return ['c','a','b'];
+			return ['b','c','a'];
+		}
+		function compute() {
+			var e = findempty();
+			if (!e) { alert('Clear the entry that you want to solve for.'); return; }
+			var p = findpointer();
+			if (e==p[0]) {
+				var Factor1 = getparsedinput('#'+p[1]);
+				$('#'+p[1]+'div').html(Factor1.tosvg());
+				var Factor2 = getparsedinput('#'+p[2]);
+				$('#'+p[2]+'div').html(Factor2.tosvg());
+				var Product = Factor1.times(Factor2);
+				setinput('#'+p[0],Product);
+				$('#'+p[0]+'div').html(Product.tosvg());
+			} else {
+				var Product = getparsedinput('#'+p[0]);
+				if (e==p[1]) var Factor1 = getparsedinput('#'+p[2]);
+				if (e==p[2]) var Factor1 = getparsedinput('#'+p[1]);
+				var Factor2 = Product.divide(Factor1);
+				setinput('#'+e,Factor2);
+				$('#'+e+'div').html(Factor2.tosvg());
+			}
+		}
+	</script>
+</body>
+</html>

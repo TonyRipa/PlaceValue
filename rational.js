@@ -1,9 +1,8 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	5/31/2020
+// Date:	6/30/2020
 // Rational: A data-type for representing Rational Numbers
 
-//function rational(num, den) {	//	2016.7	//	2019.11	Removed
 class rational extends digit {				//	2019.11.Added
 
 	constructor(num,den) {
@@ -95,12 +94,16 @@ class rational extends digit {				//	2019.11.Added
 
 	static regex() {  //  2017.6
 		//var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//  2017.11 %	//	-2020.5
-		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//	+2020.5
+		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//	+2020.5			//	-2020.6
+		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱]';						//	+2020.6
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
-		var frac = '(' + num + '/' + num + '|' + num + ')';
+		//var frac = '(' + num + '/' + num + '|' + num + ')';		//	-2020.6
+		var frac = '(' + num + '/' + num + '|' + num + '(⁻¹)?)';	//	+2020.6
 		var signfrac = '(' + '[\+\-]?' + frac + ')';
-		return signfrac;
+		var parensignfrac = '(\\(' + signfrac + '\\))';				//	+2020.6
+		return '(' + parensignfrac + '|' + signfrac + ')';			//	+2020.6
+		//return signfrac;											//	-2020.6
 	}
 
 	static regexfull() {   //  2017.11

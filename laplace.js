@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2019
+// Date:	6/30/2020
 // Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -33,7 +33,6 @@ class laplace extends abstractpolynomial {
 				console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
 				console.log(node)
 				//me.base = base;
-				//me.pv = new placevaluecomplex(1, 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
 				var pv = this.pv.parse('1E1');  //  2017.10
 				return new laplace(base, pv);
 			}
@@ -105,9 +104,9 @@ class laplace extends abstractpolynomial {
 		var trigimag = '';
 		//alert(JSON.stringify(s))
 		[s, trigreal] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('1'), 0)), '');
-		//[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed
-		//var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');												//	2019.5	Removed
-		var ret = trigreal;																									//	2019.5	Added
+		[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed	//	--2020.6
+		var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');											//	2019.5	Removed	//	--2020.6
+		//var ret = trigreal;																							//	2019.5	Added	//	-2020.6
 		ret += '+' + laplace.toStringXbase(s, base);
 		if (ret[0] == '+') ret = ret.slice(1);
 		return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;

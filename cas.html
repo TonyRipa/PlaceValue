@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	6/30/2020
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -41,7 +41,6 @@
 	<script type="text/javascript" src='sparsepolynomial1.js'></script>
 	<script type="text/javascript" src='sparseplacevalue2.js'></script>
 	<script type="text/javascript" src='sparsepolynomial.js'></script>
-	<!--<script type="text/javascript" src='sparseplacevaluecomplex.js'></script>	2019.4	Removed	-->
 	<style>
 		body,html { height:85% }
 		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
@@ -64,8 +63,13 @@
 			return "<span style='white-space:nowrap'>" + x + "</span>";
 		}
 		function compute() {
-			f = [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
-			var poly = new f().parse($('#a').val());	//	2017.9
+			//f = [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];					//	-2020.6
+			switch ($('#f')[0].selectedIndex) {	//	+2020.6
+				case 5: f = new sparsepolynomial(rational); break;
+				default: f = new [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
+			}
+			//var poly = new f().parse($('#a').val());	//	2017.9	-2020.6
+			var poly = f.parse($('#a').val());			//	2017.9	+2020.6
 			var tuple = parse($('#a').val());
 			$('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7
 		}
@@ -82,11 +86,13 @@
 			if (node.type == 'OperatorNode') {
 				console.log('CAS: OperatorNode')
 				var kids = node.args;
-				var a = new f().parse(kids[0]);			//	f handles unpreprocessed kid	2015.11
+				//var a = new f().parse(kids[0]);			//	f handles unpreprocessed kid	2015.11	//	-2020.6
+				var a = f.parse(kids[0]);																//	+2020.6
 				if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
 					return [node.op, a];
 				} else {
-					var b = new f().parse(kids[1]);		//	f handles unpreprocessed kid	2015.11
+					//var b = new f().parse(kids[1]);		//	f handles unpreprocessed kid	2015.11	//	-2020.6
+					var b = f.parse(kids[1]);															//	+2020.6
 				}
 			} else if (node.type == 'FunctionNode') {	//	exponential	2015.11
 				console.log('CAS: FunctionNode')
@@ -94,9 +100,11 @@
 				return [node.name, new argtype().parse(node.args[0])];
 			} else {
 				console.log('CAS: OtherNode')
-				return [new f().parse(node.value || node.name)];
+				//return [new f().parse(node.value || node.name)];					//	-2020.6
+				return [f.parse(node.value || node.name)];							//	+2020.6
 			}
-			if (f == polynomial2) a.align(b);			//	align	2015.7
+			//if (f == polynomial2) a.align(b);			//	align	2015.7			//	-2020.6
+			if (f instanceof polynomial2) a.align(b);								//	+2020.6
 			return [node.op, a, b];
 		}
 	</script>
