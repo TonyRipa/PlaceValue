@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/30/2020
+// Date:    7/31/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -336,7 +336,6 @@ class sparseplacevalue {			//	2019.4	Added
 			for (var i = 0; i < powe.points.length; i++) {
 				//var term = powe.points[i]																			//	-2020.5
 				//var coef = term[0];																				//	-2020.5
-				//if (term[1].length == 0 || JSON.stringify(term[1]) == '[{"r":0,"i":0}]') { term[0] = complex.parse(2.718).pow(term[0]); continue; }
 				//if (term[1].is0()) { term[0] = new this.datatype().parse(2.718).pow(term[0]); continue; }			//	-2020.5
 				if (power.points[i][1].is0()) { ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }	//	+2020.5
 				//term[1] = term[1].map(x => x.times(coef))
@@ -346,7 +345,8 @@ class sparseplacevalue {			//	2019.4	Added
 				for (var t = 0 ; t < 4 ; t++) {																		//	+2020.5
 					taylor = taylor.add(new sparseplacevalue([[this.get(0).log().pow(t).scale(1/math.factorial(t)),power.points[i][1].scale(t)]]));
 				}
-				ret.push(taylor.pow(power.get(1)));																	//	+2020.5
+				//ret.push(taylor.pow(power.get(1)));																//	+2020.5	//	-2020.7
+				ret.push(taylor.pow(power.points[i][0]));																		//	+2020.7
 			}
 			//alert(JSON.stringify(powe))
 			//var ret = powe.points.reduce((acc, cur) => acc.times(new sparseplacevalue([cur])), this.parse(1));	//	2018.11 this.parse	//	-2020.5
@@ -413,6 +413,7 @@ class sparseplacevalue {			//	2019.4	Added
 				var man = point[0];
 				var pows = point[1];
 				if (pows.mantisa.length < maxlen) return point;
+				if (pows.mantisa.length == 0) return point;		//	+2020.7
 				var pow = pows.mantisa.slice(-1);
 				//return [point[0].times(base.pow(new wholeplacevalue(pow))), new wholeplacevalue(pows.mantisa.slice(0, -1))];  //  2017.7
 				pows = pows.mantisa.slice(0, -1);	//	2018.12

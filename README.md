@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2020
+Date : 7/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -356,6 +356,10 @@ Calculator
 Differentiator
 ----------------
 <i>differentiator.html</i> is an extension of calculator that allows for easy input of functions to differentiate. <i>differentiator.html</i> does a text transform of an input. It replaces x with (x+h), subtracts the original, divides by h, then applies the "|" operator by 0. For example for x^2, it does ((x+h)^2-x^2)/h | 0. This is nothing more than using calculator.html in (Laurent) multinomial mode using ((x+h)^2-x^2)/h as the first argument, | as the operator, and 0 as the second argument. Notice that | allows for differentiation. | does not distribute over the other arithmetic operators. h/h | 0 yields 1, whereas (h|0)/(h|0) yields NaN. This allows for differentiation without a dependency on calculus but only algebra (actually only arithmetic). It is also more elegant. h/h yields 1 uniformly, instead of 1 sometimes except for a hole in the line at 0. Traditionally differentiation is impossible with only algebra, requiring complicated arguments to redefine the undefined hole in exactly the way it should have been defined in the first place. PlaceValue avoids undefining h/h|0 with all the mess that it causes, and instead treats division without any special cases. The only loss is that | doesn't distribute over the other arithmetic operators. The limit from calculus is seen as just a post hoc corrected version of | that needed to be defined to replace | because | never should have distributed over other arithmetic operators to begin with. h/h being 1 without exception is not a kludge but results from the underlying base-agnostic arithmetic. The numerator h is represented as 10. The denominator h is represented by 10. PlaceValue performs a base-agnostic arithmetic calculation 10/10 yields 1. The base-agnostic aspect of the PlaceValue datatype is its greatest strength.
+
+Infinitesimal
+----------------
+<i>infinitesimal.html</i> is a modification of differentiator.html. Whereas differentiator.html evaluates h at 0, infinitesimal.html does not. So, when the input is x^2 the output is 2x+h. The point is to demonstrate that since PlaceValue is base-agnostic, it is not limited to standard number cases. PlaceValue can model nonstandard analysis where h is a hyperreal and/or infinitesimal. Non Standard Analysis uses the Transfer Principle to extend the rules of manipulating real numbers to manipulating hyperreal numbers. PlaceValue gets this principle for free by putting the base-agnostic manipulation rules first.
 
 Calculus
 --------
