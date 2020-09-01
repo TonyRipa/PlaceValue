@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2020
+Date : 8/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -519,6 +519,58 @@ One interesting innovation is how the relationship between the images is represe
 We may use this understanding of relation to represent image relations. We use a graphical element that has 3 prongs (1 Product, and 2 Factors). The images are arranged equally spaced, at equal angles, circularly around the relator. If we want to find the product (convolution) of 2 images, then we spin the relator (like a dial) until the 2 Factor Prongs are on the things that we want to convolve. Then whatever the product is pointing to we clear it out. Then when everything is setup we request that that configuration be solved (hit a button). The result is that the empty part is filled in with the correct answer (in this case the product [convolution]). We may deconvolve, by having the product-prong point to something, have 1 of the factor-prongs point to something else, and clear out the remaining factor. Then when everything is setup we request that that configuration be solved (hit a button). The result is that the empty part is filled in with the correct answer (in this case the quotient [de-convolution]).
 
 The relational approach demystifies some asymmetries, as well as providing a relatively strait-forward interface, for specifying what you know, and what you want to know.
+
+Apart from the 2D mode, there is also a 1D mode.
+
+The 2D mode could be thought of as an image of the heat-map (displaying z=f(x,y) as the intensity z as a function of x & y) of the data.
+
+The 1D mode may be thought of as a graph (in the elementary-school-graph sense, not the graph-theory sense) of the data. In this sense of graph we may think y=f(x) where the height is graphed as a function of x.
+
+For example, the PlaceValue 421 (in big-endian) would look like this:
+
+  *
+  *
+ **
+***
+
+This is relatively normal. However, we may rethink of the concept of graphing (or plotting) not as a different mode for visualizing the data, but really just a different way of representing the digits.
+
+For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is ≡. Instead of writing 123, I can write _=≡. If we stop an think about it plotting a sequence of data, is not a data visualization approach, it is a different number system, or merely different digit.
+
+123
+
+_=≡
+
+  *
+ **
+***
+
+The idea that, we are doing a fundamentally visual thing whereas before we were doing a fundamentally symbolic thing, is not right. The difference between digital and analog is absent.
+
+There seems to be something fundamental about
+
+  *
+ **
+***
+
+We may think of this as analog, but it is also digital. If we encode the digits as 123, it does seem to have lost its analog character. We may also consider representing ½23. Then we would use ½ of an object.
+
+  ▇
+ ▇▇
+▄▇▇
+
+This still seems to be both fully analog, and fully digital at the same time.
+
+What if I want to represent 12π. Now I may be in trouble. I can represent this symbolically (digitally). If I represent this in analog, then I seem to lose the symolic (digit) information
+
+  ▁
+  ▇
+ ▇▇
+▇▇▇
+
+I used a digital approximation. I don't have access to an exact block of height (π-3). And if I did how could you confirm just from the height that it was exactly (π-3)? It may be possible but it is not clear.
+
+In sum, it seems that if we are not graphing real numbers just integers (and maybe rationals too), then there is no distinction between the sequence and the graph of a sequence, for appropriate choice of digit representation. On the bright side, for real numbers, we can think that digital approximations, and analog approximations are the same, for appropriate choice of digit representation.
 
 ConvNet
 ------------

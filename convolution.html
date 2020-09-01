@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2020
+	Date:	8/31/2020
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -31,6 +31,10 @@
 <body>
 	<h1>PlaceValue Convolution</h1>
 	<center>
+		<select>
+			<option>1</option>
+			<option selected>2</option>
+		</select>
 		<button onclick="compute()">Go</button>
 		<br>
 		<br>
@@ -88,21 +92,26 @@
 			var e = findempty();
 			if (!e) { alert('Clear the entry that you want to solve for.'); return; }
 			var p = findpointer();
+			var d = $('select').val();						//	+2020.8
 			if (e==p[0]) {
 				var Factor1 = getparsedinput('#'+p[1]);
-				$('#'+p[1]+'div').html(Factor1.tosvg());
+				//$('#'+p[1]+'div').html(Factor1.tosvg());	//	-2020.8
+				$('#'+p[1]+'div').html(Factor1.tosvg(d));	//	+2020.8
 				var Factor2 = getparsedinput('#'+p[2]);
-				$('#'+p[2]+'div').html(Factor2.tosvg());
+				//$('#'+p[2]+'div').html(Factor2.tosvg());	//	-2020.8
+				$('#'+p[2]+'div').html(Factor2.tosvg(d));	//	+2020.8
 				var Product = Factor1.times(Factor2);
 				setinput('#'+p[0],Product);
-				$('#'+p[0]+'div').html(Product.tosvg());
+				//$('#'+p[0]+'div').html(Product.tosvg());	//	-2020.8
+				$('#'+p[0]+'div').html(Product.tosvg(d));	//	+2020.8
 			} else {
 				var Product = getparsedinput('#'+p[0]);
 				if (e==p[1]) var Factor1 = getparsedinput('#'+p[2]);
 				if (e==p[2]) var Factor1 = getparsedinput('#'+p[1]);
 				var Factor2 = Product.divide(Factor1);
 				setinput('#'+e,Factor2);
-				$('#'+e+'div').html(Factor2.tosvg());
+				//$('#'+e+'div').html(Factor2.tosvg());		//	-2020.8
+				$('#'+e+'div').html(Factor2.tosvg(d));		//	+2020.8
 			}
 		}
 	</script>

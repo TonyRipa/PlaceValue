@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/31/2020
+// Date:    8/31/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -164,16 +164,37 @@ class sparseplacevalue {			//	2019.4	Added
 		return ret.substr(1).replace(/\+\-/g, '-');                                         //  +- becomes -    2017.1
 	}
 
-	tosvg() {								//	+2020.6
-		var ret = '';
-		for (var [coef,power] of this.points) {
-			var color = 256*(1-coef.toreal());
-			var x = power.get(0);
-			var y = power.get(1);
-			ret += `<rect width="50" height="50" x="${50*x}" y="${50*y}" fill='rgb(${color},${color},${color})'/>`;
+	tosvg(dim) {							//	+2020.8
+		if (dim==1) return tosvg1.bind(this)();
+		if (dim==2) return tosvg2.bind(this)();
+		if (this.points.some(coefpow=>coefpow[1].mantisa.length>1)) return tosvg2.bind(this)();
+		return tosvg1.bind(this)();
+		function tosvg1() {
+			var ret = '';
+			for (var [coef,power] of this.points) {
+				var color = 200;
+				var x = power.get(0).toreal();
+				for (let i = 0; i<coef.toreal(); i++) {
+					var h = (i+1>coef.toreal()) ? coef.toreal()-i : 1;
+					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${50*i}" fill='rgb(${color},${color},${color})'/>`;
+				}
+			}
+			var w = (1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50;
+			var h = (math.max(1,this.points.map(point=>point[0].toreal())))*50;
+			return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`
 		}
-		return `<svg width='${(1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50}'><g stroke='#789'>${ret}</g></sgv>`
+		function tosvg2() {								//	+2020.6
+			var ret = '';
+			for (var [coef,power] of this.points) {
+				var color = 256*(1-coef.toreal());
+				var x = power.get(0);
+				var y = power.get(1);
+				ret += `<rect width="50" height="50" x="${50*x}" y="${50*y}" fill='rgb(${color},${color},${color})'/>`;
+			}
+			return `<svg width='${(1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50}' height='${(1+math.max(this.points.map(point=>point[1].get(1).toreal())))*50}'><g stroke='#789'>${ret}</g></sgv>`
+		}
 	}
+
 
 	digit(i) {                       //  2017.2
 		this.check();
@@ -200,7 +221,6 @@ class sparseplacevalue {			//	2019.4	Added
 	//negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7		//	2019.7	Removed
 	negate() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.map(x=>[x[0].negate(),x[1]]) : this.datatype); }	//	2019.7
 	transpose() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
-	//round() { this.check(); return new sparseplacevalue(this.points.filter(function (x) { return !x[1].isneg(); })) }  //  2017.6		//	2019.4	Removed
 	round() { this.check(); var a = this.points.filter(x=>!x[1].isneg()); return new sparseplacevalue(a.length ? a : this.datatype) }	//	2019.4	Added
 
 	f(f, other) {    //  2017.7
