@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2020
+Date : 9/30/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -30,9 +30,9 @@ As all classical computation is as true for silicon hardware as it is for bio ha
 
 Introduction
 ------------
-The convolution theorem allows for complicated operations to be performed by re-representing data (in a form that is often simpler) as well as re-representing the operation to be performed (in a form that is often simpler). This theorem has simplified many computational schemes, and is exploited by PlaceValue.
+The convolution theorem allows for complicated operations to be performed by re-presenting data (in a form that is often simpler) as well as re-presenting the operation to be performed (in a form that is often simpler). This theorem has simplified many computational schemes, and is exploited by PlaceValue.
 
-In Mathematica, we may represent the variable x as something like an expression tree of height 1 consisting a root node of type variable. We could then ask Mathematica x*x and it could represent that as an expression tree of height 2 with a root node of type operator with 2 child nodes of type variable.
+In Mathematica, we may represent the variable x as something like an expression tree of height 1 consisting of a root node of type variable. We could then ask Mathematica x*x and it could represent that as an expression tree of height 2 with a root node of type operator with 2 child nodes of type variable.
 
 In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,9]. We could then ask MATLAB x * x (actually x.*x) and it could return [0,1,4,9,16,25,36,49,64,81].
 

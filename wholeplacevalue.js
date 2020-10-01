@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2020
+// Date:	9/30/2020
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -135,12 +135,12 @@ wholeplacevalue.prototype.is1 = function () { this.check(); return this.equals(t
 wholeplacevalue.prototype.isNaN = function () { this.check(); return this.equals(this.parse('%')); }  //  2018.3
 
 wholeplacevalue.prototype.above = function (other) { this.check(other); return this.get(0).above(other.get(0)) }	//	2017.7
-//wholeplacevalue.prototype.isneg = function () { this.check(); return new wholeplacevalue().above(this) }			//	2017.7			//	2019.4	Removed
 //wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).comparebig(this) == 1 }		//	2019.4	Added	//	2019.5	Removed
 wholeplacevalue.prototype.isneg = function () { this.check(); return this.parse(0).above(this) == 1 }				//	2019.5	Added
 
 wholeplacevalue.prototype.add = function (other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 wholeplacevalue.prototype.sub = function (other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
+wholeplacevalue.prototype.pointequals = function (other) { this.check(other); return this.f((x, y)=>new this.datatype(x.equals(y)?1:0),other);}	//	+2020.9
 wholeplacevalue.prototype.pointtimes = function (other) { this.check(other); return this.f(function (x, y) { return x.times(y) }, other); }
 wholeplacevalue.prototype.pointdivide = function (other) { this.check(other); return this.f(function (x, y) { return x.divide(y) }, other); }
 wholeplacevalue.prototype.pointmin = function (other) { this.check(other); return this.f(function (x, y) { return x.min(y) }, other); }	//	2019.5	Added
