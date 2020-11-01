@@ -1,9 +1,8 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	5/31/2020
+// Date:	10/31/2020
 // Complex:	A data-type for representing Complex Numbers
 
-//function complex(real, imag) {	//	2019.11	Removed
 class complex extends digit {		//	2019.11	Added
 
 	constructor(real, imag) {
@@ -167,6 +166,7 @@ class complex extends digit {		//	2019.11	Added
 	static  one() { if (!complex.n1) complex.n1 = new complex(1); return complex.n1; }		//	2019.11	Added
 
 	equals(other) { return (this.r == other.r) && (this.i == other.i); }
+	equal(other) { return new this.constructor(this.equals(other) ? 1 : 0); }				//	+2020.10
 	isreal() { return this.i == 0; }														//	2017.5
 	is0() { return this.equals(complex.zero()); }
 	is1() { return this.equals(complex.one()); }											//	2018.10

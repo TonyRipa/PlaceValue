@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/30/2020
+Date : 10/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -201,7 +201,7 @@ If SparsePolynomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to
 
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 
-SparsePolynomial then formats SparsePlaceValue's result as x*z + y*z.
+SparsePolynomial then formats SparsePlaceValue's result as x * z + y * z.
 
 SparsePlaceValueRatio
 ------------------
@@ -612,8 +612,8 @@ I have kept this bizarre mistranslation convention in my work so the number twel
 
 For future work, I would clean the code by removing the overhead of intermittent calls to the reverse() function (as well as rewriting backwards for-loops). This would present the number twelve as 21, which is better in the long run.
 
-Dependencies
----------------
+## Dependencies
+
 <table>
 <tr><td>SparseExponential1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>SparseExpression1</td><td>depends on Sparse Polynomial1</td><td></td><td>depends on SparsePlaceValue1</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
