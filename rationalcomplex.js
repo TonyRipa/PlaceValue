@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	10/31/2020
+// Date:	11/30/2020
 // RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 class rationalcomplex extends digit {	//	2019.12
@@ -103,7 +103,6 @@ class rationalcomplex extends digit {	//	2019.12
 		this.check();
 		var IMAG = String.fromCharCode(777);
 		var digit = [this.r, this.i]; //alert(JSON.stringify(digit));
-		//if (!Array.isArray(digit)) return this.digithelp(digit, NEGBEG, NEGEND, true);
 		//if (digit[1] == 0) return this.digithelp(digit[0], NEGBEG, NEGEND, true);
 		var real = digit[0];
 		var imag = digit[1];
@@ -178,12 +177,13 @@ class rationalcomplex extends digit {	//	2019.12
 	pow(p) {
 		if (!(p instanceof rationalcomplex)) p = rationalcomplex.parse(p);	//	2017.11
 		this.check(p);
-			var b = this;
-			var c = rationalcomplex;
-			if (b.norm().is0()) var ret = new c(new rational().pow(p.r));
-			else if (b.i.is0()) var ret = p.times(b.ln()).exp(); //  2017.3
-			else var ret = new c(b.norm().pow(p.r).times((p.i.negate().times(b.arg())).exp())).times(new c(new rational, p.r.times(b.arg()).add(p.i.times(b.lnn().r).scale(.5))).exp());
-			return ret.round();
+		var b = this;
+		var c = rationalcomplex;
+		//if (b.norm().is0()) var ret = new c(new rational().pow(p.r));	//	-2020.11
+		if (b.norm().is0()) return new c(new rational().pow(p.r));		//	+2020.11
+		else if (b.i.is0()) var ret = p.times(b.ln()).exp(); //  2017.3
+		else var ret = new c(b.norm().pow(p.r).times((p.i.negate().times(b.arg())).exp())).times(new c(new rational, p.r.times(b.arg()).add(p.i.times(b.lnn().r).scale(.5))).exp());
+		return ret.round();
 	}
 
 	divideleft(x) { return this.divide(x); }	//	2017.10

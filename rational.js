@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	10/31/2020
+// Date:	11/30/2020
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -93,7 +93,6 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	static regex() {  //  2017.6
-		//var literal = '[⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//  2017.11 %	//	-2020.5
 		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//	+2020.5			//	-2020.6
 		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱]';						//	+2020.6
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
@@ -202,6 +201,8 @@ class rational extends digit {				//	2019.11.Added
 
 	gcd(b) {
 		var a = this;
+		if (a.pow(-1).is0()) return this.parse(1);	//	+2020.11
+		if (b.pow(-1).is0()) return this.parse(1);	//	+2020.11
 		if (a.is0()) return b;
 		if (b.is0()) return a;
 		return new rational(gcd(a.n, b.n), lcm(a.d, b.d));

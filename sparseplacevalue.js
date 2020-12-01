@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2020
+// Date:    11/30/2020
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -343,7 +343,6 @@ class sparseplacevalue {			//	2019.4	Added
 		this.check(power);
 		if (power.points.length == 1 & power.points[0][1].is0()) {//alert(power.points[0][1])
 			var base = this.points[0];
-			//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), base[1].map(x=>x.times(power.points[0][0]))]]);
 			//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), new wholeplacevalue(base[1].mantisa.map(x=>x.times(power.points[0][0])))]]);
 			if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), base[1].scale(power.points[0][0])]]);
 			if (power.points[0][0].is0()) return new sparseplacevalue(this.datatype).parse(1);
@@ -401,7 +400,8 @@ class sparseplacevalue {			//	2019.4	Added
 		for (var i = 0; i < this.points.length; i++)
 			list.push(this.points[i][0]);
 		if (list.length == 0) return new this.datatype().parse('1');
-		if (list.length == 1) return list[0].is0() ? new this.datatype().parse('1') : list[0];    //  Disallow 0 to be a GCD for expediency.  2016.5
+		if (list.length == 1 && list[0].pow(-1).is0()) return new this.datatype().parse('1');	//	Disallow ∞ to be a GCD for expediency.	+2020.11
+		if (list.length == 1) return list[0].is0() ? new this.datatype().parse('1') : list[0];	//	Disallow 0 to be a GCD for expediency.	2016.5
 		return list.reduce(function (x, y) { return x.gcd(y) }, new this.datatype().parse('0'));
 	}
 

@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2020
+Date : 11/30/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -528,10 +528,12 @@ The 1D mode may be thought of as a graph (in the elementary-school-graph sense, 
 
 For example, the PlaceValue 421 (in big-endian) would look like this:
 
+<pre>
   *
   *
  **
 ***
+</pre>
 
 This is relatively normal. However, we may rethink of the concept of graphing (or plotting) not as a different mode for visualizing the data, but really just a different way of representing the digits.
 
