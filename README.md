@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 11/30/2020
+Date : 12/31/2020
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -543,9 +543,11 @@ For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is 
 
 _=≡
 
+<pre>
   *
  **
 ***
+</pre>
 
 The idea that, we are doing a fundamentally visual thing whereas before we were doing a fundamentally symbolic thing, is not right. The difference between digital and analog is absent.
 

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2020
+// Date:	12/31/2020
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -11,7 +11,6 @@ class wholeplacevalue {	//	+2020.11
 	//function wholeplacevalue(arg) {	//	-2020.11
 	constructor(arg) {					//	+2020.11
 		var man, datatype;
-		//if (arguments.length < 1)[man, datatype] = [[], rational];										//	2017.11	//	2020.1	Removed
 		if (arguments.length == 0)[man, datatype] = [[], rational];											//	2020.1	Added
 		if (arguments.length == 1) {																		//	2020.1	Added
 			if (arg === rational || arg === complex || arg === rationalcomplex)[man, datatype] = [[], arg];	//	2017.11
@@ -109,16 +108,20 @@ class wholeplacevalue {	//	+2020.11
 
 	tosvg() {								//	+2020.11
 		var ret = '';
+		var arr = this.mantisa;																								//	-2020.12
+		if (arr.some(x=>x.pow(-1).is0())) arr = arr.map(x=>x.pow(-1).is0() ? this.datatype.parse(1) : new this.datatype());	//	+2020.12
 		for (var x=0; x<this.mantisa.length; x++) {
 			var color = 200;
-			var coef = this.mantisa[x];
+			//var coef = this.mantisa[x];				//	-2020.12
+			var coef = arr[x];							//	+2020.12
 			for (let i = 0; i<coef.toreal(); i++) {
 				var h = (i+1>coef.toreal()) ? coef.toreal()-i : 1;
 				ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${50*i}" fill='rgb(${color},${color},${color})'/>`;
 			}
 		}
 		var w = this.mantisa.length * 50;
-		var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;
+		//var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;	//	-2020.12
+		var h = (math.max(1,arr.map(y=>y.toreal()))) * 50;				//	+2020.12
 		return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`
 	}
 
@@ -363,6 +366,7 @@ class wholeplacevalue {	//	+2020.11
 
 	dividemiddle(den) {   // 2016.3
 		this.check(den);
+		if (den.mantisa.length == 1) return this.divide(den);	//	+2020.12
 		var A = []
 		var b = []
 		for (var i = 0; i <= this.mantisa.length + 1; i++) {
@@ -375,15 +379,17 @@ class wholeplacevalue {	//	+2020.11
 		b = math.matrix(b);
 		var At = A.transpose();
 		var AtA = math.multiply(At, A);
-		var I = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);
+		var Atb = math.multiply(At, b);
+		//var I = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);	//	-2020.12
 		try {
-			var AtAinv = math.divide(I, AtA);
+			//var AtAinv = math.divide(I, AtA);						//	-2020.12
+			var x = math.divide(math.transpose(Atb),AtA);			//	+2020.12
 		} catch (e) {
 			return this.parse('%0');
 		}
-		var Atb = math.multiply(At, b);
-		var x = math.multiply(AtAinv, Atb);
-		x = x.transpose().valueOf()[0];
+		//var x = math.multiply(AtAinv, Atb);						//	-2020.12
+		//x = x.transpose().valueOf()[0];							//	-2020.12
+		x = x.transpose().valueOf();								//	+2020.12
 		x.reverse();
 		return new wholeplacevalue(x.map(function (x) { return Math.round(100 * x) / 100 }).map(new this.datatype().parse));
 	}
@@ -433,6 +439,20 @@ class wholeplacevalue {	//	+2020.11
 
 	pointeval() {	//	+2020.11
 		return new wholeplacevalue([0,1,2,3,4].map(base => this.eval(this.parse(base)).mantisa[0]));
+	}
+
+	unpointeval() {	//	+2020.12
+		var man = this.mantisa.map(x=>x.toreal());
+		var n = man.length;
+		var matrix = [];
+		for (let r = 0; r < n; r++) {
+			var row = [];
+			for (let c = 0; c < n; c++)
+				row.push(math.pow(r,c));
+			matrix.push(row);
+		}
+		var x = math.divide(man, math.transpose(matrix));
+		return new wholeplacevalue(x.map(e=>new this.datatype(e).round()));
 	}
 
 }

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2020
+// Date:	12/31/2020
 // AbstractPolynomial : Base Class for SparsePolynomial
 
 class abstractpolynomial {
@@ -14,6 +14,13 @@ class abstractpolynomial {
 	}
 
 	tohtml() { return this.pv.toString('medium') + ' Base ' + this.base; }
+
+	equal(other) {	//	+2020.12
+		this.align(other);
+		var ret = this.parse(this.pv.equal(other.pv).toString());
+		this.align(ret);
+		return ret;
+	}
 
 	add(other) {
 		this.align(other);

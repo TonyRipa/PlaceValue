@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2020
+// Date:	12/31/2020
 // RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 class rationalcomplex extends digit {	//	2019.12
@@ -30,7 +30,6 @@ class rationalcomplex extends digit {	//	2019.12
 		if (N[0] == '-') return rationalcomplex.parse(N.substring(1)).negate();									//	2017.3
 		if (N[0] == '+') return rationalcomplex.parse(N.substring(1));											//	2017.11
 		if (N[0] == '(' && N.slice(-1)== ')' && !N.includes(',')) return  rationalcomplex.parse(N.slice(1,-1));	//	2019.2
-		//var r = N.match(rational.regex()); if (r && r.indexOf(N) != -1) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
 		//var r = N.match(rational.regex()); if (r) { alert(N.match(rational.regex()) + N + 'is Rational'); return new rationalcomplex(new rational().parse(N)); }	//	2017.11
 		if (N.match(rational.regexfull())) return new rationalcomplex(new rational().parse(N));	//	2017.11
 		//if (N.match(rationalcomplex.regexfull())) alert('rc' + N);
@@ -76,7 +75,8 @@ class rationalcomplex extends digit {	//	2019.12
 		return '^' + rationalcomplex.regex() + '$';
 	}
 
-	tohtml() { this.check(); return JSON.stringify(this) }
+	//tohtml() { this.check(); return JSON.stringify(this) }	//	-2020.12
+	tohtml() { return '(' + this.r + ',' + this.i + ')' }		//	+2020.12
 
 	toreal() { this.check(); return this.r.toreal(); }			//	2017.11
 
@@ -114,7 +114,8 @@ class rationalcomplex extends digit {	//	2019.12
 			if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';	//	2017.4	medium
 			//if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b) + 'i';		//	2017.12		//	2019.7	Removed
 			if (long) return (b == 1 ? '' : b.negate().is1() ? '-' : b.toString(false, long)) + 'i';	//	2019.7	Added
-			return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
+			//return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;			//	-2020.12
+			return b == 1 ? 'i' : b.negate().is1() ? NEGBEG + 'i' + NEGEND : this.digithelp(imag.toString(), NEGBEG, NEGEND, true) + IMAG;	//	+2020.12
 		}
 		//return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
 		if (long == 'medium') return '(' + a + ',' + b + ')';
@@ -181,7 +182,8 @@ class rationalcomplex extends digit {	//	2019.12
 		var c = rationalcomplex;
 		//if (b.norm().is0()) var ret = new c(new rational().pow(p.r));	//	-2020.11
 		if (b.norm().is0()) return new c(new rational().pow(p.r));		//	+2020.11
-		else if (b.i.is0()) var ret = p.times(b.ln()).exp(); //  2017.3
+		else if (b.isNaN()) return b;									//	+2020.12
+		else if (b.i.is0()) var ret = p.times(b.ln()).exp();			//	2017.3
 		else var ret = new c(b.norm().pow(p.r).times((p.i.negate().times(b.arg())).exp())).times(new c(new rational, p.r.times(b.arg()).add(p.i.times(b.lnn().r).scale(.5))).exp());
 		return ret.round();
 	}

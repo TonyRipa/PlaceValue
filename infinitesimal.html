@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2020
+	Date:	12/31/2020
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -80,7 +80,8 @@
 </head>
 <body>
 	<h1>Infinitesimal</h1>
-	<select id='f' onchange="clean()"><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option></select>
+	<!--<select id='f' onchange="clean()"><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option></select>-->	<!--	-2020.12	-->
+	<select id='f' onchange="clean()"><option>Polynomial 2</option><option selected>Laurent Multinomial</option></select>	<!--	+2020.12	-->
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
