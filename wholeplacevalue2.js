@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 5/31/2019
+// Date :	1/31/2021
 // WholePlaceValue2 : a 2D datatype for representing base agnostic arithmetic via whole numbers whose digits are real
 
 function wholeplacevalue2(man, trace) {
@@ -202,6 +202,16 @@ wholeplacevalue2.prototype.get = function (row, col) {
 	}
 }
 
+wholeplacevalue2.prototype.equals = function(other) {	//	+2021.1
+	var h = Math.max(this.mantisa.length, other.mantisa.length);
+	var w = Math.max(this.mantisa[0].length, other.mantisa[0].length);
+	var ret = true;
+	for (var r = 0; r < h; r++)
+		for (var c = 0; c < w; c++)
+			ret = ret && this.get(r,c).equals(other.get(r,c));
+	return ret;
+}
+
 wholeplacevalue2.prototype.add = function (other, trace) { return this.f(function (x, y) { return x + y }, other, trace + ' wholeplacevalue2.prototype.add >'); }
 wholeplacevalue2.prototype.sub = function (other, trace) { return this.f(function (x, y) { return x - y }, other, trace + ' wholeplacevalue2.prototype.sub >'); }
 wholeplacevalue2.prototype.pointtimes = function (other, trace) { return this.f(function (x, y) { return x * y }, other, trace + ' wholeplacevalue2.prototype.pointtimes >'); }
@@ -336,6 +346,8 @@ wholeplacevalue2.prototype.divide = function (den) {
 }
 
 wholeplacevalue2.prototype.divideleft = wholeplacevalue2.prototype.divide;	//	2019.5	Added
+
+wholeplacevalue2.prototype.dividemiddle = wholeplacevalue2.prototype.divide;	//	+2021.1
 
 wholeplacevalue2.prototype.remainder = function (den) { //  2019.4  Added
 	return this.sub(this.divide(den).times(den));

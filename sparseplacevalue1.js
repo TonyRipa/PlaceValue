@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    1/31/2021
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -256,7 +256,6 @@ class sparseplacevalue1 {
 			if (this.is1term()) return new this.constructor([[this.points[0][0].pow(power.points[0][0]), this.points[0][1].times(power.points[0][0])]]);
 			if (power.is0()) return this.parse(1);
 			if (power.points[0][0].isneg()) return this.parse(1).divide(this.pow(new this.constructor([[power.points[0][0].negate(), this.datatype.parse(0)]])));
-			//if (power.points[0][0].equals(power.points[0][0].round())) return this.times(this.pow(power.sub(this.constructor.parse(1))));
 			if (power.points[0][0].isint()) return this.times(this.pow(power.sub(this.parse(1))));
 			//return this.times(this.pow(power.sub(this.constructor.parse(1))));
 		} else if (this.points.length == 1) {
@@ -270,9 +269,11 @@ class sparseplacevalue1 {
 				if (power.points[i][1].is0()) {	ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }
 				var taylor = new this.constructor(this.datatype);
 				for (var t = 0 ; t < 4 ; t++) {
-					taylor = taylor.add(new sparseplacevalue1([[this.get(0).log().pow(t).scale(1/math.factorial(t)),new this.datatype().parse(t)]]));
+					//taylor = taylor.add(new sparseplacevalue1([[this.get(0).log().pow(t).scale(1/math.factorial(t)),new this.datatype().parse(t)]]));	//	-2021.1
+					taylor = taylor.add(new this.constructor([[this.get(0).log().pow(t).scale(1/math.factorial(t)),power.points[i][1].scale(t)]]));		//	+2021.1
 				}
-				ret.push(taylor.pow(power.get(1)));
+				//ret.push(taylor.pow(power.get(1)));		//	-2021.1
+				ret.push(taylor.pow(power.points[i][0]));	//	+2021.1
 			}
 			return ret.reduce((acc, cur) => acc.times(cur), this.parse(1));	//	+2020.5
 		}

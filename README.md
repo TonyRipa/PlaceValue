@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2020
+Date : 1/31/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -553,9 +553,11 @@ The idea that, we are doing a fundamentally visual thing whereas before we were 
 
 There seems to be something fundamental about
 
+<pre>
   *
  **
 ***
+</pre>
 
 We may think of this as analog, but it is also digital. If we encode the digits as 123, it does seem to have lost its analog character. We may also consider representing ½23. Then we would use ½ of an object.
 

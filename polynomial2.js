@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2019
+// Date:	1/31/2021
 // Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 
 function polynomial2(base, pv) {
@@ -26,7 +26,6 @@ polynomial2.prototype.parse = function (strornode) {    //  2017.9
 	} else if (node.type == 'OperatorNode') {
 		console.log('new polynomial2 : OperatorNode')
 		var kids = node.args;
-		//var a = new polynomial2(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 		var a = new polynomial2().parse(kids[0]);       // polynomial2 handles unpreprocessed kid   2015.11
 		if (node.fn == 'unaryMinus') {
 			var c = new polynomial2([1, null], new wholeplacevalue2([[0]])).sub(a);
@@ -96,6 +95,11 @@ polynomial2.prototype.divide = function (other) {
 polynomial2.prototype.divideleft = function (other) {	//	2019.5	Added
 	this.align(other);
 	return new polynomial2(this.base, this.pv.divideleft(other.pv));
+}
+
+polynomial2.prototype.dividemiddle = function (other) {	//	+2021.1
+	this.align(other);
+	return new polynomial2(this.base, this.pv.dividemiddle(other.pv));
 }
 
 polynomial2.prototype.remainder = function (other) {	//	2019.4	Added

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	1/31/2021
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -73,9 +73,9 @@
 				console.log([a,b,c,d],values,ret.toString())
 				return ret;
 				function eigenvalues(a, b, c, d) {
+					if (a==0 && d==0) [a,b,c,d]=[b,a,d,c];	//	+2021.1
 					return quadratic(1, -a - d, a * d - b * c);
 					function quadratic(a, b, c) {
-						//a = new complex.parse(a.toString());	//	2018.7	Added	//	2019.11	Removed
 						//b = new complex.parse(b.toString());	//	2018.7	Added	//	2019.11	Removed
 						//c = new complex.parse(c.toString());	//	2018.7	Added	//	2019.11	Removed
 						a = new complex().parse(a.toString());	//	2018.7	Added	//	2019.11	Added

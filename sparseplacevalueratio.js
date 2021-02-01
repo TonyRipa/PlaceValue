@@ -1,11 +1,10 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2019
+// Date:	1/31/2021
 // SparsePlaceValueRatio : a datatype for representing base-agnostic arithmetic via ratios of SparsePlaceValues
 
 function sparseplacevalueratio(arg) {																					//	2019.4	Added
 	var num, den;																										//	2019.4	Added
-	//if (arguments.length < 1) num = new sparseplacevalue();			//	2017.9										//	2019.4	Removed
 	//if (arguments.length < 2) den = new sparseplacevalue().parse(1);	//	2017.9										//	2019.4	Removed
 	if (arguments.length == 0) throw new Error('notype');																//	2019.5	Added
 	if (arguments.length == 0)[num, den] = [new sparseplacevalue(rational), new sparseplacevalue(rational).parse(1)];	//	2019.4	Added
@@ -168,40 +167,50 @@ sparseplacevalueratio.prototype.sub = function (subtrahend) {
 
 sparseplacevalueratio.prototype.pointsub = function (other) {
 	this.check(other);																		//	2019.4	Added
-	var first = this.num.div10s(this.den.mantisa.length - 1);
-	var second = other.num.div10s(other.den.mantisa.length - 1);
+	//var first = this.num.div10s(this.den.mantisa.length - 1);								//	-2021.1
+	//var second = other.num.div10s(other.den.mantisa.length - 1);							//	-2021.1
+	var first = this.num.divide(this.den);													//	+2021.1
+	var second = other.num.divide(other.den);												//	+2021.1
 	//return new sparseplacevalueratio(first.pointsub(second), sparseplacevalue.parse(1));	//	2019.4	Removed
 	return new sparseplacevalueratio(first.pointsub(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointadd = function (other) {
 	this.check(other);																		//	2019.4	Added
-	var first = this.num.div10s(this.den.mantisa.length - 1);
-	var second = other.num.div10s(other.den.mantisa.length - 1);
+	//var first = this.num.div10s(this.den.mantisa.length - 1);								//	-2021.1
+	//var second = other.num.div10s(other.den.mantisa.length - 1);							//	-2021.1
+	var first = this.num.divide(this.den);													//	+2021.1
+	var second = other.num.divide(other.den);												//	+2021.1
 	//return new sparseplacevalueratio(first.pointadd(second), sparseplacevalue.parse(1));	//	2019.4	Removed
 	return new sparseplacevalueratio(first.pointadd(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointtimes = function (other) {
 	this.check(other);																		//	2019.4	Added
-	var first = this.num.div10s(this.den.mantisa.length - 1);
-	var second = other.num.div10s(other.den.mantisa.length - 1);
+	//var first = this.num.div10s(this.den.mantisa.length - 1);								//	-2021.1
+	//var second = other.num.div10s(other.den.mantisa.length - 1);							//	-2021.1
+	var first = this.num.divide(this.den);													//	+2021.1
+	var second = other.num.divide(other.den);												//	+2021.1
 	//return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));//	2019.4	Removed
 	return new sparseplacevalueratio(first.pointtimes(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointdivide = function (other) {
 	this.check(other);																		//	2019.4	Added
-	var first = this.num.div10s(this.den.mantisa.length - 1);
-	var second = other.num.div10s(other.den.mantisa.length - 1);
+	//var first = this.num.div10s(this.den.mantisa.length - 1);								//	-2021.1
+	//var second = other.num.div10s(other.den.mantisa.length - 1);							//	-2021.1
+	var first = this.num.divide(this.den);													//	+2021.1
+	var second = other.num.divide(other.den);												//	+2021.1
 	//return new sparseplacevalueratio(first.pointtimes(second), sparseplacevalue.parse(1));//	2019.4	Removed
 	return new sparseplacevalueratio(first.pointtimes(second), this.num.parse(1));			//	2019.4	Added
 }
 
 sparseplacevalueratio.prototype.pointpow = function (other) {	//	2015.12
 	this.check(other);																		//	2019.4	Added
-	var first = this.num.div10s(this.den.mantisa.length - 1);
-	var second = other.num.div10s(other.den.mantisa.length - 1);
+	//var first = this.num.div10s(this.den.mantisa.length - 1);								//	-2021.1
+	//var second = other.num.div10s(other.den.mantisa.length - 1);							//	-2021.1
+	var first = this.num.divide(this.den);													//	+2021.1
+	var second = other.num.divide(other.den);												//	+2021.1
 	//return new sparseplacevalueratio(first.pointpow(second), sparseplacevalue.parse(1));	//	2019.4	Removed
 	return new sparseplacevalueratio(first.pointpow(second), this.num.parse(1));			//	2019.4	Added
 }

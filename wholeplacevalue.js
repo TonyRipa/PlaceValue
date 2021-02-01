@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	12/31/2020
+// Date:	1/31/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -209,7 +209,12 @@ class wholeplacevalue {	//	+2020.11
 		//if (power.mantisa.length == 1) {		//	+2020.5		//	-2020.11
 		if (power.mantisa.length <= 1) {						//	+2020.11
 			//if(power.get(0).toreal()!= Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' +power.tohtml());return wholeplacevalue.parse('%')}//-2020.11
-			if (power.get(0).toreal() != Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' + power.tohtml()); return this.parse('%') }		//	+2020.11
+			//if (power.get(0).toreal() != Math.round(power.get(0).toreal())){alert('WPV .Bad Exponent = ' + power.tohtml());return this.parse('%') }//+2020.11//-2021.1
+			if (!power.get(0).isint()) {	//	+2021.1
+				if (power.get(0).toreal() == .5) return this.sqrt();
+				alert('WPV .Bad Exponent = ' + power.tohtml());
+				return this.parse('%');
+			}
 			//if (power.get(0).toreal() < 0) return this.parse(0);		//	2018.1	this.parse		//	-2020.5
 			if (power.get(0).toreal() < 0) return this.parse(1).divide(this.pow(power.negate()));	//	+2020.5
 			if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
@@ -248,7 +253,8 @@ class wholeplacevalue {	//	+2020.11
 
 	div10() { this.check(); this.mantisa.shift() }							//	2018.6	Caller can unpad w/out knowing L2R or R2L
 	times10() { this.check(); this.mantisa.unshift(new this.datatype()) }	//	Caller can pad w/out knowing L2R or R2L  2015.7
-	div10s(s) { this.check(); me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }  // 2017.6    clone
+	//div10s(s) { this.check(); me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }  // 2017.6    clone	//	-2021.1
+	div10s(s) { this.check(); var me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }					//	+2021.1
 	//times10s(s){this.check(); if(s<0) return this.div10s(-s); me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;}//2017.6 -2020.11
 	times10s(s) {this.check(); if(s < 0) return this.div10s(-s); var me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;} //	+2020.11
 
@@ -286,6 +292,21 @@ class wholeplacevalue {	//	+2020.11
 		return ret;
 	}
 
+	sqrt() {	//	+2021.1
+		var rad = this.clone();
+		var iter = 4;
+		var root = sqrth(rad.div10s(1), [rad.get(0).pow(.5).scale(2)], iter);
+		return root;
+		function sqrth(rad, troot, c) {
+			if (c == 0) return new wholeplacevalue(troot).unscale(2);
+			var root = rad.get(0).divide(troot[0]);
+			var troot1 = [...troot,root]
+			var remainder = rad.sub(new wholeplacevalue(troot1).scale(root)).div10s(1);
+			troot = [...troot,root.scale(2)];
+			return sqrth(remainder, troot, c - 1);
+		}
+	}
+
 	static getDegree(me) {			//	2018.6	1-arg
 		me.check(); 
 		for (var i = me.mantisa.length - 1; i >= 0; i--)
@@ -303,18 +324,19 @@ class wholeplacevalue {	//	+2020.11
 			//if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
 			if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)]);											//	2020.1	Added
 			var d = wholeplacevalue.getDegree(den);		//	2018.6	arg=den
-			var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
+			//var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');	//	-2021.1
+			var quotient = num.div10s(d.deg).unscale(d.val);											//	+2021.1
 			if (d.val.is0()) return quotient;
 			var remainder = num.sub(quotient.times(den), 'wholeplacevalue.prototype.divide >')
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
 			return quotient;
-			function shift(me, left) {
-				//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
-				var ret = new wholeplacevalue([new me.datatype()]).add(me);																				//	2020.1	Added
-				for (var r = 0; r < left; r++) ret.mantisa.shift();
-				return ret;
-			}
+			//function shift(me, left) {																//	-2021.1
+			//	//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
+			//	var ret = new wholeplacevalue([new me.datatype()]).add(me);																				//	2020.1	Added
+			//	for (var r = 0; r < left; r++) ret.mantisa.shift();
+			//	return ret;
+			//}
 		}
 	}
 
@@ -349,18 +371,19 @@ class wholeplacevalue {	//	+2020.11
 			if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added
 			//var d = wholeplacevalue.getDegreeLeft(den.mantisa);	//	2020.1	Removed
 			var d = wholeplacevalue.getDegreeLeft(den);				//	2020.1	Added
-			var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');
+			//var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');	//	-2021.1
+			var quotient = num.div10s(d.deg).unscale(d.val);											//	+2021.1
 			if (d.val.is0()) return quotient;
 			var remainder = num.sub(quotient.times(den), 'wholeplacevalue.prototype.divide >')
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
 			return quotient;
-			function shift(me, left) {
-				//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
-				var ret = new wholeplacevalue([new me.datatype()]).add(me);	//	2020.1	Removed
-				for (var r = 0; r < left; r++) ret.mantisa.shift();
-				return ret;
-			}
+			//function shift(me, left) {																//	-2021.1
+			//	//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
+			//	var ret = new wholeplacevalue([new me.datatype()]).add(me);	//	2020.1	Removed
+			//	for (var r = 0; r < left; r++) ret.mantisa.shift();
+			//	return ret;
+			//}
 		}
 	}
 
@@ -419,7 +442,6 @@ class wholeplacevalue {	//	+2020.11
 		count++;
 		if (count == 10) return a.parse(1);
 		console.log(a.toString(), b.toString());
-		//if (a.get(a.mantisa.length - 1).isneg() && b.get(b.mantisa.length - 1).ispos()) return gcdpv(a.negate(), b);
 		if (a.mantisa[0].isneg() && b.mantisa[0].ispos()) { "alert(1)"; return a.negate().gcd1(b,count); }
 		if (a.is0()) { "alert(2)"; return b; }
 		if (b.is0()) { "alert(3)"; return a; }

@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	10/31/2020
+// Date:	1/31/2021
 // Complex:	A data-type for representing Complex Numbers
 
 class complex extends digit {		//	2019.11	Added
@@ -42,7 +42,8 @@ class complex extends digit {		//	2019.11	Added
 			var ret = '';
 			for (var i = 0; i < N.length; i++) {
 				var c = N[i];
-				if ("0123456789.".indexOf(c) > -1) ret += c;
+				//if ("0123456789.".indexOf(c) > -1) ret += c;	//	-2021.1
+				if ("-0123456789.".includes(c)) ret += c;		//	+2021.1
 				var frac = { '⅛': .125, '⅙': 1 / 6, '⅕': .2, '¼': .25, '⅓': 1 / 3, '⅜': .375, '⅖': .4, '½': .5, '⅗': .6, '⅔': 2 / 3, '¾': .75, '⅘': .8, '⅚': 5 / 6 } // Replaced .333 with 1/3 for precision 2015.6
 				if (frac[c]) ret = frac[c];
 				if (c == 'e') ret = 2.718;	//	+2020.5
@@ -123,44 +124,6 @@ class complex extends digit {		//	2019.11	Added
 		if (long) return '(' + a + '+' + (b == 1 ? '' : b) + 'i)';
 		return '(' + a + ',' + b + ')';
 	}
-
-	//digithelp(digit, NEGBEG, NEGEND, fraction) {  // 2015.11		//	2019.11	Removed
-	//	// 185  189  822 8315   9321
-	//	// ^1   1/2  -   ^-     10
-	//	var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
-	//	var IMAG = String.fromCharCode(777);
-	//	var frac = { .125: '⅛', .167: '⅙', .2: '⅕', .25: '¼', .333: '⅓', .375: '⅜', .4: '⅖', .5: '½', .6: '⅗', .667: '⅔', .75: '¾', .8: '⅘', .833: '⅚' }
-	//	var cons = { '-0.159': NEGBEG + 'τ' + NEGEND + INVERSE, 0.159: 'τ' + INVERSE, 6.28: 'τ' };
-	//	var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
-	//	if (typeof (digit) == 'string') return digit;
-	//	var rounddigit = Math.round(digit * 1000) / 1000;
-	//	if (isNaN(digit)) return '%';
-	//	if (digit == -1 / 0) return NEGBEG + '∞' + NEGEND;
-	//	if (num[-digit]) return NEGBEG + num[-digit] + NEGEND;
-	//	if (digit < -9 && isFinite(digit)) return '(' + rounddigit + ')';
-	//	if (-1 < digit && digit < 0) {
-	//		if (fraction) if (frac[-rounddigit]) return NEGBEG + frac[-rounddigit] + NEGEND;
-	//		var flip = -1 / digit;
-	//		if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return NEGBEG + (num[flip] ? num[flip] : Math.abs(flip)) + NEGEND + INVERSE;
-	//		if (cons[rounddigit]) return cons[rounddigit];
-	//	}
-	//	if (-9 <= digit && digit < 0) return (digit == Math.round(digit)) ? NEGBEG + Math.abs(digit).toString() + NEGEND : '(' + rounddigit + ')';
-	//	if (digit == 0) return '0';
-	//	if (0 < digit && digit < 1) {
-	//		if (frac[rounddigit]) return frac[rounddigit];
-	//		if (cons[rounddigit]) return cons[rounddigit];	// cons b4 flip prevents .159=6^-1	2015.8
-	//		if (0 < digit && digit < .5) {                  // prevents 1/1.1                       2015.9
-	//			var flip = Math.round(1 / digit);		// round prevents 1/24.99999		2015.8
-	//			if (flip < 100 && Math.abs(Math.abs(flip) - Math.round(Math.abs(flip))) < .1) return (num[flip] ? num[flip] : Math.abs(flip)) + INVERSE;
-	//		}
-	//	}
-	//	if (cons[rounddigit]) return cons[rounddigit];
-	//	if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? digit : '(' + rounddigit + ')';
-	//	if (num[digit]) return num[digit]
-	//	if (9 < digit && isFinite(digit)) return '(' + rounddigit + ')';
-	//	if (digit == 1 / 0) return '∞';
-	//	return 'x';
-	//}
 
 	static zero() { if (!complex.n0) complex.n0 = new complex(0); return complex.n0; }		//	2019.11	Added
 	static  one() { if (!complex.n1) complex.n1 = new complex(1); return complex.n1; }		//	2019.11	Added

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	12/31/2020
+	Date:	1/31/2021
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -14,10 +14,6 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
 	</script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>															 -2020.11
-	<script type="text/javascript">
-		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>-->
 	<script src='../js/math.js'></script>																											<!-- +2020.11 -->
 	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")</script>	<!-- +2020.11 -->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
@@ -264,7 +260,7 @@
 	<br />
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"><td id="ao2"></td></tr>
-		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option>∧</option><option>^</option><option>|</option><option>=</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option><option>&#10678;</option><option>⏁</option><option>&#8860;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo"><td id="bo2">&nbsp;</td></tr>
+		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option title='GCD'>∧</option><option title='pow'>^</option><option>|</option><option>=</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option><option>&#10678;</option><option>⏁</option><option>&#8860;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo"><td id="bo2">&nbsp;</td></tr>
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">&uarr;</button></td><td id="co"><td id="co2"></td></tr>
 	</table>
 	<script type="text/javascript">
