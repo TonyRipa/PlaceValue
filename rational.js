@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	1/31/2021
+// Date:	2/28/2021
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -63,7 +63,8 @@ class rational extends digit {				//	2019.11.Added
 			if (n == Math.round(n)) return new rational(n);
 			var ns = n.toString();
 			var den = Math.pow(10, ns.length - ns.indexOf('.') - 1);
-			var num = n * den;
+			//var num = n * den;					//	-2021.2
+			var num = Number(ns.replace('.',''));	//	+2021.2
 			return new rational(num, den);
 		}
 		function parsestring(n) {
@@ -141,7 +142,7 @@ class rational extends digit {				//	2019.11.Added
 		if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;	//	2017.7	//	+2020.5
 		var NEGBEG = long ? '-' : sTag ? '<s>' : '';
 		var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
-		var candidate1 = this.digitpair(NEGBEG, NEGEND, long)//.toString().replace('(', '').replace(')', '');
+		var candidate1 = this.digitpair(NEGBEG, NEGEND, long);
 		var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString().replace('(0.', '(.').replace('(-0.', '(-.');//alert([candidate1,candidate2])
 		return (candidate1.length <= candidate2.replace('<s>', '').replace('</s>', '').length) ? candidate1 : candidate2;
 	}

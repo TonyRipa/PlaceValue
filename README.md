@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 1/31/2021
+Date : 2/28/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -460,6 +460,14 @@ In measure.html, we saw that we can model the measure of a unit n-dimensional ob
 
 Fractals are not of integer dimension. For example, Cantor Dust is lg<sub>3</sub>2 ~ ⅗ dimensional. We can model the measure of a unit Cantor-Dust as the SparsePlaceValue 1E⅗.
 
+Line
+------------
+<i>line.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of defining measuring incomensurates.
+
+In measure.html, we saw that we can model the measure of a unit n-dimensional object as 10^n. This is well-modeled as a PlaceValue.
+
+What if the object is a line in one dimension and a line-segment in the other? This would be like a thick line, or a plane segment. SparsePlaceValue accomodates multiple bases. The first base can be a unit line segment. The second base can be a line. The measure of a line by unit-line-segment object would be 1E1,1. If it is twice as thick the measure would be 2E1,1.
+
 Dirac Delta Function
 --------------------
 <i>delta.html</i> demonstrates an application of PlaceValue to problems in measure theory. For example, the problem of differentiating the unit-step function.
@@ -561,9 +569,11 @@ There seems to be something fundamental about
 
 We may think of this as analog, but it is also digital. If we encode the digits as 123, it does seem to have lost its analog character. We may also consider representing ½23. Then we would use ½ of an object.
 
+<pre>
   ▇
  ▇▇
 ▄▇▇
+</pre>
 
 This still seems to be both fully analog, and fully digital at the same time.
 
