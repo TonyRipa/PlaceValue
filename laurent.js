@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    3/31/2021
 // Laurent: a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
 
 function laurent(base, pv) {
@@ -43,7 +43,6 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
 		} else if (node.fn == 'unaryPlus') {
 			var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).add(a);
 		} else {
-			//var b = new laurent(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
 			var b = new laurent().parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
 			var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 		}
@@ -127,13 +126,22 @@ laurent.toStringXbase = function (pv, base) {                        // added na
 	}
 }
 
-laurent.prototype.eval = function (base) {
-	var sum = new rational(0);
-	for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
-		//var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
-		var pow = base.pv.whole.get(0).pow(i + this.pv.exp);  // offset by exp    2015.8
-		//if (this.pv.whole.get(i) != 0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
-		if (!this.pv.whole.get(i).is0()) sum = sum.add(this.pv.whole.get(i).times(pow))  // Skip 0 to avoid %    2015.8
-	}
-	return new laurent(1, new placevalue(new wholeplacevalue([sum]), 0));  // interpret as number  2015.8
+laurent.prototype.eval = function (other) {		//	+2021.3
+	var pv = this.pv.eval(other.pv);
+	if (Array.isArray(this.base))
+		var base = this.base.slice(0, -1);
+	else
+		var base = other.pv.isconst() ? 1 : other.base;
+	return new this.constructor(base, pv);
 }
+
+//laurent.prototype.eval = function (base) {	//	-2021.3
+//	var sum = new rational(0);
+//	for (var i = 0; i < this.pv.whole.mantisa.length; i++) {
+//		//var pow = Math.pow(base, i + this.pv.exp);  // offset by exp    2015.8
+//		var pow = base.pv.whole.get(0).pow(i + this.pv.exp);  // offset by exp    2015.8
+//		//if (this.pv.whole.get(i) != 0) sum += this.pv.whole.get(i) * pow  // Skip 0 to avoid %    2015.8
+//		if (!this.pv.whole.get(i).is0()) sum = sum.add(this.pv.whole.get(i).times(pow))  // Skip 0 to avoid %    2015.8
+//	}
+//	return new laurent(1, new placevalue(new wholeplacevalue([sum]), 0));  // interpret as number  2015.8
+//}

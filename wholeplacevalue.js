@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	1/31/2021
+// Date:	3/31/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -26,7 +26,6 @@ class wholeplacevalue {	//	+2020.11
 		//while (this.mantisa.length > 0 && this.get(this.mantisa.length - 1).is0()) // while MostSigDig=0 // get(this.mantisa.length - 1) 2015.7 // len>0 prevent ∞ loop 2015.12	//	2020.1	Removed
 		while (this.mantisa.length > 1 && this.get(this.mantisa.length - 1).is0())							//	2020.1 Added
 			this.mantisa.pop();                             //  pop root
-		//if (this.mantisa.length == 0) this.mantisa = [new this.datatype().parse(0)];						//	2020.1	Removed
 		this.check();
 	}
 
@@ -153,6 +152,7 @@ class wholeplacevalue {	//	+2020.11
 		return 0;
 	}
 
+	isconst() { return this.mantisa.length <= 1; }					//	+2021.3
 	is0() { this.check(); return this.equals(this.parse(0)); }      //  2016.5
 	is1() { this.check(); return this.equals(this.parse(1)); }      //  2016.5
 	isNaN() { this.check(); return this.equals(this.parse('%')); }  //  2018.3
@@ -259,8 +259,8 @@ class wholeplacevalue {	//	+2020.11
 	times10s(s) {this.check(); if(s < 0) return this.div10s(-s); var me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;} //	+2020.11
 
 	times(top) {
-		this.check(top);
 		if (!(top instanceof wholeplacevalue)) { var s = 'wholeplacevalue.times expects arg to be a wholeplacevalue but found ' + typeof top + ' ' + JSON.stringify(top); alert(s); throw new Error(s); }   //  2018.2
+		this.check(top);	//	~2021.3
 		if (!(this.datatype == top.datatype)) { var s = 'wholePV.times arg (wholeplacevalue) different digit datatype\n' + this.datatype + '\n' + top.datatype; alert(s); throw new Error(s); }             //  2018.2
 		var prod = new wholeplacevalue(this.datatype);
 		for (var b = 0; b < this.mantisa.length; b++) {
@@ -452,11 +452,14 @@ class wholeplacevalue {	//	+2020.11
 
 	eval(base) {
 		this.check(base);
-		var sum = new this.datatype();
+		//var sum = new this.datatype();		//	-2021.3
+		var sum = new this.constructor();		//	+2021.3
 		for (var i = 0; i < this.mantisa.length; i++) {
-			sum = sum.add(this.get(i).times(base.get(0).pow(i)));  // get(0)   2016.1
+			//sum = sum.add(this.get(i).times(base.get(0).pow(i)));  // get(0)   2016.1	//	-2021.3
+			sum = sum.add(base.pow(i).scale(this.get(i)));								//	+2021.3
 		}
-		return new wholeplacevalue([sum]);
+		//return new wholeplacevalue([sum]);	//	-2021.3
+		return sum;								//	+2021.3
 	}
 
 	pointeval() {	//	+2020.11

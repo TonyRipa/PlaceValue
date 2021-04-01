@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2020
+// Date:    3/31/2021
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 function placevalue(arg) {
@@ -34,7 +34,6 @@ placevalue.prototype.parse = function (man) {    // 2017.9
 	}
 	var whole = this.whole.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);	//	2018.6
 	return new placevalue(whole, exp + getexp(man));													//	2018.6
-	//console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(man)=" + Array.isArray(man));
 	function getexp(x) {
 		if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
 		if (x.mantisa) return 0;  // To check for wholeplacevalue-like objects, replace (x instanceof wholeplacevalue) with (x.mantisa)    2015.9
@@ -77,6 +76,10 @@ placevalue.prototype.toString = function (sTag) {       //  sTag    2015.11
 	if (ret == '') ret = '0';                                                                               // ''   -> '0'
 	ret = ret.replace('@', '.');                                                // '@' -> '.'   2015.11
 	return ret;
+}
+
+placevalue.prototype.isconst = function() {		//	+2021.3
+	return this.whole.isconst() && this.exp==0 ;
 }
 
 placevalue.prototype.add = function (addend) {
@@ -242,13 +245,20 @@ placevalue.prototype.clone = function () {
 	return new placevalue(this.whole.clone(), this.exp);
 }
 
-placevalue.prototype.eval = function (base) {
-	var b = base.get(0);    // 2016.1
-	var sum = new this.whole.datatype();
-	for (var i = 0; i < this.whole.mantisa.length; i++) {
-		sum = sum.add(this.whole.get(i).times(b.pow(i)));
-	}
-	var scale = b.pow(this.exp)
-	sum = sum.times(scale);
-	return new placevalue(new wholeplacevalue([sum]), 0);
+placevalue.prototype.eval = function (base) {	//	+2021.3
+	var sum = new this.constructor();
+	for (let i = 0; i < this.whole.mantisa.length; i++)
+		sum = sum.add(base.pow(i+this.exp).scale(this.whole.get(i)));
+	return sum;
 }
+
+//placevalue.prototype.eval = function (base) {	//	-2021.3
+//	var b = base.get(0);    // 2016.1
+//	var sum = new this.whole.datatype();
+//	for (var i = 0; i < this.whole.mantisa.length; i++) {
+//		sum = sum.add(this.whole.get(i).times(b.pow(i)));
+//	}
+//	var scale = b.pow(this.exp)
+//	sum = sum.times(scale);
+//	return new placevalue(new wholeplacevalue([sum]), 0);
+//}

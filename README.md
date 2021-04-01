@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 2/28/2021
+Date : 3/31/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -579,10 +579,12 @@ This still seems to be both fully analog, and fully digital at the same time.
 
 What if I want to represent 12π. Now I may be in trouble. I can represent this symbolically (digitally). If I represent this in analog, then I seem to lose the symolic (digit) information
 
+<pre>
   ▁
   ▇
  ▇▇
 ▇▇▇
+</pre>
 
 I used a digital approximation. I don't have access to an exact block of height (π-3). And if I did how could you confirm just from the height that it was exactly (π-3)? It may be possible but it is not clear.
 
