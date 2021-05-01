@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	3/31/2021
+// Date:	4/30/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -302,7 +302,8 @@ class wholeplacevalue {	//	+2020.11
 			var root = rad.get(0).divide(troot[0]);
 			var troot1 = [...troot,root]
 			var remainder = rad.sub(new wholeplacevalue(troot1).scale(root)).div10s(1);
-			troot = [...troot,root.scale(2)];
+			//troot = [...troot,root.scale(2)];	//	-2021.4
+			troot.push(root.scale(2));			//	+2021.4
 			return sqrth(remainder, troot, c - 1);
 		}
 	}
@@ -445,7 +446,6 @@ class wholeplacevalue {	//	+2020.11
 		if (a.mantisa[0].isneg() && b.mantisa[0].ispos()) { "alert(1)"; return a.negate().gcd1(b,count); }
 		if (a.is0()) { "alert(2)"; return b; }
 		if (b.is0()) { "alert(3)"; return a; }
-		//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
 		if (a.mantisa[a.mantisa.length - 1].above(b.mantisa[b.mantisa.length - 1])) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b,count); }
 		"alert(6 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd1(a,count);
 	}
@@ -481,4 +481,3 @@ class wholeplacevalue {	//	+2020.11
 	}
 
 }
-

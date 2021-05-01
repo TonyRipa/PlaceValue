@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    1/31/2021
+// Date:    4/30/2021
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -13,7 +13,8 @@ class sparseplacevalue1 {
 			if (Array.isArray(arg)) {                                                                           //  2017.10
 				points = arg;
 				if (!Array.isArray(points)) { console.trace(); alert("sparseplacevalue1 expects argument to be 2D array but found " + typeof points + points); }
-				if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);
+				//if (points.length > 0 && !Array.isArray(points[0])) alert("sparseplacevalue1 expects argument to be 2D array but found 1D array of " + typeof points[0]);	//	-2021.4
+				if (points.length > 0 && !Array.isArray(points[0])) alert("SPV1 wants ARG to be 2D array not 1D array of " + typeof points[0] + ". " + JSON.stringify(arg));//	+2021.4
 				datatype = (points.length > 0) ? points[0][0].constructor : rational;
 			}
 		}
@@ -201,6 +202,26 @@ class sparseplacevalue1 {
 		return ret;
 	}
 
+	pop0() {	//	+2021.4
+		return new this.constructor([this.points.shift()]);
+	}
+
+	sqrt() {	//	+2021.4
+		var rad = this.clone();
+		var iter = 4;
+		var popped = rad.pop0();
+		var root = sqrth(rad, popped.pow(.5).scale(2).points, iter);
+		return root;
+		function sqrth(rad, troot, c) {
+			if (c == 0) return new sparseplacevalue1(troot).unscale(2);
+			var root = new sparseplacevalue1([rad.points[0]]).divide(new sparseplacevalue1([troot[0]]));
+			var troot1 = [...troot,root.points[0]];
+			var remainder = rad.sub(new sparseplacevalue1(troot1).times(root));
+			troot.push(root.scale(2).points[0]);
+			return sqrth(remainder, troot, c - 1);
+		}
+	}
+
 	divide(den) {       //  2016.10
 		var num = this;
 		var iter = 5//math.max(num.points.length, den.points.length);
@@ -257,6 +278,11 @@ class sparseplacevalue1 {
 			if (power.is0()) return this.parse(1);
 			if (power.points[0][0].isneg()) return this.parse(1).divide(this.pow(new this.constructor([[power.points[0][0].negate(), this.datatype.parse(0)]])));
 			if (power.points[0][0].isint()) return this.times(this.pow(power.sub(this.parse(1))));
+			if (!power.get(0).isint()) {	//	+2021.4
+				if (power.get(0).toreal() == .5) return this.sqrt();
+				alert('SPV1 .Bad Exponent = ' + power.tohtml());
+				return this.parse('%');
+			}
 			//return this.times(this.pow(power.sub(this.constructor.parse(1))));
 		} else if (this.points.length == 1) {
 			//alert(1)
@@ -308,7 +334,6 @@ class sparseplacevalue1 {
 		if (a.points[0][0].isneg() && b.points[0][0].ispos()) { "alert(1)"; return a.negate().gcd(b); }
 		if (a.is0()) { "alert(2)"; return b; }
 		if (b.is0()) { "alert(3)"; return a; }
-		//if (a.points.length > b.points.length) { alert(4 + ': ' + a + ' , ' + b); return gcdpv(a.remainder(b), b); }
 		if (a.points[a.points.length - 1][1].above(b.points[b.points.length - 1][1])) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd(b); }
 		"alert(6 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd(a);
 	}
@@ -322,4 +347,3 @@ class sparseplacevalue1 {
 	}
 
 }
-
