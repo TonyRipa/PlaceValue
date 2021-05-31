@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    5/31/2021
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -14,7 +14,8 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			else[base, pv] = [arg, new sparseplacevalue(rational)];
 		}
 		if (arguments.length == 2)[base, pv] = arguments;
-		if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }
+		//if (!Array.isArray(base)) { var s = 'sparsepolynomial expects argument 1 (base) to be an array but found ' + typeof base; alert(s); throw new Error(s); }	//	-2021.5
+		if (!Array.isArray(base)) {var s='SPoly wants arg 1 (base) to be Array not '+typeof base+" : "+JSON.stringify(base);alert(s);throw new Error(s);}	//	+2021.5
 		if (!(pv instanceof sparseplacevalue)){var s='sparsepolynomial wants arg 2 to be SparsePV not '+typeof pv+" : "+JSON.stringify(pv);alert(s);throw new Error(s);}
 		super();
 		this.base = base;
@@ -65,7 +66,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		var base1 = this.base.slice();
 		var base2 = other.base.slice();
 		var base = [...new Set([...base1, ...base2])];
-		//if (base[0] == 1) base.shift();
 		alignmulti2base(this, base);
 		alignmulti2base(other, base);
 		this.pv = new sparseplacevalue(this.pv.points);     //  2017.2  Clean this's zeros
@@ -127,6 +127,19 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			if (pow.indexOf('/') > -1) pow = '(' + pow + ')';   //  2018.1
 			return (!x.is1()) ? '^' + pow : '';
 		}
+	}
+
+	clone() {	//	+2021.5
+		return new this.constructor([...this.base],this.pv.clone());
+	}
+
+	at(base) {	//	+2021.5
+		this.align(base);
+		var ret = this.clone();
+		var pos = base.pv.point()[1].len() - 1;
+		ret.base.push(...ret.base.splice(pos,1));
+		ret.pv = ret.pv.at(base.pv);
+		return ret;
 	}
 
 }

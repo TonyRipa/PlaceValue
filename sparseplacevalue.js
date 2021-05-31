@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    11/30/2020
+// Date:    5/31/2021
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -83,7 +83,6 @@ class sparseplacevalue {			//	2019.4	Added
 			if (terms.length == 0) return ret;
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;							//	2020.1	Added
 			var num = datatype.regex(); //  2017.6
-			//var reg = new RegExp('[\+\-]' + num + '(E[\+\-]?' + num + ')?', 'g');
 			//var reg = new RegExp(num + '(E' + num + '(,' + num + ')*' + ')?', 'g');	//	2017.7	//	2020.1	Removed
 			var reg = new RegExp('[\+\-]' + num + '(E' + num + '(,' + num + ')*' + ')?', 'g');		//	2020.1	Added
 			var term;
@@ -137,6 +136,23 @@ class sparseplacevalue {			//	2019.4	Added
 			throw new Error('Sparseplacevalue.prototype.Check 2 Fail : Othertype is of type ' + translate(othertype) + ', but ThisType is ' + translate(mytype));
 		}
 		return mytype;
+	}
+
+	len() {		//	+2021.5
+		this.check();
+		return this.points.length;
+	}
+
+	map(f) {	//	+2021.5
+		this.check();
+		return this.points.map(f);
+	}
+
+	point() {	//	+2021.5
+		this.check();
+		if (this.len() != 1)
+			{ var s = "SparsePlaceValue.point() : len!=1 : " + JSON.stringify(points); alert(s); throw new Error(s); }
+		return this.points[0];
 	}
 
 	get(i) { //  2017.7
@@ -206,6 +222,8 @@ class sparseplacevalue {			//	2019.4	Added
 		return a + 'E' + b.mantisa.map(x=>x.toString(false,true));                 //  2017.7  map
 	}
 
+	is1term() { return this.len() == 1; }																				//	+2021.5
+	isunit() { return this.is1term() && this.point()[0].is1() && this.point()[1].is1hi(); }								//	+2021.5
 	is0() { this.check(); return this.points.length == 0 || (this.points.length == 1 && this.points[0][0].is0()); }		//	2017.7
 	is1() { this.check(); return this.points.length == 1 && this.points[0][0].is1() && this.points[0][1].is0(); }		//	2017.7
 	equals(other) { return this.sub(other).is0(); }																		//	2019.6
@@ -217,8 +235,9 @@ class sparseplacevalue {			//	2019.4	Added
 	pointdivide(other) { this.check(other); return this.f(this.datatype.prototype.divide, other); }
 	pointsub(other) { this.check(other); return this.pointadd(other.negate()); }
 	pointpow(other) { this.check(other); return this.f0(this.datatype.prototype.pow, other); }   //  2017.7
-	clone() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.slice(0) : this.datatype); }							//	2019.7
-	//negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }    //  2017.7		//	2019.7	Removed
+	//clone() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.slice(0) : this.datatype); }		//	2019.7		//	-2021.5
+	clone() { this.check(); return new this.constructor(this.len()>0 ? this.map(p=>[p[0].clone(),p[1].clone()]) : this.datatype); }				//	+2021.5
+	//negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }	//  2017.7		//	2019.7	Removed
 	negate() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.map(x=>[x[0].negate(),x[1]]) : this.datatype); }	//	2019.7
 	transpose() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
 	round() { this.check(); var a = this.points.filter(x=>!x[1].isneg()); return new sparseplacevalue(a.length ? a : this.datatype) }	//	2019.4	Added
@@ -420,6 +439,19 @@ class sparseplacevalue {			//	2019.4	Added
 		if (a.points[a.points.length - 1][1].comparelittle(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }	//	2019.5	Added
 		if (a.points.length==1 && b.points.length==1) { "alert(6 + ': ' + a + ' , ' + b)"; return new sparseplacevalue([[a.points[0][0].gcd(b.points[0][0]),a.points[0][1].pointmin(b.points[0][1])]]); }	//	2019.5	Added
 		"alert(7 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd1(a, count);
+	}
+
+	at(base) {	//	+2021.5
+		if (!base.isunit()) return this.parse(0/0);
+		var pos = base.point()[1].len() - 1;
+		var ret = this.clone();
+		var maxlen = math.max(ret.map(point=>point[1].len()));
+		for (let p of ret.points)
+			if (p[1].len() > pos) {
+				while (p[1].len() < maxlen) p[1].push(new this.datatype());
+				p[1].push(...p[1].splice(pos,1));
+			}
+		return ret.clone();
 	}
 
 	eval(base) {

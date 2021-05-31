@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2021
+Date : 5/31/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -157,6 +157,10 @@ If Polynomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks WholePlaceVa
 20 | 0 = 20
 </pre>
 Polynomial2 then formats WholePlaceValue2's result as 2x.
+
+Note that 2*x+h|0 seems ambiguous. Do we want to substitute 0 in for the variable x or h? The last variable (which in WholePlaceValue2 corresponds to the vertical axis) is the one chosen. We may use the @ operator to permute. 2x+h @ x = h+2x . So, 2x+h|0 = 2x ; 2x+h@x|0 = h ; 2x+h@h|0 = 2x . As a notational aside, @ is sometimes written as & .
+
+One way to interpret PlaceValues is that they are (implicitly) functions. They are functions of their last variable. They are curried (i.e. they are functions of multiple variables that are encoded as telescoping functions of 1 variable [alternatively they are telescoping functions of 1 variable that model functions of multiple variables]). 
 
 <i>polynomial2.html</i> is a demo for polynomial2.js.
 

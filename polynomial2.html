@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	12/31/2020
+	Date:	5/31/2021
 	Demo for Polynomial2 : a 2-D datatype for representing polynomials; an application of the WholePlaceValue2 datatype
 -->
 
@@ -13,8 +13,10 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-	<script type="text/javascript">
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>-->							<!--	-2021.5	-->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.3.2/math.min.js" referrerpolicy="no-referrer"></script>	<!--	+2021.5	-->
+	<!--<script type="text/javascript">-->	<!--	-2021.5	-->
+	<script>								<!--	+2021.5	-->
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
 	</script>
 	<script type="text/javascript" src='wholeplacevalue2.js'></script>
@@ -53,20 +55,37 @@
 		function parse(str) {
 			if (str == '') return [new polynomial2()];	//	+2020.12
 			var node = math.parse(str);
-			if (node.type != 'OperatorNode') {
-				return [new polynomial2().parse(node.value || node.name)];	//	+2020.5
-			} else if (node.type == 'OperatorNode') {
+			//if (node.type != 'OperatorNode') {	//	-2021.5
+			//	return [new polynomial2().parse(node.value || node.name)];	//	+2020.5
+			//} else if (node.type == 'OperatorNode') {
+			//	console.log('OperatorNode')
+			//	var kids = node.args;
+			//	var a = new polynomial2().parse(kids[0]);		//	polynomial2 handles unpreprocessed kid	2015.11
+			//	if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
+			//		return [node.op, a];
+			//	} else {
+			//		var b = new polynomial2().parse(kids[1]);	//	polynomial2 handles unpreprocessed kid	2015.11
+			//	}
+			//}
+			//a.align(b);		//	align	2015.7	//	-2021.5
+			//return [node.op, a, b];				//	-2021.5
+			if (node.type == 'OperatorNode') {		//	+2021.5
 				console.log('OperatorNode')
 				var kids = node.args;
-				var a = new polynomial2().parse(kids[0]);		//	polynomial2 handles unpreprocessed kid	2015.11
+				var a = new polynomial2().parse(kids[0]);
 				if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
 					return [node.op, a];
 				} else {
-					var b = new polynomial2().parse(kids[1]);	//	polynomial2 handles unpreprocessed kid	2015.11
+					var b = new polynomial2().parse(kids[1]);
+					a.align(b);
+					return [node.op, a, b];
 				}
+			} else {
+				if (node.type == 'SymbolNode') var arg = node.name;
+				if (node.type == 'ConstantNode') var arg = node.value;
+				if (node.type == 'ParenthesisNode') var arg = node.content;
+				return [new polynomial2().parse(arg)];
 			}
-			a.align(b);		//	align	2015.7
-			return [node.op, a, b];
 		}
 	</script>
 </body>
