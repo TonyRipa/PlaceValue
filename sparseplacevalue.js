@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2021
+// Date:    6/30/2021
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -99,7 +99,6 @@ class sparseplacevalue {			//	2019.4	Added
 			var coef = coefpow[0];
 			var pow = coefpow[1] || '0';
 			var pows = splitbyunparenthesizedcomma(pow);	//	2018.11	Added
-			//if (!pows.length) pows = [0, 0];
 			pows = pows.map(x=>new datatype().parse(x));
 			return [new datatype().parse(coef), new wholeplacevalue(pows)];   //  2017.7
 			function splitbyunparenthesizedcomma(csv) {		//	2018.11	Added
@@ -299,6 +298,48 @@ class sparseplacevalue {			//	2019.4	Added
 		return ret;
 	}
 
+	reverse() {	//	+2021.6
+		var ret = this.clone();
+		var len = length(ret);
+		pad(ret, len);
+		rev(ret)
+		return new sparseplacevalue(ret.points);
+		function rev(spv) {
+			for (let i = 0; i<spv.points.length; i++)
+				spv.points[i][1] = new wholeplacevalue(spv.points[i][1].mantisa.reverse());
+		}
+		function pad(spv, len) {
+			for (let i = 0; i<spv.points.length; i++)
+				while (spv.points[i][1].len() < len)
+					spv.points[i][1].push(new spv.datatype())
+		}
+		function length(spv) {
+			var ret = 0;
+			for (let i = 0; i<spv.points.length; i++)
+				ret = math.max(ret,spv.points[i][1].len())
+			return ret;
+		}
+	}
+
+	pop0() {	//	+2021.6
+		return new this.constructor([this.points.shift()]);
+	}
+
+	sqrt() {	//	+2021.6
+		var rad = this.clone().at(this.parse('1E1'));
+		var iter = 4;
+		var popped = rad.pop0();
+		var root = sqrth(rad, popped.pow(.5).points, iter);
+		return root.at(this.parse('1E1'));
+		function sqrth(rad, root, c) {
+			if (c == 0) return new sparseplacevalue(root);
+			var rootdigit = new sparseplacevalue([rad.points[0]]).divide(new sparseplacevalue([root[0]]));
+			var remainder = rad.sub(new sparseplacevalue([...root,rootdigit.unscale(4).points[0]]).times(rootdigit));
+			root.push(rootdigit.unscale(2).points[0]);
+			return sqrth(remainder, root, c - 1);
+		}
+	}
+
 	withoutmsb() {	//	2019.7
 		var me = this.clone();
 		me.points.pop();
@@ -309,7 +350,9 @@ class sparseplacevalue {			//	2019.4	Added
 		this.check(den);
 		var num = this;
 		//var iter = 5//math.max(num.points.length, den.points.length);	//	-2020.6
-		var iter = math.max(5, num.points.length, den.points.length);	//	+2020.6
+		//var iter = math.max(5, num.points.length, den.points.length);	//	+2020.6	//	-2021.6
+		var size = x => { var n = 4; return (x==1)?n**0:(x==2)?n:n*(n+1)/2; }		//	+2021.6
+		var iter = math.max(num.points.length, size(den.points.length));			//	+2021.6
 		var quotient = divideh(num, den, iter);
 		return quotient;
 		function divideh(num, den, c) {
@@ -343,15 +386,16 @@ class sparseplacevalue {			//	2019.4	Added
 			if (c == 0) return new sparseplacevalue(num.datatype).parse(0);	//	2018.12	num.datatype
 			var n = num.points[0];
 			var d = den.points[0];
-			var quotient = new sparseplacevalue([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);     //  Works even for non-truncating division  2016.10
+			//var quotient = new sparseplacevalue([[n[0].divide(d[0]), subvectors(n[1], d[1])]]);	//	Works even for non-truncating division	2016.10	//	-2021.6
+			var quotient = new sparseplacevalue([[n[0].divide(d[0]), n[1].sub(d[1])]]);																	//	+2021.6
 			if (d[0].is0()) return quotient;
 			var remainder = num.sub(quotient.times(den))
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
 			return quotient;
 		}
-		function subvectors(a, b) { return a.sub(b);//  2017.1
-		}
+		//function subvectors(a, b) { return a.sub(b);//  2017.1	//	-2021.6
+		//}
 	}
 
 	dividemiddle(den) { return this.divide(den); }
@@ -367,6 +411,11 @@ class sparseplacevalue {			//	2019.4	Added
 			if (power.points[0][0].is0()) return new sparseplacevalue(this.datatype).parse(1);
 			if (power.points[0][0].isneg()) return new sparseplacevalue(this.datatype).parse(1).divide(this.pow(new sparseplacevalue([[power.points[0][0].negate(), new wholeplacevalue(this.datatype)]])));
 			if (power.points[0][0].isint()) return this.times(this.pow(power.sub(new sparseplacevalue(this.datatype).parse(1))));
+			if (!power.get(0).isint()) {	//	+2021.6
+				if (power.get(0).toreal() == .5) return this.sqrt();
+				alert('SPV .Bad Exponent = ' + power.tohtml());
+				return this.parse('%');
+			}
 		}
 		if (this.points.length == 1) {  //  2017.9
 			var powe = power.clone();

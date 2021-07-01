@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2021
+// Date:    6/30/2021
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -47,7 +47,8 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			} else {
 				//var b = new sparsepolynomial().parse(kids[1]);	// sparsepolynomial handles unpreprocessed kid   2015.11	//	2019.2	Removed
 				var b = this.parse(kids[1]);																					//	2019.2	this
-				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
+				//var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);	//	-2021.6
+				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '^') ? a.pow(b) : (node.op == '&') ? a.at(b) : a.eval(b);	//	+2021.6
 			}
 			return c;
 		} else if (node.type == 'ConstantNode') {
@@ -82,7 +83,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 					var posinold = baseold.indexOf(letter);
 					if (posinold == -1) { digitpowernew.push(new multi.pv.datatype()); }	//	2018.12	multi.pv.datatype
 					else {  //  2017.4  manually check if defined
-						//var temp = digitpowerold[posinold] | 0;
 						if (typeof digitpowerold.mantisa[posinold] === 'undefined') digitpowernew.push(new multi.pv.datatype());	//	2018.12	multi.pv.datatype
 						else digitpowernew.push(digitpowerold.mantisa[posinold]);
 					}

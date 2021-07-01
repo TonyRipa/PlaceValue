@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	2/28/2021
+// Date:	6/30/2021
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -138,7 +138,6 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	toString(sTag, long) {   //  2015.11 sTag    2017.6  long
-		//if (long) return this.d == 1 ? this.n : this.n + '/' + this.d;		//	2017.7	//	-2020.5
 		if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;	//	2017.7	//	+2020.5
 		var NEGBEG = long ? '-' : sTag ? '<s>' : '';
 		var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
@@ -151,9 +150,11 @@ class rational extends digit {				//	2019.11.Added
 		// 185  189  777 822 8315   9321
 		// ^1   1/2  ^   -   ^-     10
 		var IMAG = String.fromCharCode(777);
-		var digit = [this.n, this.d];
-		var num = digit[0];
-		var den = digit[1];
+		//var digit = [this.n, this.d];	//	-2021.6
+		//var num = digit[0];			//	-2021.6
+		//var den = digit[1];			//	-2021.6
+		var num = this.n;				//	+2021.6
+		var den = this.d;				//	+2021.6
 		var a = Math.round(num * 1000) / 1000
 		var b = Math.round(den * 1000) / 1000
 		if (.99 < den && den < 1.01) return this.digithelp(num, NEGBEG, NEGEND, long);

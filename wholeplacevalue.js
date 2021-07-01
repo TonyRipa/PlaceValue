@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2021
+// Date:	6/30/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -328,11 +328,18 @@ class wholeplacevalue {	//	+2020.11
 		}
 	}
 
-	static getDegree(me) {			//	2018.6	1-arg
-		me.check(); 
-		for (var i = me.mantisa.length - 1; i >= 0; i--)
-			if (!me.get(i).is0()) return { 'deg': i, 'val': me.get(i) };
-		return { 'deg': 0, 'val': me.get(0) };
+	//static getDegree(me) {			//	2018.6	1-arg	//	-2021.6
+	//	me.check(); 
+	//	for (var i = me.mantisa.length - 1; i >= 0; i--)
+	//		if (!me.get(i).is0()) return { 'deg': i, 'val': me.get(i) };
+	//	return { 'deg': 0, 'val': me.get(0) };
+	//}
+
+	getDegree() {											//	+2021.6
+		this.check(); 
+		for (var i = this.mantisa.length - 1; i >= 0; i--)
+			if (!this.get(i).is0()) return { 'deg': i, 'val': this.get(i) };
+		return { 'deg': 0, 'val': this.get(0) };
 	}
 
 	divide(den) { // 2015.8
@@ -344,7 +351,8 @@ class wholeplacevalue {	//	+2020.11
 		function divideh(num, den, c) {
 			//if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
 			if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)]);											//	2020.1	Added
-			var d = wholeplacevalue.getDegree(den);		//	2018.6	arg=den
+			//var d = wholeplacevalue.getDegree(den);		//	2018.6	arg=den							//	-2021.6
+			var d = den.getDegree();																	//	+2021.6
 			//var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');	//	-2021.1
 			var quotient = num.div10s(d.deg).unscale(d.val);											//	+2021.1
 			if (d.val.is0()) return quotient;
@@ -352,12 +360,6 @@ class wholeplacevalue {	//	+2020.11
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
 			return quotient;
-			//function shift(me, left) {																//	-2021.1
-			//	//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
-			//	var ret = new wholeplacevalue([new me.datatype()]).add(me);																				//	2020.1	Added
-			//	for (var r = 0; r < left; r++) ret.mantisa.shift();
-			//	return ret;
-			//}
 		}
 	}
 
