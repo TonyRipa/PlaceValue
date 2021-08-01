@@ -1,13 +1,14 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	6/30/2021
+// Date:	7/31/2021
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
 
-	constructor(num,den) {
-		if (arguments.length < 1) num = 0;	//	2017.9
-		if (arguments.length < 2) den = 1;
+	//constructor(num,den) {							//	-2021.7
+	constructor(num = 0, den = 1) {						//	+2021.7
+		//if (arguments.length < 1) num = 0;//	2017.9	//	-2021.7
+		//if (arguments.length < 2) den = 1;			//	-2021.7
 		if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
 		if (!(typeof den == 'number' || den instanceof Number)) { console.trace(); alert('Rational expects argument 2 (den) to be a Number but found ' + typeof den + ' ' + JSON.stringify(den)); }
 		if (isNaN(num)) { var s = 'Rational expects argument 1 (num) to be a Number but found NaN: ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }  //  2017.7
@@ -18,9 +19,10 @@ class rational extends digit {				//	2019.11.Added
 		function pulloutcommonconstants(me) {
 			if (Math.abs(me.n) == 1 / 0 && Math.abs(me.d) == 1 / 0) { me.n = 0; me.d = 0; }
 			if (me.n == 0 && me.d == 0) return;
-			if (me.n == 0 || me.n == Infinity || me.n == -Infinity) { me.d = 1; return }
+			//if (me.n == 0 || me.n == Infinity || me.n == -Infinity) { me.d = 1; return }	//	-2021.7
 			if (me.d == 0) { me.n = Math.sign(me.n); return }
-			if (me.d == Infinity || me.d == -Infinity) { me.n = 0; me.d = 1; return }
+			//if (me.d == Infinity || me.d == -Infinity) { me.n = 0; me.d = 1; return }		//	-2021.7
+			if (me.d == Infinity || me.d == -Infinity) { me.n /= me.d; me.d = 1; return }	//	+2021.7
 			var g = gcd(me.n, me.d);
 			me.n = me.n / g;
 			me.d = me.d / g;
@@ -99,9 +101,9 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	static regex() {  //  2017.6
-		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%]';	//	+2020.5			//	-2020.6
 		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱]';					//	+2020.6	//	-2020.12
-		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱∞]';									//	+2020.12
+		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱∞]';								//	+2020.12	//	-2021.7
+		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉗㉜㊱∞]';												//	+2021.7
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
 		//var frac = '(' + num + '/' + num + '|' + num + ')';		//	-2020.6
@@ -116,7 +118,8 @@ class rational extends digit {				//	2019.11.Added
 		return '^' + rational.regex() + '$';
 	}
 
-	toreal() { return this.n / this.d; }
+	//toreal() { return this.n / this.d; }																	//	-2021.7
+	toreal() { return this.d!=0 ? this.n / this.d : this.n==0 ? NaN : this.n>0 ? Infinity : -Infinity; }	//	+2021.7
 
 	todigit() {
 		var IMAG = String.fromCharCode(777);
@@ -190,6 +193,7 @@ class rational extends digit {				//	2019.11.Added
 	clone() { return new rational(this.n, this.d); } //  2017.6
 	round() { return new rational(Math.round(this.toreal() * 1000) / 1000, 1); } //  2017.11
 	scale(c) { return c instanceof rational ? this.times(c) : new rational(c * this.n, this.d); }	//	+2020.5
+	unscale(c) { return c instanceof rational ? this.times(c) : new rational(this.n, c * this.d); }	//	+2020.7
 
 	atan2(other) { return new rational(Math.atan2(this.toreal(), other.toreal()), 1); }   //  2017.11
 	sqrt() { return new rational(Math.sqrt(this.n), Math.sqrt(this.d)); }   //  2017.11

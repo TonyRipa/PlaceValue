@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	6/30/2021
+// Date:	7/31/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -22,7 +22,8 @@ class wholeplacevalue {	//	+2020.11
 		}
 		if (arguments.length == 2)[man, datatype] = arguments;												//	2020.1	Added
 		this.datatype = datatype;
-		this.mantisa = man;
+		//this.mantisa = man;																				//	-2021.7
+		this.mantisa = man.slice();																			//	+2021.7
 		while (this.mantisa.length > 1 && this.get(this.mantisa.length - 1).is0())							//	2020.1 Added
 			this.mantisa.pop();                             //  pop root
 		this.check();
@@ -232,6 +233,7 @@ class wholeplacevalue {	//	+2020.11
 			//if (power.get(0).toreal() != Math.round(power.get(0).toreal())){alert('WPV .Bad Exponent = ' + power.tohtml());return this.parse('%') }//+2020.11//-2021.1
 			if (!power.get(0).isint()) {	//	+2021.1
 				if (power.get(0).toreal() == .5) return this.sqrt();
+				if (['⅓','3⁻¹'].includes(power.get(0).toString())) return this.qbrt();	//	+2021.7
 				alert('WPV .Bad Exponent = ' + power.tohtml());
 				return this.parse('%');
 			}
@@ -286,7 +288,6 @@ class wholeplacevalue {	//	+2020.11
 		for (var b = 0; b < this.mantisa.length; b++) {
 			var sum = [];
 			for (var t = 0; t < top.mantisa.length; t++) {
-				//sum.push(this.get(b).is0() || top.get(t).is0() ? new this.datatype() : this.get(b).times(top.get(t))); // Check 0 so ∞*10=∞0 not ∞% 2015.6   // get() 2015.7	//	2020.1	Removed
 				sum.push(this.get(b).times(top.get(t)));	//	2020.1	Added
 			}
 			for (var i = 0; i < b; i++) sum.unshift(new this.datatype()); // change push to unshift because L2R   2015.7
@@ -312,20 +313,38 @@ class wholeplacevalue {	//	+2020.11
 		return ret;
 	}
 
-	sqrt() {	//	+2021.1
-		var rad = this.clone();
-		var iter = 4;
-		var root = sqrth(rad.div10s(1), [rad.get(0).pow(.5).scale(2)], iter);
-		return root;
-		function sqrth(rad, troot, c) {
-			if (c == 0) return new wholeplacevalue(troot).unscale(2);
-			var root = rad.get(0).divide(troot[0]);
-			var troot1 = [...troot,root]
-			var remainder = rad.sub(new wholeplacevalue(troot1).scale(root)).div10s(1);
-			//troot = [...troot,root.scale(2)];	//	-2021.4
-			troot.push(root.scale(2));			//	+2021.4
-			return sqrth(remainder, troot, c - 1);
-		}
+	//sqrt() {	//	+2021.1	//	-2021.7
+	//	var rad = this.clone();
+	//	var iter = 4;
+	//	var root = sqrth(rad.div10s(1), [rad.get(0).pow(.5).scale(2)], iter);
+	//	return root;
+	//	function sqrth(rad, troot, c) {
+	//		if (c == 0) return new wholeplacevalue(troot).unscale(2);
+	//		var root = rad.get(0).divide(troot[0]);
+	//		var troot1 = [...troot,root]
+	//		var remainder = rad.sub(new wholeplacevalue(troot1).scale(root)).div10s(1);
+	//		//troot = [...troot,root.scale(2)];	//	-2021.4
+	//		troot.push(root.scale(2));			//	+2021.4
+	//		return sqrth(remainder, troot, c - 1);
+	//	}
+	//}
+
+	sqrt(answer = null) {	//	+2021.7
+		if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(.5)]);
+		if (answer.length == 5) return new this.constructor(answer);
+		var digit = this.get(0).divide(answer[0].scale(2));
+		var gain = new this.constructor([...answer,digit]).pow(2).sub(new this.constructor(answer).pow(2)).div10s(answer.length);
+		answer.push(digit);
+		return this.sub(gain).div10s(1).sqrt(answer);
+	}
+
+	qbrt(answer = null) {	//	+2021.7
+		if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.parse('⅓').get(0))]);
+		if (answer.length == 6) return new this.constructor(answer);
+		var digit = this.get(0).divide(answer[0].pow(2).scale(3));
+		var gain = new this.constructor([...answer,digit]).pow(3).sub(new this.constructor(answer).pow(3)).div10s(answer.length);
+		answer.push(digit);
+		return this.sub(gain).div10s(1).qbrt(answer);
 	}
 
 	//static getDegree(me) {			//	2018.6	1-arg	//	-2021.6
@@ -368,11 +387,18 @@ class wholeplacevalue {	//	+2020.11
 		return this.sub(this.divide(den).times(den));
 	}
 
-	static getDegreeLeft(me) {			//	2020.1	Added
-		me.check(); 
-		for (var i = 0 ; i < me.mantisa.length; i++)
-			if (!me.get(i).is0()) return { 'deg': i, 'val': me.get(i) };
-		return { 'deg': 0, 'val': me.get(0) };
+	//static getDegreeLeft(me) {	//	2020.1	Added	//	-2021.7
+	//	me.check(); 
+	//	for (var i = 0 ; i < me.mantisa.length; i++)
+	//		if (!me.get(i).is0()) return { 'deg': i, 'val': me.get(i) };
+	//	return { 'deg': 0, 'val': me.get(0) };
+	//}
+
+	getDegreeLeft() {									//	+2021.7
+		this.check(); 
+		for (var i = 0 ; i < this.mantisa.length; i++)
+			if (!this.get(i).is0()) return { 'deg': i, 'val': this.get(i) };
+		return { 'deg': 0, 'val': this.get(0) };
 	}
 
 	//wholeplacevalue.getDegreeLeft = function (man) {		//	2020.1	Removed
@@ -393,7 +419,8 @@ class wholeplacevalue {	//	+2020.11
 			//if (c == 0) return new wholeplacevalue([new num.datatype()], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
 			if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added
 			//var d = wholeplacevalue.getDegreeLeft(den.mantisa);	//	2020.1	Removed
-			var d = wholeplacevalue.getDegreeLeft(den);				//	2020.1	Added
+			//var d = wholeplacevalue.getDegreeLeft(den);			//	2020.1	Added	//	-2021.7
+			var d = den.getDegreeLeft();												//	+2021.7
 			//var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');	//	-2021.1
 			var quotient = num.div10s(d.deg).unscale(d.val);											//	+2021.1
 			if (d.val.is0()) return quotient;
@@ -475,7 +502,8 @@ class wholeplacevalue {	//	+2020.11
 	eval(base) {
 		this.check(base);
 		//var sum = new this.datatype();		//	-2021.3
-		var sum = new this.constructor();		//	+2021.3
+		//var sum = new this.constructor();		//	+2021.3	//	-2021.7
+		var sum = this.parse(0);							//	+2021.7
 		for (var i = 0; i < this.mantisa.length; i++) {
 			//sum = sum.add(this.get(i).times(base.get(0).pow(i)));  // get(0)   2016.1	//	-2021.3
 			sum = sum.add(base.pow(i).scale(this.get(i)));								//	+2021.3

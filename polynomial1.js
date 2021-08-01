@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    7/31/2021
 // Polynomial1: a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
@@ -83,12 +83,13 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 			return polynomial1.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
 		}
 		var ret = '';
-		var str = x//.toString().replace('.', '');
+		//var str = x//.toString().replace('.', '');	//	-2021.7
 		var maxbase = x.length - 1
-		for (var power = maxbase; power >= 0; power--) {                    // power is index because whole is L2R  2015.7 
-			//var digit = Math.round(1000 * str[power].toreal()) / 1000;      // toreal  2016.7 
+		for (var power = maxbase; power >= 0; power--) {					// power is index because whole is L2R  2015.7 
+			//var digit = Math.round(1000 * str[power].toreal()) / 1000;	// toreal  2016.7 
 			//var digit = str[power].toString(false, true);		//	-2020.5
-			var digit = str[power].toString(false,'medium');	//	+2020.5
+			//var digit = str[power].toString(false,'medium');	//	+2020.5	//	-2021.7
+			var digit = x[power].toString(false,'medium');					//	+2021.7
 			if (digit != 0) {
 				ret += '+';
 				if (power == 0)
@@ -101,18 +102,11 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 			console.log('polynomial1.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
 		}
 		ret = ret.replace(/\+\-/g, '-');
-		if (ret[0] == '+') ret = ret.substring(1);
+		//if (ret[0] == '+') ret = ret.substring(1);		//	-2021.7
+		if (ret.startsWith('+')) ret = ret.substring(1);	//	+2021.7
 		if (ret == '') ret = '0';
 		return ret;
 		function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
 	}
-
-	//polynomial1.prototype.eval = function (base) {   //  rational    2016.7
-	//    var sum = new rational(0);
-	//    for (var i = 0; i < this.pv.mantisa.length; i++) {
-	//        sum = sum.add(this.pv.get(i).times(base.pv.get(0).pow(i)));
-	//    }
-	//    return new polynomial1(1, new wholeplacevalue([sum]));
-	//}
 
 }
