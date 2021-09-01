@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	7/31/2021
+// Date:	8/31/2021
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -106,7 +106,6 @@ class rational extends digit {				//	2019.11.Added
 		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉗㉜㊱∞]';												//	+2021.7
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
-		//var frac = '(' + num + '/' + num + '|' + num + ')';		//	-2020.6
 		var frac = '(' + num + '/' + num + '|' + num + '(⁻¹)?)';	//	+2020.6
 		var signfrac = '(' + '[\+\-]?' + frac + ')';
 		var parensignfrac = '(\\(' + signfrac + '\\))';				//	+2020.6
@@ -193,7 +192,8 @@ class rational extends digit {				//	2019.11.Added
 	clone() { return new rational(this.n, this.d); } //  2017.6
 	round() { return new rational(Math.round(this.toreal() * 1000) / 1000, 1); } //  2017.11
 	scale(c) { return c instanceof rational ? this.times(c) : new rational(c * this.n, this.d); }	//	+2020.5
-	unscale(c) { return c instanceof rational ? this.times(c) : new rational(this.n, c * this.d); }	//	+2020.7
+	//unscale(c) { return c instanceof rational ? this.times(c) : new rational(this.n, c * this.d); }	//	+2020.7	//	-2021.8
+	unscale(c) { return c instanceof rational ? this.divide(c) : new rational(this.n, c * this.d); }				//	+2020.8
 
 	atan2(other) { return new rational(Math.atan2(this.toreal(), other.toreal()), 1); }   //  2017.11
 	sqrt() { return new rational(Math.sqrt(this.n), Math.sqrt(this.d)); }   //  2017.11

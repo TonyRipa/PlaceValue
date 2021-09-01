@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2021
+// Date:	8/31/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -101,6 +101,11 @@ class wholeplacevalue {	//	+2020.11
 		this.check();
 		if (i < 0 || this.mantisa.length <= i) return new this.datatype();          // check <0 2015.12
 		return this.mantisa[i];
+	}
+
+	set(i, v) {	//	+2021.8
+		this.check();
+		return this.mantisa[i] = v;
 	}
 
 	getreal(i) {  //  2017.11
@@ -330,18 +335,24 @@ class wholeplacevalue {	//	+2020.11
 	//}
 
 	sqrt(answer = null) {	//	+2021.7
-		if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(.5)]);
+		//if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(.5)]);								//	-2021.8
+		if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(this.datatype.parse(1).unscale(2))]);	//	+2021.8
 		if (answer.length == 5) return new this.constructor(answer);
-		var digit = this.get(0).divide(answer[0].scale(2));
+		var den = answer[0].pow(1).scale(2);					//	+2021.8
+		var digit = this.get(0).unscale(den);					//	+2021.8
+		//var digit = this.get(0).divide(answer[0].scale(2));	//	-2021.8
 		var gain = new this.constructor([...answer,digit]).pow(2).sub(new this.constructor(answer).pow(2)).div10s(answer.length);
 		answer.push(digit);
 		return this.sub(gain).div10s(1).sqrt(answer);
 	}
 
 	qbrt(answer = null) {	//	+2021.7
-		if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.parse('⅓').get(0))]);
+		//if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.parse('⅓').get(0))]);			//	-2021.8
+		if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.datatype.parse(1).unscale(3))]);	//	+2021.8
 		if (answer.length == 6) return new this.constructor(answer);
-		var digit = this.get(0).divide(answer[0].pow(2).scale(3));
+		var den = answer[0].pow(2).scale(3);						//	+2021.8
+		var digit = this.get(0).divide(den);						//	+2021.8
+		//var digit = this.get(0).divide(answer[0].pow(2).scale(3));//	-2021.8
 		var gain = new this.constructor([...answer,digit]).pow(3).sub(new this.constructor(answer).pow(3)).div10s(answer.length);
 		answer.push(digit);
 		return this.sub(gain).div10s(1).qbrt(answer);
@@ -400,12 +411,6 @@ class wholeplacevalue {	//	+2020.11
 			if (!this.get(i).is0()) return { 'deg': i, 'val': this.get(i) };
 		return { 'deg': 0, 'val': this.get(0) };
 	}
-
-	//wholeplacevalue.getDegreeLeft = function (man) {		//	2020.1	Removed
-	//	for (var i = 0 ; i < man.length ; i++)
-	//		if (!man[i].is0()) return { 'deg': i, 'val': man[i] };
-	//	return { 'deg': 0, 'val': man[this.datatype.parse(0)] };
-	//}
 
 	divideleft(den) { // 2016.3
 		this.check(den);
@@ -528,6 +533,17 @@ class wholeplacevalue {	//	+2020.11
 		}
 		var x = math.divide(man, math.transpose(matrix));
 		return new wholeplacevalue(x.map(e=>new this.datatype(e).round()));
+	}
+
+	regroup(base) {	//	+2021.8
+		this.check(base);
+		var ret = this.clone()
+		for (let i = 0; i < ret.len(); i++)
+			while (!ret.get(i).below(base.get(0))) {
+				ret.set(i, ret.get(i).sub(base.get(0)));
+				ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));
+			}
+		return ret;
 	}
 
 }

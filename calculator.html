@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	5/31/2021
+	Date:	8/31/2021
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -260,7 +260,7 @@
 	<br />
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='1' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"><td id="ao2"></td></tr>
-		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option title='GCD'>∧</option><option title='pow'>^</option><option>@</option><option>|</option><option>=</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option><option>&#10678;</option><option>⏁</option><option>&#8860;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo"><td id="bo2">&nbsp;</td></tr>
+		<tr id="base"><td><select id='op'><option selected>+</option><option>-</option><option>x</option><option>/</option><option>\</option><option>&divide;</option><option>%</option><option title='GCD'>∧</option><option title='pow'>^</option><option>@</option><option>|</option><option>ꖌ</option><option>=</option><option>&oplus;</option><option>&#8854;</option><option>&otimes;</option><option>&#8856;</option><option>&#9853;</option><option>&#10678;</option><option>⏁</option><option>&#8860;</option></select></td><td><input id='b' value='11' onchange="$(this).removeAttr('data-val')"></td><td><button onclick="moveanswer('#b','#a')">&uarr;</button></td><td id="bo"><td id="bo2">&nbsp;</td></tr>
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><button onclick="moveanswer('#c','#b')">&uarr;</button></td><td id="co"><td id="co2"></td></tr>
 	</table>
 	<script type="text/javascript">
@@ -323,8 +323,8 @@
 			}
 			var a = getinput('#a');
 			var b = getinput('#b');
-			//var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.eval, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);	//	+2020.12	//	-2021.5
-			var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.at, a.eval, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);				//	+2021.5
+			//var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.at, a.eval, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);	//	+2021.5	//	-2021.8
+			var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.at, a.eval, a.regroup, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);				//	+2021.8
 			output(a, b, c);
 			function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); } //  2017.9
 			function output(a, b, c) {

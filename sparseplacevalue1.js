@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2021
+// Date:    8/31/2021
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -74,7 +74,6 @@ class sparseplacevalue1 {
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;
 			var num = me.datatype.regex(); //  2017.6
 			var reg = new RegExp('[\+\-]' + num + '(E[\+\-]?' + num + ')?', 'g');
-			//var reg = new RegExp(num + 'E' + num, 'g');
 			var term;
 			while (term = reg.exec(terms))
 				ret.push(term[0]);
@@ -206,21 +205,36 @@ class sparseplacevalue1 {
 		return new this.constructor([this.points.shift()]);
 	}
 
-	sqrt() {	//	+2021.4
-		var rad = this.clone();
-		var iter = 4;
-		var popped = rad.pop0();
-		var root = sqrth(rad, popped.pow(.5).scale(2).points, iter);
-		return root;
-		function sqrth(rad, troot, c) {
-			if (c == 0) return new sparseplacevalue1(troot).unscale(2);
-			var root = new sparseplacevalue1([rad.points[0]]).divide(new sparseplacevalue1([troot[0]]));
-			var troot1 = [...troot,root.points[0]];
-			var remainder = rad.sub(new sparseplacevalue1(troot1).times(root));
-			troot.push(root.scale(2).points[0]);
-			return sqrth(remainder, troot, c - 1);
+	//sqrt() {	//	+2021.4	//	-2021.8
+	//	var rad = this.clone();
+	//	var iter = 4;
+	//	var popped = rad.pop0();
+	//	var root = sqrth(rad, popped.pow(.5).scale(2).points, iter);
+	//	return root;
+	//	function sqrth(rad, troot, c) {
+	//		if (c == 0) return new sparseplacevalue1(troot).unscale(2);
+	//		var root = new sparseplacevalue1([rad.points[0]]).divide(new sparseplacevalue1([troot[0]]));
+	//		var troot1 = [...troot,root.points[0]];
+	//		var remainder = rad.sub(new sparseplacevalue1(troot1).times(root));
+	//		troot.push(root.scale(2).points[0]);
+	//		return sqrth(remainder, troot, c - 1);
+	//	}
+	//}
+
+	sqrt(answer = null) {	//	+2021.8
+		if (answer == null) {
+			var rad = this.clone();
+			var popped = rad.pop0();
+			return rad.sqrt(popped.pow(.5).points);
 		}
+		if (answer.length == 5) return new this.constructor(answer);
+		var den = new this.constructor([answer[0]]).pow(1).scale(2);
+		var digit = new this.constructor([this.points[0]]).divide(den);
+		var gain = new this.constructor([...answer,digit.points[0]]).pow(2).sub(new this.constructor(answer).pow(2));
+		answer.push(digit.points[0]);
+		return this.sub(gain).sqrt(answer);
 	}
+
 
 	divide(den) {       //  2016.10
 		var num = this;

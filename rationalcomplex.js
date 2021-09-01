@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	12/31/2020
+// Date:	8/31/2021
 // RationalComplex:	A data-type for representing Complex Numbers as pairs of Rationals
 
 class rationalcomplex extends digit {	//	2019.12
@@ -103,7 +103,6 @@ class rationalcomplex extends digit {	//	2019.12
 		this.check();
 		var IMAG = String.fromCharCode(777);
 		var digit = [this.r, this.i]; //alert(JSON.stringify(digit));
-		//if (digit[1] == 0) return this.digithelp(digit[0], NEGBEG, NEGEND, true);
 		var real = digit[0];
 		var imag = digit[1];
 		var a = real;//Math.round(real * 1000) / 1000
@@ -156,6 +155,7 @@ class rationalcomplex extends digit {	//	2019.12
 	negate() { this.check(); return new rationalcomplex(this.r.negate(), this.i.negate()) }				//	2017.3
 	clone() { this.check(); return new rationalcomplex(this.r, this.i); }								//	2017.10
 	scale(c) { this.check(); return new rationalcomplex(this.r.scale(c), this.i.scale(c)); }			//	2017.11
+	unscale(c) { this.check(); return new rationalcomplex(this.r.unscale(c), this.i.unscale(c)); }		//	+2021.8
 	remainder(den) { return this.sub(this.divide(den).times(den)); }									//	2019.4	Added
 
 	times(y) {
