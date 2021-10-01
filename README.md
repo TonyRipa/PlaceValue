@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2021
+Date : 9/30/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -36,7 +36,7 @@ In Mathematica, we may represent the variable x as something like an expression 
 
 In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,9]. We could then ask MATLAB x * x (actually x .\* x) and it could return [0,1,4,9,16,25,36,49,64,81].
 
-PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,4,5,6,7,8,9] by a Fourier-type Transform of x = [0, 1]. PlaceValue can calculate x*x by calculating [0, 1] * [0, 1] = [0, 0, 1]. This is nothing more than 10 * 10 = 100.
+PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,4,5,6,7,8,9] by a Fourier-type Transform of x = [0, 1]. PlaceValue can calculate x\*x by calculating [0, 1] \* [0, 1] = [0, 0, 1]. This is nothing more than 10 \* 10 = 100.
 
 By building a data-type whose base operations are constructed to take advantage of such efficiencies, many applications which are handled in an otherwise convoluted manner may now be handled in an elegant manner.
 

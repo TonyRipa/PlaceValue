@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    5/31/2020
+// Date:    9/30/2021
 // SparsePolynomial1: a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
 class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
@@ -60,15 +60,6 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 		}
 	}
 
-	//tohtml() {       // Replacement for toStringInternal 2015.7
-	//    //return this.pv.toString(true) + ' base ' + this.base;
-	//    return JSON.stringify(this.pv.points) + ' base ' + this.base;
-	//}
-
-	//toString() {
-	//    return sparsepolynomial1.toStringXbase(this.pv, this.base);
-	//}
-
 	toString() {
 		var pv = this.pv;
 		var base = this.base;
@@ -83,17 +74,20 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 		var maxbase = x.length - 1
 		for (var i = maxbase; i >= 0; i--) {
 			//var digit = Math.round(1000 * x[i][0]) / 1000;
-			var digit = x[i][0];    //  2017.10
+			//var digit = x[i][0];	//	2017.10				//	-2021.9
+			var digit = x[i][0].toString(false,'medium');	//	+2021.9
 			var power = x[i][1]
 			if (digit != 0) {
 				ret += '+';
 				if (power == 0)
-					ret += digit.toString(false);			//	+2020.5
+					ret += digit;										//	+2021.9
+					//ret += digit.toString(false);			//	+2020.5	//	-2021.9
 					//ret += digit.toString(false, true);	//	-2020.5
-				else if (power == 1)
-					ret += coefficient(digit) + base;
+				//else if (power == 1)									//	-2021.9
+				//	ret += coefficient(digit) + base;					//	-2021.9
 				else
-					ret += coefficient(digit) + base + '^' + power;
+					ret += coefficient(digit) + base + sup(power);		//	+2021.9
+					//ret += coefficient(digit) + base + '^' + power;	//	-2021.9
 			}
 			console.log('sparsepolynomial1.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
 		}
@@ -102,7 +96,14 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 		if (ret == '') ret = '0';
 		return ret;
 		//function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString(false, true) + (isFinite(digit) ? '' : '*') }	//	-2020.5
-		function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString(false) + (isFinite(digit) ? '' : '*') }			//	+2020.5
+		//function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString(false) + (isFinite(digit) ? '' : '*') }		//	+2020.5	//	-2021.9
+		function coefficient(digit) { return digit == 1 ? '' : digit == -1 ? '-' : digit }																		//	+2021.9
+		function sup(x) {												//	+2021.9
+			if (x.is1()) return '';
+			var pow = x.toString(false, true).toString();
+			if (pow.includes('/')) pow = '(' + pow + ')';
+			return '^' + pow;
+		}
 	}
 
 	//eval(base) {

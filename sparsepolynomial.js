@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2021
+// Date:    9/30/2021
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -45,7 +45,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			} else if (node.fn == 'unaryPlus') {
 				var c = new sparsepolynomial([], this.pv.parse(0)).add(a);				//	2018.9	this.pv
 			} else {
-				//var b = new sparsepolynomial().parse(kids[1]);	// sparsepolynomial handles unpreprocessed kid   2015.11	//	2019.2	Removed
 				var b = this.parse(kids[1]);																					//	2019.2	this
 				//var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);	//	-2021.6
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '^') ? a.pow(b) : (node.op == '&') ? a.at(b) : a.eval(b);	//	+2021.6
@@ -100,15 +99,19 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		var ret = '';
 		for (var i = points.length - 1; i >= 0 ; i--) {     // reverse 2016.12
 			var power = points[i][1];
-			var digit = points[i][0];
-			if (!digit.is0()) {
+			//var digit = points[i][0];							//	-2021.9
+			//if (!digit.is0()) {								//	-2021.9
+			var digit = points[i][0].toString(false,'medium');	//	+2021.9
+			if (digit != 0) {									//	+2021.9
 				ret += '+';
 				if (power.is0())
 					//ret += digit.toString(false, true);	//	-2020.5
-					ret += digit.toString(false);			//	+2020.5
+					//ret += digit.toString(false);			//	+2020.5	//	-2021.9
+					ret += digit;										//	+2021.9
 				else {
 					//ret += (!digit.is1() ? (!digit.negate().is1() ? digit : '-') : '').toString(false, true);	//	-2020.5
-					ret += (!digit.is1() ? (!digit.negate().is1() ? digit : '-') : '').toString(false);			//	+2020.5
+					//ret += (!digit.is1() ? (!digit.negate().is1() ? digit : '-') : '').toString(false);		//	+2020.5	//	-2021.9
+					ret += coefficient(digit);																				//	+2021.9
 					for (var j = 0; j < power.mantisa.length; j++) {
 						if (!power.get(j).is0()) ret += this.base[j] + sup(power.get(j));
 						if (power.get(j).is1()) ret += '*';
@@ -121,11 +124,13 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		if (ret[0] == '+') ret = ret.substring(1);
 		if (ret == '') ret = '0';
 		return ret;
+		function coefficient(digit) { return digit == 1 ? '' : digit == -1 ? '-' : digit }	//	+2021.9
 		function sup(x) {
 			if (x.is1()) return '';
 			var pow = x.toString(false, true).toString();
 			if (pow.indexOf('/') > -1) pow = '(' + pow + ')';   //  2018.1
-			return (!x.is1()) ? '^' + pow : '';
+			//return (!x.is1()) ? '^' + pow : '';				//	-2021.9
+			return '^' + pow;									//	+2021.9
 		}
 	}
 

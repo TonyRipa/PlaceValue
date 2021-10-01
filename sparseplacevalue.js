@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    6/30/2021
+// Date:    9/30/2021
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -260,8 +260,6 @@ class sparseplacevalue {			//	2019.4	Added
 	pointadd(addend) {
 		this.check(addend);
 		var ret = this.clone().points;
-		//var digit = rational.parse(0);
-		//for (var i = 0; i < addend.points.length; i++) if (addend.points[i][1][0].is0() && addend.points[i][1][1].is0()) digit = addend.points[i][0];
 		var digit = addend.get(0);  //  2017.7
 		for (var i = 0; i < ret.length; i++) ret[i][0] = ret[i][0].add(digit);
 		return new sparseplacevalue(ret);
@@ -325,19 +323,33 @@ class sparseplacevalue {			//	2019.4	Added
 		return new this.constructor([this.points.shift()]);
 	}
 
-	sqrt() {	//	+2021.6
-		var rad = this.clone().at(this.parse('1E1'));
-		var iter = 4;
-		var popped = rad.pop0();
-		var root = sqrth(rad, popped.pow(.5).points, iter);
-		return root.at(this.parse('1E1'));
-		function sqrth(rad, root, c) {
-			if (c == 0) return new sparseplacevalue(root);
-			var rootdigit = new sparseplacevalue([rad.points[0]]).divide(new sparseplacevalue([root[0]]));
-			var remainder = rad.sub(new sparseplacevalue([...root,rootdigit.unscale(4).points[0]]).times(rootdigit));
-			root.push(rootdigit.unscale(2).points[0]);
-			return sqrth(remainder, root, c - 1);
+	//sqrt() {	//	+2021.6		//	-2021.9
+	//	var rad = this.clone().at(this.parse('1E1'));
+	//	var iter = 4;
+	//	var popped = rad.pop0();
+	//	var root = sqrth(rad, popped.pow(.5).points, iter);
+	//	return root.at(this.parse('1E1'));
+	//	function sqrth(rad, root, c) {
+	//		if (c == 0) return new sparseplacevalue(root);
+	//		var rootdigit = new sparseplacevalue([rad.points[0]]).divide(new sparseplacevalue([root[0]]));
+	//		var remainder = rad.sub(new sparseplacevalue([...root,rootdigit.unscale(4).points[0]]).times(rootdigit));
+	//		root.push(rootdigit.unscale(2).points[0]);
+	//		return sqrth(remainder, root, c - 1);
+	//	}
+	//}
+
+	root(n, answer = null) {	//	+2021.9
+		if (answer == null) {
+			var rad = this.clone().at(this.parse('1E1'));
+			var popped = rad.pop0();
+			return rad.root(n, popped.pow(this.datatype.parse(1).unscale(n)).points).at(this.parse('1E1'));
 		}
+		if (answer.length == 5) return new this.constructor(answer);
+		var den = new this.constructor([answer[0]]).pow(n-1).scale(n);
+		var digit = new this.constructor([this.points[0]]).divide(den);
+		var gain = new this.constructor([...answer,digit.points[0]]).pow(n).sub(new this.constructor(answer).pow(n));
+		answer.push(digit.points[0]);
+		return this.sub(gain).root(n, answer);
 	}
 
 	withoutmsb() {	//	2019.7
@@ -412,7 +424,9 @@ class sparseplacevalue {			//	2019.4	Added
 			if (power.points[0][0].isneg()) return new sparseplacevalue(this.datatype).parse(1).divide(this.pow(new sparseplacevalue([[power.points[0][0].negate(), new wholeplacevalue(this.datatype)]])));
 			if (power.points[0][0].isint()) return this.times(this.pow(power.sub(new sparseplacevalue(this.datatype).parse(1))));
 			if (!power.get(0).isint()) {	//	+2021.6
-				if (power.get(0).toreal() == .5) return this.sqrt();
+				//if (power.get(0).toreal() == .5) return this.sqrt();	//	-2021.9
+				power = rational.parse(power.get(0).toString());		//	+2021.9
+				if (power.n == 1) return this.root(power.d);			//	+2021.9
 				alert('SPV .Bad Exponent = ' + power.tohtml());
 				return this.parse('%');
 			}

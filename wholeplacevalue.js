@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	8/31/2021
+// Date:	9/30/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -237,8 +237,10 @@ class wholeplacevalue {	//	+2020.11
 			//if(power.get(0).toreal()!= Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' +power.tohtml());return wholeplacevalue.parse('%')}//-2020.11
 			//if (power.get(0).toreal() != Math.round(power.get(0).toreal())){alert('WPV .Bad Exponent = ' + power.tohtml());return this.parse('%') }//+2020.11//-2021.1
 			if (!power.get(0).isint()) {	//	+2021.1
-				if (power.get(0).toreal() == .5) return this.sqrt();
-				if (['⅓','3⁻¹'].includes(power.get(0).toString())) return this.qbrt();	//	+2021.7
+				//if (power.get(0).toreal() == .5) return this.sqrt();								//	-2021.9
+				//if (['⅓','3⁻¹'].includes(power.get(0).toString())) return this.qbrt();//	+2021.7	//	-2021.9
+				power = rational.parse(power.get(0).toString());									//	+2021.9
+				if (power.n == 1) return this.root(power.d);										//	+2021.9
 				alert('WPV .Bad Exponent = ' + power.tohtml());
 				return this.parse('%');
 			}
@@ -296,7 +298,6 @@ class wholeplacevalue {	//	+2020.11
 				sum.push(this.get(b).times(top.get(t)));	//	2020.1	Added
 			}
 			for (var i = 0; i < b; i++) sum.unshift(new this.datatype()); // change push to unshift because L2R   2015.7
-			//prod = prod.add(new wholeplacevalue(sum));				//	2020.1	Removed
 			prod = prod.add(new wholeplacevalue(sum,this.datatype));	//	2020.1	Added
 		}
 		return prod;
@@ -334,28 +335,38 @@ class wholeplacevalue {	//	+2020.11
 	//	}
 	//}
 
-	sqrt(answer = null) {	//	+2021.7
-		//if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(.5)]);								//	-2021.8
-		if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(this.datatype.parse(1).unscale(2))]);	//	+2021.8
-		if (answer.length == 5) return new this.constructor(answer);
-		var den = answer[0].pow(1).scale(2);					//	+2021.8
-		var digit = this.get(0).unscale(den);					//	+2021.8
-		//var digit = this.get(0).divide(answer[0].scale(2));	//	-2021.8
-		var gain = new this.constructor([...answer,digit]).pow(2).sub(new this.constructor(answer).pow(2)).div10s(answer.length);
-		answer.push(digit);
-		return this.sub(gain).div10s(1).sqrt(answer);
-	}
+	//sqrt(answer = null) {	//	+2021.7		//	-2021.9
+	//	//if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(.5)]);								//	-2021.8
+	//	if (answer == null) return this.div10s(1).sqrt([this.get(0).pow(this.datatype.parse(1).unscale(2))]);	//	+2021.8
+	//	if (answer.length == 5) return new this.constructor(answer);
+	//	var den = answer[0].pow(1).scale(2);					//	+2021.8
+	//	var digit = this.get(0).unscale(den);					//	+2021.8
+	//	//var digit = this.get(0).divide(answer[0].scale(2));	//	-2021.8
+	//	var gain = new this.constructor([...answer,digit]).pow(2).sub(new this.constructor(answer).pow(2)).div10s(answer.length);
+	//	answer.push(digit);
+	//	return this.sub(gain).div10s(1).sqrt(answer);
+	//}
 
-	qbrt(answer = null) {	//	+2021.7
-		//if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.parse('⅓').get(0))]);			//	-2021.8
-		if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.datatype.parse(1).unscale(3))]);	//	+2021.8
-		if (answer.length == 6) return new this.constructor(answer);
-		var den = answer[0].pow(2).scale(3);						//	+2021.8
-		var digit = this.get(0).divide(den);						//	+2021.8
-		//var digit = this.get(0).divide(answer[0].pow(2).scale(3));//	-2021.8
-		var gain = new this.constructor([...answer,digit]).pow(3).sub(new this.constructor(answer).pow(3)).div10s(answer.length);
+	//qbrt(answer = null) {	//	+2021.7		//	-2021.9
+	//	//if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.parse('⅓').get(0))]);			//	-2021.8
+	//	if (answer == null) return this.div10s(1).qbrt([this.get(0).pow(this.datatype.parse(1).unscale(3))]);	//	+2021.8
+	//	if (answer.length == 6) return new this.constructor(answer);
+	//	var den = answer[0].pow(2).scale(3);						//	+2021.8
+	//	var digit = this.get(0).divide(den);						//	+2021.8
+	//	//var digit = this.get(0).divide(answer[0].pow(2).scale(3));//	-2021.8
+	//	var gain = new this.constructor([...answer,digit]).pow(3).sub(new this.constructor(answer).pow(3)).div10s(answer.length);
+	//	answer.push(digit);
+	//	return this.sub(gain).div10s(1).qbrt(answer);
+	//}
+
+	root(n, answer = null) {	//	+2021.9
+		if (answer == null) return this.div10s(1).root(n, [this.get(0).pow(this.datatype.parse(1).unscale(n))]);
+		if (answer.length == 5) return new this.constructor(answer);
+		var den = answer[0].pow(n-1).scale(n);
+		var digit = this.get(0).divide(den);
+		var gain = new this.constructor([...answer,digit]).pow(n).sub(new this.constructor(answer).pow(n)).div10s(answer.length);
 		answer.push(digit);
-		return this.sub(gain).div10s(1).qbrt(answer);
+		return this.sub(gain).div10s(1).root(n, answer);
 	}
 
 	//static getDegree(me) {			//	2018.6	1-arg	//	-2021.6

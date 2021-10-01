@@ -1,6 +1,6 @@
 
-// Author:  Anthony John Ripa
-// Date:    7/31/2021
+// Author:	Anthony John Ripa
+// Date:	9/30/2021
 // Polynomial1: a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
@@ -68,25 +68,21 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial1(1, this.pv.parse('%')) }			//	2019.2	this.pv
 	}
 
-	//polynomial1.prototype.pow = function (other) { // 2015.6
-	//    return new polynomial1(this.base, this.pv.pow(other.pv));
-	//}
-
 	toString() {
 		var pv = this.pv;
 		var base = this.base;
 		console.log('polynomial1: pv = ' + pv);
 		var x = pv.mantisa;
 		console.log('polynomial1.toStringXbase: x=' + x);
-		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
-			x.pop();                                    // Replace shift with pop because L2R 2015.7
-			return polynomial1.toStringXbase(new wholeplacevalue(x), base);  // added namespace  2015.7
+		if (x[x.length - 1] == 0 && x.length > 1) {		//	Replace 0 w x.length-1 because L2R 2015.7
+			x.pop();									//	Replace shift with pop because L2R 2015.7
+			return polynomial1.toStringXbase(new wholeplacevalue(x), base);	//	added namespace  2015.7
 		}
 		var ret = '';
 		//var str = x//.toString().replace('.', '');	//	-2021.7
 		var maxbase = x.length - 1
-		for (var power = maxbase; power >= 0; power--) {					// power is index because whole is L2R  2015.7 
-			//var digit = Math.round(1000 * str[power].toreal()) / 1000;	// toreal  2016.7 
+		for (var power = maxbase; power >= 0; power--) {					//	power is index because whole is L2R	2015.7
+			//var digit = Math.round(1000 * str[power].toreal()) / 1000;	//	toreal	2016.7 
 			//var digit = str[power].toString(false, true);		//	-2020.5
 			//var digit = str[power].toString(false,'medium');	//	+2020.5	//	-2021.7
 			var digit = x[power].toString(false,'medium');					//	+2021.7
@@ -94,10 +90,11 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 				ret += '+';
 				if (power == 0)
 					ret += digit;
-				else if (power == 1)
-					ret += coefficient(digit) + base;
+				//else if (power == 1)									//	-2021.9
+				//	ret += coefficient(digit) + base;					//	-2021.9
 				else
-					ret += coefficient(digit) + base + '^' + power;
+					ret += coefficient(digit) + base + sup(power);		//	+2021.9
+					//ret += coefficient(digit) + base + '^' + power;	//	-2021.9
 			}
 			console.log('polynomial1.toStringXbase: power=' + power + ', digit=' + digit + ', ret=' + ret);
 		}
@@ -106,7 +103,12 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		if (ret.startsWith('+')) ret = ret.substring(1);	//	+2021.7
 		if (ret == '') ret = '0';
 		return ret;
-		function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }
+		//function coefficient(digit) { return (digit == 1 ? '' : digit == -1 ? '-' : digit).toString() + (isFinite(digit) ? '' : '*') }	//	-2021.9
+		function coefficient(digit) { return digit == 1 ? '' : digit == -1 ? '-' : digit }													//	+2021.9
+		function sup(x) {												//	+2021.9
+			if (x == 1) return '';
+			return '^' + x;
+		}
 	}
 
 }
