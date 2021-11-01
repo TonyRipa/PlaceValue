@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/30/2021
+Date : 10/31/2021
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -149,7 +149,7 @@ If Polynomial2 wants to calculate (x+h)^2, then it asks WholePlaceValue2 to calc
        1          20
 ( 10 + 0 ) ^ 2 = 100
 </pre>
-Polynomial2 then formats WholePlaceValue2's result as x^2+2x*h+h^2.
+Polynomial2 then formats WholePlaceValue2's result as x^2+2x\*h+h^2.
 
 If Polynomial2 wants to calculate ((x+h)^2 - x^2)/h|0, then it asks WholePlaceValue2 to calculate:
 <pre>
@@ -591,6 +591,8 @@ What if I want to represent 12π. Now I may be in trouble. I can represent this 
 </pre>
 
 I used a digital approximation. I don't have access to an exact block of height (π-3). And if I did how could you confirm just from the height that it was exactly (π-3)? It may be possible but it is not clear.
+
+Furthermore, we may allow negative digits.
 
 In sum, it seems that if we are not graphing real numbers just integers (and maybe rationals too), then there is no distinction between the sequence and the graph of a sequence, for appropriate choice of digit representation. On the bright side, for real numbers, we can think that digital approximations, and analog approximations are the same, for appropriate choice of digit representation.
 

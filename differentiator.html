@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	10/31/2021
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -84,7 +84,7 @@
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td><!--<button onclick="moveanswer('#b','#a')">↑</button>--></td><td id="bo">&nbsp;</td></tr>
+		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option selected>|</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><!--<button onclick="moveanswer('#c','#b')">↑</button>--></td><td id="co"></td></tr>
 	</table>
 	<script type="text/javascript">
@@ -103,7 +103,10 @@
 				if (i) str = str.replace(/exp/g, 'i*cis');
 				console.log('diffexp');
 				$('#a').val($('#func').val());
-				$('#b').val(str.replace(/@/g, new f().parse($('#func').val()).base));
+				//$('#b').val(str.replace(/@/g, new f().parse($('#func').val()).base));	//	-2021.10
+				var base = new f().parse($('#func').val()).base;						//	+2021.10
+				if (base == 1) base = 'x';												//	+2021.10
+				$('#b').val(str.replace(/@/g, base));									//	+2021.10
 				$('#op').val('⊗');
 				compute();
 			}

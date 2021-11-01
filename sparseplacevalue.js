@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    9/30/2021
+// Date:    10/31/2021
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -189,14 +189,27 @@ class sparseplacevalue {			//	2019.4	Added
 			for (var [coef,power] of this.points) {
 				var color = 200;
 				var x = power.get(0).toreal();
+			if (coef.toreal() >= 0)						//	+2021.10
 				for (let i = 0; i<coef.toreal(); i++) {
 					var h = (i+1>coef.toreal()) ? coef.toreal()-i : 1;
 					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${50*i}" fill='rgb(${color},${color},${color})'/>`;
 				}
+			else
+				for (let i = 0; i<-coef.toreal(); i++) {
+					var h = (i+1>-coef.toreal()) ? -coef.toreal()-i : 1;
+					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${-50*(i+1)}" fill='rgb(${color},${color},${color})'/>`;
+				}
 			}
-			var w = (1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50;
-			var h = (math.max(1,this.points.map(point=>point[0].toreal())))*50;
-			return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`
+			//var w = (1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50;	//	-2021.10
+			//var h = (math.max(1,this.points.map(point=>point[0].toreal())))*50;			//	-2021.10
+			var x1 = (math.min(0,this.points.map(point=>point[1].get(0).toreal())))*50;		//	+2021.10
+			var x2 = (math.max(0,this.points.map(point=>point[1].get(0).toreal()+1)))*50;	//	+2021.10
+			var y1 = (math.min(0,this.points.map(point=>point[0].toreal()))) * 50;			//	+2021.10
+			var y2 = (math.max(0,this.points.map(point=>point[0].toreal()))) * 50;			//	+2021.10
+			ret += `<line x1="${x1}" x2="${x2}" y1="0" y2="0" stroke='black' />`;			//	+2021.10
+			ret += `<line y1="${y1}" y2="${y2}" x1="0" x2="0" stroke='black' />`;			//	+2021.10
+			//return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`	//	-2021.10
+			return `<svg transform="scale(1,-1)" height='100px' viewbox='${x1} ${y1} ${x2-x1} ${y2-y1}'><g stroke='#789'>${ret}</g></sgv>`;						//	+2021.10
 		}
 		function tosvg2() {								//	+2020.6
 			var ret = '';
@@ -291,8 +304,6 @@ class sparseplacevalue {			//	2019.4	Added
 		if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);	//	2019.2	datatype()
 		var ret = this.clone();
 		ret.points = ret.points.map(function (x) { return [x[0].divide(scalar), x[1]]; });
-		//for (var r = 0; r < ret.mantisa.length; r++)
-		//    ret.mantisa[r] = ret.mantisa[r].divide(scalar);
 		return ret;
 	}
 

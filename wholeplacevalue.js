@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	9/30/2021
+// Date:	10/31/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -138,15 +138,25 @@ class wholeplacevalue {	//	+2020.11
 			var color = 200;
 			//var coef = this.mantisa[x];				//	-2020.12
 			var coef = arr[x];							//	+2020.12
-			for (let i = 0; i<coef.toreal(); i++) {
-				var h = (i+1>coef.toreal()) ? coef.toreal()-i : 1;
-				ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${50*i}" fill='rgb(${color},${color},${color})'/>`;
-			}
+			if (coef.toreal() >= 0)						//	+2021.10
+				for (let i = 0; i<coef.toreal(); i++) {
+					var h = (i+1>coef.toreal()) ? coef.toreal()-i : 1;
+					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${50*i}" fill='rgb(${color},${color},${color})'/>`;
+				}
+			else
+				for (let i = 0; i<-coef.toreal(); i++) {
+					var h = (i+1>-coef.toreal()) ? -coef.toreal()-i : 1;
+					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${-50*(i+1)}" fill='rgb(${color},${color},${color})'/>`;
+				}
 		}
 		var w = this.mantisa.length * 50;
-		//var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;	//	-2020.12
-		var h = (math.max(1,arr.map(y=>y.toreal()))) * 50;				//	+2020.12
-		return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`
+		//var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;			//	-2020.12
+		var y1 = (math.min(0,arr.map(y=>y.toreal()))) * 50;						//	+2021.10
+		var y2 = (math.max(1,arr.map(y=>y.toreal()))) * 50;						//	+2021.10
+		ret += `<line y1="0" y2="0" x1="0"     x2="${w }" stroke='black' />`;	//	+2021.10
+		ret += `<line x1="0" x2="0" y1="${y1}" y2="${y2}" stroke='black' />`;	//	+2021.10
+		//return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`	//	-2021.10
+		return `<svg transform="scale(1,-1)" height='100px' viewbox='0 ${y1} ${w} ${y2-y1}'><g stroke='#789'>${ret}</g></sgv>`;								//	+2021.10
 	}
 
 	equals(other) {
@@ -390,7 +400,6 @@ class wholeplacevalue {	//	+2020.11
 		var quotient = divideh(num, den, iter);
 		return quotient;
 		function divideh(num, den, c) {
-			//if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
 			if (c == 0) return new wholeplacevalue([new num.datatype().parse(0)]);											//	2020.1	Added
 			//var d = wholeplacevalue.getDegree(den);		//	2018.6	arg=den							//	-2021.6
 			var d = den.getDegree();																	//	+2021.6
