@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2021
+// Date:    11/30/2021
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -259,7 +259,6 @@ class sparseplacevalue1 {
 			var n = num.points.slice(-1)[0];
 			var d = den.points.slice(-1)[0];
 			var quotient = new num.constructor([[n[0].divide(d[0]), n[1].sub(d[1])]]);     //  Works even for non-truncating division  2016.10
-			//if (d.val == 0) return quotient;
 			if (d[0].is0()) return quotient;						//	2018.6	for 1/0
 			var remainder = num.sub(quotient.times(den))
 			var q2 = divideh(remainder, den, c - 1);
@@ -307,9 +306,10 @@ class sparseplacevalue1 {
 			if (!power.get(0).isint()) {	//	+2021.4
 				//if (power.get(0).toreal() == .5) return this.sqrt();	//	-2021.9
 				power = rational.parse(power.get(0).toString());		//	+2021.9
-				if (power.n == 1) return this.root(power.d);			//	+2021.9
-				alert('SPV1 .Bad Exponent = ' + power.tohtml());
-				return this.parse('%');
+				return this.pow(power.n).root(power.d);								//	+2021.11
+				//if (power.n == 1) return this.root(power.d);			//	+2021.9	//	-2021.11
+				//alert('SPV1 .Bad Exponent = ' + power.tohtml());					//	-2021.11
+				//return this.parse('%');											//	-2021.11
 			}
 			//return this.times(this.pow(power.sub(this.constructor.parse(1))));
 		} else if (this.points.length == 1) {

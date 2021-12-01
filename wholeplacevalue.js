@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	10/31/2021
+// Date:	11/30/2021
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -250,9 +250,10 @@ class wholeplacevalue {	//	+2020.11
 				//if (power.get(0).toreal() == .5) return this.sqrt();								//	-2021.9
 				//if (['⅓','3⁻¹'].includes(power.get(0).toString())) return this.qbrt();//	+2021.7	//	-2021.9
 				power = rational.parse(power.get(0).toString());									//	+2021.9
-				if (power.n == 1) return this.root(power.d);										//	+2021.9
-				alert('WPV .Bad Exponent = ' + power.tohtml());
-				return this.parse('%');
+				return this.pow(power.n).root(power.d);															//	+2021.11
+				//if (power.n == 1) return this.root(power.d);										//	+2021.9	//	-2021.11
+				//alert('WPV .Bad Exponent = ' + power.tohtml());												//	-2021.11
+				//return this.parse('%');																		//	-2021.11
 			}
 			//if (power.get(0).toreal() < 0) return this.parse(0);		//	2018.1	this.parse		//	-2020.5
 			if (power.get(0).toreal() < 0) return this.parse(1).divide(this.pow(power.negate()));	//	+2020.5
@@ -441,7 +442,6 @@ class wholeplacevalue {	//	+2020.11
 		return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
 		function divideh(num, den, c) {
 			num.check(den);
-			//if (c == 0) return new wholeplacevalue([new num.datatype()], 'wholeplacevalue.prototype.divide >');	//	2020.1	Removed
 			if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added
 			//var d = wholeplacevalue.getDegreeLeft(den.mantisa);	//	2020.1	Removed
 			//var d = wholeplacevalue.getDegreeLeft(den);			//	2020.1	Added	//	-2021.7

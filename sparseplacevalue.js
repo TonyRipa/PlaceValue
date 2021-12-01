@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2021
+// Date:    11/30/2021
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -429,7 +429,6 @@ class sparseplacevalue {			//	2019.4	Added
 		this.check(power);
 		if (power.points.length == 1 & power.points[0][1].is0()) {//alert(power.points[0][1])
 			var base = this.points[0];
-			//if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), new wholeplacevalue(base[1].mantisa.map(x=>x.times(power.points[0][0])))]]);
 			if (this.points.length == 1) return new sparseplacevalue([[base[0].pow(power.points[0][0]), base[1].scale(power.points[0][0])]]);
 			if (power.points[0][0].is0()) return new sparseplacevalue(this.datatype).parse(1);
 			if (power.points[0][0].isneg()) return new sparseplacevalue(this.datatype).parse(1).divide(this.pow(new sparseplacevalue([[power.points[0][0].negate(), new wholeplacevalue(this.datatype)]])));
@@ -437,9 +436,10 @@ class sparseplacevalue {			//	2019.4	Added
 			if (!power.get(0).isint()) {	//	+2021.6
 				//if (power.get(0).toreal() == .5) return this.sqrt();	//	-2021.9
 				power = rational.parse(power.get(0).toString());		//	+2021.9
-				if (power.n == 1) return this.root(power.d);			//	+2021.9
-				alert('SPV .Bad Exponent = ' + power.tohtml());
-				return this.parse('%');
+				return this.pow(power.n).root(power.d);								//	+2021.11
+				//if (power.n == 1) return this.root(power.d);			//	+2021.9	//	-2021.11
+				//alert('SPV .Bad Exponent = ' + power.tohtml());					//	-2021.11
+				//return this.parse('%');											//	-2021.11
 			}
 		}
 		if (this.points.length == 1) {  //  2017.9

@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	9/30/2021
+// Date:	11/30/2021
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -109,7 +109,6 @@ class rational extends digit {				//	2019.11.Added
 		var signfrac = '(' + '[\+\-]?' + frac + ')';
 		var parensignfrac = '(\\(' + signfrac + '\\))';				//	+2020.6
 		return '(' + parensignfrac + '|' + signfrac + ')';			//	+2020.6
-		//return signfrac;											//	-2020.6
 	}
 
 	static regexfull() {   //  2017.11
@@ -119,14 +118,30 @@ class rational extends digit {				//	2019.11.Added
 	//toreal() { return this.n / this.d; }																	//	-2021.7
 	toreal() { return this.d!=0 ? this.n / this.d : this.n==0 ? NaN : this.n>0 ? Infinity : -Infinity; }	//	+2021.7
 
-	todigit() {
+	//todigit() {	//	-2021.11
+	//	var IMAG = String.fromCharCode(777);
+	//	var NEG = String.fromCharCode(822);
+	//	var s = this.toString(false, false);
+	//	if (!(s instanceof String)) s = s.toString();
+	//	var len = s.length - (s.split(NEG).length - 1) - (s.split(IMAG).length - 1)
+	//	if (len > 1 && s[0] != '(') return '(' + s + ')';
+	//	return s;
+	//}
+
+	todigit() {		//	+2021.11
+		var INVERSE = String.fromCharCode(8315) + String.fromCharCode(185);
 		var IMAG = String.fromCharCode(777);
 		var NEG = String.fromCharCode(822);
-		var s = this.toString(false, false);
-		if (!(s instanceof String)) s = s.toString();
-		var len = s.length - (s.split(NEG).length - 1) - (s.split(IMAG).length - 1)
-		if (len > 1 && s[0] != '(') return '(' + s + ')';
-		return s;
+		var NEGBEG = '';
+		var NEGEND = NEG;
+		var long = false;
+		var candidate1 = this.digitpair(NEGBEG, NEGEND, long);
+		if (!(candidate1 instanceof String)) candidate1 = candidate1.toString();
+		if (!candidate1.includes(INVERSE) && len(candidate1) > 1 && candidate1[0] != '(') candidate1 = '(' + candidate1 + ')';
+		var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString();
+		if (!candidate2.includes(INVERSE) && len(candidate2) > 1 && candidate2[0] != '(') candidate2 = '(' + candidate2 + ')';
+		return (len(candidate1) <= len(candidate2)) ? candidate1 : candidate2;
+		function len(s) { return s.replace('<s>','').replace('</s>','').replace(NEG,'').replace(IMAG,'').length; }
 	}
 
 	tohtml(short) {
@@ -138,14 +153,29 @@ class rational extends digit {				//	2019.11.Added
 		return this.n + ' / ' + this.d;
 	}
 
-	toString(sTag, long) {   //  2015.11 sTag    2017.6  long
-		if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;	//	2017.7	//	+2020.5
+	//toString(sTag, long) {   //  2015.11 sTag    2017.6  long	//	-2021.11
+	//	if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;	//	2017.7	//	+2020.5
+	//	var NEGBEG = long ? '-' : sTag ? '<s>' : '';
+	//	var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
+	//	var candidate1 = this.digitpair(NEGBEG, NEGEND, long);
+	//	//var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString().replace('(0.', '(.').replace('(-0.', '(-.');	//	-2021.9
+	//	var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString();												//	+2021.9
+	//	return (candidate1.length <= candidate2.replace('<s>', '').replace('</s>', '').length) ? candidate1 : candidate2;
+	//}
+
+	toString(sTag, long) {										//	+2021.11
+		if (long==true) return this.d == 1 ? this.n : this.n + '/' + this.d;
+		var IMAG = String.fromCharCode(777);
+		var NEG = String.fromCharCode(822);
 		var NEGBEG = long ? '-' : sTag ? '<s>' : '';
-		var NEGEND = long ? '' : sTag ? '</s>' : String.fromCharCode(822);
+		var NEGEND = long ? '' : sTag ? '</s>' : NEG;
 		var candidate1 = this.digitpair(NEGBEG, NEGEND, long);
-		//var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString().replace('(0.', '(.').replace('(-0.', '(-.');	//	-2021.9
-		var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString();												//	+2021.9
-		return (candidate1.length <= candidate2.replace('<s>', '').replace('</s>', '').length) ? candidate1 : candidate2;
+		if (!(candidate1 instanceof String)) candidate1 = candidate1.toString();
+		if (candidate1[0]=='(') candidate1 = candidate1.slice(1,-1);
+		var candidate2 = this.digithelp(this.toreal(), NEGBEG, NEGEND, long).toString();
+		if (candidate2[0]=='(') candidate2 = candidate2.slice(1,-1);
+		return (len(candidate1) < len(candidate2)) ? candidate1 : candidate2;
+		function len(s) { return s.replace('<s>','').replace('</s>','').replace(NEG,'').replace(IMAG,'').length; }
 	}
 
 	digitpair(NEGBEG, NEGEND, long) {  // 2015.12
@@ -160,6 +190,7 @@ class rational extends digit {				//	2019.11.Added
 		var a = Math.round(num * 1000) / 1000
 		var b = Math.round(den * 1000) / 1000
 		if (.99 < den && den < 1.01) return this.digithelp(num, NEGBEG, NEGEND, long);
+		if (long == 'medium') return a + '/' + b;	//	+2021.11
 		return '(' + a + '/' + b + ')';
 	}
 

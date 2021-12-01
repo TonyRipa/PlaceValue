@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	8/31/2021
+// Date:	11/30/2021
 // Complex:	A data-type for representing Complex Numbers
 
 class complex extends digit {		//	2019.11	Added
@@ -96,12 +96,22 @@ class complex extends digit {		//	2019.11	Added
 		return s;
 	}
 
-	toString(sTag, long) {                        //  sTag    2015.11
-		if (sTag) return this.digitpair('<s>', '</s>', true, long);
-		return this.digitpair('', String.fromCharCode(822), false, long);
+	//toString(sTag, long) {                        //  sTag    2015.11	//	-2021.11
+	//	if (sTag) return this.digitpair('<s>', '</s>', true, long);
+	//	return this.digitpair('', String.fromCharCode(822), false, long);
+	//}
+
+	toString(sTag, long) {												//	+2021.11
+		var NEG = String.fromCharCode(822);
+		var NEGBEG = long ? '-' : sTag ? '<s>' : '';
+		var NEGEND = long ? '' : sTag ? '</s>' : NEG;
+		var ret = this.digitpair(NEGBEG, NEGEND, long);
+		if (ret[0]=='(' && !ret.includes(',')) ret = ret.slice(1,-1);
+		return ret;
 	}
 
-	digitpair(NEGBEG, NEGEND, fraction, long) {  // 2015.12
+	//digitpair(NEGBEG, NEGEND, fraction, long) {  // 2015.12	//	-2021.11
+	digitpair(NEGBEG, NEGEND, long) {							//	+2021.11
 		// 185  189  822 8315   9321
 		// ^1   1/2  -   ^-     10
 		var IMAG = String.fromCharCode(777);
@@ -110,7 +120,6 @@ class complex extends digit {		//	2019.11	Added
 		var imag = digit[1];
 		var a = Math.round(real * 1000) / 1000
 		var b = Math.round(imag * 1000) / 1000
-		//if (real != real) return '%';
 		//if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);	//	-2020.5
 		if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, long);	//	+2020.5
 		if (real == 0) {
