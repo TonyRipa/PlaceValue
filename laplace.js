@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	6/30/2020
+// Date:	12/31/2021
 // Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -20,7 +20,6 @@ class laplace extends abstractpolynomial {
 		console.log(strornode)
 		console.log('</strornode>')
 		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laplace(a.base, new placevalue(this.pv.whole.parse(JSON.stringify(a.pv.whole.mantisa)), a.pv.exp)) }
-		//alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'ConstantNode') {
 			return new laplace(1, new placevalue(new wholeplacevalue(complex).parse('(' + Number(node.value) + ')'), 0));  //  Add paren for 2 digit numbers   2016.7
@@ -105,6 +104,7 @@ class laplace extends abstractpolynomial {
 		//alert(JSON.stringify(s))
 		[s, trigreal] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('1'), 0)), '');
 		[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed	//	--2020.6
+		s = s.unscale(new complex(0,-1));																									//	+2021.12
 		var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');											//	2019.5	Removed	//	--2020.6
 		//var ret = trigreal;																							//	2019.5	Added	//	-2020.6
 		ret += '+' + laplace.toStringXbase(s, base);
@@ -119,7 +119,8 @@ class laplace extends abstractpolynomial {
 			var c;			//	2019.11	Added
 			var k = 1;
 			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }
-			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1
+			//if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1	//	-2021.12
+			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, 0, 0, 0, 0, 0, c, 0]); }							//	+2021.12
 			//if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Removed
 			if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + coef(c) + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Added
 			if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + c + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }

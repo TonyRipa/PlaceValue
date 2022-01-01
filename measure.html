@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    3/31/2020
+   Date:    12/31/2021
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,6 +13,7 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")</script>	<!-- +2021.12 -->
 	<script src='digit.js'></script>    <!--    2019.11 Added   -->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -110,7 +111,6 @@
 				var conditional = (new f().parse(shapes[Math.min(L, R)])).divide(new f().parse(shapes[L]))
 				var support = conditional.divide(likelihood)
 				$('#op').val('x');
-				//pop(support.toString(), prior.toString());//	-2020.3
 				pop(shapes[L], support.toString());			//	+2020.3
 				$('#p').text($('#c').val())
 				return;
