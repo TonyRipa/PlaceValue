@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	11/30/2021
+// Date:	01/31/2022
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -35,11 +35,17 @@ class wholeplacevalue {	//	+2020.11
 			if (!(this.datatype == ret.datatype)) { var s = "wholeplacevalue.parse's arg different digit datatype\n" + this.datatype + '\n' + ret.datatype; alert(s); throw new Error(s); } //  2018.2
 			return ret;
 		}
-		var mantisa = tokenize(man);
+		man = man.toString();								//	+2022.01
+		var coefpow = man.split('E');						//	+2022.01
+		var coef = coefpow[0];								//	+2022.01
+		var pow = coefpow[1] ?? '0';						//	+2022.01
+		var mantisa = tokenize(coef);						//	+2022.01
+		//var mantisa = tokenize(man);						//	-2022.01
 		for (var i = 0; i < mantisa.length; i++)
 			mantisa[i] = new this.datatype().parse(mantisa[i]);
 		if (mantisa.length == 0) return new wholeplacevalue(this.datatype); //  2017.12
-		return new wholeplacevalue(mantisa);
+		//return new wholeplacevalue(mantisa);				//	-2022.01
+		return new wholeplacevalue(mantisa).times10s(pow);	//	+2022.01
 		function tokenize(n) {  //  2016.6
 			// 185  189  777 822 8315   9321
 			// ^1   1/2  ^   -   ^-     10
@@ -443,7 +449,6 @@ class wholeplacevalue {	//	+2020.11
 		function divideh(num, den, c) {
 			num.check(den);
 			if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added
-			//var d = wholeplacevalue.getDegreeLeft(den.mantisa);	//	2020.1	Removed
 			//var d = wholeplacevalue.getDegreeLeft(den);			//	2020.1	Added	//	-2021.7
 			var d = den.getDegreeLeft();												//	+2021.7
 			//var quotient = shift(num, d.deg).unscale(d.val, 'wholeplacevalue.prototype.divide >');	//	-2021.1

@@ -1,10 +1,11 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	01/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Diff E.Q.</title>
@@ -24,7 +25,6 @@
 	<script type="text/javascript" src='complexplacevalue.js'></script>
 	<script type="text/javascript" src='complexlaurent.js'></script>
 	<script type="text/javascript" src='complexexponential.js'></script>
-	<!--	<script type="text/javascript" src='placevaluecomplex.js'></script>			2018.7	Removed	-->
 	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='abstractpolynomial.js'></script>		<!--	2018.6	Added	-->
 	<script type="text/javascript" src='laplace.js'></script>
@@ -65,7 +65,8 @@
 			var k = $('#k').val();
 			$('#k2').html(k);
 			var n = $('#d').val()
-			var s = '3exp(3x)+2exp(2x)+exp(x)-exp(-x)-2exp(-2x)-3exp(-3x)';
+			//var s = '3exp(3x)+2exp(2x)+exp(x)-exp(-x)-2exp(-2x)-3exp(-3x)';	//	-2022.01
+			var s = new exponential().parse('exp(x)').pointeval().toString();	//	+2022.01
 			f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Establish f before s 2015.12
 			if (f == fourier) s = s.replace(/exp/g, 'i*cis');
 			var s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';

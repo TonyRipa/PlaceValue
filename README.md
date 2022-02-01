@@ -4,11 +4,11 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2021
+Date : 01/31/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
-Live Demo at <a target='_blank' href='http://tonyripa.github.io/PlaceValue/'>http://tonyripa.github.io/PlaceValue/</a> (Need Firefox for Ubuntu 47.0+ or equivalent)
+Live Demo at <a target='_blank' href='http://tonyripa.github.io/PlaceValue/'>http://tonyripa.github.io/PlaceValue/</a> (Need Firefox 79.0+ or equivalent)
 
 Abstract
 -----------
@@ -664,4 +664,4 @@ External Dependencies
 
 System Requirements
 --------------------
-A standards-compliant browser (Firefox for Ubuntu 47.0+ or equivalent)
+A standards-compliant browser (Firefox 79.0+ or equivalent)

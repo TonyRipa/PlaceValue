@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	1/31/2021
+	Date:	01/31/2022
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -14,6 +14,8 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
+	<script src='../js/math.js'></script>																											<!-- +2022.01 -->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")</script>	<!-- +2022.01 -->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -81,7 +83,6 @@
 						a = new complex().parse(a.toString());	//	2018.7	Added	//	2019.11	Added
 						b = new complex().parse(b.toString());	//	2018.7	Added	//	2019.11	Added
 						c = new complex().parse(c.toString());	//	2018.7	Added	//	2019.11	Added
-						//return [(-b + Math.sqrt(b * b - 4 * a * c)) / (2 * a), (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a)]	//	2018.7	Removed
 						return [(b.negate().add(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2)),(b.negate().sub(b.times(b).sub(a.times(c).scale(4)).pow(.5))).divide(a.scale(2))];	//	2018.7	Added
 					}
 				}
