@@ -1,10 +1,11 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2020
+	Date:	02/28/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
+<!DOCTYPE html>	<!--	+2022.02	-->
 <html>
 <head>
 	<title>Calculus</title>
@@ -75,13 +76,18 @@
 			if (f instanceof fourier) for(var i = hi; i > lo; i--){var n=exp.pv.get(i); if(Array.isArray(n) ? (n[0]!=0 || n[1]!=0) : (n != 0)) nums.push(i);} //+2020.11
 			//if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }			//	-2020.11
 			if (f instanceof exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }	//	+2020.11
+			var s = new exponential().parse('exp(x)').pointeval(Math.max(...nums.map(Math.abs))).toString(true);	//	+2022.02
+			/*	-2022.02
 			var s = '';
-			for (var i = Math.max(0, nums[0]) ; i >= Math.min(0, nums.slice(-1)[0]) ; i--) {    //  2018.5  > -> >= need to include both endpoints so ½0.½ * 10.(-1) = ½0.(-½)
+			for (var i=Math.max(0,nums[0]);i>=Math.min(0,nums.slice(-1)[0]);i--) {//2018.5 > -> >= need to include both endpoints so ½0.½*10.(-1) = ½0.(-½)
 				if (i == 0) continue;   //  2018.5  UnRemoved so zero-term isn't needlessly calculated
 				var n = (i == 1) ? '' : (i == -1) ? '-' : i;
 				s += '+' + n + 'exp(' + n + '@)';
 			}
+			*/
 			//if (f == fourier) s = s.replace(/exp/g, 'i*cis');			//	-2020.11
+			if (f instanceof fourier) s = s.replace(/(cosh\()([a-z0-9]*)(\))/g,"(exp($2)+exp(-$2))/2");	//	+2022.02
+			if (f instanceof fourier) s = s.replace(/(sinh\()([a-z0-9]*)(\))/g,"(exp($2)-exp(-$2))/2");	//	+2022.02
 			if (f instanceof fourier) s = s.replace(/exp/g, 'i*cis');	//	+2020.11
 			s = s.replace(/\+\-/g, '-');
 			if (s[0] == '+') s = s.substr(1);
@@ -137,11 +143,6 @@
 			}
 			eval();
 		}
-		//function moveanswer(from, to) {						//	2019.11	Removed
-		//	$(to).val($(from).val());                           // move toString
-		//	$(to + 'o').html($(from + 'o').html());             // move toStringInternal
-		//	$(to).attr('data-val', $(from).attr('data-val'));   // move json
-		//}
 		function clean() {
 			$('#int').toggle($('#f')[0].selectedIndex >= 3);
 			$('input').val('');

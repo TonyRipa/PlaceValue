@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    01/31/2022
+// Date:    02/28/2022
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 class placevalue {				//	+2022.01
@@ -144,7 +144,6 @@ class placevalue {				//	+2022.01
 		if (typeof power == 'number') power = new this.whole.datatype().parse(power);     //  2017.5  exponential calls with number
 		if (power instanceof this.whole.datatype) power = new wholeplacevalue([power]);   //  2017.5
 		if (power instanceof wholeplacevalue) power = new placevalue(power, 0);         //  2017.5  laurent calls wpv
-		//if (power.get(0).toreal() < 0) return (new placevalue(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalue(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
 		//alert(JSON.stringify([this,power]))
 		if (power.exp == 0) {   //  2017.5
 			if (power.get(0).toreal() < 0) return (new placevalue(this.whole.parse(1), 0)).divide(this.pow(power.negate()));    //  2018.5  this.whole
@@ -259,9 +258,14 @@ class placevalue {				//	+2022.01
 		return sum;
 	}
 
-	pointeval() {	//	+2022.01
-		return new placevalue(new wholeplacevalue([-3,-2,-1,0,1,2,3].map(base => this.eval(this.parse('('+base+')')).whole.mantisa[0])),-3);
+	pointeval(n = 3) {					//	+2022.02
+		let range = math.range(-n,n+1)._data;
+		return new placevalue(new wholeplacevalue(range.map(base => this.eval(this.parse('('+base+')')).whole.mantisa[0])),-n);
 	}
+
+	//pointeval() {	//	+2022.01	//	-2022.02
+	//	return new placevalue(new wholeplacevalue([-3,-2,-1,0,1,2,3].map(base => this.eval(this.parse('('+base+')')).whole.mantisa[0])),-3);
+	//}
 
 	//placevalue.prototype.eval = function (base) {	//	-2021.3
 	//	var b = base.get(0);    // 2016.1

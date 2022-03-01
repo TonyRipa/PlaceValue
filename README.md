@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 01/31/2022
+Date : 02/28/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -201,7 +201,7 @@ SparsePolynomial
 ------------------------
 <i>SparsePolynomial</i> is a data-type optimized for sparse Polynomials; an application of the SparsePlaceValue datatype.
 
-If SparsePolynomial wants to calculate (x+y)*z, then it asks SparsePlaceValue to calculate:
+If SparsePolynomial wants to calculate (x+y)\*z, then it asks SparsePlaceValue to calculate:
 
 (1E1 + 1E0,1) * 1E0,0,1 = 1E1,0,1 + 1E0,1,1
 

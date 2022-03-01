@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    01/31/2022
+// Date:    02/28/2022
 // Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
 
 class exponential {						//	+2022.01
@@ -61,7 +61,6 @@ class exponential {						//	+2022.01
 			//var exp = new placevalue().parse('(2.718)').pow(kidaspoly.pv) //  2017.5	//	-2020.5
 			var exp = kidaspoly.pv.exponential();										//	+2020.5
 			//var exp2 = ten.pow(-tens)
-			//if (ones) exp2 = exp2.scale(1 / Math.exp(ones));
 			//var exp2 = placevalue.parse('(2.718)').pow(kidaspoly.pv.negate())   //  2017.5
 			var exp2 = exp.pow(-1);     //  2017.5
 			//alert([exp, exp2]);
@@ -80,8 +79,13 @@ class exponential {						//	+2022.01
 		return this.pv.tohtml(true) + ' base e<sup>' + this.base + '</sup>';    // tohtml(true) includes <s>    2015.11
 	}
 
-	toString() {
-		return exponential.toStringCosh(this.pv, this.base);    // 2015.11
+	//toString() {		//	-2022.02
+	//	return exponential.toStringCosh(this.pv, this.base);    // 2015.11
+	//}
+
+	toString(long) {	//	+2022.02
+		if (long) return exponential.toStringXbase(this.pv, this.base);
+		return exponential.toStringCosh(this.pv, this.base);
 	}
 
 	add(other) {
@@ -233,8 +237,12 @@ class exponential {						//	+2022.01
 		return new exponential(1, new placevalue(new wholeplacevalue().parse('(' + sum + ')'), 0));  // interpret as number  2015.8
 	}
 
-	pointeval() {	//	+2022.01
-		return new this.constructor(this.base, this.pv.pointeval());
+	pointeval(n) {	//	+2022.02
+		return new this.constructor(this.base, this.pv.pointeval(n));
 	}
+
+	//pointeval() {	//	+2022.01	//	-2022.02
+	//	return new this.constructor(this.base, this.pv.pointeval());
+	//}
 
 }
