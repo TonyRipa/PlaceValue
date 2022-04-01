@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2020
+	Date:	03/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -41,9 +41,11 @@
 	<script type="text/javascript" src='sparsepolynomial1.js'></script>
 	<script type="text/javascript" src='sparseplacevalue2.js'></script>
 	<script type="text/javascript" src='sparsepolynomial.js'></script>
+	<link href='http://fonts.googleapis.com/css?family=Nanum+Gothic' rel='stylesheet' type='text/css'>	<!--	+2022.03	-->
 	<style>
 		body,html { height:85% }
-		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
+		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS', 'Nanum Gothic'}			/*		+2022.03	*/
+		/*body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }*/	/*	2018.5	*/		/*		-2022.03	*/
 		h1 { text-align: center; margin: 0px }
 		#f { position: absolute; top: 10px; left: 10px; }
 		.main,.aux { width: 95%; border-spacing: 0; float: left; margin: 10px; }
@@ -53,7 +55,6 @@
 </head>
 <body>
 	<h1>Computer Algebra System</h1>
-	<!--<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>-->	<!-- 2019.11 Removed -->
 	<select id='f'><option>Polynomial 1</option><option>Laurent Polynomial</option><option>Sparse Polynomial1</option><option>Polynomial 2</option><option selected>Laurent Polynomial 2</option><option>Sparse Polynomial</option><option>Complex Laurent Multinomial</option><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option></select>	<!--2019.11 Added-->
 	<button onclick="compute()">=</button><input id='a' value='((x+h)^2-x^2)/h|0' />
 	<hr style="clear:both"/>

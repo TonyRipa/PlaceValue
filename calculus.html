@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	02/28/2022
+	Date:	03/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -36,7 +36,7 @@
 	<script src='exponential.js'></script>
 	<script src='sparseplacevalue.js'></script>
 	<script src='abstractpolynomial.js'></script>
-	<script src='sparsepolynomial.js'></script>			<!--	2018.10	SparseMulti	->	SparsePoly	-->
+	<script src='sparsepolynomial.js'></script>
 	<style>
 		h1 { text-align: center; }
 		#f { position: absolute; top: 10px; left: 10px; }
@@ -76,7 +76,8 @@
 			if (f instanceof fourier) for(var i = hi; i > lo; i--){var n=exp.pv.get(i); if(Array.isArray(n) ? (n[0]!=0 || n[1]!=0) : (n != 0)) nums.push(i);} //+2020.11
 			//if (f == exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }			//	-2020.11
 			if (f instanceof exponential) for (var i = hi; i > lo; i--) { var n = exp.pv.get(i); if (n != 0) nums.push(i); }	//	+2020.11
-			var s = new exponential().parse('exp(x)').pointeval(Math.max(...nums.map(Math.abs))).toString(true);	//	+2022.02
+			if (!(f instanceof complexexponential))																		//	+2022.03
+				var s = new exponential().parse('exp(x)').pointeval(Math.max(...nums.map(Math.abs))).toString(true);	//	+2022.02
 			/*	-2022.02
 			var s = '';
 			for (var i=Math.max(0,nums[0]);i>=Math.min(0,nums.slice(-1)[0]);i--) {//2018.5 > -> >= need to include both endpoints so ½0.½*10.(-1) = ½0.(-½)
@@ -89,8 +90,10 @@
 			if (f instanceof fourier) s = s.replace(/(cosh\()([a-z0-9]*)(\))/g,"(exp($2)+exp(-$2))/2");	//	+2022.02
 			if (f instanceof fourier) s = s.replace(/(sinh\()([a-z0-9]*)(\))/g,"(exp($2)-exp(-$2))/2");	//	+2022.02
 			if (f instanceof fourier) s = s.replace(/exp/g, 'i*cis');	//	+2020.11
-			s = s.replace(/\+\-/g, '-');
-			if (s[0] == '+') s = s.substr(1);
+			if (!(f instanceof complexexponential)) {													//	+2022.03
+				s = s.replace(/\+\-/g, '-');
+				if (s[0] == '+') s = s.substr(1);				
+			}
 			s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))';
 			s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))';
 			//if (f == complexexponential) s = s1 + '+' + s2;		//	-2020.11

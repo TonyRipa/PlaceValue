@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 02/28/2022
+Date : 03/31/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -215,7 +215,7 @@ Sparse Polynomial Ratio
 -------------
 <i>sparsepolynomialratio.js</i> is a sparse version of Polynomial Ratio; an application of the SparsePlaceValueRatio datatype.
 
-If SparsePolynomialRatio wants to calculate (x^2+2x*y+y^2)/(x^2-y^2), then it asks SparsePlaceValueRatio to calculate:
+If SparsePolynomialRatio wants to calculate (x^2+2x\*y+y^2)/(x^2-y^2), then it asks SparsePlaceValueRatio to calculate:
 
 1E2+2E1,1+1E0,2 / 1E2-1E0,2 = 1E1,-1+1 / 1E1,-1-1
 

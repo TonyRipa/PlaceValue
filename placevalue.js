@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    02/28/2022
+// Date:    03/31/2022
 // PlaceValue: a datatype for representing base-agnostic arithmetic
 
 class placevalue {				//	+2022.01
@@ -74,7 +74,8 @@ class placevalue {				//	+2022.01
 			if (sTag)
 				ret += this.whole.get(this.whole.mantisa.length - i - 1).tohtml(true);    //  .get(...).toString(sTag)    2016.7
 			else
-				ret += this.whole.get(this.whole.mantisa.length - i - 1).toString(sTag);    //  .get(...).toString(sTag)    2016.7
+				ret += this.whole.get(this.whole.mantisa.length - i - 1).todigit();													//	+2022.03
+				//ret += this.whole.get(this.whole.mantisa.length - i - 1).toString(sTag);	//	.get(...).toString(sTag)	2016.7	//	-2022.03
 		}
 		for (var i = 0; i < this.exp; i++) ret += '0';
 		if (ret.indexOf('@') != -1) while (ret[ret.length - 1] == 0) ret = ret.substring(0, ret.length - 1);    // If decimal, Remove trailing zeros
@@ -225,7 +226,6 @@ class placevalue {				//	+2022.01
 		function unpad(pv, pads) {			// 2015.11
 			while (pads>0) {
 				if (pv.whole.get(0)==0) {
-					//  pv.whole.mantisa.shift();   //  2018.6  Removed
 					pv.whole.div10();               //  2018.6  Delegate Shift to Whole
 					pv.exp++
 				}

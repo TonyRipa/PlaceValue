@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2021
+// Date:	03/31/2022
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -100,7 +100,6 @@ class rational extends digit {				//	2019.11.Added
 	}
 
 	static regex() {  //  2017.6
-		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱]';					//	+2020.6	//	-2020.12
 		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱∞]';								//	+2020.12	//	-2021.7
 		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉗㉜㊱∞]';												//	+2021.7
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
@@ -146,7 +145,8 @@ class rational extends digit {				//	2019.11.Added
 
 	tohtml(short) {
 		if (short) {
-			var candidate1 = this.toString(true);
+			//var candidate1 = this.toString(true);	//	-2022.03
+			var candidate1 = this.todigit();		//	+2022.03
 			var candidate2 = "<table style='float:none;display:inline-table;vertical-align:bottom;text-align:center;font-size:0.5em;line-height:0.5em'><tr><td>" + this.n + "</td></tr><tr><td style='border-top:thin solid'>" + this.d + "</td></tr></table>";
 			return ((candidate1.replace('<s>', '').replace('</s>', '').length) <= Math.max(this.n.toString().length, this.d.toString().length)) ? candidate1 : candidate2;
 		}

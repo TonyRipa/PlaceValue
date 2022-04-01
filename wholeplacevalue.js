@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	01/31/2022
+// Date:	03/31/2022
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -152,7 +152,8 @@ class wholeplacevalue {	//	+2020.11
 			else
 				for (let i = 0; i<-coef.toreal(); i++) {
 					var h = (i+1>-coef.toreal()) ? -coef.toreal()-i : 1;
-					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${-50*(i+1)}" fill='rgb(${color},${color},${color})'/>`;
+					//ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${-50*(i+1)}" fill='rgb(${color},${color},${color})'/>`;	//	-2022.03
+					ret += `<rect width="50" height="${50*h}" x="${50*x}" y="${-50*(i+h)}" fill='rgb(${color},${color},${color})'/>`;	//	+2022.03
 				}
 		}
 		var w = this.mantisa.length * 50;
@@ -459,7 +460,6 @@ class wholeplacevalue {	//	+2020.11
 			quotient = quotient.add(q2);
 			return quotient;
 			//function shift(me, left) {																//	-2021.1
-			//	//var ret = new wholeplacevalue([new me.datatype()], 'wholeplacevalue.prototype.add >').add(me, 'wholeplacevalue.prototype.shift >');	//	2020.1	Removed
 			//	var ret = new wholeplacevalue([new me.datatype()]).add(me);	//	2020.1	Removed
 			//	for (var r = 0; r < left; r++) ret.mantisa.shift();
 			//	return ret;
