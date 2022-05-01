@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	02/28/2022
+	Date:	04/30/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -51,11 +51,17 @@
 <body>
 	<h1>Differential Equation</h1>
 	<select id='f' onchange="clean()"><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option><option selected>Laplace</option></select>
-	<p>D^<select id='d' onchange="$('#sup').html($(d).val())"><option>0</option><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val()); $('#sup').html($('#d').val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0<button onclick='diffeq()'>DiffEQ</button></p>
-	<p>f(x) = <span id="num">1</span> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>
+	<p>D^<select id='d' onchange="$('#sup').html($(d).val())"><option>0</option><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val()); $('#sup').html($('#d').val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0 <button onclick='diffeq()'>DiffEQ</button></p>
+	<!--<p>f(x) = <span id="num">1</span> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>-->						<!--	-2022.04	-->
+	<p>f(x) = <select id="num">																								<!--	+2022.04	-->
+		<option>-2</option><option>-1</option><option>0</option><option selected>1</option><option>2</option>				<!--	+2022.04	-->
+	</select> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>														<!--	+2022.04	-->
 	<table id="main">
 		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
-		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>^</option><option>|</option><option>⊗</option><option selected>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
+		<tr id="base">
+			<!--<td><select id='op'><option>+</option><option>-</option><option>x</option><option>/</option><option>^</option><option>|</option><option>⊗</option><option selected>⊘</option><option>⊖</option><option>⊕</option><option>♽</option></select></td>-->	<!--	-2022.04	-->
+			<td><select id='op'><option>/</option><option selected>⊘</option></select></td>									<!--	+2022.04	-->
+			<td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><!--<button onclick="moveanswer('#c','#func')">↑</button>--></td><td id="co"></td></tr>
 	</table>
 	<script type="text/javascript">
@@ -79,7 +85,8 @@
 			var k = new f().parse($('#k').val())
 			var fsn_k = fsn.pointadd(k)
 			//alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
-			var num = (f == laplace) ? 1 : 0; $('#num').html(num); $('#a').val(num);
+			//var num = (f == laplace) ? 1 : 0; $('#num').html(num); $('#a').val(num);	//	-2022.04
+			if (f != laplace) $('#num').val(0); $('#a').val($('#num').val());			//	+2022.04
 			//if (f == laplace) $('#b').val(s); else { $('#b').val(fsn_k.toString()); $('#b').attr('data-val', JSON.stringify(fsn_k)); }	//	-2022.02
 			if (f == laplace) $('#b').val(s); else { $('#b').val(fsn_k.toString(true)); $('#b').attr('data-val', JSON.stringify(fsn_k)); }	//	+2022.02
 			if (f == laplace) $('#op').val('/'); else $('#op').val('⊘');
@@ -89,7 +96,8 @@
 			f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
 			var a = getinput('#a');
 			var b = getinput('#b');
-			var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);
+			//var c = [a.add, a.sub, a.times, a.divide, a.pow, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd, a.pointpow][$('#op')[0].selectedIndex].call(a, b);																		//	-2022.04
+			var c = [a.divide, a.pointdivide][$('#op')[0].selectedIndex].call(a, b);	//	+2022.04
 			output(a, b, c);
 			function getinput(elem) { return new f().parse($(elem).attr('data-val') || $(elem).val()); }
 			function output(a, b, c) {
@@ -102,11 +110,6 @@
 			}
 			eval();
 		}
-		//function moveanswer(from, to) {						//	2019.11	Removed
-		//	$(to).val($(from).val());                           // move toString
-		//	$(to + 'o').html($(from + 'o').html());             // move toStringInternal
-		//	$(to).attr('data-val', $(from).attr('data-val'));   // move json
-		//}
 		function clean() {
 			$('#int').toggle($('#f')[0].selectedIndex >= 2);
 			$('input').val('');

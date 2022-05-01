@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 03/31/2022
+Date : 04/30/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -279,7 +279,7 @@ SparseExpressionRatio
 Fourier
 -----------
 <i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
-If Fourier wants to calculate sin(x)*cos(x), then it asks PlaceValue to calculate:
+If Fourier wants to calculate sin(x)\*cos(x), then it asks PlaceValue to calculate:
 
 <s>½</s>̉0.½̉  * ½0.½ = <s>¼</s>̉00.0¼̉ 
 
