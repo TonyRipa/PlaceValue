@@ -1,15 +1,15 @@
 
 // Author:  Anthony John Ripa
-// Date:    02/28/2022
-// Exponential : a datatype for representing Exponentials; an application of the PlaceValue datatype
+// Date:    05/31/2022
+// Exponential : a datatype for representing Exponentials; an application of the MarkedPlaceValue datatype
 
 class exponential {						//	+2022.01
 
-	//function exponential(base, pv) {	//	-2022.01
 	constructor(base, pv) {				//	+2022.01
-		if (arguments.length < 2) pv = new placevalue();    //  2017.9
+		//if (arguments.length < 2) pv = new placevalue();		//	-2022.05
+		if (arguments.length < 2) pv = new markedplacevalue();	//	+2022.05
 		if (Array.isArray(base)) alert('exponential expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-		if (!(pv instanceof placevalue)) { var s = 'exponential expects arg2 (pv) to be a placevalue not ' + typeof pv + ' : ' + pv; alert(s); throw new Error(s); }
+		if (!(pv instanceof markedplacevalue)) { var s = 'exponential expects arg2 (pv) to be a markedplacevalue not ' + typeof pv + ' : ' + pv; alert(s); throw new Error(s); }
 		this.base = base
 		this.pv = pv;
 		return;
@@ -20,16 +20,16 @@ class exponential {						//	+2022.01
 		console.log('<strornode>')
 		console.log(strornode)
 		console.log('</strornode>')
-		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponential(a.base, new placevalue().parse(JSON.stringify(a.pv))) }
+		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new exponential(a.base, new this.pv.constructor().parse(JSON.stringify(a.pv))) }
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'ConstantNode') {
-			return new exponential(1, new placevalue().parse('(' + Number(node.value) + ')'));
+			return new exponential(1, new this.pv.constructor().parse('(' + Number(node.value) + ')'));
 		} else if (node.type == 'SymbolNode') {
 			alert('Syntax Error: Exponential expects input like 1, exp(x), cosh(x), sinh(x), exp(2x), or 1+exp(x) but found ' + node.name + '.');
 			console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
 			console.log(node)
 			var base = node.name;
-			var pv = new placevalue(wholeplacevalue.parse(1), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
+			var pv = new this.pv.constructor(wholeplacevalue.parse(1), 1);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
 			return new exponential(base, pv);
 		} else if (node.type == 'OperatorNode') {
 			console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
@@ -37,9 +37,9 @@ class exponential {						//	+2022.01
 			var kids = node.args;
 			var a = new exponential().parse(kids[0]);       // exponential handles unpreprocessed kid   2015.11
 			if (node.fn == 'unaryMinus') {
-				var c = new exponential(1, new placevalue(new wholeplacevalue().parse(0), 0)).sub(a);
+				var c = new exponential(1, new this.pv.constructor(new wholeplacevalue().parse(0), 0)).sub(a);
 			} else if (node.fn == 'unaryPlus') {
-				var c = new exponential(1, new placevalue(wholeplacevalue.parse(0), 0)).add(a);
+				var c = new exponential(1, new this.pv.constructor(wholeplacevalue.parse(0), 0)).add(a);
 			} else {
 				var b = new exponential().parse(kids[1]);   // exponential handles unpreprocessed kid   2015.11
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
@@ -146,7 +146,7 @@ class exponential {						//	+2022.01
 	align(other) {    // Consolidate alignment    2015.9
 		if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
 		if (other.pv.whole.mantisa.length == 1 && other.pv.exp == 0) other.base = this.base;
-		if (this.base != other.base) { alert('Different bases : ' + JSON.stringify(this.base) + ' & ' + JSON.stringify(other.base)); return new exponential(1, new placevalue(new wholeplacevalue(['%']), 0)) }
+		if (this.base != other.base) { alert('Different bases : ' + JSON.stringify(this.base) + ' & ' + JSON.stringify(other.base)); return new exponential(1, new this.pv.constructor(new wholeplacevalue(['%']), 0)) }
 	}
 
 	pow(other) { // 2015.6
@@ -177,7 +177,7 @@ class exponential {						//	+2022.01
 				if (math.sign(l) * math.sign(r) == sign && al >= ar && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
 					var n = m * 2;
 					ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-					s = s.sub(new placevalue(new wholeplacevalue().parse(1), i).add(new placevalue(new wholeplacevalue().parse(1), -i).scale(sign)).scale(m));
+					s = s.sub(new markedplacevalue(new wholeplacevalue().parse(1), i).add(new markedplacevalue(new wholeplacevalue().parse(1), -i).scale(sign)).scale(m));
 				}
 			}
 			ret = ret.replace(/\+\-/g, '-');
@@ -191,7 +191,7 @@ class exponential {						//	+2022.01
 		console.log('exponential.toStringXbase: x=' + x);
 		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 			x.pop();                                    // Replace shift with pop because L2R 2015.7
-			return exponential.toStringXbase(new placevalue(new wholeplacevalue(x), 0), base);  // added namespace  2015.7
+			return exponential.toStringXbase(new markedplacevalue(new wholeplacevalue(x), 0), base);  // added namespace  2015.7
 		}
 		var ret = '';
 		var str = x//.toString().replace('.', '');
@@ -234,7 +234,7 @@ class exponential {						//	+2022.01
 			if (this.pv.whole.get(i).toreal() != 0) sum += this.pv.whole.get(i).toreal() * pow;  // Skip 0 to avoid %    2015.8
 			//alert(this.pv.exp+','+this.pv.whole.get(i)+','+(i+this.pv.exp)+','+sum)
 		}
-		return new exponential(1, new placevalue(new wholeplacevalue().parse('(' + sum + ')'), 0));  // interpret as number  2015.8
+		return new exponential(1, new this.pv.constructor(new wholeplacevalue().parse('(' + sum + ')'), 0));  // interpret as number  2015.8
 	}
 
 	pointeval(n) {	//	+2022.02

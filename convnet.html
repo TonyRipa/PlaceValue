@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	05/31/2022
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -22,7 +22,8 @@
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
-	<script type="text/javascript" src='placevalue.js'></script>
+	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<style>
 		output { margin: 50px; }
 		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }  /*  2018.5          */
@@ -60,7 +61,7 @@
 		</tr>
 	</table>
 	<script type="text/javascript">
-		var f = placevalue;
+		var f = markedplacevalue;
 		function select1() {
 			if ($('#top')[0].selectedIndex == 0) {
 				$('#input').html("<td>Input Layer</td><td>1</td><td>1</td><td>1</td><td>1</td><td>0</td><td>0</td><td>0</td><td>0</td>");
@@ -78,14 +79,14 @@
 		}
 		function learn() {
 			if ($('#top')[0].selectedIndex == 0) {
-				var top = new placevalue(new wholeplacevalue().parse(10000), 0);
-				var bot = new placevalue(new wholeplacevalue().parse(11110000), 0);
+				var top = new f(new wholeplacevalue().parse(10000), 0);
+				var bot = new f(new wholeplacevalue().parse(11110000), 0);
 			} else if ($('#top')[0].selectedIndex == 1) {
-				var top = new placevalue(new wholeplacevalue().parse(10000), 0);
-				var bot = new placevalue(new wholeplacevalue().parse("111100⅛0"), 0);
+				var top = new f(new wholeplacevalue().parse(10000), 0);
+				var bot = new f(new wholeplacevalue().parse("111100⅛0"), 0);
 			} else {
-				var top = new placevalue(new wholeplacevalue().parse("¼½¼000"), 0);
-				var bot = new placevalue(new wholeplacevalue().parse(10000), 0);
+				var top = new f(new wholeplacevalue().parse("¼½¼000"), 0);
+				var bot = new f(new wholeplacevalue().parse(10000), 0);
 			}
 			pop(top, bot);
 			$('#p2').text($('#c').val())
@@ -103,7 +104,6 @@
 			function getinput(elem) { return new f().parse($(elem).val()); }
 			function getshape(elem) { return f.parse($(elem).val()); }
 			function output(a, b, c) {
-				// $('#c').attr('data-val', JSON.stringify(c)); 2018.5  Removed
 				$('#c').val(c);
 				showInternal(a, '#ao');
 				showInternal(b, '#bo');

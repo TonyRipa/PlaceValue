@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	8/31/2021
+	Date:	05/31/2022
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -27,7 +27,8 @@
 	<script src='complexexponential.js'></script>
 	<script src='fourier2.js'></script>
 	<script src='wholeplacevalue.js'></script>
-	<script src='placevalue.js'></script>
+	<!--<script src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script src='markedplacevalue.js'></script>		<!--	+2022.05	-->
 	<script src='abstractpolynomial.js'></script>
 	<script src='polynomial1.js'></script>
 	<script src='laurent.js'></script>
@@ -103,7 +104,7 @@
 		</optgroup>
 		<optgroup label="PlaceValues">
 			<option value="3">WholePlaceValue</option>
-			<option value="6">PlaceValue</option>
+			<option value="6">MarkedPlaceValue</option>
 			<option value="9">PlaceValueRatio</option>
 			<option value="11">SparsePlaceValue1</option>
 			<option value="15">SparsePlaceValueRatio1</option>
@@ -135,7 +136,7 @@
 		</optgroup>
 		<optgroup label="PlaceValues">
 			<option value="4">WholePlaceValue</option>
-			<option value="7">PlaceValue</option>
+			<option value="7">MarkedPlaceValue</option>
 			<option value="12">SparsePlaceValue1</option>
 			<option value="18">SparsePlaceValue</option>
 		</optgroup>
@@ -159,7 +160,7 @@
 		</optgroup>
 		<optgroup label="PlaceValues">
 			<option value="5">WholePlaceValue</option>
-			<option value="8">PlaceValue</option>
+			<option value="8">MarkedPlaceValue</option>
 			<option value="10">PlaceValueRatio</option>
 			<option value="13">SparsePlaceValue1</option>
 			<option value="16">SparsePlaceValueRatio1</option>
@@ -194,9 +195,9 @@
 		<option value="3">WholePlaceValue - Rational</option>
 		<option value="4">WholePlaceValue - Complex</option>
 		<option value="5">WholePlaceValue - RationalComplex</option>
-		<option value="6">PlaceValue - Rational</option>
-		<option value="7">PlaceValue - Complex</option>
-		<option value="8">PlaceValue - RationalComplex</option>
+		<option value="6">MarkedPlaceValue - Rational</option>
+		<option value="7">MarkedPlaceValue - Complex</option>
+		<option value="8">MarkedPlaceValue - RationalComplex</option>
 		<option value="9">PlaceValueRatio - Rational</option>
 		<option value="10">PlaceValueRatio - RationalComplex</option>
 		<option value="11">SparsePlaceValue1 - Rational</option>
@@ -269,9 +270,9 @@
 				case '3': f = new wholeplacevalue(rational); break;
 				case '4': f = new wholeplacevalue(complex); break;
 				case '5': f = new wholeplacevalue(rationalcomplex); break;
-				case '6': f = new placevalue(rational); break;
-				case '7': f = new placevalue(complex); break;
-				case '8': f = new placevalue(rationalcomplex); break;
+				case '6': f = new markedplacevalue(rational); break;
+				case '7': f = new markedplacevalue(complex); break;
+				case '8': f = new markedplacevalue(rationalcomplex); break;
 				case '9': f = new placevalueratio(rational); break;
 				case '10': f = new placevalueratio(rationalcomplex); break;
 				case '11': f = new sparseplacevalue1(rational); break;
@@ -319,11 +320,10 @@
 				case '62': f = new sparseexpression(rationalcomplex); break;		//	2019.8	Added
 				case '63': f = new sparseexpressionratio(rational); break;			//	2019.10	Added
 				case '64': f = new sparseexpressionratio(rationalcomplex); break;	//	2019.10	Added
-				default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, placevalue, placevalue, placevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio1, polynomialratio1, sparsepolynomialratio1, sparsepolynomialratio1, laurent, polynomial2, laurent2, sparsepolynomial, sparsepolynomial, sparsepolynomial, sparsepolynomialratio, sparsepolynomialratio, complexlaurent, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponentialratio1, sparseexponentialratio1, fourier, fourier2, complexexponential, sparseexponential, sparseexponential, sparseexponential, sparseexponentialratio, sparseexponentialratio, sparseexpression1, sparseexpression1, sparseexpression1, sparseexpressionratio1, sparseexpressionratio1, sparseexpression, sparseexpression, sparseexpression, sparseexpressionratio, sparseexpressionratio][$('#f')[0].value]();
+				default: f = new [rational, complex, rationalcomplex, wholeplacevalue, wholeplacevalue, wholeplacevalue, markedplacevalue, markedplacevalue, markedplacevalue, placevalueratio, placevalueratio, sparseplacevalue1, sparseplacevalue1, sparseplacevalue1, sparseplacevalue2, sparseplacevalueratio1, sparseplacevalueratio1, sparseplacevalue, sparseplacevalue, sparseplacevalue, sparseplacevalueratio, sparseplacevalueratio, polynomial1, polynomial1, polynomial1, sparsepolynomial1, sparsepolynomial1, sparsepolynomial1, polynomialratio1, polynomialratio1, sparsepolynomialratio1, sparsepolynomialratio1, laurent, polynomial2, laurent2, sparsepolynomial, sparsepolynomial, sparsepolynomial, sparsepolynomialratio, sparsepolynomialratio, complexlaurent, exponential, sparseexponential1, sparseexponential1, sparseexponential1, sparseexponentialratio1, sparseexponentialratio1, fourier, fourier2, complexexponential, sparseexponential, sparseexponential, sparseexponential, sparseexponentialratio, sparseexponentialratio, sparseexpression1, sparseexpression1, sparseexpression1, sparseexpressionratio1, sparseexpressionratio1, sparseexpression, sparseexpression, sparseexpression, sparseexpressionratio, sparseexpressionratio][$('#f')[0].value]();
 			}
 			var a = getinput('#a');
 			var b = getinput('#b');
-			//var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.at, a.eval, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);	//	+2021.5	//	-2021.8
 			var c = [a.add, a.sub, a.times, a.divide, a.divideleft, a.dividemiddle, a.remainder, a.gcd, a.pow, a.at, a.eval, a.regroup, a.equal, a.pointadd, a.pointsub, a.pointtimes, a.pointdivide, a.pointpow, a.pointeval, a.unpointeval, a.pointequal][$('#op')[0].selectedIndex].call(a, b);				//	+2021.8
 			output(a, b, c);
 			function getinput(elem) { var a = $(elem).attr('data-val') || $(elem).val(); return f.parse(a); } //  2017.9

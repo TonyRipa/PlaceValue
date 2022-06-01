@@ -1,8 +1,8 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	4/30/2020
-	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the PlaceValue(Complex) datatype
+	Date:	05/31/2022
+	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the MarkedPlaceValue(Complex) datatype
 -->
 
 <html>
@@ -28,7 +28,8 @@
 	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='abstractpolynomial.js'></script>	<!--	2018.6	-->
 	<script type="text/javascript" src='laplace.js'></script>
-	<script type="text/javascript" src='placevalue.js'></script>
+	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<script src='wholeplacevalue2.js'></script>
 	<!--<script src='multinomial.js'></script>										2018.7	Removed	-->
 	<script src='placevalue2.js'></script>
@@ -84,7 +85,6 @@
 	</table>
 	<script type="text/javascript">
 		function diffeq() {
-			//$('#sup').html($(d).val())
 			var k = $('#em2').val();
 			$('#k2').html(k);
 			var n = '2'//$('#d').val()
@@ -146,17 +146,17 @@
 				function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
 			}
 			function positionOperator(state) {
-				return state.pointtimes(new laplace("s", new placevalue(new wholeplacevalue(complex).parse('123456'), -6))).divide(new laplace("s", new placevalue(new wholeplacevalue(complex).parse('10'), 0)));
+				return state.pointtimes(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('123456'), -6))).divide(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('10'), 0)));
 			}
 			function momentumOperator(state) {
 				if ($('#mom')[0].selectedIndex) {
 					$('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always i by Heisenberg Uncertainty</a>");
 					$('#momx').html("i0 * xΨ");	//	+2020.4
-					return state.times(new laplace("s", new placevalue(new wholeplacevalue(complex).parse('i0'), 0))); //  parse is implementation independent 2017.4
+					return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('i0'), 0))); //  parse is implementation independent 2017.4
 				}
 				$('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always 1 by Heisenberg Uncertainty</a>");
 				$('#momx').html("10 * xΨ");	//	+2020.4
-				return state.times(new laplace("s", new placevalue(new wholeplacevalue(complex).parse('10'), 0)));     //  2017.11   WholePlaceValue
+				return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('10'), 0)));     //  2017.11   WholePlaceValue
 			}
 			eval();
 		}

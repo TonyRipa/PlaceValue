@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 04/30/2022
+Date : 05/31/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -40,15 +40,17 @@ PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,
 
 By building a data-type whose base operations are constructed to take advantage of such efficiencies, many applications which are handled in an otherwise convoluted manner may now be handled in an elegant manner.
 
-PlaceValue
----------------
-<i>PlaceValue</i> is a data-type for representing base-agnostic arithmetic via numbers whose digits are real. Consider 1/11. In base ten, 1/11 = .090909… . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
-
-The PlaceValue data-type transcends this problem by dividing in a base-agnostic way. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
-
 WholePlaceValue
 ------------------------
-The base class (by composition) for PlaceValue is <i>WholePlaceValue</i>. WholePlaceValue is supposed to be an analogue of integers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base-agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. While WholePlaceValue never has-a decimal point, WholePlaceValue can has-a object that has-a decimal point by composition. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
+WholePlaceValue is supposed to be an analogue of whole numbers. WholePlaceValue uses only positive powers of the base. For WholePlaceValue, 1/11 = 0 (like integer division). 12 could be a WholePlaceValue but not 1.2 . Since we do base-agnostic calculations there is no borrowing or carrying, so 100 / 11 = 1<s>1</s>. We allow for negative digits. Furthermore, since there is no borrowing or carrying we allow for non-integer digits 11/2 = ½½. WholePlaceValue does not have a PlaceMark (radix point). However, WholePlaceValue can have a digit that has a PlaceMark. For example, 565/5 = 1(1.2)1. The first digit is 1; the second is 1.2; the third is 1.
+
+MarkedPlaceValue
+---------------
+<i>MarkedPlaceValue</i> is a data-type for representing base-agnostic arithmetic via numbers whose digits are real. MarkedPlaceValue is a PlaceValue that has a PlaceMark. Consider 1/11. In base ten, 1/11 = .090909… . In base 2, 1/11 = .010101 . The answer depends on the base. This is annoying. This violates the programming principle of loose coupling. In base ten, when we do division we are relying on the idiosyncrasies of roll-over (carrying) in that number system. We commit the same sin when we divide in base 2.
+
+The MarkedPlaceValue data-type transcends this problem by dividing in a base-agnostic way. 1/11 = 0.1<s>1</s>1<s>1</s>... . So, in base ten, this tells us that 1/11 is 1/10 - 1/100 + 1/1000 - 1/10000 ... . It also tells us that in base 2, 1/11 (i.e. 1/3) is 1/2 - 1/4 + 1/8 - 1/16 ... . We don't rely on the particularity of the base, and can divide regardless of the base, and we get the same uniform answer in all cases.
+
+The base class (by composition) for MarkedPlaceValue is <i>WholePlaceValue</i>.
 
 Rational
 ---------------
@@ -68,7 +70,7 @@ RationalComplex
 
 PlaceValueRatio
 ------------------
-<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via Euclid's algorithm to 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that regular PlaceValue does not. For example, for PlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
+<i>PlaceValueRatio</i> is a PlaceValue data-type reminiscent of rational numbers. It is a ratio of 2 WholePlaceValues. For example, 1/11 is stored as a pair 1,11. 11/1 is stored as a pair 11,1. Multiplication occurs element-wise yielding 11,11. Results are automatically simplified via Euclid's algorithm to 1,1. Finally text rendering yields 1/1. PlaceValueRatio avoids round off errors that MarkedPlaceValue does not. For example, for MarkedPlaceValue 1/11 = 0.1<s>1</s>1<s>1</s>... but 11 * 0.1<s>1</s>1<s>1</s>... = 1.00001 .
 
 SparsePlaceValueRatio1
 ------------------
@@ -166,11 +168,11 @@ One way to interpret PlaceValues is that they are (implicitly) functions. They a
 
 Laurent Polynomial
 -------------------
-<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the PlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example, 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial1.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from PlaceValue. This is because WholePlaceValue represents places to the left of the decimal point (radix point) which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which PlaceValue represents as digits to the right of the radix point. Laurent polynomials are reduced to user interfaces for PlaceValue.
+<i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the MarkedPlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example, 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial1.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from MarkedPlaceValue. This is because WholePlaceValue represents places to the left of the PlaceMark which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which MarkedPlaceValue represents as digits to the right of the PlaceMark. Laurent polynomials are reduced to user interfaces for MarkedPlaceValue.
 
 PlaceValue2
 -------------------
-<i>placevalue2.js</i> is a 2D version of PlaceValue, or a floating point version of WholePlaceValue2 (actually implemented this way). PlaceValue2 is used by <i>Laurent2.js</i>. If Laurent Multinomial wants to calculate (x+h)^2/h, then it asks PlaceValue2 to calculate:
+<i>placevalue2.js</i> is a 2D version of MarkedPlaceValue, or a floating point version of WholePlaceValue2 (actually implemented this way). PlaceValue2 is used by <i>Laurent2.js</i>. If Laurent Multinomial wants to calculate (x+h)^2/h, then it asks PlaceValue2 to calculate:
 <pre>
   1                 1
  20                20
@@ -182,7 +184,7 @@ Laurent Multinomials are nothing more than a UI for PlaceValue2.
 
 Laurent Multinomial
 -------------------
-<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example, y/x = y\*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from PlaceValue, Laurent2.js inherits from PlaceValue2. This is because PlaceValue represents places to the left or right of the decimal point (radix point) which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which PlaceValue2 represents as digits to the left (or on top) of the radix point. Laurent multinomials are reduced to skins for PlaceValue2.
+<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example, y/x = y\*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from MarkedPlaceValue, Laurent2.js inherits from PlaceValue2. This is because MarkedPlaceValue represents places to the left or right of the PlaceMark which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which PlaceValue2 represents as digits to the left (or on top) of the PlaceMark. Laurent multinomials are reduced to skins for PlaceValue2.
 
 SparsePlaceValue2
 ------------------------
@@ -223,14 +225,14 @@ SparsePolynomialRatio then formats SparsePlaceValueRatio's result as (x \* y^-1+
 
 Exponential
 -----------
-<i>exponential.js</i> is a datatype for representing exponentials; an application of the PlaceValue datatype. Exponentials are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^x or e^y. Exponential.js is little more than an exponential (or hyperbolic trigonometric) looking skin for an underlying PlaceValue datatype. Exponential takes an input like exp(2x) and stores it as 100 base e^x. It can then render it on demand in the exponential looking form exp(2x). Exponential also recognizes hyperbolic trig functions like cosh(x), which it stores as ½0.½ base e^x, and renders on demand as cosh(x). Likewise sinh(x), which it stores as ½0.<s>½</s>, and renders on demand as sinh(x).
-If Exponential wants to calculate sinh(x)+cosh(x), then it asks PlaceValue to calculate:
+<i>exponential.js</i> is a datatype for representing exponentials; an application of the MarkedPlaceValue datatype. Exponentials are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^x or e^y. Exponential.js is little more than an exponential (or hyperbolic trigonometric) looking skin for an underlying MarkedPlaceValue datatype. Exponential takes an input like exp(2x) and stores it as 100 base e^x. It can then render it on demand in the exponential looking form exp(2x). Exponential also recognizes hyperbolic trig functions like cosh(x), which it stores as ½0.½ base e^x, and renders on demand as cosh(x). Likewise sinh(x), which it stores as ½0.<s>½</s>, and renders on demand as sinh(x).
+If Exponential wants to calculate sinh(x)+cosh(x), then it asks MarkedPlaceValue to calculate:
 
 ½0.<s>½</s> + ½0.½ = 10
 
-Exponential then formats PlaceValue's result as exp(x) .
+Exponential then formats MarkedPlaceValue's result as exp(x) .
 
-Exponentials are nothing more than a veneer for PlaceValue.
+Exponentials are nothing more than a veneer for MarkedPlaceValue.
 
 SparseExponential1
 ------------------------
@@ -254,7 +256,7 @@ SparseExponential then formats SparsePlaceValue's result as exp(x+(i)y).
 
 SparseExponentialRatio1
 ------------------------
-<i>SparseExponentialRatio1</i> is a data-type optimized for ratios of Sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating placevalue 1.0<s>2</s>02... . Storing that in a placevalue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio1 uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
+<i>SparseExponentialRatio1</i> is a data-type optimized for ratios of Sparse Exponentials; an application of the SparsePlaceValueRatio1 datatype. Consider the problem of storing tanh. tanh = sinh / cosh. cosh = ½0.½. sinh = ½0.<s>½</s>. Dividing them results in the repeating MarkedPlaceValue 1.0<s>2</s>02... . Storing that in a MarkedPlaceValue is problematic. So we store it in a data-type constructed specifically for the storage of ratios of placevalues: PlaceValueRatio. Now we can store tanh exactly. ½0.<s>½</s>/½0.½ reduces to the PlaceValueRatio 10<s>1</s>/101. To be accurate, SparseExponentialRatio1 uses SparsePlaceValueRatio1 not PlaceValueRatio so it is stored sparsely as 1E2-1 / 1E2+1.
 
 SparseExponentialRatio
 ------------------------
@@ -278,22 +280,22 @@ SparseExpressionRatio
 
 Fourier
 -----------
-<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the PlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying PlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
-If Fourier wants to calculate sin(x)\*cos(x), then it asks PlaceValue to calculate:
+<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the MarkedPlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying MarkedPlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
+If Fourier wants to calculate sin(x)\*cos(x), then it asks MarkedPlaceValue to calculate:
 
 <s>½</s>̉0.½̉  * ½0.½ = <s>¼</s>̉00.0¼̉ 
 
-Fourier then formats PlaceValue's result as 0.5sin(2x) .
+Fourier then formats MarkedPlaceValue's result as 0.5sin(2x) .
 
-Fouriers are nothing more than a veneer for PlaceValue.
+Fouriers are nothing more than a veneer for MarkedPlaceValue.
 
 Laplace
 --------
-<i>laplace.js</i>. If Laplace wants to solve 1\*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks PlaceValue(Complex) to calculate:
+<i>laplace.js</i>. If Laplace wants to solve 1\*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks MarkedPlaceValue(Complex) to calculate:
 
 1 / 11 = 0.1<s>1</s>1<s>1</s> base s
 
-Laplace then formats PlaceValue(Complex)'s result as exp(-x) .
+Laplace then formats MarkedPlaceValue(Complex)'s result as exp(-x) .
 
 Viewing the Laplace transform of exp(-x) [ which is 1/(s+1) ] as the fraction 1 / 11 has advantages. Specifically, viewing the 1/11 in the expanded form 0.1<s>1</s>1<s>1</s> . We can see from the expanded form what appear to be the Taylor Coefficients of the Taylor expansion of exp(-x) [ however without the factorial denominators ] . Specifically, what we are seeing is the derivatives of the function exp(-x) , since the Taylor coefficients are the derivatives including the factorials. Another (though perhaps not best) way to say this for those familiar with generating functions, is that the Laplace Transform is the generating function of the derivatives. Without PlaceValue, this nature of the Laplace Transform would be more difficult to see (partly because of the overhead of placeholder variables). Furthermore, we can see why the Laplace Transform should be capable of representing a function: because having all the derivatives of a function at point is enough to represent a typical function, as one familiar with Taylor Series knows. Note: it should be noted that Laplace seems to have chosen a different sign convention than generating functions, further obscuring the symmetry.
 
@@ -305,7 +307,7 @@ WholePlaceValueComplex2
 
 ComplexPlaceValue
 -------------------
-Whereas, placevalue extended wholeplacevalue by allowing for negative exponents to the right of the decimal point, <i>complexplacevalue.js</i> extends placevalue by allowing for imaginary exponents above the decimal point and negative imaginary exponents below the decimal point. ComplexPlaceValue also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the ComplexExponential data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
+Whereas, markedplacevalue extended wholeplacevalue by allowing for negative exponents to the right of the PlaceMark, <i>complexplacevalue.js</i> extends markedplacevalue by allowing for imaginary exponents above the PlaceMark and negative imaginary exponents below the PlaceMark. ComplexPlaceValue also allows for the digits themselves to be complex. ComplexPlaceValue is implemented as a floating point version of <i>wholeplacevaluecomplex2.js</i> (via composition). ComplexPlaceValue finds a natural application in the ComplexExponential data type base e<sup>x</sup> where the horizontal axis represents real powers of e<sup>x</sup> to represent things such as cosh(x), and the vertical axis represents imaginary powers of e<sup>x</sup> to represent things like cos(x). Laplace's complex number s, which has the property of differentiating anything that it multiplies, exposes its full circular character in this representation. Whereas in a+bi form it looks like this:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -355,7 +357,7 @@ CAS
 
 Calculator
 --------------
-<a href='https://tonyripa.github.io/PlaceValue/calculator.html'>calculator.html</a> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (PlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial1 & Polynomial2) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
+<a href='https://tonyripa.github.io/PlaceValue/calculator.html'>calculator.html</a> demonstrates a 4+ function calculator that toggles between Rational, Complex, and RationalComplex digit mode, and furthermore toggles between integer mode (WholePlaceValue) , real mode (MarkedPlaceValue) , rational mode (PlaceValueRatio) , polynomial mode (Polynomial1 & Polynomial2) , Laurent polynomial mode (Laurent Polynomial) , Laurent multinomial mode (Laurent Multinomial), and Exponential mode (Exponential).
 
 Differentiator
 ----------------
@@ -367,7 +369,7 @@ Infinitesimal
 
 Calculus
 --------
-<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k * exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, PlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… , or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the imaginary case, or in the general complex case by:
+<i>calculus.html</i> is an extension of differentiator that supports (complex) exponentials, and allows for both differentiation and integration. Differentiation proceeds in a Laplace like manner. The derivative of exp(kx) is k * exp(kx). The derivative of cis(kx) is ki*cis(kx). Differentiation of Sums of such Exponentials is achieved by multiplying each exponential in the sum by their respective k. Compactly, MarkedPlaceValue implements this as pointwise multiplication by …3210.<s>123</s>… , or 3̉2̉i0.<s>i</s><s>2</s>̉<s>3</s> in the imaginary case, or in the general complex case by:
 
 <table>
 <tr><td>2+2i</td><td>1+2i</td><td>0+2i</td><td>-1+2i</td><td>-2+2i</td></tr>
@@ -377,33 +379,33 @@ Calculus
 <tr><td>2-2i</td><td>1-2i</td><td>0-2i</td><td>-1-2i</td><td>-2-2i</td></tr>
 </table>
 
-If Exponential wants to differentiate sinh(x) + 7, then it asks PlaceValue to calculate:
+If Exponential wants to differentiate sinh(x) + 7, then it asks MarkedPlaceValue to calculate:
 
 ½7.<s>½</s> ⊗ 10.<s>1</s> = ½0.½
 
-Exponential then formats PlaceValue's result as cosh(x) .
+Exponential then formats MarkedPlaceValue's result as cosh(x) .
 
 Integration is achieved by reversing the pointwise multiplication with pointwise division.
 
-If Exponential wants to integrate cosh(x), then it asks PlaceValue to calculate:
+If Exponential wants to integrate cosh(x), then it asks MarkedPlaceValue to calculate:
 
 ½0.½ ⊘ 10.<s>1</s> = ½%.<s>½</s>
 
-Exponential then formats PlaceValue's result as sinh(x) + NaN.
+Exponential then formats MarkedPlaceValue's result as sinh(x) + NaN.
 
-If Fourier wants to differentiate sin(x) + 7, then it asks PlaceValue(Complex) to calculate:
+If Fourier wants to differentiate sin(x) + 7, then it asks MarkedPlaceValue(Complex) to calculate:
 
 <s>½</s>̉7.½̉ ⊗ i0.<s>i</s> = ½0.½
 
-Fourier then formats PlaceValue(Complex)'s result as cos(x) .
+Fourier then formats MarkedPlaceValue(Complex)'s result as cos(x) .
 
 Integration is achieved by reversing the pointwise multiplication with pointwise division.
 
-If Fourier wants to integrate cos(x), then it asks PlaceValue(Complex) to calculate:
+If Fourier wants to integrate cos(x), then it asks MarkedPlaceValue(Complex) to calculate:
 
 ½0.½ ⊘ i0.<s>i</s> = <s>½</s>̉%.½̉
 
-Fourier then formats PlaceValue's result as sin(x) + NaN.
+Fourier then formats MarkedPlaceValue's result as sin(x) + NaN.
 
 The NaN is not a mistake. It's a spectacular success. The pointwise division of the 0 in the one's place of ½0.½, with the 0 in the one's place of 10.<s>1</s>, yields 0/0 which placevalue represents as %. Exponential represents this as NaN (Not a Number). 0/0 is an underconstrained number. This underconstrained constant is what is normally understood as the Constant of Integration.
 
@@ -618,7 +620,7 @@ Possibly the worst part is that it moves attention away from seeing symmetries i
 
 Using PlaceValue, we can see immediately that if 1/<s>1</s>1 = 11111 then we should also have another equation 1/11111 = <s>1</s>1 . This is an example of the so-called intrinsic symmetry (of the terrain). Trying to see this simple symmetry, using the needlessly complicated maps of the formalism of generating functions is prohibitively expensive.
 
-The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the base point. Instead of using /, I really should have used \ . I should write 1\ <s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \ .
+The astute reader might note the sign issue that I magicked over. I wrote 1/<s>1</s>1 = 11111. This is not quite true. 1/<s>1</s>1 = .<s>11111</s> . So, the sign is different. Unfortunately, the powers are also different because of the position of the PlaceMark. Instead of using /, I really should have used \ . I should write 1\ <s>1</s>1 = 11111. Now it's right. In short, to model generating functions as PlaceValue use \ instead of /. In long, don't model generating functions; know when to use / and when to use \ .
 
 Summary
 ---------
@@ -651,8 +653,8 @@ For future work, I would clean the code by removing the overhead of intermittent
 <tr><td>Sparse Expression Ratio</td><td></td><td>depends on Sparse PlaceValueRatio</td><td>depends on SparsePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
 <tr><td>Polynomial1</td><td></td><td></td><td>depends on WholePlaceValue</td><td>depends on Rational or Complex or RationalComplex.</td></tr>
 <tr><td>PolynomialRatio1</td><td></td><td>depends on PlaceValueRatio</td><td>depends on WholePlaceValue</td><td>depends on Rational or RationalComplex.</td></tr>
-<tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
-<tr><td>Fourier &amp; Laplace</td><td></td><td>depends on PlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
+<tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on MarkedPlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
+<tr><td>Fourier &amp; Laplace</td><td></td><td>depends on MarkedPlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial2</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Complex Exponential &amp; Fourier2</td><td>depends on Complex Laurent</td><td>depends on ComplexPlaceValue</td><td>depends on Whole PlaceValueComplex2.</td><td></td></tr>

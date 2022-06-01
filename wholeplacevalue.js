@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	03/31/2022
+// Date:	05/31/2022
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -60,7 +60,6 @@ class wholeplacevalue {	//	+2020.11
 				if (inparen)
 					numb += c;
 				else {
-					//if (c == '.' || c == 'e' || c == 'E') break;    // Truncate    2015.9	//	-2020.5
 					if (c == '.' || c == 'E') break;	//	+2020.5
 					if ([String.fromCharCode(185), String.fromCharCode(777), String.fromCharCode(822), String.fromCharCode(8315)].indexOf(c) > -1) ret[ret.length - 1] += c;
 					else ret.push(c);
@@ -79,7 +78,8 @@ class wholeplacevalue {	//	+2020.11
 		}
 		var othertype = other.check();
 		var mytype = this.check();
-		if (mytype != othertype) throw new Error('Wholeplacevalue.prototype.Check 2 Fail');
+		//if (mytype != othertype) throw new Error('Wholeplacevalue.prototype.Check 2 Fail');															//	-2022.05
+		if (mytype != othertype) throw new Error(`Wholeplacevalue.Check 2 Fail: mytype(${translate(mytype)}) , othertype(${translate(othertype)})`);	//	+2022.05
 		return mytype;
 	}
 

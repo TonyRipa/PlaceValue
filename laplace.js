@@ -1,15 +1,16 @@
 
 // Author:	Anthony John Ripa
-// Date:	12/31/2021
-// Laplace:	a datatype for representing the Laplace Transform; an application of the PlaceValue(Complex) datatype
+// Date:	05/31/2022
+// Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
 
 	constructor(base, pv) {
 		if (arguments.length < 1) base = 1; //  2017.10
-		if (arguments.length < 2) pv = new placevalue(complex);     //      2018.6
+		//if (arguments.length < 2) pv = new placevalue(complex);		//	-2022.05
+		if (arguments.length < 2) pv = new markedplacevalue(complex);	//	+2022.05
 		if (Array.isArray(base)) alert('laplace expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-		if (!(pv instanceof placevalue)) { var s = 'laplace expects argument 2 (pv) to be a placevalue(complex) but found ' + typeof pv + ': ' + JSON.stringify(pv); alert(s); throw new Error(s); }
+		if (!(pv instanceof markedplacevalue)) { var s = 'laplace expects argument 2 (pv) to be a markedplacevalue(complex) but found ' + typeof pv + ': ' + JSON.stringify(pv); alert(s); throw new Error(s); }
 		super();
 		this.base = base
 		this.pv = pv;
@@ -19,19 +20,18 @@ class laplace extends abstractpolynomial {
 		console.log('<strornode>')
 		console.log(strornode)
 		console.log('</strornode>')
-		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laplace(a.base, new placevalue(this.pv.whole.parse(JSON.stringify(a.pv.whole.mantisa)), a.pv.exp)) }
+		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laplace(a.base, new this.pv.constructor(this.pv.whole.parse(JSON.stringify(a.pv.whole.mantisa)), a.pv.exp)) }
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'ConstantNode') {
-			return new laplace(1, new placevalue(new wholeplacevalue(complex).parse('(' + Number(node.value) + ')'), 0));  //  Add paren for 2 digit numbers   2016.7
+			return new laplace(1, new this.pv.constructor(new wholeplacevalue(complex).parse('(' + Number(node.value) + ')'), 0));  //  Add paren for 2 digit numbers   2016.7
 		} else if (node.type == 'SymbolNode') {
 			var base = node.name;
 			if (base == 'i') {
-				return new laplace(1, new placevalue(new wholeplacevalue(complex).parse('i'), 0));   //  2016.6
+				return new laplace(1, new this.pv.constructor(new wholeplacevalue(complex).parse('i'), 0));   //  2016.6
 			} else {
 				//alert('Syntax Error: laplace expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
 				console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
 				console.log(node)
-				//me.base = base;
 				var pv = this.pv.parse('1E1');  //  2017.10
 				return new laplace(base, pv);
 			}
@@ -42,9 +42,9 @@ class laplace extends abstractpolynomial {
 			//var a = new laplace(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 			var a = new laplace().parse(kids[0]);       // laplace handles unpreprocessed kid   2015.11
 			if (node.fn == 'unaryMinus') {
-				var c = new laplace(1, new placevalue(new wholeplacevalue(complex).parse('0'), 0)).sub(a);
+				var c = new laplace(1, new this.pv.constructor(new wholeplacevalue(complex).parse('0'), 0)).sub(a);
 			} else if (node.fn == 'unaryPlus') {
-				var c = new laplace(1, new placevalue(new wholeplacevalue(complex).parse('0'), 0)).add(a);
+				var c = new laplace(1, new this.pv.constructor(new wholeplacevalue(complex).parse('0'), 0)).add(a);
 			} else {
 				var b = new laplace().parse(kids[1]);   // laplace handles unpreprocessed kid   2015.11
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
@@ -59,7 +59,7 @@ class laplace extends abstractpolynomial {
 			var kidaspoly = laurent.parse(kids[0])
 			//alert(kidaspoly)
 			var base = kidaspoly.base;
-			var ten = new placevalue(new wholeplacevalue(complex).parse('1'), 1);
+			var ten = new this.pv.constructor(new wholeplacevalue(complex).parse('1'), 1);
 			var tens = kidaspoly.pv.get(1)
 			var one = kidaspoly.pv.get(0)
 			var exp = ten.pow(tens)
@@ -102,8 +102,8 @@ class laplace extends abstractpolynomial {
 		var trigreal = '';
 		var trigimag = '';
 		//alert(JSON.stringify(s))
-		[s, trigreal] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('1'), 0)), '');
-		[s, trigimag] = trig(s.times(new placevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed	//	--2020.6
+		[s, trigreal] = trig(s.times(new markedplacevalue(new wholeplacevalue(complex).parse('1'), 0)), '');
+		[s, trigimag] = trig(s.times(new markedplacevalue(new wholeplacevalue(complex).parse('(0,-1)'), 0)), ''); //  2016.4	//	2019.5	Removed	//	--2020.6
 		s = s.unscale(new complex(0,-1));																									//	+2021.12
 		var ret = trigreal + (trigimag != '' ? ('i(' + trigimag + ')') : '');											//	2019.5	Removed	//	--2020.6
 		//var ret = trigreal;																							//	2019.5	Added	//	-2020.6
@@ -111,7 +111,7 @@ class laplace extends abstractpolynomial {
 		if (ret[0] == '+') ret = ret.slice(1);
 		return ret.substr(ret.length - 2) == '+0' ? ret.substring(0, ret.length - 2) : ret[ret.length - 1] == '+' ? ret.substring(0, ret.length - 1) : ret;
 		function trig(s, ret) {
-			var r = new placevalue(new wholeplacevalue(complex).parse('1'), 0).divide(s);
+			var r = new markedplacevalue(new wholeplacevalue(complex).parse('1'), 0).divide(s);
 			//alert(JSON.stringify([s, r]));
 			var s0, s1, s2, s3, s4, s5, s6, s7;
 			[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)];
@@ -139,7 +139,7 @@ class laplace extends abstractpolynomial {
 			return [s, ret];
 			function rnd(num) { return Math.round(num * 1000) / 1000 }
 			function root(num) { return Math.round(Math.sqrt(num) * 1000) / 1000 }
-			function sub(array) { s = s.sub(new placevalue(new wholeplacevalue(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
+			function sub(array) { s = s.sub(new markedplacevalue(new wholeplacevalue(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
 			function coef(x) { return x==1 ? '' : x }	//	2019.11	Added
 		}
 		//function hyper(name, sign, ind) {
@@ -169,7 +169,7 @@ class laplace extends abstractpolynomial {
 		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 			x.pop();                                    // Replace shift with pop because L2R 2015.7
 			if (x.length == 0) x = [new this.pv.whole.datatype()];  //  2018.6
-			return laplace.toStringXbase(new placevalue(new wholeplacevalue([x]), 0), base);  // added namespace  2015.7
+			return laplace.toStringXbase(new markedplacevalue(new wholeplacevalue([x]), 0), base);  // added namespace  2015.7
 		}
 		var ret = '';
 		var str = x//.toString().replace('.', '');
@@ -181,7 +181,7 @@ class laplace extends abstractpolynomial {
 			if (digit.norm() > .001) {
 				//coef = coefficient(digit);
 				var pow = Math.abs(power) - 1
-				var coef = new placevalue(new wholeplacevalue(complex).parse('('+digit+')'), 0).scale(new complex(1 / math.factorial(pow))).toString(false, true);
+				var coef = new markedplacevalue(new wholeplacevalue(complex).parse('('+digit+')'), 0).scale(new complex(1 / math.factorial(pow))).toString(false, true);
 				if (coef == 0) continue;    // Prevents 0 times -s  2016.2
 				if (coef == 1) coef = '';
 				if (coef == 'NaN') coef += '*';
@@ -212,7 +212,7 @@ class laplace extends abstractpolynomial {
 
 	eval(base) {	// 2016.1
 		base = base.pv;
-		var c = placevalue;
+		var c = this.pv.constructor;
 		var ei = new c(new wholeplacevalue([new complex(.54, .84)]), 0);
 		alert(JSON.stringify([ei, base, ei.pow(base)]));
 		base = ei.pow(base);

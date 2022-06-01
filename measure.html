@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    12/31/2021
+   Date:    05/31/2022
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -19,7 +19,8 @@
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
-	<script type="text/javascript" src='placevalue.js'></script>
+	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<style>
 		output { margin: 50px; }
 		body,input { font-family:"Arial Unicode MS"}
@@ -88,7 +89,7 @@
 		</tr>
 	</table>
 	<script type="text/javascript">
-		var f = placevalue;
+		var f = markedplacevalue;
 		select = 1;
 		function selector() {   //  2016.12
 			if (select == 1) select1();
@@ -128,22 +129,6 @@
 			select = 2;
 			$('#td2').css('background-color', '#EEEEEE');
 			$('#td1').css('background-color', 'white');
-			/*	-2020.3
-			if ($('#kind')[0].selectedIndex == 0) {     //  2016.3
-			    var topshapes = [1];
-			    var botshapes = ["τ0", "τ0"];           // τ -> τ0  2016.4
-			} else if ($('#kind')[0].selectedIndex == 1) {
-			    var topshapes = [".0(.0796)"];
-			    var botshapes = ["0.½", "0.½"];
-			} else {                                    //  2016.4
-			    $('#op').val('x');
-			    pop("τ0", ".0(.0253)");
-			    $('#p2').text($('#c').val())
-			    return;
-			}
-			var top = topshapes[$('#top2')[0].selectedIndex];
-			var bot = botshapes[$('#bot2')[0].selectedIndex];
-			*/
 			if ($('#kind')[0].selectedIndex == 0)                       //  +2020.3
 				var shapes = [1, "τ0", "τ0"];
 			else if ($('#kind')[0].selectedIndex == 1)

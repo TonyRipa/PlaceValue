@@ -1,13 +1,21 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2021
-// Laurent: a datatype for representing Laurent polynomials; an application of the PlaceValue datatype
+// Date:    05/31/2022
+// Laurent: a datatype for representing Laurent polynomials; an application of the MarkedPlaceValue datatype
 
-function laurent(base, pv) {
-	if (arguments.length < 1) base = 1;                 //  2017.9
-	if (arguments.length < 2) pv = new placevalue();    //  2017.9
+//function laurent(base, pv) {								//	-2022.05
+function laurent(arg) {										//	+2022.05
+	//if (arguments.length < 1) base = 1;		//  2017.9	//	-2022.05
+	//if (arguments.length < 2) pv = new placevalue();		//	-2022.05
+	var base, pv;																//	+2022.05
+	if (arguments.length == 0)[base, pv] = [1, new markedplacevalue(rational)];	//	+2022.05
+	if (arguments.length == 1) {												//	+2022.05
+		if (arg === rational || arg === complex || arg === rationalcomplex)[base, pv] = [1, new markedplacevalue(arg)];
+		else[base, pv] = [arg, new markedplacevalue(rational)];
+	}
+	if (arguments.length == 2)[base, pv] = arguments;							//	+2022.05
 	if (Array.isArray(base)) alert('laurent expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-	if (!(pv instanceof placevalue)) { var s = 'Laurent expects arg 2 (pv) to be a placevalue but found ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+	if (!(pv instanceof markedplacevalue)) { var s = 'Laurent expects arg 2 (pv) to be a markedplacevalue but found ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
 	this.base = base
 	this.pv = pv;
 	return;
@@ -17,14 +25,14 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
 	console.log('<strornode>')
 	console.log(strornode)
 	console.log('</strornode>')
-	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new placevalue(new wholeplacevalue().parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }    //  2017.10
+	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent(a.base, new this.pv.constructor(new wholeplacevalue().parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }    //  2017.10
 	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 	if (node.type == 'ConstantNode') {
-		return new laurent(1, new placevalue(new wholeplacevalue().parse('(' + Number(node.value) + ')'), 0));
+		//return new laurent(1, new this.pv.constructor(new wholeplacevalue().parse('(' + Number(node.value) + ')'), 0));	//	-2022.05
+		return new laurent(1, this.pv.parse('(' + Number(node.value) + ')'));												//	+2022.05
 	} else if (node.type == 'SymbolNode') {
 		console.log('SymbolNode')
 		//var base = node.name;																							//	-2020.5
-		//pv = 10;
 		//var pv = new placevalue(new wholeplacevalue().parse(1), 1);   // 1E1 not 10 so 1's place DNE, not 0.   2015.9	//	-2020.5
 		if (node.name.match(this.pv.whole.datatype.regexfull())) {														//	+2020.5
 			var base = 1;
@@ -37,13 +45,17 @@ laurent.prototype.parse = function (strornode) {    //  2017.9
 	} else if (node.type == 'OperatorNode') {
 		console.log('OperatorNode')
 		var kids = node.args;
-		var a = new laurent().parse(kids[0]);       // laurent handles unpreprocessed kid   2015.11
+		//var a = new laurent().parse(kids[0]);	// laurent handles unpreprocessed kid   2015.11				//	-2022.05
+		var a = this.parse(kids[0]);																		//	+2022.05
 		if (node.fn == 'unaryMinus') {
-			var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).sub(a);
+			//var c = new laurent(1, new this.pv.constructor(new wholeplacevalue().parse(0), 0)).sub(a);	//	-2022.05
+			var c = new laurent(1, this.pv.parse(0)).sub(a);												//	+2022.05
 		} else if (node.fn == 'unaryPlus') {
-			var c = new laurent(1, new placevalue(new wholeplacevalue().parse(0), 0)).add(a);
+			//var c = new laurent(1, new this.pv.constructor(new wholeplacevalue().parse(0), 0)).add(a);	//	-2022.05
+			var c = new laurent(1, this.pv.parse(0)).add(a);												//	+2022.05
 		} else {
-			var b = new laurent().parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11
+			//var b = new laurent().parse(kids[1]);   // laurent handles unpreprocessed kid   2015.11		//	-2022.05
+			var b = this.parse(kids[1]);   																	//	+2022.05
 			var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 		}
 		return c;
@@ -91,7 +103,7 @@ laurent.toStringXbase = function (pv, base) {                        // added na
 	console.log('laurent.toStringXbase: x=' + x);
 	if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 		x.pop();                                    // Replace shift with pop because L2R 2015.7
-		return laurent.toStringXbase(new placevalue(x), base);  // added namespace  2015.7
+		return laurent.toStringXbase(new markedplacevalue(x), base);  // added namespace  2015.7
 	}
 	var ret = '';
 	var str = x//.toString().replace('.', '');

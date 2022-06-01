@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	10/31/2021
+	Date:	05/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -22,7 +22,8 @@
 	<script src='rationalcomplex.js'></script>
 	<script src='fourier.js'></script>
 	<script src='wholeplacevalue.js'></script>
-	<script src='placevalue.js'></script>
+	<!--<script src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script src='markedplacevalue.js'></script>		<!--	+2022.05	-->
 	<script src='wholeplacevalue2.js'></script>
 	<script src='polynomial2.js'></script>
 	<script src='placevalue2.js'></script>
@@ -103,7 +104,6 @@
 				if (i) str = str.replace(/exp/g, 'i*cis');
 				console.log('diffexp');
 				$('#a').val($('#func').val());
-				//$('#b').val(str.replace(/@/g, new f().parse($('#func').val()).base));	//	-2021.10
 				var base = new f().parse($('#func').val()).base;						//	+2021.10
 				if (base == 1) base = 'x';												//	+2021.10
 				$('#b').val(str.replace(/@/g, base));									//	+2021.10

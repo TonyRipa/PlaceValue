@@ -1,15 +1,16 @@
 
 // Author:  Anthony John Ripa
-// Date:    02/28/2022
-// Fourier: a datatype for representing Imaginary Exponentials; an application of the PlaceValue datatype
+// Date:    05/31/2022
+// Fourier: a datatype for representing Imaginary Exponentials; an application of the MarkedPlaceValue datatype
 
 class fourier {
 
 	//function fourier(base, pv) {	//	-2022.02
 	constructor(base, pv) {			//	+2022.02
-		if (arguments.length < 2) pv = new placevalue(complex); //  2017.9
+		//if (arguments.length < 2) pv = new placevalue(complex);		//	-2022.05
+		if (arguments.length < 2) pv = new markedplacevalue(complex);	//  +2022.05
 		if (Array.isArray(base)) alert('fourier expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
-		if (!(pv instanceof placevalue)) { var s = 'fourier expects arg2 to be PlaceValue(Complex) not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+		if (!(pv instanceof markedplacevalue)) { var s = 'fourier expects arg2 to be MarkedPlaceValue(Complex) not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
 		this.base = base
 		this.pv = pv;
 	}
@@ -18,15 +19,15 @@ class fourier {
 		console.log('<strornode>')
 		console.log(strornode)
 		console.log('</strornode>')
-		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new fourier(a.base, new placevalue(new wholeplacevalue(complex).parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }
+		if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new fourier(a.base, new this.pv.constructor(new wholeplacevalue(complex).parse(JSON.stringify(a.pv.whole)), a.pv.exp)) }
 		//alert(strornode instanceof String || typeof (strornode) == 'string') // seems always string
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'ConstantNode') {
-			return new fourier(1, new placevalue(new wholeplacevalue([new complex(Number(node.value))]), 0));
+			return new fourier(1, new this.pv.constructor(new wholeplacevalue([new complex(Number(node.value))]), 0));
 		} else if (node.type == 'SymbolNode') {
 			var base = node.name;
 			if (base == 'i') {
-				return new fourier(1, new placevalue(new wholeplacevalue([new complex(0, 1)]), 0));
+				return new fourier(1, new this.pv.constructor(new wholeplacevalue([new complex(0, 1)]), 0));
 			} else {
 				console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
 				console.log(node)
@@ -36,12 +37,11 @@ class fourier {
 			console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
 			console.log(node)
 			var kids = node.args;
-			//var a = new fourier(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 			var a = new fourier().parse(kids[0]);       // fourier handles unpreprocessed kid   2015.11
 			if (node.fn == 'unaryMinus') {
-				var c = new fourier(1, new placevalue(new wholeplacevalue(complex).parse(0), 0)).sub(a);
+				var c = new fourier(1, new this.pv.constructor(new wholeplacevalue(complex).parse(0), 0)).sub(a);
 			} else if (node.fn == 'unaryPlus') {
-				var c = new fourier(1, new placevalue(new wholeplacevalue(complex), 0)).add(a);
+				var c = new fourier(1, new this.pv.constructor(new wholeplacevalue(complex), 0)).add(a);
 			} else {
 				var b = new fourier().parse(kids[1]);   // fourier handles unpreprocessed kid   2015.11
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
@@ -53,15 +53,16 @@ class fourier {
 			console.log(node)
 			var fn = node.name;
 			var kids = node.args;
-			var kidaspoly = new laurent().parse(kids[0])
+			var kidaspoly = new laurent(complex).parse(kids[0])
 			//alert(kidaspoly)
 			var base = kidaspoly.base;
-			var ten = new placevalue(complex).parse(10);      //  2017.5
-			var tens = kidaspoly.pv.get(1).toreal();    //  2016.7
-			var ones = kidaspoly.pv.get(0).toreal();    //  2016.7
-			var expi = ten.pow(tens)
-			if (ones) expi = expi.scale(new complex(Math.cos(ones), Math.sin(ones))); //  2017.5
+			//var ten = new this.pv.constructor(complex).parse(10);						//	2017.5	//	-2022.05
+			//var tens = kidaspoly.pv.get(1).toreal();									//	2016.7	//	-2022.05
+			//var ones = kidaspoly.pv.get(0).toreal();									//	2016.7	//	-2022.05
+			//var expi = ten.pow(tens)																//	-2022.05
+			//if (ones) expi = expi.scale(new complex(Math.cos(ones), Math.sin(ones))); //  2017.5	//	-2022.05
 			//var expi = placevalue(complex).parse('(2.718)').pow(placevalue(complex).parse('i')).pow(placevalue(complex).parse(kidaspoly.pv.toString())) //  2017.5
+			var expi = kidaspoly.pv.exponential();													//	+2022.05
 			var expi2 = expi.pow(-1);                     //  2017.5
 			if (fn == 'cis') var pv = expi;
 			else if (fn == 'cos') var pv = expi.add(expi2).scale(new complex(.5));
@@ -170,7 +171,7 @@ class fourier {
 				if (math.sign(l) * math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) { // Math.sign to math.sign   2016.3
 					var n = m * 2 * sign;
 					ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-					s = s.sub(new placevalue(new wholeplacevalue([new complex(1)]), i).add(new placevalue(new wholeplacevalue([new complex(1)]), -i).scale(new complex(sign))).scale(ind == 'r' ? new complex(m) : new complex(0, m)));
+					s = s.sub(new markedplacevalue(new wholeplacevalue([new complex(1)]), i).add(new markedplacevalue(new wholeplacevalue([new complex(1)]), -i).scale(new complex(sign))).scale(ind == 'r' ? new complex(m) : new complex(0, m)));
 				}
 			}
 			ret = ret.replace(/\+\-/g, '-');
@@ -185,7 +186,7 @@ class fourier {
 		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 			x.pop();                                    // Replace shift with pop because L2R 2015.7
 			if (x.length == 0) x = [new this.pv.whole.datatype()];  //  2018.5
-			return fourier.toStringXbase(new placevalue(new wholeplacevalue(x), 0), base);    //  2017.5  [x] -> x
+			return fourier.toStringXbase(new markedplacevalue(new wholeplacevalue(x), 0), base);    //  2017.5  [x] -> x
 		}
 		var ret = '';
 		//var str = x//.toString().replace('.', '');
@@ -225,7 +226,7 @@ class fourier {
 
 	eval(base) {	// 2016.1
 		base = base.pv;
-		var ei = new placevalue(new wholeplacevalue([new complex(.54, .84)]), 0);
+		var ei = new this.pv.constructor(new wholeplacevalue([new complex(.54, .84)]), 0);
 		//alert(JSON.stringify([ei, base, ei.pow(base)]));
 		base = ei.pow(base);
 		return new fourier(this.base, this.pv.eval(base));

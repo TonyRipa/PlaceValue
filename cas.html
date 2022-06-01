@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	03/31/2022
+	Date:	05/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -26,7 +26,8 @@
 	<script type="text/javascript" src='complexlaurent.js'></script>
 	<script type="text/javascript" src='complexexponential.js'></script>
 	<script type="text/javascript" src='fourier.js'></script>
-	<script type="text/javascript" src='placevalue.js'></script>
+	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
+	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<script type="text/javascript" src='laurent.js'></script>
 	<script type="text/javascript" src='wholeplacevalue2.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>	<!-- polynomial depends on wholeplacevalue 2015.7 -->
@@ -64,7 +65,6 @@
 			return "<span style='white-space:nowrap'>" + x + "</span>";
 		}
 		function compute() {
-			//f = [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];					//	-2020.6
 			switch ($('#f')[0].selectedIndex) {	//	+2020.6
 				case 5: f = new sparsepolynomial(rational); break;
 				default: f = new [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
