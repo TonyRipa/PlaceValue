@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 05/31/2022
+Date : 06/30/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -75,6 +75,12 @@ PlaceValueRatio
 SparsePlaceValueRatio1
 ------------------
 <i>SparsePlaceValueRatio1</i> is a sparse version of PlaceValueRatio. It is a ratio of 2 SparsePlaceValue1s. PlaceValueRatio can handle numbers like 1/11. SparsePlaceValueRatio1 would handle that as 1 / 1E1+1. SparsePlaceValueRatio1 can handle more exotic ratios such as 1 / 1E½+1 .
+
+BasedPlaceValue
+-------------
+<i>basedplacevalue.js</i> is a 1D datatype for representing PlaceValues that have a base; an application of the WholePlaceValue datatype.
+
+The PlaceValue data-type is particularly well-suited to arithmetic in different bases. Based arithmetic works for a particular base. PlaceValue arithmetic works for all bases.
 
 Polynomial1
 -------------

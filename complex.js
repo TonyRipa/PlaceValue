@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	12/31/2021
+// Date:	6/30/2022
 // Complex:	A data-type for representing Complex Numbers
 
 class complex extends digit {		//	2019.11	Added
@@ -127,7 +127,6 @@ class complex extends digit {		//	2019.11	Added
 			if (long) return (b == 1 ? '' : b == -1 ? '-' : b) + 'i';   //  2017.11
 			return b == 1 ? 'i' : b == -1 ? NEGBEG + 'i' + NEGEND : this.digithelp(imag, NEGBEG, NEGEND, true) + IMAG;
 		}
-		//return '(' + this.digithelp(real, NEGBEG, NEGEND, true) + ',' + this.digithelp(imag, NEGBEG, NEGEND, true) + ')';
 		if (long == 'medium') return '(' + a + ',' + b + ')';
 		if (long) return '(' + a + '+' + (b == 1 ? '' : b) + 'i)';
 		return '(' + a + ',' + b + ')';
@@ -146,6 +145,7 @@ class complex extends digit {		//	2019.11	Added
 	below0() { return this.below(complex.zero()); }											//	2017.3
 	above0() { return this.above(complex.zero()); }											//	2017.3
 	isneg() { return this.below0() }														//	2017.10
+	ispos() { return this.above0() }														//	2022.6
 	isint() { return this.isreal() && Number.isInteger(this.r); }							//	2017.10
 
 	min(other) { return (this.below(other) ? this : other).clone() }						//	2019.5	Added

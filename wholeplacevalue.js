@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	05/31/2022
+// Date:	6/30/2022
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -36,6 +36,7 @@ class wholeplacevalue {	//	+2020.11
 			return ret;
 		}
 		man = man.toString();								//	+2022.01
+		if (man[0] == '-') return this.parse(man.slice(1)).negate();		//	+2022.6
 		var coefpow = man.split('E');						//	+2022.01
 		var coef = coefpow[0];								//	+2022.01
 		var pow = coefpow[1] ?? '0';						//	+2022.01
@@ -201,7 +202,8 @@ class wholeplacevalue {	//	+2020.11
 	isNaN() { this.check(); return this.equals(this.parse('%')); }  //  2018.3
 
 	above(other) { this.check(other); return this.get(0).above(other.get(0)) }	//	2017.7
-	isneg() { this.check(); return this.parse(0).above(this) == 1 }				//	2019.5	Added
+	//isneg() { this.check(); return this.parse(0).above(this) == 1 }			//	2019.5	Added	//	-2022.6
+	isneg() { this.check(); return this.parse(0).comparebig(this) == 1 }							//	+2022.6
 
 	add(other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 	sub(other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
@@ -262,7 +264,6 @@ class wholeplacevalue {	//	+2020.11
 				//alert('WPV .Bad Exponent = ' + power.tohtml());												//	-2021.11
 				//return this.parse('%');																		//	-2021.11
 			}
-			//if (power.get(0).toreal() < 0) return this.parse(0);		//	2018.1	this.parse		//	-2020.5
 			if (power.get(0).toreal() < 0) return this.parse(1).divide(this.pow(power.negate()));	//	+2020.5
 			if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
 			return this.times(this.pow(power.get(0).toreal() - 1));
@@ -560,15 +561,47 @@ class wholeplacevalue {	//	+2020.11
 		return new wholeplacevalue(x.map(e=>new this.datatype(e).round()));
 	}
 
-	regroup(base) {	//	+2021.8
+	regroup(base) {	//	+2022.6
 		this.check(base);
 		var ret = this.clone()
-		for (let i = 0; i < ret.len(); i++)
-			while (!ret.get(i).below(base.get(0))) {
-				ret.set(i, ret.get(i).sub(base.get(0)));
-				ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));
-			}
+		if (!base.get(0).is0()) {
+			for (let i = 0; i < ret.len(); i++)
+				while (ret.get(i).above(base.get(0)) || ret.get(i).equals(base.get(0)) || ret.get(i).negate().above(base.get(0)) || ret.get(i).negate().equals(base.get(0))) {
+					if (!ret.get(i).below(base.get(0))) {
+						ret.set(i, ret.get(i).sub(base.get(0)));
+						ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));					
+					} else {
+						ret.set(i, ret.get(i).add(base.get(0)));
+						ret.set(i+1, ret.get(i+1).sub(ret.datatype.parse(1)));					
+					}
+				}
+			if (ret.isneg())
+				for (let i = 0; i < ret.len(); i++)
+					while (ret.get(i).ispos()) {
+						ret.set(i, ret.get(i).sub(base.get(0)));
+						ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));					
+					}
+			else
+				for (let i = 0; i < ret.len(); i++)
+					while (ret.get(i).isneg()) {
+						ret.set(i, ret.get(i).add(base.get(0)));
+						ret.set(i+1, ret.get(i+1).sub(ret.datatype.parse(1)));					
+					}
+		}
+		ret = ret.clone();
 		return ret;
 	}
+
+	//regroup(base) {	//	+2021.8	//	-2022.6
+	//	this.check(base);
+	//	var ret = this.clone()
+	//	for (let i = 0; i < ret.len(); i++)
+	//		while (!ret.get(i).below(base.get(0))) {
+	//			ret.set(i, ret.get(i).sub(base.get(0)));
+	//			ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));
+	//		}
+	//	ret = ret.clone();	//	+2022.6
+	//	return ret;
+	//}
 
 }
