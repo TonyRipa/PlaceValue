@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	6/30/2022
+// Date:	7/31/2022
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -159,8 +159,10 @@ class wholeplacevalue {	//	+2020.11
 		}
 		var w = this.mantisa.length * 50;
 		//var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;			//	-2020.12
-		var y1 = (math.min(0,arr.map(y=>y.toreal()))) * 50;						//	+2021.10
-		var y2 = (math.max(1,arr.map(y=>y.toreal()))) * 50;						//	+2021.10
+		//var y1 = (math.min(0,arr.map(y=>y.toreal()))) * 50;					//	+2021.10	//	-2022.7
+		//var y2 = (math.max(1,arr.map(y=>y.toreal()))) * 50;					//	+2021.10	//	-2022.7
+		var y1 = (math.min(0,...arr.map(y=>y.toreal()))) * 50;									//	+2022.7
+		var y2 = (math.max(1,...arr.map(y=>y.toreal()))) * 50;									//	+2022.7
 		ret += `<line y1="0" y2="0" x1="0"     x2="${w }" stroke='black' />`;	//	+2021.10
 		ret += `<line x1="0" x2="0" y1="${y1}" y2="${y2}" stroke='black' />`;	//	+2021.10
 		//return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`	//	-2021.10
@@ -268,7 +270,6 @@ class wholeplacevalue {	//	+2020.11
 			if (power.is0()) return this.parse(1);//alert(JSON.stringify(power))
 			return this.times(this.pow(power.get(0).toreal() - 1));
 		} else if (this.mantisa.length == 1) {	//	+2020.5
-			//if (this.mantisa.length == 1) return new wholeplacevalue([this.get(0).pow(power.get(0))]).times10s(power.get(1).toreal());  //  2017.5  2^32=4000	//	-2020.5
 			var ret = [];											//	+2020.5
 			for (var i = 0; i < 2 ; i++) {							//	+2020.5
 				if (i == 0) { ret.push(this.parse(this.get(0).pow(power.get(0)).toString())); continue; }
@@ -481,7 +482,8 @@ class wholeplacevalue {	//	+2020.11
 		}
 		A = math.matrix(A);
 		b = math.matrix(b);
-		var At = A.transpose();
+		//var At = A.transpose();									//	-2022.7
+		var At = math.transpose(A);									//	+2022.7
 		var AtA = math.multiply(At, A);
 		var Atb = math.multiply(At, b);
 		//var I = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);	//	-2020.12
@@ -493,7 +495,8 @@ class wholeplacevalue {	//	+2020.11
 		}
 		//var x = math.multiply(AtAinv, Atb);						//	-2020.12
 		//x = x.transpose().valueOf()[0];							//	-2020.12
-		x = x.transpose().valueOf();								//	+2020.12
+		//x = x.transpose().valueOf();								//	+2020.12	//	-2022.7
+		x = math.transpose(x).valueOf();											//	+2022.7
 		x.reverse();
 		return new wholeplacevalue(x.map(function (x) { return Math.round(100 * x) / 100 }).map(new this.datatype().parse));
 	}
@@ -531,6 +534,7 @@ class wholeplacevalue {	//	+2020.11
 	}
 
 	eval(base) {
+		if (!(base instanceof this.constructor)) base = this.parse('('+base+')');	//	+2022.7
 		this.check(base);
 		//var sum = new this.datatype();		//	-2021.3
 		//var sum = new this.constructor();		//	+2021.3	//	-2021.7
@@ -562,9 +566,15 @@ class wholeplacevalue {	//	+2020.11
 	}
 
 	regroup(base) {	//	+2022.6
+		if (!(base instanceof this.constructor)) base = this.parse('('+base+')');	//	+2022.7
 		this.check(base);
 		var ret = this.clone()
 		if (!base.get(0).is0()) {
+			for (let i = ret.len() - 1; i > 0; i--)									//	+2022.7
+				if (!ret.get(i).isint()) {
+					if (i > 0) ret.set(i-1, ret.get(i-1).add(ret.get(i).times(base.get(0))));					
+					ret.set(i, ret.get(i).sub(ret.get(i)));
+				}
 			for (let i = 0; i < ret.len(); i++)
 				while (ret.get(i).above(base.get(0)) || ret.get(i).equals(base.get(0)) || ret.get(i).negate().above(base.get(0)) || ret.get(i).negate().equals(base.get(0))) {
 					if (!ret.get(i).below(base.get(0))) {

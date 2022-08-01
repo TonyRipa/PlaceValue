@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	05/31/2022
+	Date:	7/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -13,10 +13,12 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>
+	</script>																																						-2022.7	-->
+	<script src='../js/math3.js'></script>																													<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>			<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -69,7 +71,6 @@
 				case 5: f = new sparsepolynomial(rational); break;
 				default: f = new [polynomial1, laurent, sparsepolynomial1, polynomial2, laurent2, sparsepolynomial, complexlaurent, exponential, fourier, complexexponential][$('#f')[0].selectedIndex];
 			}
-			//var poly = new f().parse($('#a').val());	//	2017.9	-2020.6
 			var poly = f.parse($('#a').val());			//	2017.9	+2020.6
 			var tuple = parse($('#a').val());
 			$('div').append("<table class='main'><tr><td width='100%'>" + $('#a').val() + "</td><td>" + tupletostring(tuple) + "</td></tr><tr><td>" + poly + "</td><td style='text-align:right;float:right'>" + nobr(poly.tohtml()) + "</td></tr></table><hr style='clear:both'>"); // InOut<hr>InOut 2015.6 // tohtml 2015.7

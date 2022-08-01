@@ -1,6 +1,6 @@
 
 // Author : Anthony John Ripa
-// Date : 4/30/2019
+// Date : 7/31/2022
 // Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype
 
 function laurent2(base, pv) {
@@ -41,12 +41,13 @@ laurent2.prototype.parse = function (strornode) {   //  2017.9
 			var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 		}
 		return c;
-		//me.base = c.base;
-		//me.pv = c.pv;
-		//console.log('new laurent2 : parse2 : base = ' + JSON.stringify(me.base));
 	} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
 		alert('Syntax Error: Laurent2 expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
 		return laurent2.parse(node.args[0]);
+	} else if (node.type == 'ParenthesisNode') {	//	+2022.7
+		return this.parse(node.content);
+	} else {										//	+2022.7
+			alert('othertype')
 	}
 }
 

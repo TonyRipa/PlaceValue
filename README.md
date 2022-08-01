@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 06/30/2022
+Date : 7/31/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -297,7 +297,7 @@ Fouriers are nothing more than a veneer for MarkedPlaceValue.
 
 Laplace
 --------
-<i>laplace.js</i>. If Laplace wants to solve 1\*Df(x)+1*f(x)=0 then it calculates 1/(s+1), then it asks MarkedPlaceValue(Complex) to calculate:
+<i>laplace.js</i>. If Laplace wants to solve 1\*Df(x)+1\*f(x)=0 then it calculates 1/(s+1), then it asks MarkedPlaceValue(Complex) to calculate:
 
 1 / 11 = 0.1<s>1</s>1<s>1</s> base s
 

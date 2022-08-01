@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	8/31/2020
+	Date:	7/31/2022
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,10 +13,12 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>
+	</script>																																				-2022.7	-->
+	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
 	<script src='digit.js'></script>
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -95,7 +97,6 @@
 			var d = $('select').val();						//	+2020.8
 			if (e==p[0]) {
 				var Factor1 = getparsedinput('#'+p[1]);
-				//$('#'+p[1]+'div').html(Factor1.tosvg());	//	-2020.8
 				$('#'+p[1]+'div').html(Factor1.tosvg(d));	//	+2020.8
 				var Factor2 = getparsedinput('#'+p[2]);
 				//$('#'+p[2]+'div').html(Factor2.tosvg());	//	-2020.8

@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	03/31/2022
+// Date:	7/31/2022
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -62,11 +62,13 @@ class rational extends digit {				//	2019.11.Added
 			if (n == Infinity) return new rational(1, 0);
 			if (n == -Infinity) return new rational(-1, 0);
 			if (n == Math.round(n)) return new rational(n);
-			var ns = n.toString();
-			var den = Math.pow(10, ns.length - ns.indexOf('.') - 1);
-			//var num = n * den;					//	-2021.2
-			var num = Number(ns.replace('.',''));	//	+2021.2
-			return new rational(num, den);
+			let frac = math.fraction(n);								//	+2022.7
+			return new rational(frac.s * frac.n, frac.d);				//	+2022.7
+			//var ns = n.toString();									//	-2022.7
+			//var den = Math.pow(10, ns.length - ns.indexOf('.') - 1);	//	-2022.7
+			////var num = n * den;					//	-2021.2			//	-2022.7
+			//var num = Number(ns.replace('.',''));	//	+2021.2			//	-2022.7
+			//return new rational(num, den);							//	-2022.7
 		}
 		function parsestring(n) {
 			var N = n.toString();
@@ -214,7 +216,8 @@ class rational extends digit {				//	2019.11.Added
 	divide(other) { return new rational(this.n * other.d, this.d * other.n); }
 	divideleft(other) { return this.divide(other) }		//  2019.11	Added
 	dividemiddle(other) { return this.divide(other) }	//  2019.11	Added
-	remainder(den) { return this.sub(this.divide(den).times(den)); }	//	2019.4	Added
+	//remainder(den) { return this.sub(this.divide(den).times(den)); }	//	2019.4	Added			//	-2022.7
+	remainder(den) { return new this.constructor( (this.n*den.d)%(den.n*this.d) , this.d*den.d ) }	//	+2022.7
 	pointadd(other) { return this.add(other) }		//  2019.11	Added
 	pointsub(other) { return this.sub(other) }		//  2019.11	Added
 	pointtimes(other) { return this.times(other) }	//  2019.11	Added
@@ -237,7 +240,6 @@ class rational extends digit {				//	2019.11.Added
 		if (typeof other == 'number' && other == -1) return new rational(this.d, this.n);	//	+2020.12
 		if (other instanceof rational && other.negate().is1()) return new rational(this.d, this.n); //  2017.7
 		if (other instanceof rational) other = other.toreal();
-		//return new rational(Math.pow(this.toreal(), other));							//	-2021.1
 		if (isNaN(Math.pow(this.n, other))) return new this.constructor(0,0);			//	+2021.1
 		return new this.constructor(Math.pow(this.n, other), Math.pow(this.d, other));	//	+2021.1
 	}

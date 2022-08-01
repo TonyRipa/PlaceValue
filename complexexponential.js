@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    4/30/2019
+// Date:    7/31/2022
 // ComplexExponential : a datatype for representing Complex Exponentials; an application of the ComplexPlaceValue datatype
 
 function complexexponential(base, pv) {
@@ -28,8 +28,6 @@ complexexponential.prototype.parse = function (strornode) { //  2017.9
 			alert('Syntax Error: complexexponential expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');
 			console.log('SymbolNode: ' + node.type + " : " + JSON.stringify(node))
 			console.log(node)
-			//pv = 10;
-			//me.base = base;
 			var pv = new complexplacevalue(new wholeplacevaluecomplex2([[1]]), [1, 0]);   // 1E1 not 10 so 1's place DNE not 0.   2015.9
 			return new complexexponential(base, pv);
 		}
@@ -86,6 +84,8 @@ complexexponential.prototype.parse = function (strornode) { //  2017.9
 		var base = 1;
 		var pv = new complexplacevalue(new wholeplacevaluecomplex2([[Number(node.value)]]), [0, 0]);
 		return new complexexponential(base, pv);
+	} else if (node.type == 'ParenthesisNode') {	//	+2022.7
+		return this.parse(node.content);
 	} else {
 		alert('othertype')
 	}

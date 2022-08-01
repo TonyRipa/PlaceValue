@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	05/31/2022
+// Date:	7/31/2022
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -73,6 +73,8 @@ class laplace extends abstractpolynomial {
 			else if (fn == 'sin') var pv = exp.sub(exp2).scale([0, -.5]);
 			else alert('Syntax Error: laplace expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.');    //  Check   2015.12
 			return new laplace(base, pv);
+		} else if (node.type == 'ParenthesisNode') {	//	+2022.7
+			return this.parse(node.content);
 		} else {
 			alert('othertype')
 		}
@@ -142,22 +144,6 @@ class laplace extends abstractpolynomial {
 			function sub(array) { s = s.sub(new markedplacevalue(new wholeplacevalue(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
 			function coef(x) { return x==1 ? '' : x }	//	2019.11	Added
 		}
-		//function hyper(name, sign, ind) {
-		//    for (var i = 5; i >= -5; i--) {
-		//        if (i == 0) continue;
-		//        var l = s.get(i)[ind];
-		//        var r = s.get(-i)[ind];
-		//        var m = Math.min(l, sign * r);
-		//        var al = Math.abs(l);
-		//        var ar = Math.abs(r);
-		//        if (Math.sign(l) * Math.sign(r) == sign && ar >= al && al != 0 && Math.abs(m) > .001) {//alert([i,l,r,m,al,ar])
-		//            var n = m * 2 * sign;
-		//            ret += (n == 1 ? '' : n == -1 ? '-' : Math.round(n * 1000) / 1000) + name + (i == 1 ? '' : i) + base + ')+';
-		//            s = s.sub(new placevaluecomplex(new wholeplacevaluecomplex([1]), i).add(new placevaluecomplex(new wholeplacevaluecomplex([1]), -i).scale([sign, 0])).scale(ind == 0 ? [m, 0] : [0, m]));
-		//        }
-		//    }
-		//    ret = ret.replace(/\+\-/g, '-');
-		//}
 	}
 
 	static toStringXbase(pv, base) {                        // added namespace  2015.7

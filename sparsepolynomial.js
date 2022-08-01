@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    9/30/2021
+// Date:    7/31/2022
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -52,12 +52,15 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			return c;
 		} else if (node.type == 'ConstantNode') {
 			console.log('ConstantNode : ->' + node.value + '<-');										//	2020.1	Added
-			//return new sparsepolynomial([], this.pv.parse(Number(node.value)));						//	2020.1	Removed
 			if (node.value != 'undefined') return new sparsepolynomial([], this.pv.parse(node.value));	//	2020.1	Added
 			return new sparsepolynomial(this.pv.datatype);												//	2020.1	Added
 		} else if (node.type == 'FunctionNode') {   // Discard functions    2015.12
 			alert('Syntax Error: sparsepolynomial expects input like 1, x, x*x, x^3, 2*x^2, or 1+x but found ' + node.name + '.');
 			return sparsepolynomial.parse(node.args[0]);
+		} else if (node.type == 'ParenthesisNode') {	//	+2022.7
+			return this.parse(node.content);
+		} else {										//	+2022.7
+			alert('othertype')
 		}
 	}
 

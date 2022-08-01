@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	05/31/2022
+	Date:	7/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,10 +13,12 @@
 	<script type="text/javascript">        
 		window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
 	</script>
-	<script src="../js/math.js"></script>
+	<!--<script src="../js/math.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")
-	</script>
+	</script>																																				-2022.7	-->
+	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -87,7 +89,6 @@
 			//alert([JSON.stringify(fsn_k), fsn_k.tohtml(), fsn_k.toString()])
 			//var num = (f == laplace) ? 1 : 0; $('#num').html(num); $('#a').val(num);	//	-2022.04
 			if (f != laplace) $('#num').val(0); $('#a').val($('#num').val());			//	+2022.04
-			//if (f == laplace) $('#b').val(s); else { $('#b').val(fsn_k.toString()); $('#b').attr('data-val', JSON.stringify(fsn_k)); }	//	-2022.02
 			if (f == laplace) $('#b').val(s); else { $('#b').val(fsn_k.toString(true)); $('#b').attr('data-val', JSON.stringify(fsn_k)); }	//	+2022.02
 			if (f == laplace) $('#op').val('/'); else $('#op').val('⊘');
 			compute();

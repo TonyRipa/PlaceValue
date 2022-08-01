@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2019
+	Date:	7/31/2022
 	Demo for Polynomial1 : a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 -->
 
@@ -13,21 +13,24 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>
+	</script>																																						-2022.7	-->
+	<script src='../js/math3.js'></script>																													<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>			<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
-	<script type="text/javascript" src='placevalue.js'></script>
+	<!--<script type="text/javascript" src='placevalue.js'></script>																								-2022.7	-->
 	<script type="text/javascript" src='abstractpolynomial.js'></script>
 	<script type="text/javascript" src='polynomial1.js'></script>
 	<style>
 		body,html { height:85% }
-		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }	/*	2018.5			*/
+		/*body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }		2018.5	-2022.7	*/
+		body, input { font-family: 'Serif', 'Arial Unicode MS' }					/*			+2022.7	*/
 		.polytable { width: 95%; border-spacing: 0; float: left; margin: 10px; }
 		input { text-align: right; }
 		td:nth-child(2) { text-align: right; }

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	6/30/2022
+// Date:	7/31/2022
 // BasedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the WholePlaceValue datatype
 
 class basedplacevalue extends abstractpolynomial {
@@ -22,6 +22,7 @@ class basedplacevalue extends abstractpolynomial {
 	}
 
 	parse(str) {
+		str = str.toString();	//	+2022.07
 		if (str instanceof String || typeof (str) == 'string') if (str.includes('mantisa')) {
 			var a = JSON.parse(str);
 			return new this.constructor(a.base, this.pv.parse(JSON.stringify(a.pv)));
@@ -42,13 +43,58 @@ class basedplacevalue extends abstractpolynomial {
 
 	align(other) {
 		this.check(other);
-		if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new this.constructor(10, this.pv.parse('%')) }
+		//if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new this.constructor(10, this.pv.parse('%')) }	//	-2022.7
+		if (this.base != other.base) {																															//	+2022.7
+			let temp = other.regroup(this.base);
+			other.pv = temp.pv;
+			other.base = temp.base;
+		}
 	}
 
 	toString() {
 		let sign = this.pv.isneg() ? '-' : '';
 		let pv = this.pv.isneg() ? this.pv.negate() : this.pv;
 		return sign + pv.toString() + ' Base ' + this.base;
+	}
+
+	comparebig(other) { this.check(other); return this.pv.comparebig(other.pv); }		//	+2022.7
+
+	clone() { this.check(); return new this.constructor(this.base, this.pv.clone()) }	//	+2022.7
+
+	dividenaive(den) {																	//	+2022.7
+		this.check(den);
+		let num = this.clone();
+		let count = 0;
+		while (num.comparebig(den) > -1) {
+			num = num.sub(den);
+			count++;
+		}
+		let ratio = this.pv.parse('('+count+')');
+		return new this.constructor(this.base, ratio);
+	}
+
+	divide(den) {																		//	+2022.7
+		this.check(den);
+		let num = this.clone();
+		let len = this.pv.mantisa.length;
+		let rat = new Array(len).fill(new this.pv.datatype());
+		let base = num.base;
+		for (let cursor = len - 1; cursor >= 0; cursor--) {
+			let numpart = new this.constructor(base, new this.pv.constructor(num.pv.mantisa.slice(cursor)));
+			rat[cursor] = numpart.dividenaive(den).pv.mantisa[0];
+			let ratio = new this.constructor(base, new this.pv.constructor(rat.slice(0, cursor+1)));
+			num = num.sub(ratio.times(den));
+		}
+		return new this.constructor(base, new this.pv.constructor(rat));
+	}
+
+	regroup(base) {																		//	+2022.7
+		if (!(base instanceof this.constructor)) base = new this.constructor(this.base, this.pv.parse('('+base+')'));
+		this.check(base);
+		base = base.pv.eval(base.base);
+		let base10 = this.pv.eval(this.base);
+		let pv = this.pv.parse('('+base10+')');
+		return new this.constructor(base, pv);
 	}
 
 }

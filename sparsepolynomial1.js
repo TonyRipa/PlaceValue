@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    9/30/2021
+// Date:    7/31/2022
 // SparsePolynomial1: a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
 class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
@@ -57,6 +57,10 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 			console.log('ConstantNode: ' + node.value)
 			//alert(JSON.stringify(this.pv.points))
 			return new sparsepolynomial1(1, this.pv.parse(Number(node.value)));
+		} else if (node.type == 'ParenthesisNode') {	//	+2022.7
+			return this.parse(node.content);
+		} else {										//	+2022.7
+			alert('othertype')
 		}
 	}
 
@@ -105,9 +109,5 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 			return '^' + pow;
 		}
 	}
-
-	//eval(base) {
-	//    return new sparsepolynomial1(1, this.pv.eval(base.pv));
-	//}
 
 }

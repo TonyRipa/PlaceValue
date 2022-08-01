@@ -1,7 +1,7 @@
 
 <!--
 	Author:  Anthony John Ripa
-	Date:    11/30/2019
+	Date:    7/31/2022
 	Demo for WholePlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -14,10 +14,12 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>
+	</script>																																				-2022.7	-->
+	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -27,7 +29,8 @@
 	<script type="text/javascript" src='polynomial1.js'></script>
 	<style>
 		output { margin: 50px; }
-		body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }
+		/*body, input { font-family: 'Lucida Sans Unicode', 'Arial Unicode MS' }		-2022.7	*/
+		body, input { font-family: 'Serif', 'Arial Unicode MS' }					/*	+2022.7	*/
 	</style>
 	<script>
 		function go() {

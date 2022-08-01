@@ -1,7 +1,7 @@
 ﻿
 <!--
    Author:  Anthony John Ripa
-   Date:    05/31/2022
+   Date:    7/31/2022
    Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,13 +13,14 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")</script>	<!-- +2021.12 -->
+	<!--<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")</script>	+2021.12	-2022.7	-->
+	<script src='../js/math3.js'></script>																																						<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>			<!--	+2022.7	-->
 	<script src='digit.js'></script>    <!--    2019.11 Added   -->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
 	<script type="text/javascript" src='rationalcomplex.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
-	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
 	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<style>
 		output { margin: 50px; }

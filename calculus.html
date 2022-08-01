@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	05/31/2022
+	Date:	7/31/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,10 +13,12 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
+	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
 	<script type="text/javascript">
 		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>
+	</script>																																				-2022.7	-->
+	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -67,7 +69,6 @@
 				default: f = new [polynomial2, laurent2, sparsepolynomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex]();
 			}
 			console.log('exp' + op);
-			//var exp = new f().parse($('#func').val())	//	-2020.11
 			var exp = f.parse($('#func').val())			//	+2020.11
 			var nums = [];
 			var lo = exp.pv.exp-1;
