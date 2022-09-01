@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    05/31/2022
+// Date:    8/31/2022
 // MarkedPlaceValue: a datatype for representing base-agnostic arithmetic
 
 //class placevalue {			//	-2022.05
@@ -48,13 +48,23 @@ class markedplacevalue {		//	+2022.05
 			if (Array.isArray(x)) return 0;     // If man is Array, man has no exp contribution 2015.8 
 			if (x.mantisa) return 0;  // To check for wholeplacevalue-like objects, replace (x instanceof wholeplacevalue) with (x.mantisa)    2015.9
 			if (x.toString().indexOf('E') != -1) {	//	+2020.5
-				//x = x.toString().toUpperCase();	//	-2020.5
 				return Number(x.substr(1 + x.indexOf('E'))) + getexp(x.substr(0, x.indexOf('E')))
 			}
 			var NEGATIVE = String.fromCharCode(822); var MINUS = String.fromCharCode(8315); var ONE = String.fromCharCode(185);
 			x = x.toString().replace(new RegExp(NEGATIVE, 'g'), '').replace(new RegExp(MINUS, 'g'), '').replace(new RegExp(ONE, 'g'), '').replace(/\([^\(]*\)/g, 'm');
 			return x.indexOf('.') == -1 ? 0 : x.indexOf('.') - x.length + 1;
 		}
+	}
+
+	check(other) {	//	+2022.8
+		if (!(this instanceof markedplacevalue)) throw new Error("MarkedPlaceValue.Check 1 Fail : This isn't MarkedPlaceValue");
+		var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other';
+		if (arguments.length === 0) return this.whole.check();
+		if (!(other instanceof markedplacevalue)) throw new Error("MarkedPlaceValue.Check 2 Fail : Other isn't MarkedPlaceValue");
+		var othertype = other.check();
+		var mytype = this.check();
+		if (mytype != othertype) throw new Error(`MarkedPlaceValue.Check 2 Fail: mytype(${translate(mytype)}) , othertype(${translate(othertype)})`);
+		return mytype;
 	}
 
 	get(i) {       // 2015.11
@@ -91,6 +101,8 @@ class markedplacevalue {		//	+2022.05
 	isconst() {		//	+2021.3
 		return this.whole.isconst() && this.exp==0 ;
 	}
+
+	isneg() { return this.whole.isneg() }	//	+2022.8
 
 	add(addend) {
 		var me = this.clone();
@@ -254,6 +266,7 @@ class markedplacevalue {		//	+2022.05
 	}
 
 	eval(base) {	//	+2021.3
+		if (!(base instanceof this.constructor)) base = this.parse('('+base+')');	//	+2022.8
 		var sum = new this.constructor();
 		for (let i = 0; i < this.whole.mantisa.length; i++)
 			sum = sum.add(base.pow(i+this.exp).scale(this.whole.get(i)));
@@ -263,6 +276,10 @@ class markedplacevalue {		//	+2022.05
 	pointeval(n = 3) {					//	+2022.02
 		let range = math.range(-n,n+1)._data;
 		return new this.constructor(new wholeplacevalue(range.map(base => this.eval(this.parse('('+base+')')).whole.mantisa[0])),-n);
+	}
+
+	regroup(base) {						//	+2022.8
+		return new this.constructor(this.whole.regroup(base), this.exp);
 	}
 
 	//pointeval() {	//	+2022.01	//	-2022.02

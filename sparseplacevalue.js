@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    11/30/2021
+// Date:    8/31/2022
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -202,10 +202,14 @@ class sparseplacevalue {			//	2019.4	Added
 			}
 			//var w = (1+math.max(this.points.map(point=>point[1].get(0).toreal())))*50;	//	-2021.10
 			//var h = (math.max(1,this.points.map(point=>point[0].toreal())))*50;			//	-2021.10
-			var x1 = (math.min(0,this.points.map(point=>point[1].get(0).toreal())))*50;		//	+2021.10
-			var x2 = (math.max(0,this.points.map(point=>point[1].get(0).toreal()+1)))*50;	//	+2021.10
-			var y1 = (math.min(0,this.points.map(point=>point[0].toreal()))) * 50;			//	+2021.10
-			var y2 = (math.max(0,this.points.map(point=>point[0].toreal()))) * 50;			//	+2021.10
+			//var x1 = (math.min(0,this.points.map(point=>point[1].get(0).toreal())))*50;	//	+2021.10	//	-2022.8
+			//var x2 = (math.max(0,this.points.map(point=>point[1].get(0).toreal()+1)))*50;	//	+2021.10	//	-2022.8
+			//var y1 = (math.min(0,this.points.map(point=>point[0].toreal()))) * 50;		//	+2021.10	//	-2022.8
+			//var y2 = (math.max(0,this.points.map(point=>point[0].toreal()))) * 50;		//	+2021.10	//	-2022.8
+			var x1 = (math.min(0,...this.points.map(point=>point[1].get(0).toreal())))*50;					//	+2022.8
+			var x2 = (math.max(0,...this.points.map(point=>point[1].get(0).toreal()+1)))*50;				//	+2022.8
+			var y1 = (math.min(0,...this.points.map(point=>point[0].toreal()))) * 50;						//	+2022.8
+			var y2 = (math.max(0,...this.points.map(point=>point[0].toreal()))) * 50;						//	+2022.8
 			ret += `<line x1="${x1}" x2="${x2}" y1="0" y2="0" stroke='black' />`;			//	+2021.10
 			ret += `<line y1="${y1}" y2="${y2}" x1="0" x2="0" stroke='black' />`;			//	+2021.10
 			//return `<svg style='border:thin solid black' transform="scale(1,-1)" height='100px' viewbox='0 0 ${w} ${h}'><g stroke='#789'>${ret}</g></sgv>`	//	-2021.10
@@ -509,7 +513,6 @@ class sparseplacevalue {			//	2019.4	Added
 		if (a.is0()) { "alert(2 + ': ' + a + ' , ' + b)"; return b; }
 		if (b.is0()) { "alert(3)"; return a; }
 		if (a.points.length > b.points.length) { "alert(4 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }
-		//if (a.points[a.points.length - 1][1].comparebig(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }	//	2019.4	Added	//	2019.5	Removed
 		if (a.points[a.points.length - 1][1].comparelittle(b.points[b.points.length - 1][1])==1) { "alert(5 + ': ' + a + ' , ' + b)"; return a.remainder(b).gcd1(b, count); }	//	2019.5	Added
 		if (a.points.length==1 && b.points.length==1) { "alert(6 + ': ' + a + ' , ' + b)"; return new sparseplacevalue([[a.points[0][0].gcd(b.points[0][0]),a.points[0][1].pointmin(b.points[0][1])]]); }	//	2019.5	Added
 		"alert(7 + ': ' + a + ' , ' + b)"; return b.remainder(a).gcd1(a, count);

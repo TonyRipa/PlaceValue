@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	7/31/2022
+// Date:	8/31/2022
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -184,9 +184,6 @@ class rational extends digit {				//	2019.11.Added
 		// 185  189  777 822 8315   9321
 		// ^1   1/2  ^   -   ^-     10
 		var IMAG = String.fromCharCode(777);
-		//var digit = [this.n, this.d];	//	-2021.6
-		//var num = digit[0];			//	-2021.6
-		//var den = digit[1];			//	-2021.6
 		var num = this.n;				//	+2021.6
 		var den = this.d;				//	+2021.6
 		var a = Math.round(num * 1000) / 1000
@@ -218,6 +215,7 @@ class rational extends digit {				//	2019.11.Added
 	dividemiddle(other) { return this.divide(other) }	//  2019.11	Added
 	//remainder(den) { return this.sub(this.divide(den).times(den)); }	//	2019.4	Added			//	-2022.7
 	remainder(den) { return new this.constructor( (this.n*den.d)%(den.n*this.d) , this.d*den.d ) }	//	+2022.7
+	divmod(den) { let rem = this.remainder(den) ; return [this.sub(rem).divide(den) , rem] }		//	+2022.8
 	pointadd(other) { return this.add(other) }		//  2019.11	Added
 	pointsub(other) { return this.sub(other) }		//  2019.11	Added
 	pointtimes(other) { return this.times(other) }	//  2019.11	Added
