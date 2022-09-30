@@ -1,11 +1,10 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	8/31/2022
+// Date:	9/30/2022
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
 
-	//constructor(num,den) {							//	-2021.7
 	constructor(num = 0, den = 1) {						//	+2021.7
 		//if (arguments.length < 1) num = 0;//	2017.9	//	-2021.7
 		//if (arguments.length < 2) den = 1;			//	-2021.7
@@ -76,7 +75,8 @@ class rational extends digit {				//	2019.11.Added
 				N = N.slice(1, -1);
 			var ret = 0;
 			var signbit = 0;
-			if (N[0] == '-') { signbit = 1; N = N.substr(1) }
+			//if (N[0] == '-') { signbit = 1; N = N.substr(1) }				//	-2022.9
+			if (N[0] == '-') { signbit = flip(signbit); N = N.substr(1) }	//	+2022.9
 			var flipbit = 0;
 			var numb = '';
 			for (var i = 0; i < N.length; i++) {
@@ -91,22 +91,28 @@ class rational extends digit {				//	2019.11.Added
 				if (num[c]) ret = num[c];
 				if (c == '∞') ret = Infinity;
 				if (c == '%') ret = [0,0];
-				if (c == String.fromCharCode(822)) signbit = 1;
+				//if (c == String.fromCharCode(822)) signbit = 1;			//	-2022.9
+				if (c == String.fromCharCode(822)) signbit = flip(signbit);	//	+2022.9
 				if (c == String.fromCharCode(8315)) flipbit = 1;
 			}
 			if (!Array.isArray(ret)) ret = [ret, 1];
 			if (flipbit) ret = [ret[1], ret[0]];
 			if (signbit) ret = [-ret[0], ret[1]];
 			return ret.map(Number);
+			function flip(sign) { return 1 - sign }							//	+2022.9
 		}
 	}
 
 	static regex() {  //  2017.6
+		var NEG = String.fromCharCode(822);										//	+2022.9
 		//var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉜㊱∞]';								//	+2020.12	//	-2021.7
 		var literal = '[e⅛⅙⅕¼⅓⅜⅖½⅗⅔¾⅘⅚%⑯㉗㉜㊱∞]';												//	+2021.7
 		var dec = String.raw`(\d+\.\d*|\d*\.\d+|\d+)`;
 		var num = '(' + literal + '|' + dec + ')';
-		var frac = '(' + num + '/' + num + '|' + num + '(⁻¹)?)';	//	+2020.6
+		//var frac = '(' + num + '/' + num + '|' + num + '(⁻¹)?)';	//	+2020.6	//	-2022.9
+		var commonfrac = num + '/' + num;										//	+2022.9
+		var reciprocal = num + '(' + NEG + ')?(⁻¹)?';							//	+2022.9
+		var frac = '(' + commonfrac + '|' + reciprocal + ')';					//	+2022.9
 		var signfrac = '(' + '[\+\-]?' + frac + ')';
 		var parensignfrac = '(\\(' + signfrac + '\\))';				//	+2020.6
 		return '(' + parensignfrac + '|' + signfrac + ')';			//	+2020.6

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2022
+	Date:	9/30/2022
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic
 -->
 
@@ -88,7 +88,6 @@
 			if (node.type == 'OperatorNode') {
 				console.log('CAS: OperatorNode')
 				var kids = node.args;
-				//var a = new f().parse(kids[0]);			//	f handles unpreprocessed kid	2015.11	//	-2020.6
 				var a = f.parse(kids[0]);																//	+2020.6
 				if (node.fn == 'unaryMinus' || node.fn == 'unaryPlus') {
 					return [node.op, a];
@@ -100,6 +99,9 @@
 				console.log('CAS: FunctionNode')
 				argtype = [laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, laurent, complexlaurent][$('#f')[0].selectedIndex]; //  2017.5
 				return [node.name, new argtype().parse(node.args[0])];
+			} else if (node.type == 'ParenthesisNode') {	//	+2022.9
+				console.log('CAS: ParenthesisNode')
+				return [f.parse(node.content)];
 			} else {
 				console.log('CAS: OtherNode')
 				//return [new f().parse(node.value || node.name)];					//	-2020.6
