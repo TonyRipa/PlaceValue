@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/30/2022
+Date : 10/31/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -448,7 +448,7 @@ PlaceValue being larger avoids these rounding errors. Using PlaceValue we can mo
 
 Negative powers are also useful, and come up frequently. Any time we want to talk about "per unit-length" it comes up. One per unit-length is .1 . One per unit-area is .01 . In general, One per unit-n-dimensional object is 10^-n.
 
-The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0*∞).
+The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0\*∞).
 
 Borel's Paradox
 ------------

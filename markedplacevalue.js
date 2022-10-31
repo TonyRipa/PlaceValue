@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    8/31/2022
+// Date:    10/31/2022
 // MarkedPlaceValue: a datatype for representing base-agnostic arithmetic
 
 //class placevalue {			//	-2022.05
@@ -107,7 +107,8 @@ class markedplacevalue {		//	+2022.05
 	add(addend) {
 		var me = this.clone();
 		var other = addend.clone();
-		markedplacevalue.align(me, other);
+		//markedplacevalue.align(me, other);//	-2022.10
+		me.align(other);					//	+2022.10
 		var whole = me.whole.add(other.whole);
 		return new this.constructor(whole, me.exp);
 	}
@@ -115,7 +116,8 @@ class markedplacevalue {		//	+2022.05
 	sub(subtrahend) {
 		var me = this.clone();
 		var other = subtrahend.clone();
-		markedplacevalue.align(me, other);
+		//markedplacevalue.align(me, other);//	-2022.10
+		me.align(other);					//	+2022.10
 		var whole = me.whole.sub(other.whole);
 		return new this.constructor(whole, me.exp);
 	}
@@ -133,7 +135,8 @@ class markedplacevalue {		//	+2022.05
 	pointtimes(multiplier) {
 		var me = this.clone();
 		var other = multiplier.clone();
-		markedplacevalue.align(me, other);
+		//markedplacevalue.align(me, other);//	-2022.10
+		me.align(other);					//	+2022.10
 		var whole = me.whole.pointtimes(other.whole);
 		return new this.constructor(whole, me.exp);
 	}
@@ -141,7 +144,8 @@ class markedplacevalue {		//	+2022.05
 	pointdivide(divisor) {
 		var me = this.clone();
 		var other = divisor.clone();
-		markedplacevalue.align(me, other);
+		//markedplacevalue.align(me, other);//	-2022.10
+		me.align(other);					//	+2022.10
 		var whole = me.whole.pointdivide(other.whole);
 		return new this.constructor(whole, me.exp);
 	}
@@ -164,9 +168,6 @@ class markedplacevalue {		//	+2022.05
 			var whole = this.whole.pow(power.whole);
 			var exp = this.exp * power.get(0).toreal();    // exp*pow not exp^pow  2015.9
 		} else if (power.exp == 1) {    //  2017.5
-			//if (this.exp != 0) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return placevalue.parse('%') }	//	-2020.5
-			//var whole = new wholeplacevalue().parse(1);	//	2017.5				//	-2020.5
-			//var exp = power.get(1).toreal();				//	2017.5	2^(3E1)=1E3	//	-2020.5
 			return this.pow(this.parse(power.toString()))	//	+2020.5
 		} else { alert('PV >Bad Exponent = ' + power.toString()); return markedplacevalue.parse('%') }
 		return new this.constructor(whole, exp);
@@ -185,15 +186,27 @@ class markedplacevalue {		//	+2022.05
 		return new this.constructor(whole, exp);
 	}
 
-	static align(a, b) {    // rename pad align 2015.9
-		if (a.whole.is0()) a.exp = b.exp;   //  2017.6
-		while (a.exp > b.exp) {
-			a.exp--;
-			a.whole.times10();              // Delegate Shift to Whole  2015.7
+	//static align(a, b) {    // rename pad align 2015.9	//	-2022.10
+	//	if (a.whole.is0()) a.exp = b.exp;   //  2017.6
+	//	while (a.exp > b.exp) {
+	//		a.exp--;
+	//		a.whole.times10();              // Delegate Shift to Whole  2015.7
+	//	}
+	//	while (b.exp > a.exp) {
+	//		b.exp--;
+	//		b.whole.times10();              // Delegate Shift to Whole  2015.7
+	//	}
+	//}
+
+	align(other) {											//	+2022.10
+		if (this.whole.is0()) this.exp = other.exp;
+		while (this.exp > other.exp) {
+			this.exp--;
+			this.whole.times10();
 		}
-		while (b.exp > a.exp) {
-			b.exp--;
-			b.whole.times10();              // Delegate Shift to Whole  2015.7
+		while (other.exp > this.exp) {
+			other.exp--;
+			other.whole.times10();
 		}
 	}
 

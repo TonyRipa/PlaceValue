@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	8/31/2022
+// Date:	10/31/2022
 // BasedMarkedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the MarkedPlaceValue datatype
 
 class basedmarkedplacevalue extends abstractpolynomial {
@@ -14,7 +14,8 @@ class basedmarkedplacevalue extends abstractpolynomial {
 		}
 		if (arguments.length == 2)[base, pv] = arguments;
 		if (Array.isArray(base)) alert('BasedPlaceValue expects argument 1 (base) to be a string but found array: ' + typeof base);
-		if (!(pv instanceof markedplacevalue)) { var s = 'BasedPlaceValue expects arg 2 to be MarkedPlaceValue not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+		//if (!(pv instanceof markedplacevalue)) { var s = 'BasedPlaceValue expects arg 2 to be MarkedPlaceValue not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }	//	-2022.10
+		if (!(pv instanceof markedplacevalue)) { var s = 'BasedMarkedPlaceValue expects arg 2 to be MarkedPlaceValue not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }//	+2022.10
 		pv = pv.regroup(pv.parse('('+base+')'));
 		super();
 		this.base = base;
@@ -56,8 +57,9 @@ class basedmarkedplacevalue extends abstractpolynomial {
 		return sign + pv.toString() + ' Base ' + this.base;
 	}
 
+	/*	-2022.10
 	comparebig(other) { this.check(other); return this.pv.comparebig(other.pv); }
-
+	
 	clone() { this.check(); return new this.constructor(this.base, this.pv.clone()) }
 
 	dividenaive(den) {
@@ -71,7 +73,7 @@ class basedmarkedplacevalue extends abstractpolynomial {
 		let ratio = this.pv.parse('('+count+')');
 		return new this.constructor(this.base, ratio);
 	}
-
+	
 	divide(den) {
 		this.check(den);
 		let num = this.clone();
@@ -86,6 +88,15 @@ class basedmarkedplacevalue extends abstractpolynomial {
 		}
 		return new this.constructor(base, new this.pv.constructor(rat));
 	}
+	*/
+
+	unscale(scalar) {	//	+2022.10
+		return new this.constructor(this.base, this.pv.unscale(scalar))
+	}
+
+	divide(den) {		//	+2022.10
+		return this.unscale(den.eval())
+	}
 
 	regroup(base) {
 		if (!(base instanceof this.constructor)) base = new this.constructor(this.base, this.pv.parse('('+base+')'));
@@ -93,8 +104,13 @@ class basedmarkedplacevalue extends abstractpolynomial {
 		base = base.pv.eval(base.base);
 		let base10 = this.pv.eval(this.base);
 		let pv = this.pv.parse('('+base10+')');
-		markedplacevalue.align(pv, this.pv);
+		//markedplacevalue.align(pv, this.pv);	//	-2022.10
+		pv.align(this.pv);						//	+2022.10
 		return new this.constructor(base, pv);
+	}
+
+	eval() {			//	+2022.10
+		return this.pv.eval(this.base);
 	}
 
 }
