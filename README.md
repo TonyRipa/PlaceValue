@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2022
+Date : 11/30/2022
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -437,6 +437,8 @@ The determinant of a matrix is the n-volume of the parallelotope formed from the
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero.
 
 PlaceValue can represent multiple measure scales, as in a unit cube 1000, and a unit square 100. In fact, in determinant.html we demonstrate that Cramer's Rule continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0).
+
+determinant.html also provides an optional preprocessing step (left-multiply by A transpose) which has the effect of averaging over-determined variables.
 
 Measure
 ------------

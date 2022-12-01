@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    05/31/2022
+// Date:    11/22/2022
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the MarkedPlaceValue datatype
 
 class fourier {
@@ -69,8 +69,14 @@ class fourier {
 			else if (fn == 'sin') var pv = expi.sub(expi2).scale(new complex(0, -.5));
 			else { var s = 'Syntax Error: fourier expects input like 1, cis(x), cos(x), sin(x), cis(2x), or 1+cis(x) but found ' + node.name + '.'; alert(s); throw new Error(s); }
 			return new fourier(base, pv);
-		} else {
-			alert('othertype')
+		} else if (node.type == 'ParenthesisNode') {	//	+2022.11
+			return this.parse(node.content);
+		//} else {										//	-2022.11
+		//	alert('othertype')
+		} else {										//	+2022.11
+			var s = 'Fourier: othertype';
+			alert(s);
+			throw new Error(s);
 		}
 	}
 
