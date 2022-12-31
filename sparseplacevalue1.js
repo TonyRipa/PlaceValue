@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/30/2021
+// Date:    12/31/2022
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -110,11 +110,23 @@ class sparseplacevalue1 {
 		return mytype;
 	}
 
+	len() {		//	+2022.12
+		this.check();
+		return this.points.length;
+	}
+
 	get(i) { //  2017.6
 		if (i instanceof Number || typeof (i) == 'number') i = new this.datatype().parse(i);
 		for (var j = 0; j < this.points.length; j++)
 			if (this.points[j][1].equals(i)) return this.points[j][0];
 		return new this.datatype();
+	}
+
+	set(i, v) {	//  2022.12
+		if (i instanceof Number || typeof (i) == 'number') i = new this.datatype().parse(i);
+		for (var j = 0; j < this.points.length; j++)
+			if (this.points[j][1].equals(i)) { this.points[j][0] = v ; return }
+		this.points.push([v,i]);
 	}
 
 	tohtml() {  // Replaces toStringInternal 2015.7
@@ -152,6 +164,8 @@ class sparseplacevalue1 {
 	is1() { return this.is1term() && this.isconst() && this.points[0][0].is1(); }                           //  2017.6
 	isNaN() { return this.is1term() && this.isconst() && this.points[0][0].isNaN(); }                       //  2018.3
 	equals(other) { return this.sub(other).is0(); }                                                         //  2017.8
+
+	isneg() { return this.points[0][0].isneg(); }				//	+2022.12
 
 	add(other) { return new this.constructor(this.points.concat(other.points)); }
 	sub(other) { return new this.constructor(this.points.concat(other.points.map(function (x) { return [x[0].negate(), x[1]] }))); }
@@ -311,7 +325,6 @@ class sparseplacevalue1 {
 				//alert('SPV1 .Bad Exponent = ' + power.tohtml());					//	-2021.11
 				//return this.parse('%');											//	-2021.11
 			}
-			//return this.times(this.pow(power.sub(this.constructor.parse(1))));
 		} else if (this.points.length == 1) {
 			//alert(1)
 			if (!this.points[0][1].is0()) { alert('PV >Bad Exponent = ' + power.toString() + ' Base = ' + base.toString()); return this.parse('%') }
@@ -372,6 +385,39 @@ class sparseplacevalue1 {
 			sum = sum.add(this.points[i][0].times(base.points[0][0].pow(this.points[i][1])));  //  base.points[0][0]   2016.10
 		}
 		return new this.constructor([[sum, new this.datatype()]]);
+	}
+
+	regroup(base) {	//	+2022.12
+		if (!(base instanceof this.constructor)) base = this.parse('('+base+')');
+		this.check(base);
+		var ret = this.clone()
+		if (!base.get(0).is0()) {
+			for (let i = ret.len() - 1; i > 0; i--)
+				if (!ret.get(i).isint()) {
+					if (i > 0) ret.set(i-1, ret.get(i-1).add(ret.get(i).times(base.get(0))));					
+					ret.set(i, ret.get(i).sub(ret.get(i)));
+				}
+			for (let i = 0; i < ret.len(); i++)
+				while (ret.get(i).above(base.get(0)) || ret.get(i).equals(base.get(0)) || ret.get(i).negate().above(base.get(0)) || ret.get(i).negate().equals(base.get(0))) {
+					let [div, mod] = ret.get(i).divmod(base.get(0));
+					ret.set(i, mod);
+					ret.set(i+1, ret.get(i+1).add(div));
+				}
+			if (ret.isneg())
+				for (let i = 0; i < ret.len(); i++)
+					while (ret.get(i).ispos()) {
+						ret.set(i, ret.get(i).sub(base.get(0)));
+						ret.set(i+1, ret.get(i+1).add(ret.datatype.parse(1)));					
+					}
+			else
+				for (let i = 0; i < ret.len(); i++)
+					while (ret.get(i).isneg()) {
+						ret.set(i, ret.get(i).add(base.get(0)));
+						ret.set(i+1, ret.get(i+1).sub(ret.datatype.parse(1)));					
+					}
+		}
+		ret = ret.clone();
+		return ret;
 	}
 
 }
