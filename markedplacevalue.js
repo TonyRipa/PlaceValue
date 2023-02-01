@@ -1,12 +1,11 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2022
+// Date:    01/31/2023
 // MarkedPlaceValue: a datatype for representing base-agnostic arithmetic
 
 //class placevalue {			//	-2022.05
 class markedplacevalue {		//	+2022.05
 
-	//function placevalue(arg) {//	-2022.01
 	constructor(arg) {			//	+2022.01
 		var man, exp;
 		if (arguments.length == 0)[man, exp] = [new wholeplacevalue(rational), 0];												//  2017.12
@@ -287,6 +286,7 @@ class markedplacevalue {		//	+2022.05
 	}
 
 	pointeval(n = 3) {					//	+2022.02
+		if (n instanceof this.constructor) n = n.get(0).toreal();	//	+2023.01
 		let range = math.range(-n,n+1)._data;
 		return new this.constructor(new wholeplacevalue(range.map(base => this.eval(this.parse('('+base+')')).whole.mantisa[0])),-n);
 	}

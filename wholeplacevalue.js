@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	8/31/2022
+// Date:	01/31/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -212,7 +212,6 @@ class wholeplacevalue {	//	+2020.11
 
 	add(other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 	sub(other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
-	//wholeplacevalue.prototype.pointequals = function (other) { this.check(other); return this.f((x, y)=>new this.datatype(x.equals(y)?1:0),other);}	//	-2020.10
 	//pointequals(other) { this.check(other); return this.f((x, y)=>x.equal(y),other);}								//	+2020.10	//	-2020.11
 	pointequal(other) { this.check(other); return this.f((x, y)=>x.equal(y),other);}												//	+2020.11
 	pointtimes(other) { this.check(other); return this.f(function (x, y) { return x.times(y) }, other); }
@@ -574,7 +573,8 @@ class wholeplacevalue {	//	+2020.11
 		if (!base.get(0).is0()) {
 			for (let i = ret.len() - 1; i > 0; i--)									//	+2022.7
 				if (!ret.get(i).isint()) {
-					if (i > 0) ret.set(i-1, ret.get(i-1).add(ret.get(i).times(base.get(0))));					
+					//if (i > 0) ret.set(i-1, ret.get(i-1).add(ret.get(i).times(base.get(0))));	//	-2023.1
+					ret.set(i-1, ret.get(i-1).add(ret.get(i).times(base.get(0))));				//	+2023.1
 					ret.set(i, ret.get(i).sub(ret.get(i)));
 				}
 			for (let i = 0; i < ret.len(); i++)
