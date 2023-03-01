@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2022
+// Date:	03/01/2023
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -39,7 +39,6 @@ class laplace extends abstractpolynomial {
 			console.log('OperatorNode: ' + node.type + " : " + JSON.stringify(node))
 			console.log(node)
 			var kids = node.args;
-			//var a = new laplace(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 			var a = new laplace().parse(kids[0]);       // laplace handles unpreprocessed kid   2015.11
 			if (node.fn == 'unaryMinus') {
 				var c = new laplace(1, new this.pv.constructor(new wholeplacevalue(complex).parse('0'), 0)).sub(a);
@@ -125,7 +124,8 @@ class laplace extends abstractpolynomial {
 			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, 0, 0, 0, 0, 0, c, 0]); }							//	+2021.12
 			//if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Removed
 			if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + coef(c) + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Added
-			if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + c + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }
+			//if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + c + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }		//	-2023.03
+			if (s1 != 0 && s3 * s1 < 0 && s1 * s5 == s3 * s3) { c = s1; k = -s3 / s1; ret += '+' + coef(c) + 'cos(' + root(k) + 'x)'; sub([-c * k * k * k, 0, c * k * k, 0, -c * k, 0, c]); }	//	+2023.03
 			if (s1 != 0 && s3 * s1 > 0 && s1 * s5 == s3 * s3) { c = s1; k = +s3 / s1; ret += '+' + c + 'cosh(' + root(k) + 'x)'; sub([0, 0, c * k * k, 0, c * k, 0, c]); }
 			if (s1 == 0 && s2 == 0 && s3 != 0 && s5 != 0 && s3 * s5 > 0 && (s3 / 2) * (s7 / 6) == (s5 / 4) * (s5 / 4)) { c = (s3 / 2); k = +(s5 / 4) / (s3 / 2); ret += '+' + rnd(c / root(k)) + 'xsinh(' + root(k) + 'x)'; sub([6 * c * k * k, 0, +4 * c * k, 0, 2 * c, 0, 0]); }
 			if (s1 == 0 && s2 == 0 && s3 != 0 && s5 != 0 && s3 * s5 < 0 && (s3 / 2) * (s7 / 6) == (s5 / 4) * (s5 / 4)) { c = (s3 / 2); k = -(s5 / 4) / (s3 / 2); ret += '+' + rnd(c / root(k)) + 'xsin(' + root(k) + 'x)'; sub([6 * c * k * k, 0, -4 * c * k, 0, 2 * c, 0, 0]); }
