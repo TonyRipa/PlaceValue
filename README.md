@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 12/31/2022
+Date : 3/31/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -565,7 +565,7 @@ For example, the PlaceValue 421 (in big-endian) would look like this:
 
 This is relatively normal. However, we may rethink of the concept of graphing (or plotting) not as a different mode for visualizing the data, but really just a different way of representing the digits.
 
-For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is ≡. Instead of writing 123, I can write _=≡. If we stop an think about it plotting a sequence of data, is not a data visualization approach, it is a different number system, or merely different digit.
+For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is ≡. Instead of writing 123, I can write \_=≡. If we stop and think about it, plotting a sequence of data is not a data visualization approach, it is a different number system, or merely different digit.
 
 123
 
@@ -577,7 +577,7 @@ _=≡
 ***
 </pre>
 
-The idea that, we are doing a fundamentally visual thing whereas before we were doing a fundamentally symbolic thing, is not right. The difference between digital and analog is absent.
+The idea that we are doing a fundamentally visual thing, whereas before we were doing a fundamentally symbolic thing, is not right. The difference between digital and analog is absent.
 
 There seems to be something fundamental about
 
