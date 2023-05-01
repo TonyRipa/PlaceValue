@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2023
+Date : 4/30/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -569,7 +569,7 @@ For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is 
 
 123
 
-_=≡
+\_=≡
 
 <pre>
   *
@@ -597,7 +597,7 @@ We may think of this as analog, but it is also digital. If we encode the digits 
 
 This still seems to be both fully analog, and fully digital at the same time.
 
-What if I want to represent 12π. Now I may be in trouble. I can represent this symbolically (digitally). If I represent this in analog, then I seem to lose the symolic (digit) information
+What if I want to represent 12π (sequence 1,2,π) ? Now I may be in trouble. I can represent this symbolically (digitally). However, if I represent this in analog, then I seem to lose the symbolic (digit) information
 
 <pre>
   ▁

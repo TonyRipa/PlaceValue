@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2022
+	Date:	4/30/2023
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -56,15 +56,10 @@
 		}
 		function moore() {					//	+2022.11
 			let [a, b, c, d, e, f] = get();
-			set({'a': a*a+c*c, 'b': a*b+c*d, 'c': b*a+d*c, 'd': b*d+d*d, 'e': a*e+c*f, 'f': b*e+c*f})
+			//set({'a': a*a+c*c, 'b': a*b+c*d, 'c': b*a+d*c, 'd': b*d+d*d, 'e': a*e+c*f, 'f': b*e+c*f})	//	-2023.4
+			set({'a': a*a+c*c, 'b': a*b+c*d, 'c': b*a+d*c, 'd': b*b+d*d, 'e': a*e+c*f, 'f': b*e+d*f})	//	+2023.4
 		}
 		function cramer() {
-			//var a = $('#a').val();		//	-2022.11
-			//var b = $('#b').val();		//	-2022.11
-			//var c = $('#c').val();		//	-2022.11
-			//var d = $('#d').val();		//	-2022.11
-			//var e = $('#e').val();		//	-2022.11
-			//var f = $('#f').val();		//	-2022.11
 			let [a, b, c, d, e, f] = get();	//	+2022.11
 			var D = determinant(a, b, c, d);
 			var Dx = determinant(e, b, f, d);
