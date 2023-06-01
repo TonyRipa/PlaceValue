@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2022
+	Date:	5/31/2023
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,10 +13,6 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-	<script type="text/javascript">
-		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>																																						-2022.7	-->
 	<script src='../js/math3.js'></script>																													<!--	+2022.7	-->
 	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>			<!--	+2022.7	-->
 	<script src='digit.js'></script>
@@ -59,7 +55,8 @@
 			<td>
 				<table class="measuretable">
 					<tr><td></td><td><input id='a' value='½E⅗' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
-					<tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='½E⅗' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>
+					<!--<tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='½E⅗' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>	-2023.5	-->
+					<tr class="line"><td><select id='op'><option>x</option><option selected>/</option></select></td><td><input id='b' value='½E⅗'></td><td><output id="bo"></output></td></tr>											<!--	+2023.5	-->
 					<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
 				</table>
 			</td>
@@ -67,6 +64,37 @@
 	</table>
 	<script type="text/javascript">
 		var f = sparseplacevalue1;
+		function select1() {										//	+2023.5
+			$('#td1').css('background-color', '#EEEEEE');
+			$('#td2').css('background-color', 'white');
+			var shapes = ['½E⅗', '1E⅗', '¼E1.2', '1E1.2', '1E2'].map(x=>new f().parse(x));
+			var prior = shapes[$('#top')[0].selectedIndex]
+			var evidence = shapes[$('#bot')[0].selectedIndex]
+			var universe = shapes.slice(-1)[0];
+			var intersection = intersect(prior,evidence)
+			var likelihood = given(evidence,prior)
+			var support = likelihood.divide(evidence)
+			$('#op').val(['/', '/', 'x'][$('#kind')[0].selectedIndex]);
+			var [op1,op2] = [[intersection,evidence], [intersection,evidence].map(x=>given(x,universe)), [support,prior]][$('#kind')[0].selectedIndex]
+			$('#p').text(compute(op1, op2));
+		}
+		function intersect(a,b) { return a.sub(b).isneg() ? a : b }	//	+2023.5
+		function given(a,b) { return intersect(a,b).divide(b) }		//	+2023.5
+		function compute(a,b) {										//	+2023.5
+			var c = [a.times, a.divide][$('#op')[0].selectedIndex].call(a, b);
+			output(a, b, c);
+			return c;
+			function output(a, b, c) {
+				$('#a').val(a);
+				$('#b').val(b);
+				$('#c').val(c);
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
+			}
+		}
+		/*	-2023.5
 		function select1() {
 			$('#td1').css('background-color', '#EEEEEE');
 			$('#td2').css('background-color', 'white');
@@ -116,6 +144,7 @@
 				function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
 			}
 		}
+		*/
 	</script>
 </body>
 </html>

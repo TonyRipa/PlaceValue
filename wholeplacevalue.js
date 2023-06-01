@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	01/31/2023
+// Date:	5/31/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -8,7 +8,6 @@ var S = JSON.stringify; JSON.stringify = function (o) { return S(o, function (k,
 
 class wholeplacevalue {	//	+2020.11
 
-	//function wholeplacevalue(arg) {	//	-2020.11
 	constructor(arg) {					//	+2020.11
 		var man, datatype;
 		if (arguments.length == 0)[man, datatype] = [[], rational];											//	2020.1	Added
@@ -447,9 +446,11 @@ class wholeplacevalue {	//	+2020.11
 	divideleft(den) { // 2016.3
 		this.check(den);
 		var num = this;
-		var iter = 5//num.mantisa.length;
+		//var iter = 5//num.mantisa.length;	//	-2023.5
+		var iter = 6						//	+2023.5
 		var quotient = divideh(num, den, iter);
-		quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error
+		//quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error	//	-2023.5
+		quotient.mantisa = quotient.mantisa.slice(0,6);									//	+2023.5
 		return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
 		function divideh(num, den, c) {
 			num.check(den);
@@ -469,6 +470,10 @@ class wholeplacevalue {	//	+2020.11
 			//	return ret;
 			//}
 		}
+	}
+
+	reciprocal() {		//	+2023.5
+		return this.parse(1).divideleft(this)
 	}
 
 	dividemiddle(den) {   // 2016.3

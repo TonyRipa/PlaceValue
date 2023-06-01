@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    10/31/2022
+// Date:    5/31/2023
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -260,6 +260,8 @@ class sparseplacevalue {			//	2019.4	Added
 	equals(other) { return this.sub(other).is0(); }																		//	2019.6
 	equal = function (other) { return this.parse(this.equals(other) ? 1 : 0); }											//	+2020.10
 
+	isneg() { return this.points.slice(-1)[0][0].isneg() }	//	+2023.5
+
 	add(other) { this.check(other); return new sparseplacevalue(this.points.concat(other.points)); }
 	sub(other) { this.check(other); return this.add(other.negate()); }
 	pointtimes(other) { this.check(other); return this.f(this.datatype.prototype.times, other); }
@@ -268,7 +270,6 @@ class sparseplacevalue {			//	2019.4	Added
 	pointpow(other) { this.check(other); return this.f0(this.datatype.prototype.pow, other); }   //  2017.7
 	//clone() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.slice(0) : this.datatype); }		//	2019.7		//	-2021.5
 	clone() { this.check(); return new this.constructor(this.len()>0 ? this.map(p=>[p[0].clone(),p[1].clone()]) : this.datatype); }				//	+2021.5
-	//negate() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0].negate(), x[1]] })); }	//  2017.7		//	2019.7	Removed
 	negate() { this.check(); return new sparseplacevalue(this.points.length>0 ? this.points.map(x=>[x[0].negate(),x[1]]) : this.datatype); }	//	2019.7
 	transpose() { this.check(); return new sparseplacevalue(this.points.map(function (x) { return [x[0], [x[1][1], x[1][0]]] })); }
 	round() { this.check(); var a = this.points.filter(x=>!x[1].isneg()); return new sparseplacevalue(a.length ? a : this.datatype) }	//	2019.4	Added

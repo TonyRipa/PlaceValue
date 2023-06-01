@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2022
+// Date:    5/31/2023
 // SparsePlaceValue1: a 1-D datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue1 {
@@ -68,7 +68,6 @@ class sparseplacevalue1 {
 		return new this.constructor(terms);
 		function split(terms) {         //  2017.1
 			var ret = [];
-			//terms = terms.toUpperCase().replace(/\s*/g, '');	//	-2020.5
 			terms = terms.replace(/\s*/g, '');					//	+2020.5
 			if (terms.length == 0) return ret;
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;
@@ -165,7 +164,8 @@ class sparseplacevalue1 {
 	isNaN() { return this.is1term() && this.isconst() && this.points[0][0].isNaN(); }                       //  2018.3
 	equals(other) { return this.sub(other).is0(); }                                                         //  2017.8
 
-	isneg() { return this.points[0][0].isneg(); }				//	+2022.12
+	//isneg() { return this.points[0][0].isneg(); }				//	+2022.12	//	-2023.5
+	isneg() { return this.points.slice(-1)[0][0].isneg(); }						//	+2023.5
 
 	add(other) { return new this.constructor(this.points.concat(other.points)); }
 	sub(other) { return new this.constructor(this.points.concat(other.points.map(function (x) { return [x[0].negate(), x[1]] }))); }
