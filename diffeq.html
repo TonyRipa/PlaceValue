@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2022
+	Date:	6/30/2023
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -34,7 +34,7 @@
 	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
 	<script type="text/javascript" src='markedplacevalue.js'></script>	<!--	+2022.05	-->
 	<script src='wholeplacevalue2.js'></script>
-	<script src='placevalue2.js'></script>
+	<script src='markedplacevalue2.js'></script>	<!--	~2023.6	-->
 	<script src='laurent2.js'></script>
 	<script src='laurent.js'></script>
 	<script src='exponential.js'></script>
@@ -55,7 +55,6 @@
 	<h1>Differential Equation</h1>
 	<select id='f' onchange="clean()"><option>Exponential</option><option>Fourier</option><option>Complex Exponential</option><option selected>Laplace</option></select>
 	<p>D^<select id='d' onchange="$('#sup').html($(d).val())"><option>0</option><option selected>1</option><option>2</option></select>f(x) + <select id='k' onchange="$('#k2').html($(k).val()); $('#sup').html($('#d').val())"><option>2</option><option selected>1</option><option>0</option><option>-1</option><option>-2</option></select>f(x) = 0 <button onclick='diffeq()'>DiffEQ</button></p>
-	<!--<p>f(x) = <span id="num">1</span> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>-->						<!--	-2022.04	-->
 	<p>f(x) = <select id="num">																								<!--	+2022.04	-->
 		<option>-2</option><option>-1</option><option>0</option><option selected>1</option><option>2</option>				<!--	+2022.04	-->
 	</select> / (D<sup id="sup">1</sup> + <span id="k2">1</span>)</p>														<!--	+2022.04	-->

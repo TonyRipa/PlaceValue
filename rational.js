@@ -1,13 +1,11 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	9/30/2022
+// Date:	6/30/2023
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
 
 	constructor(num = 0, den = 1) {						//	+2021.7
-		//if (arguments.length < 1) num = 0;//	2017.9	//	-2021.7
-		//if (arguments.length < 2) den = 1;			//	-2021.7
 		if (!(typeof num == 'number' || num instanceof Number)) { var s = 'Rational expects arg 1 (num) to be a Number not ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }
 		if (!(typeof den == 'number' || den instanceof Number)) { console.trace(); alert('Rational expects argument 2 (den) to be a Number but found ' + typeof den + ' ' + JSON.stringify(den)); }
 		if (isNaN(num)) { var s = 'Rational expects argument 1 (num) to be a Number but found NaN: ' + typeof num + ' ' + JSON.stringify(num); alert(s); throw new Error(s); }  //  2017.7
@@ -207,6 +205,7 @@ class rational extends digit {				//	2019.11.Added
 	isint() { return this.n % this.d == 0; }         //  2017.6
 	ispos() { return math.sign(this.n) * math.sign(this.d) > 0 }
 	isneg() { return math.sign(this.n) * math.sign(this.d) < 0 }
+	sign() { return this.ispos() ? 1 : this.isneg() ? -1 : 0 }	//	+2023.6
 	above(other) { return this.sub(other).ispos(); } //  2017.6
 	below(other) { return this.sub(other).isneg(); } //  2017.6
 

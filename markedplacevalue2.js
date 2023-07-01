@@ -1,78 +1,77 @@
 ﻿
 // Author : Anthony John Ripa
-// Date : 4/30/2019
-// PlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
+// Date : 6/30/2023
+// MarkedPlaceValue2 : a 2d datatype for representing base agnostic arithmetic via numbers whose digits are real
 
-function placevalue2(whole, exp) {
+function markedplacevalue2(whole, exp) {	//	~2023.6
 	if (arguments.length < 1) whole = new wholeplacevalue2();   //  2017.9
 	if (arguments.length < 2) exp = [0, 0];                     //  2017.9
-	if (!(whole instanceof wholeplacevalue2)) { var s = 'PlaceValue2 expects arg 1 (whole) to be a WholePV2 not ' + typeof whole + " : " + JSON.stringify(whole); alert(s); throw new Error(s); }
-	if (!Array.isArray(exp)) { var s = 'PlaceValue2 expects arg 2 (exp) to be an array but found ' + typeof exp + " : " + JSON.stringify(exp); alert(s); throw new Error(s); }
+	if (!(whole instanceof wholeplacevalue2)) { var s = 'MarkedPlaceValue2 expects arg 1 (whole) to be a WholePV2 not ' + typeof whole + " : " + JSON.stringify(whole); alert(s); throw new Error(s); }
+	if (!Array.isArray(exp)) { var s = 'MarkedPlaceValue2 expects arg 2 (exp) to be an array but found ' + typeof exp + " : " + JSON.stringify(exp); alert(s); throw new Error(s); }
 	this.whole = whole;
 	this.exp = exp
 	console.log('this.whole = ' + this.whole + ', this.exp = ' + this.exp + ', exp = ' + exp + ', arguments.length = ' + arguments.length + ", Array.isArray(whole)=" + Array.isArray(whole));
 }
 
-placevalue2.prototype.tohtml = function () {     // Replaces toStringInternal 2015.7
+markedplacevalue2.prototype.tohtml = function () {     // Replaces toStringInternal 2015.7
 	return this.whole.tohtml() + 'E' + (this.exp[1] == 0 ? this.exp[0] : this.exp); // exp is 2D    // 2015.10
 }
 
-placevalue2.prototype.toString = function () {
+markedplacevalue2.prototype.toString = function () {
 	return JSON.stringify([this.whole, this.exp]);
 }
 
-placevalue2.prototype.add = function (addend) {
+markedplacevalue2.prototype.add = function (addend) {
 	var me = this.clone();
 	var other = addend.clone();
-	placevalue2.align(me, other);
+	markedplacevalue2.align(me, other);
 	var whole = me.whole.add(other.whole);
-	return new placevalue2(whole, me.exp);
+	return new markedplacevalue2(whole, me.exp);
 }
 
-placevalue2.prototype.sub = function (subtrahend) {
+markedplacevalue2.prototype.sub = function (subtrahend) {
 	var me = this.clone();
 	var other = subtrahend.clone();
-	placevalue2.align(me, other);
+	markedplacevalue2.align(me, other);
 	var whole = me.whole.sub(other.whole);
-	return new placevalue2(whole, me.exp);
+	return new markedplacevalue2(whole, me.exp);
 }
 
-placevalue2.prototype.pointsub = function (subtrahend) {
+markedplacevalue2.prototype.pointsub = function (subtrahend) {
 	var whole = this.whole.pointsub(subtrahend.whole);
-	return new placevalue2(whole, this.exp);
+	return new markedplacevalue2(whole, this.exp);
 }
 
-placevalue2.prototype.pointadd = function (addend) {
+markedplacevalue2.prototype.pointadd = function (addend) {
 	var whole = this.whole.pointadd(addend.whole);
-	return new placevalue2(whole, this.exp);
+	return new markedplacevalue2(whole, this.exp);
 }
 
-placevalue2.prototype.pointtimes = function (multiplier) {
+markedplacevalue2.prototype.pointtimes = function (multiplier) {
 	var me = this.clone();
 	var other = multiplier.clone();
-	placevalue2.align(me, other);
+	markedplacevalue2.align(me, other);
 	var whole = me.whole.pointtimes(other.whole);
-	return new placevalue2(whole, me.exp);
+	return new markedplacevalue2(whole, me.exp);
 }
 
-placevalue2.prototype.pointdivide = function (divisor) {
+markedplacevalue2.prototype.pointdivide = function (divisor) {
 	var me = this.clone();
 	var other = divisor.clone();
-	placevalue2.align(me, other);
+	markedplacevalue2.align(me, other);
 	var whole = me.whole.pointdivide(other.whole);
-	return new placevalue2(whole, me.exp);
+	return new markedplacevalue2(whole, me.exp);
 }
 
-placevalue2.prototype.pow = function (power) {	// 2015.8
-	if (power instanceof placevalue2) power = power.whole;   // laurent calls wpv    2015.8
-	if (power.get(0, 0) < 0) return (new placevalue2(wholeplacevalue2.parse(1), [0, 0])).divide(this.pow(new placevalue2(wholeplacevalue2.parse(-power.get(0, 0)), [0, 0]))); // 2016.12
+markedplacevalue2.prototype.pow = function (power) {	// 2015.8
+	if (power instanceof markedplacevalue2) power = power.whole;   // laurent calls wpv    2015.8
+	if (power.get(0, 0) < 0) return (new markedplacevalue2(wholeplacevalue2.parse(1), [0, 0])).divide(this.pow(new markedplacevalue2(wholeplacevalue2.parse(-power.get(0, 0)), [0, 0]))); // 2016.12
 	var whole = this.whole.pow(power);
 	var exp = [this.exp[0] * power.get(0, 0), this.exp[1] * power.get(0, 0)];    // exp*pow not exp^pow  2015.9 // exp is 2D    2015.10
-	return new placevalue2(whole, exp);
+	return new markedplacevalue2(whole, exp);
 }
 
-placevalue2.align = function (a, b) {    // rename pad align 2015.9
-	//if (arguments.length < 3) offset = 0;
+markedplacevalue2.align = function (a, b) {    // rename pad align 2015.9
 	alignhelper(a, b);
 	alignhelper(b, a);
 	function alignhelper(a, b) {
@@ -87,20 +86,20 @@ placevalue2.align = function (a, b) {    // rename pad align 2015.9
 	}
 }
 
-placevalue2.prototype.times = function (top) {
+markedplacevalue2.prototype.times = function (top) {
 	var whole = this.whole.times(top.whole);
-	return new placevalue2(whole, [this.exp[0] + top.exp[0], this.exp[1] + top.exp[1]]);    // exp is 2D    2015.10
+	return new markedplacevalue2(whole, [this.exp[0] + top.exp[0], this.exp[1] + top.exp[1]]);    // exp is 2D    2015.10
 }
 
-placevalue2.prototype.divide = function (denominator) {
+markedplacevalue2.prototype.divide = function (denominator) {
 	var me = this.clone();
 	var pads = 0;						// 2015.11
 	pads = me.whole.mantisa.length == 1 && denominator.whole.mantisa.length == 1 ? 0 : padup(me, denominator, 4);   // 2016.1
 	if (denominator.whole.mantisa[0].length != 1 || me.whole.mantisa[0].length < denominator.whole.mantisa[0].length) pad(me, denominator, 4);  // 2015.9 // [0] 2015.10
 	//if (denominator.whole.mantisa.length != 1 || me.whole.mantisa.length < denominator.whole.mantisa.length) padup(me, denominator, 4);  // 2015.9 // [0] 2015.10
 	var whole = me.whole.divide(denominator.whole);
-	console.log('placevalue2.prototype.divide : return new placevalue2(whole, ' + me.exp + '-' + denominator.exp +')')
-	var ret = new placevalue2(whole, [me.exp[0] - denominator.exp[0], me.exp[1] - denominator.exp[1]]);
+	console.log('markedplacevalue2.prototype.divide : return new markedplacevalue2(whole, ' + me.exp + '-' + denominator.exp +')')
+	var ret = new markedplacevalue2(whole, [me.exp[0] - denominator.exp[0], me.exp[1] - denominator.exp[1]]);
 	unpad(ret, pads);					// 2015.11
 	depad(ret);                         // 2015.11
 	return ret;
@@ -108,7 +107,7 @@ placevalue2.prototype.divide = function (denominator) {
 		var i = 0;						// 2015.11
 		while (n.whole.mantisa[0].length < sigfig + d.whole.mantisa[0].length) {    // [0] 2015.10
 			i++;						// 2015.11
-			console.log('placevalue2.prototype.divide.padback : ' + n.whole.mantisa[0].length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
+			console.log('markedplacevalue2.prototype.divide.padback : ' + n.whole.mantisa[0].length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
 			n.exp[0]--; // exp is 2D    2015.10
 			n.whole.times10();      // Delegate Shift to Whole  2015.7
 		}
@@ -118,7 +117,7 @@ placevalue2.prototype.divide = function (denominator) {
 		var i = 0;						// 2015.11
 		while (n.whole.mantisa.length < sigfig + d.whole.mantisa.length) {
 			i++;						// 2015.11
-			console.log('placevalue2.prototype.divide.padback : ' + n.whole.mantisa.length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
+			console.log('markedplacevalue2.prototype.divide.padback : ' + n.whole.mantisa.length + ' < ' + sigfig + ' + ' + d.whole.mantisa.length);
 			n.exp[1]--; // exp is 2D    2015.10
 			n.whole.times01();      // Delegate Shift to Whole  2015.7
 		}
@@ -142,15 +141,15 @@ placevalue2.prototype.divide = function (denominator) {
 	}
 }
 
-placevalue2.prototype.remainder = function (den) {	//	2019.4	Added
+markedplacevalue2.prototype.remainder = function (den) {	//	2019.4	Added
 	return this.sub(this.divide(den).times(den));
 }
 
-placevalue2.prototype.clone = function () {
-	return new placevalue2(this.whole.clone(), this.exp.slice(0));  // exp is 2D    2015.10
+markedplacevalue2.prototype.clone = function () {
+	return new markedplacevalue2(this.whole.clone(), this.exp.slice(0));  // exp is 2D    2015.10
 }
 
-placevalue2.prototype.eval = function (base) {	// 2015.8
+markedplacevalue2.prototype.eval = function (base) {	// 2015.8
 	var ret = [];
 	for (var col = 0; col < this.whole.mantisa[0].length; col++) {
 		var sum = 0;
@@ -161,5 +160,5 @@ placevalue2.prototype.eval = function (base) {	// 2015.8
 		}
 		ret.push(sum);
 	}
-	return new placevalue2(new wholeplacevalue2([ret]), [this.exp[0], 0]);    // exp[0]   2015.12
+	return new markedplacevalue2(new wholeplacevalue2([ret]), [this.exp[0], 0]);    // exp[0]   2015.12
 }

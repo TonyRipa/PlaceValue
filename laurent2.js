@@ -1,13 +1,13 @@
 
 // Author : Anthony John Ripa
-// Date : 7/31/2022
-// Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype
+// Date : 6/30/2023
+// Laurent2 : a 2d datatype for representing Laurent multinomials; an application of the MarkedPlaceValue2 datatype
 
 function laurent2(base, pv) {
 	if (arguments.length < 1) base = [1, null];         //  2017.9
-	if (arguments.length < 2) pv = new placevalue2();   //  2017.9
+	if (arguments.length < 2) pv = new markedplacevalue2();   //  2017.9	//	~2023.6
 	if (!Array.isArray(base)) { var s = 'Laurent2 expects arg 1 (base) to be an array but found ' + typeof base + " : " + JSON.stringify(base); alert(s); throw new Error(s); }
-	if (!(pv instanceof placevalue2)) { var s = 'Laurent2 expects arg 2 (pv) to be a placevalue2 but found ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+	if (!(pv instanceof markedplacevalue2)) { var s = 'Laurent2 expects arg 2 (pv) to be a markedplacevalue2 but found ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
 	this.base = base
 	this.pv = pv;
 	return;
@@ -15,15 +15,14 @@ function laurent2(base, pv) {
 
 laurent2.prototype.parse = function (strornode) {   //  2017.9
 	console.log('new laurent2 : ' + JSON.stringify(strornode))
-	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent2(a.base, new placevalue2(new wholeplacevalue2(a.pv.whole.mantisa), a.pv.exp)) }
+	if (strornode instanceof String || typeof (strornode) == 'string') if (strornode.indexOf('base') != -1) { var a = JSON.parse(strornode); return new laurent2(a.base, new markedplacevalue2(new wholeplacevalue2(a.pv.whole.mantisa), a.pv.exp)) }
 	var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 	if (node.type == 'ConstantNode') {
-		return new laurent2([1, null], new placevalue2(new wholeplacevalue2([[Number(node.value)]]), [0, 0]));
+		return new laurent2([1, null], new markedplacevalue2(new wholeplacevalue2([[Number(node.value)]]), [0, 0]));
 	} else if (node.type == 'SymbolNode') {
 		console.log('new laurent2 : SymbolNode')
 		var base = [node.name, null];
-		//me.base = base;
-		var pv = new placevalue2(new wholeplacevalue2([[1]]), [1, 0]);    // exp is 2D    2015.10
+		var pv = new markedplacevalue2(new wholeplacevalue2([[1]]), [1, 0]);    // exp is 2D    2015.10
 		return new laurent2(base, pv);
 		//console.log('new laurent2 : parse1 : base = ' + JSON.stringify(me.base));
 	} else if (node.type == 'OperatorNode') {
@@ -32,9 +31,9 @@ laurent2.prototype.parse = function (strornode) {   //  2017.9
 		//var a = new laurent2(kids[0].type == 'OperatorNode' ? kids[0] : kids[0].value || kids[0].name);
 		var a = new laurent2().parse(kids[0]);      // laurent2 handles unpreprocessed kid  2015.11
 		if (node.fn == 'unaryMinus') {
-			var c = new laurent2([1, null], new placevalue2(new wholeplacevalue2([[0]]), [0, 0])).sub(a);
+			var c = new laurent2([1, null], new markedplacevalue2(new wholeplacevalue2([[0]]), [0, 0])).sub(a);
 		} else if (node.fn == 'unaryPlus') {
-			var c = new laurent2([1, null], new placevalue2(new wholeplacevalue2([[0]]), [0, 0])).add(a);
+			var c = new laurent2([1, null], new markedplacevalue2(new wholeplacevalue2([[0]]), [0, 0])).add(a);
 		} else {
 			//var b = new laurent2(kids[1].type == 'OperatorNode' ? kids[1] : kids[1].value || kids[1].name);
 			var b = new laurent2().parse(kids[1]);  // laurent2 handles unpreprocessed kid  2015.11
@@ -204,7 +203,7 @@ laurent2.prototype.eval = function (base) {	// 2015.8
 		return new laurent2([this.base[0], null], this.pv.eval(base));
 	}
 	else {
-		var me = new laurent2([1, null], new placevalue2(new wholeplacevalue2([[0]]), [0, 0]));
+		var me = new laurent2([1, null], new markedplacevalue2(new wholeplacevalue2([[0]]), [0, 0]));
 		me.pv.whole.mantisa = (this.pv.whole.mantisa[0].length > 0) ? math.transpose(this.pv.whole.mantisa) : [[]]; //  mathJS can't transpose [[]] 2015.12
 		me.pv.exp = this.pv.exp.slice(0);   //  Infuse me w/ this's exp 2015.11
 		me.pv.exp.push(me.pv.exp.shift());  //  Exp transposed like Mantisa

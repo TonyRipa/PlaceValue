@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2023
+// Date:	6/30/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -104,6 +104,43 @@ class wholeplacevalue {	//	+2020.11
 	slice(...a) {	//	+2021.5
 		this.check();
 		return this.mantisa.slice(...a);
+	}
+
+	some(f) {		//	+2023.6
+		this.check()
+		return this.mantisa.some(f);
+	}
+
+	max() {			//	+2023.6
+		this.check()
+		return this.mantisa.reduce((a,b)=>a.above(b)?a:b)
+	}
+
+	min() {			//	+2023.6
+		this.check()
+		return this.mantisa.reduce((a,b)=>a.below(b)?a:b)
+	}
+
+	maxindex() {	//	+2023.6
+		this.check()
+		let max = this.max()
+		return this.mantisa.findIndex(e=>e.equals(max))
+	}
+
+	minindex() {	//	+2023.6
+		this.check()
+		let min = this.min()
+		return this.mantisa.findIndex(e=>e.equals(min))
+	}
+
+	maxminindex(val) {	//	+2023.6
+		val = val.abs()
+		if (this.mantisa.every(elem=>elem.above(val))) alert('Precondition Violation: maxminindex(val): all Array elements are larger than Value')
+		let index = this.minindex()
+		for (let i = 0 ; i < this.mantisa.length ; i++)
+			if (this.get(i).below(val) && this.get(i).above(this.get(index)))
+				index = i
+		return index
 	}
 
 	get(i) {
@@ -211,7 +248,6 @@ class wholeplacevalue {	//	+2020.11
 
 	add(other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 	sub(other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
-	//pointequals(other) { this.check(other); return this.f((x, y)=>x.equal(y),other);}								//	+2020.10	//	-2020.11
 	pointequal(other) { this.check(other); return this.f((x, y)=>x.equal(y),other);}												//	+2020.11
 	pointtimes(other) { this.check(other); return this.f(function (x, y) { return x.times(y) }, other); }
 	pointdivide(other) { this.check(other); return this.f(function (x, y) { return x.divide(y) }, other); }

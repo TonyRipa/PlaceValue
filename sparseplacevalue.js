@@ -1,6 +1,6 @@
-﻿
+
 // Author:  Anthony John Ripa
-// Date:    5/31/2023
+// Date:    6/30/2023
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -8,16 +8,19 @@ class sparseplacevalue {			//	2019.4	Added
 	constructor(arg) {
 		var points, datatype;
 		if (arguments.length < 1)[points, datatype] = [[], rational];                                       //  2017.12
-		if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.12
-		if (Array.isArray(arg)) {                                                                           //  2017.12
-			points = arg;
-			if (points.length==0) throw new Error('notype');	//	2019.4	Added
-			if (!Array.isArray(points)) { var s = 'sparseplacevalue expects argument to be 2D array but found ' + typeof points + " : " + JSON.stringify(points); alert(s); throw new Error(s); }
-			if (points.length > 0 && !Array.isArray(points[0])) { var s = "sparseplacevalue expects arg to be 2D array not 1D array of " + typeof points[0]; alert(s); throw new Error(s); }    //  2017.12
-			if (points.length > 0 && !(points[0][1] instanceof wholeplacevalue))
-				{ var s = "sparseplacevalue expects exponent to be wholeplacevalue not " + typeof points[0][1] + " " + JSON.stringify(points[0][1]); alert(s); throw new Error(s); } //  2017.7
-			datatype = (points.length > 0) ? points[0][0].constructor : rational;
+		if (arguments.length == 1) {																			//	+2023.6
+			if (arg === rational || arg === complex || arg === rationalcomplex)[points, datatype] = [[], arg];  //  2017.12
+			if (Array.isArray(arg)) {                                                                           //  2017.12
+				points = arg;
+				if (points.length==0) throw new Error('notype');	//	2019.4	Added
+				if (!Array.isArray(points)) { var s = 'sparseplacevalue expects argument to be 2D array but found ' + typeof points + " : " + JSON.stringify(points); alert(s); throw new Error(s); }
+				if (points.length > 0 && !Array.isArray(points[0])) { var s = "sparseplacevalue expects arg to be 2D array not 1D array of " + typeof points[0]; alert(s); throw new Error(s); }    //  2017.12
+				if (points.length > 0 && !(points[0][1] instanceof wholeplacevalue))
+					{ var s = "sparseplacevalue expects exponent to be wholeplacevalue not " + typeof points[0][1] + " " + JSON.stringify(points[0][1]); alert(s); throw new Error(s); } //  2017.7
+				datatype = (points.length > 0) ? points[0][0].constructor : rational;
+			}			
 		}
+		if (arguments.length == 2)[points, datatype] = arguments;												//	+2023.6
 		this.datatype = datatype;
 		points = normal(points);
 		points = trim(this, points);
@@ -126,6 +129,8 @@ class sparseplacevalue {			//	2019.4	Added
 				throw new Error('Sparseplacevalue.prototype.Check 1 Fail : Not all coefs in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
 			if (!(this.points.every(x=>{var w=x[1];return w.check()==datatype})))
 				throw new Error('Sparseplacevalue.prototype.Check 1 Fail : Not all power in ' + JSON.stringify(this.points) + ' are of type ' + translate(datatype));
+			if (!(this.points.every(x=>{var w=x[1];return w instanceof wholeplacevalue})))	//	+2023.6
+				throw new Error('Sparseplacevalue.prototype.Check 1 Fail : Not all power in ' + JSON.stringify(this.points) + ' are wholeplacevalue');
 			return datatype;
 		}
 		if (!(other instanceof sparseplacevalue)) throw new Error("Sparseplacevalue.prototype.Check 2 Fail : Other isn't SparsePlaceValue");
@@ -163,6 +168,13 @@ class sparseplacevalue {			//	2019.4	Added
 		return new this.datatype().parse(0);
 		function equalvectors(a, b) {return a.equals(b);
 		}
+	}
+
+	set(k, v) {	//  2023.6
+		if (k instanceof Array) k = new wholeplacevalue(k, this.datatype);
+		for (var j = 0; j < this.points.length; j++)
+			if (this.points[j][1].equals(k)) { this.points[j][0] = v ; return }
+		this.points.push([v,k]);
 	}
 
 	tohtml() {   // Replaces toStringInternal 2015.7
@@ -261,6 +273,7 @@ class sparseplacevalue {			//	2019.4	Added
 	equal = function (other) { return this.parse(this.equals(other) ? 1 : 0); }											//	+2020.10
 
 	isneg() { return this.points.slice(-1)[0][0].isneg() }	//	+2023.5
+	sign() { return this.points.slice(-1)[0][0].sign() }	//	+2023.6
 
 	add(other) { this.check(other); return new sparseplacevalue(this.points.concat(other.points)); }
 	sub(other) { this.check(other); return this.add(other.negate()); }
@@ -327,28 +340,28 @@ class sparseplacevalue {			//	2019.4	Added
 		return ret;
 	}
 
-	reverse() {	//	+2021.6
-		var ret = this.clone();
-		var len = length(ret);
-		pad(ret, len);
-		rev(ret)
-		return new sparseplacevalue(ret.points);
-		function rev(spv) {
-			for (let i = 0; i<spv.points.length; i++)
-				spv.points[i][1] = new wholeplacevalue(spv.points[i][1].mantisa.reverse());
-		}
-		function pad(spv, len) {
-			for (let i = 0; i<spv.points.length; i++)
-				while (spv.points[i][1].len() < len)
-					spv.points[i][1].push(new spv.datatype())
-		}
-		function length(spv) {
-			var ret = 0;
-			for (let i = 0; i<spv.points.length; i++)
-				ret = math.max(ret,spv.points[i][1].len())
-			return ret;
-		}
-	}
+	//reverse() {	//	+2021.6	//	-2023.6
+	//	var ret = this.clone();
+	//	var len = length(ret);
+	//	pad(ret, len);
+	//	rev(ret)
+	//	return new sparseplacevalue(ret.points);
+	//	function rev(spv) {
+	//		for (let i = 0; i<spv.points.length; i++)
+	//			spv.points[i][1] = new wholeplacevalue(spv.points[i][1].mantisa.reverse());
+	//	}
+	//	function pad(spv, len) {
+	//		for (let i = 0; i<spv.points.length; i++)
+	//			while (spv.points[i][1].len() < len)
+	//				spv.points[i][1].push(new spv.datatype())
+	//	}
+	//	function length(spv) {
+	//		var ret = 0;
+	//		for (let i = 0; i<spv.points.length; i++)
+	//			ret = math.max(ret,spv.points[i][1].len())
+	//		return ret;
+	//	}
+	//}
 
 	pop0() {	//	+2021.6
 		return new this.constructor([this.points.shift()]);
@@ -405,7 +418,6 @@ class sparseplacevalue {			//	2019.4	Added
 			var d = den.points.slice(-1)[0];
 			var quotient = new sparseplacevalue([[n[0].divide(d[0]), n[1].sub(d[1])]]);		//	2018.12	sub
 			if (d[0].is0()) return quotient;
-			//var remainder = num.sub(quotient.times(den))	//	2019.7	Removed
 			var remainder = num.withoutmsb().sub(quotient.times(den).withoutmsb());	//	2019.7	Added
 			var q2 = divideh(remainder, den, c - 1);
 			quotient = quotient.add(q2);
@@ -563,6 +575,129 @@ class sparseplacevalue {			//	2019.4	Added
 				pows = pows.mantisa.slice(0, -1);	//	2018.12
 				if (pows.length == 0) return [point[0].times(base.pow(pow[0])), new wholeplacevalue(mytype)];  //  2018.12
 				return [point[0].times(base.pow(pow[0])), new wholeplacevalue(pows)];  //  2017.12
+			}
+		}
+	}
+
+	evalfull(base) {	// +2023.6
+		if (base instanceof sparseplacevalue) base = base.points[0][1].is0() ? base.points[0][0] : base.points[0][1].mantisa
+		if (!Array.isArray(base)) base = [base]
+		base = base.map(b => math.typeof(b).toLowerCase() == 'number' ? this.datatype.parse(b) : b)
+		let ret = this.clone()
+		for (let b of base)
+			ret = ret.eval(b)
+		return ret.points[0][0]
+	}
+
+	iterator(options = {}) {	//	+2023.6
+		this.check()
+		let ret = []
+		if (options.by == undefined) options.by = 'key'
+		if (options.dir == undefined) options.dir = 'asc'
+		if (options.by.includes('weight') && options.base == undefined) alert('wholeplacevalue2.sort by weight requires base')
+		for (let point of this.points) {
+			//point = [...point]
+			if (!point[0].is0()) {
+				let x
+				if (options.by == 'val') x = point[0]
+				if (options.by == 'key') x = point[1].mantisa.reduce((a,b)=>(a.add(b)),new this.datatype())
+				if (options.by == 'keyweight') x = this.keyweight(point[1],options.base)
+				if (options.by == 'weight') x = this.keyweight(point[1],options.base).scale(point[0])
+				point.push(x)
+				ret.push(point)
+			}
+		}
+		if (options.filter != undefined) {
+			if (options.filter == +1) ret = ret.filter(point=>!point[0].is0()&&!point[0].isneg())
+			if (options.filter == -1) ret = ret.filter(point=>!point[0].is0()&&point[0].isneg())
+		}
+		// if (options.dir == 'asc') ret.sort((a,b)=>a[2]-b[2])
+		// if (options.dir == 'des') ret.sort((a,b)=>b[2]-a[2])
+		return ret
+	}
+
+	keyweight(key,base) {	//	+2023.6
+		if (key instanceof wholeplacevalue) key = key.mantisa
+		let ret = this.datatype.parse(1)
+		for (let i = 0; i < base.length; i++) {
+			ret = ret.times(base[i].pow(key[key.length-1-i]))
+		}
+		return ret
+	}
+
+	regroup(base) {		//	+2023.6
+		this.check()
+		if (base instanceof sparseplacevalue) base = base.points[0][1].is0() ? base.points[0][0] : base.points[0][1].mantisa
+		if (!Array.isArray(base)) base = [base]
+		base = base.map(b => math.typeof(b).toLowerCase() == 'number' ? this.datatype.parse(b) : b)
+		var ret = this.clone()
+		ret = fixsign(ret)
+		ret = fixfrac(ret)
+		ret = fixbig(ret)
+		ret = ret.clone()
+		return ret
+		function fixsign(pv) {
+			pv.check()
+			let sum = pv.evalfull(base)
+			let ret
+			if (sum.is0()) {
+				ret = pv.clone()
+			} else {
+				let sign = sum.sign()
+				let keep = pv.iterator({'filter':sign, 'by':'weight', 'base':base})
+				let lose = pv.iterator({'filter':-sign})
+				lose = new sparseplacevalue(lose,pv.datatype).evalfull(base)
+				if (lose.sign() * sign < 0) {
+					for (let point of keep) {
+						let [nominal, key, weight] = point
+						point[0] = point[0].sub(point[0])
+						lose = lose.add(weight)
+						if (lose.sign() * sign >= 0) break
+					}
+					keep = new sparseplacevalue(keep)
+					keep.set([],lose)
+					ret = keep
+				} else {
+					ret = pv.clone()
+				}
+			}
+			return ret
+		}
+		function fixfrac(pv) {
+			for (let [val,key] of pv.iterator()) {
+				if (!isint(val)) {
+					if (!is0(key)) {
+						let keyprevs = Array.from(Array(key.len()).keys()).map(i=>key.parse(`1E${i}`)).map(e=>key.sub(e))
+						let axis = some0(key) ? key.indexOf(0) : maxindex(base.slice(0,key.len()))
+						let keyprev = keyprevs[axis]
+						ret.set(keyprev, ret.get(keyprev).add(ret.get(key).times(base[axis])));
+						ret.set(key, ret.get(key).sub(ret.get(key)));
+					}
+				}
+			}
+			return pv
+			function isint(x) { return x.isint() }
+			function is0(wpv) { return wpv.is0() }
+			function no0(arr) { return arr.every(elem=>elem!=0) }
+			function some0(col) { return col.some(elem=>elem.is0()) }
+			function maxindex(arr) { return new wholeplacevalue(arr).maxindex() }
+		}
+		function fixbig(pv) {
+			let ret = pv.clone()
+			let big = new wholeplacevalue(base).min()
+			for (let [val,key] of ret.iterator())
+				while (val.above(big) || val.equals(big) || val.negate().above(big) || val.negate().equals(big)) {
+					let keynexts = Array.from(Array(math.max(1,key.len())).keys()).map(i=>key.parse(`1E${i}`)).map(e=>key.add(e))
+					let axis = maxminindex(base,val)
+					let keynext = keynexts[axis]
+					let [div, mod] = ret.get(key).divmod(base[axis])
+					ret.set(key, mod)
+					ret.set(keynext, ret.get(keynext).add(div))
+					val = mod
+				}
+			return ret
+			function maxminindex(arr,val) {
+				return new wholeplacevalue(arr).maxminindex(val)
 			}
 		}
 	}

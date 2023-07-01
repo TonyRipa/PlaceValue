@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	12/31/2020
+	Date:	6/30/2023
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -25,8 +25,9 @@
 	<script src='placevalue.js'></script>
 	<script src='wholeplacevalue2.js'></script>
 	<script src='polynomial2.js'></script>
-	<script src='placevalue2.js'></script>
+	<script src='markedplacevalue2.js'></script>	<!--	~2023.6	-->
 	<script src='laurent2.js'></script>
+	<script src='abstractpolynomial.js'></script>	<!--	+2023.6	-->
 	<script src='laurent.js'></script>
 	<script src='exponential.js'></script>
 	<style>
@@ -80,7 +81,6 @@
 </head>
 <body>
 	<h1>Infinitesimal</h1>
-	<!--<select id='f' onchange="clean()"><option>Polynomial 2</option><option selected>Laurent Multinomial</option><option>Exponential</option><option>Fourier</option></select>-->	<!--	-2020.12	-->
 	<select id='f' onchange="clean()"><option>Polynomial 2</option><option selected>Laurent Multinomial</option></select>	<!--	+2020.12	-->
 	<p>f(x)=<input id='func' value='x^2'><button onclick='differentiate()'>Differentiate</button></p>
 	<table id="main">

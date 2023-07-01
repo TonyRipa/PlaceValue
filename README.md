@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2023
+Date : 6/30/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -182,25 +182,25 @@ Laurent Polynomial
 -------------------
 <i>laurent.js</i> is a datatype for representing Laurent polynomials; an application of the MarkedPlaceValue datatype. Laurent polynomials are like regular polynomials except that their powers can be negative. For example, 1/x = x^-1 is a Laurent polynomial, not the normal kind of polynomial. Whereas Polynomial1.js inherited (by composition) from WholePlaceValue, Laurent.js inherits from MarkedPlaceValue. This is because WholePlaceValue represents places to the left of the PlaceMark which are positive (or zero) powers, which is good for representing polynomials of positive (or zero) power. Laurent on the other hand, needs negative powers which MarkedPlaceValue represents as digits to the right of the PlaceMark. Laurent polynomials are reduced to user interfaces for MarkedPlaceValue.
 
-PlaceValue2
+MarkedPlaceValue2
 -------------------
-<i>placevalue2.js</i> is a 2D version of MarkedPlaceValue, or a floating point version of WholePlaceValue2 (actually implemented this way). PlaceValue2 is used by <i>Laurent2.js</i>. If Laurent Multinomial wants to calculate (x+h)^2/h, then it asks PlaceValue2 to calculate:
+<i>markedplacevalue2.js</i> is a 2D version of MarkedPlaceValue, or a floating point version of WholePlaceValue2 (actually implemented this way). MarkedPlaceValue2 is used by <i>Laurent2.js</i>. If Laurent Multinomial wants to calculate (x+h)^2/h, then it asks MarkedPlaceValue2 to calculate:
 <pre>
   1                 1
  20                20
 100 E0 / 1 E0,1 = 100 E0,-1
 </pre>
-Laurent Multinomial then formats PlaceValue2's result as x^2h^-1+2x+h .
+Laurent Multinomial then formats MarkedPlaceValue2's result as x^2h^-1+2x+h .
 
-Laurent Multinomials are nothing more than a UI for PlaceValue2.
+Laurent Multinomials are nothing more than a UI for MarkedPlaceValue2.
 
 Laurent Multinomial
 -------------------
-<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the PlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example, y/x = y\*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from MarkedPlaceValue, Laurent2.js inherits from PlaceValue2. This is because MarkedPlaceValue represents places to the left or right of the PlaceMark which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which PlaceValue2 represents as digits to the left (or on top) of the PlaceMark. Laurent multinomials are reduced to skins for PlaceValue2.
+<i>laurent2.js</i> is a datatype for representing Laurent multinomials; an application of the MarkedPlaceValue2 datatype. Laurent multinomials are like regular multinomials except that their powers can be negative. For example, y/x = y\*x^-1 is a Laurent multinomial, not the normal kind of multinomial. Whereas Laurent.js inherited (by composition) from MarkedPlaceValue, Laurent2.js inherits from MarkedPlaceValue2. This is because MarkedPlaceValue represents places to the left or right of the PlaceMark which are powers of a base, which is good for representing single variable polynomials. Laurent2 on the other hand, needs powers of 2 different bases which MarkedPlaceValue2 represents as digits to the left (or on top) of the PlaceMark. Laurent multinomials are reduced to skins for MarkedPlaceValue2.
 
 SparsePlaceValue2
 ------------------------
-<i>SparsePlaceValue2.js</i> is a 2D data-type optimized for sparse PlaceValue2's. The PlaceValue2:
+<i>SparsePlaceValue2.js</i> is a 2D data-type optimized for sparse MarkedPlaceValue2's. The MarkedPlaceValue2:
 <pre>
 500 
 000
@@ -718,7 +718,7 @@ For future work, I would clean the code by removing the overhead of intermittent
 <tr><td>Exponential &amp; Fourier</td><td>depends on Laurent</td><td>depends on MarkedPlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Rational.</td></tr>
 <tr><td>Fourier &amp; Laplace</td><td></td><td>depends on MarkedPlaceValue</td><td>depends on WholePlaceValue</td><td>depends on Complex.</td></tr>
 <tr><td>Polynomial2</td><td></td><td></td><td>depends on WholePlaceValue2.</td><td></td></tr>
-<tr><td>Laurent2</td><td></td><td>depends on PlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
+<tr><td>Laurent2</td><td></td><td>depends on MarkedPlaceValue2</td><td>depends on WholePlaceValue2.</td><td></td></tr>
 <tr><td>Complex Exponential &amp; Fourier2</td><td>depends on Complex Laurent</td><td>depends on ComplexPlaceValue</td><td>depends on Whole PlaceValueComplex2.</td><td></td></tr>
 </table>
 
