@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2023
+// Date:    7/31/2023
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -95,8 +95,6 @@ class placevalueratio {					//	+2023.5
 
 		function euclid(ratio) {
 			var g = gcdpv(ratio.num, ratio.den);
-			//for (var i = 0; i < g.mantisa.length; i++)
-			//    if (g.get(i) != Math.round(g.get(i))) return;
 			if (g.mantisa.length == 1) return;
 			ratio.num = ratio.num.divide(g);
 			ratio.den = ratio.den.divide(g);
@@ -235,11 +233,19 @@ class placevalueratio {					//	+2023.5
 		return num.divide(den);
 	}
 
+	evalfull(base) {	//	+2023.7
+		let eva = this.eval(base)
+		let ratio = eva.num.divide(eva.den)
+		return ratio.get(0)
+	}
+
 	factor() {	//	+2023.5
-		if (this.num.len() < 5) return this.clone()
+		//if (this.num.len() < 5) return this.clone()										//	-2023.7
+		if (this.num.len() < 4) return this.clone()											//	+2023.7
 		if (this.den.len() > 1) return this.clone()
 		let r = this.num.reciprocal()
-		if (r.len() <= 3 && !r.is0()) return new placevalueratio(this.num.parse(1 ),r)
+		//if (r.len() <= 3 && !r.is0()) return new placevalueratio(this.num.parse(1 ),r)	//	-2023.7
+		if (r.len() <= 4 && !r.is0()) return new placevalueratio(this.num.parse(1 ),r)		//	+2023.7
 		r = this.num.parse(10).divideleft(this.num)
 		if (r.len() <= 3 && !r.is0()) return new placevalueratio(this.num.parse(10),r)
 		return this.clone()

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	6/30/2023
+// Date:	7/31/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -290,7 +290,6 @@ class wholeplacevalue {	//	+2020.11
 	pow(power) { // 2015.6
 		if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype().parse(power)]);
 		this.check(power);
-		//if (power.mantisa.length == 1) {		//	+2020.5		//	-2020.11
 		if (power.mantisa.length <= 1) {						//	+2020.11
 			//if(power.get(0).toreal()!= Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' +power.tohtml());return wholeplacevalue.parse('%')}//-2020.11
 			//if (power.get(0).toreal() != Math.round(power.get(0).toreal())){alert('WPV .Bad Exponent = ' + power.tohtml());return this.parse('%') }//+2020.11//-2021.1
@@ -483,10 +482,12 @@ class wholeplacevalue {	//	+2020.11
 		this.check(den);
 		var num = this;
 		//var iter = 5//num.mantisa.length;	//	-2023.5
-		var iter = 6						//	+2023.5
+		//var iter = 6						//	+2023.5	//	-2023.7
+		var iter = 7									//	+2023.7
 		var quotient = divideh(num, den, iter);
 		//quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error	//	-2023.5
-		quotient.mantisa = quotient.mantisa.slice(0,6);									//	+2023.5
+		//quotient.mantisa = quotient.mantisa.slice(0,6);								//	+2023.5	//	-2023.7
+		quotient.mantisa = quotient.mantisa.slice(0,iter-1);										//	+2023.7
 		return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
 		function divideh(num, den, c) {
 			num.check(den);

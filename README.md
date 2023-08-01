@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2023
+Date : 7/31/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -488,6 +488,19 @@ In measure.html, we saw that we can model the measure of a unit n-dimensional ob
 
 What if the object is a line in one dimension and a line-segment in the other? This would be like a thick line, or a plane segment. SparsePlaceValue accomodates multiple bases. The first base can be a unit line segment. The second base can be a line. The measure of a line by unit-line-segment object would be 1E1,1. If it is twice as thick the measure would be 2E1,1.
 
+Sum
+------------
+
+ ( *For reading convenience this section will flip the normal left-right convention, so the number twelve will be written 21, and / means* \\ )
+
+<i>sum.html</i> demonstrates an application of PlaceValue to problems in summing so-called "divergent sums". For example, the problem of summing 1 - 1 + 1 - 1 + … . We do this by not treating base 1 as a special case.
+
+Earlier we spoke of two kinds of division: left-division and right-division. We noted one was good for bases less than 1, while the other was good for bases greater than 1. We also introduced center-division, which was good for base 1. We now consider using base 1, without center division, but instead with one of the original divisions.
+
+Consider 1 / 11 = 1<s>1</s>1<s>1</s>1<s>1</s>… . We apply |1 to both sides, 1/11 | 1 = 1<s>1</s>1<s>1</s>1<s>1</s>… | 1 . Simplifying we get, 1/2 = 1-1+1-1+… .
+
+1-1+1-1+… is usually considered a divergent sum. By not treating it as an exception, we conclude 1-1+1-1+… = 1/2 . We get no other answer with PlaceValue. We get no contradiction; it is consistent. Beyond consistency, we demonstrate in the next section (set.html) that the answers that PlaceValue provides are exactly the ones needed to calculate correct probabilities for set ratios, finite or infinite.
+
 Set
 ------------
 
@@ -535,6 +548,8 @@ Why does this work so well when classical results work so poorly? Well, the simp
 Furthermore, it seems like ratios may preserve information better than sequences. Consider 1/11. Earlier we calculated 1/11 | 1 = 1/2. This was simple and true (as in trust-worthy). Recall 1 / 11 = 1<s>1</s>1<s>1</s>1<s>1</s>… . Now let's substitute. 1/11 | 1 = 1<s>1</s>1<s>1</s>1<s>1</s>… | 1. What is 1<s>1</s>1<s>1</s>1<s>1</s>… | 1 ? Well, we can immediately re-substitute back to 1/11 | 1 = 1/2. So, it seems that the answer must be 1/2. Can we get it without re-substituting? 1<s>1</s>1<s>1</s>1<s>1</s>… | 1 = 1-1+1-1+1-1… . What does 1-1+1-1+1-1… equal? Well, ordinary calculus calls this a divergent sum because the partial sums 1,0,1,0,1,0,… don't converge. Advanced calculus redefines addition again (the original calculus redefinition of addition was insufficient) to something like limits of partial averages, which converge on 1/2. So using advanced calculus, we know the sum 1-1+1-1+1-1… = 1/2. Conveniently, this is consistent with our 1/11 | 1 = 1/2. Inconveniently, it required stretching the already stretched definition of addition by limits, to that of limits of limits. The expansion of a ratio to a sequence seems to have the same awkward character of extensional semantics. The ratio seems to possess all of the information. The sequence seems to be a shadow. In this case, the shadows may contain all the information. However, manipulating these shadows requires delicate care otherwise you just immediately call 1-1+1-1+1-1… an indeterminate form, and conclude extensional information loss. By comparison, ratio manipulation is more robust. Intensional semantics suggest that we keep the ratio form. Expanding into extensional sequence values results in forms that are indeterminate for traditional calculus, or made determinate by advanced calculus. The robust information preservation of ratios appear to make ratios better forms than sequences. We could define an intensional semantics where the formulas are ratios and compositions thereof, and that not all functions of formulas are guaranteed to be gotten from compositions of functions of subformulas.
 
 However, there is an issue. Consider the probability of odd given even. We can't just do 010101… / 101010… = 10/10<s>1</s> / 1/10<s>1</s> = 10 / 1 = 10. Then 10|1 = 1. 1 is the wrong answer. This is because P(A|B) = P(A&B)/P(B) . So, we do 010101…⊗101010… / 101010… = 000000… / 101010… = 0. 0 is the right answer. The probability of drawing an odd from an even is 0. Here we use ⊗ to calculate the conjunction (and). If we cannot find a way to perform conjunction without sequences, then at least for the time being we are forced to keep them. However, we are still not forced to distribute | over every operator (this is a false entensional assumption).
+
+It is not entirely clear where to place the blame of the information loss. It does appear that PlaceValue Ratios contain the same amount of information as repeating PlaceValues, similar to how fractions and decimal expansions have the same information. Perhaps it is the | operator that is destroying the information. Perhaps no information is destroyed when translating between ratios and expansions. This seems right, given all the examples that we've seen. It seems that all of the examples that we have seen (from the simple to the complex) are examples of configurations that correspond to some PlaceValue Ratio (or equivalently PlaceValue Expansion) and that the | operator projects some distinct configurations to the same object thereby destroying information.
 
 Dirac Delta Function
 --------------------

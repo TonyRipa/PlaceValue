@@ -1,0 +1,78 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	7/31/2023
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>PlaceValue Sum</title>
+	<script src='../js/jquery.js'></script>
+	<script>window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")</script>
+	<script src='../js/math5.js'></script>
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.js'><" + "/script>")</script>
+	<script src='digit.js'></script>
+	<script src='rational.js'></script>
+	<script src='complex.js'></script>
+	<script src='rationalcomplex.js'></script>
+	<script src='wholeplacevalue.js'></script>
+	<script src='placevalueratio.js'></script>
+	<style>
+		output { margin: 50px; }
+		body,input { font-family:"Arial Unicode MS"}
+		.measuretable { border-spacing: 0; float: left; margin: 10px; }
+		.line > td { border-bottom: 1pt solid black; }
+		input { text-align: right; }
+		#kind {float:left}
+		h1 {text-align:center}
+	</style>
+</head>
+<body>
+	<h1>PlaceValue Sum</h1>
+	<table border="1" class="measuretable">
+		<tr>
+			<td id="td1">
+				Sum(
+				<select id="top" onchange="select1()"><option>1,-1,1,-1,…</option><option>-1,1,-1,1,…</option><option>1,-1,0,1,…</option><option>1,-2,3,-4,…</option><option>-1,2,-3,4,…</option><option>1,-2,4,-8,…</option></select>
+				)
+				=
+				<p id="p" style="display:inline"></p>
+			</td>
+			<td>
+				<table class="measuretable">
+					<tr><td></td><td><input id='a' value='1/11' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
+					<tr class="line"><td><select id='op'><option selected>|</option></select></td><td><input id='b' value='1'></td><td><output id="bo"></output></td></tr>
+					<tr><td><button onclick="compute(new f().parse($('#a').val()),new f().parse($('#b').val()))">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<script type="text/javascript">
+		var f = placevalueratio;
+		function select1() {
+			$('#td1').css('background-color', '#EEEEEE');
+			$('#td2').css('background-color', 'white');
+			var shapes = ['1/11', '-1/11', '1/111', '1/121', '-1/121', '1/21'].map(x=>new f().parse(x));
+			$('#b').val(1)
+			var [op1,op2] = [shapes[$('#top')[0].selectedIndex], new f().parse($('#b').val())]
+			$('#p').text(compute(op1, op2).evalfull(op2).toString(false,true));
+		}
+		function compute(a,b) {
+			var c = a.eval(b);
+			output(a, b, c);
+			return c;
+			function output(a, b, c) {
+				$('#a').val(a);
+				$('#b').val(b);
+				$('#c').val(c);
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html('Internal Representation : ' + pv.tohtml()); }
+			}
+		}
+	</script>
+</body>
+</html>

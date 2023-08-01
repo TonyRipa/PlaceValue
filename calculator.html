@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2023
+	Date:	7/31/2023
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -14,8 +14,9 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
 	</script>
-	<script src='../js/math3.js'></script>																											<!-- +2022.7	-->
-	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!-- +2022.7	-->
+	<!--<script src='../js/math3.js'></script>-->	<!-- +2022.7	-->	<!--	-2023.7	-->
+	<!--<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>-->	<!-- +2022.7	-->	<!-- -2023.7	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.0/math.min.js'><" + "/script>")</script>	<!-- +2023.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script src='rational.js'></script>
 	<script src='complex.js'></script>
@@ -315,7 +316,7 @@
 				case '35': f = new polynomialratio1(rationalcomplex); break;
 				case '36': f = new sparsepolynomialratio1(rational); break;
 				case '37': f = new sparsepolynomialratio1(rationalcomplex); break;
-				case '41': f = new sparsepolynomial(rational); break;				//	2018.12	Added
+				case '41': f = new sparsepolynomial(rational); break;
 				case '42': f = new sparsepolynomial(complex); break;				//	2018.12	Added
 				case '43': f = new sparsepolynomial(rationalcomplex); break;		//	2018.12	Added
 				case '44': f = new sparsepolynomialratio(rational); break;			//	2019.5	Added
