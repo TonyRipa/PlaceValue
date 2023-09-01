@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2023
+Date : 8/31/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -499,7 +499,7 @@ Earlier we spoke of two kinds of division: left-division and right-division. We 
 
 Consider 1 / 11 = 1<s>1</s>1<s>1</s>1<s>1</s>… . We apply |1 to both sides, 1/11 | 1 = 1<s>1</s>1<s>1</s>1<s>1</s>… | 1 . Simplifying we get, 1/2 = 1-1+1-1+… .
 
-1-1+1-1+… is usually considered a divergent sum. By not treating it as an exception, we conclude 1-1+1-1+… = 1/2 . We get no other answer with PlaceValue. We get no contradiction; it is consistent. Beyond consistency, we demonstrate in the next section (set.html) that the answers that PlaceValue provides are exactly the ones needed to calculate correct probabilities for set ratios, finite or infinite.
+1-1+1-1+… is usually considered a divergent sum. By not treating it as an exception, we conclude 1-1+1-1+… = 1/2 . We get no other answer with PlaceValue. We get no contradiction; it is consistent. Beyond consistency, we demonstrate in the next section (set.html) that the answers that PlaceValue provides are exactly the ones needed to calculate correct probabilities for set ratios (finite or infinite).
 
 Set
 ------------

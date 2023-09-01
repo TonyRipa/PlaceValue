@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/31/2023
+// Date:    8/31/2023
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -109,8 +109,6 @@ class placevalueratio {					//	+2023.5
 			var n = num.gcd();
 			var d = den.gcd();
 			var g = n.gcd(d);   // delegate to digits   2016.7
-			//alert([JSON.stringify(me.num), n, JSON.stringify(me.den), d, g]);
-			//if (g != Math.round(g)) return;
 			me.num = num.unscale(g);
 			me.den = den.unscale(g);
 		}
@@ -124,6 +122,7 @@ class placevalueratio {					//	+2023.5
 		}
 	}
 
+	isconst() { return this.num.isconst() && this.den.isconst(); }	//	+2023.8
 	isNaN() { return this.num.isNaN() || this.den.isNaN(); }  //  2018.3
 
 	add(addend) {

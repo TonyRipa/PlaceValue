@@ -1,7 +1,7 @@
 
 <!--
 	Author:  Anthony John Ripa
-	Date:    7/31/2022
+	Date:    8/31/2023
 	Demo for WholePlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -14,10 +14,6 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-	<script type="text/javascript">
-		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>																																				-2022.7	-->
 	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
 	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
@@ -26,6 +22,8 @@
 	<script type="text/javascript" src='rationalcomplex.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
 	<script type="text/javascript" src='abstractpolynomial.js'></script>
+	<script type="text/javascript" src='placevalueratio.js'></script>	<!--	+2023.8	-->
+	<script type="text/javascript" src='polynomialratio1.js'></script>	<!--	+2023.8	-->
 	<script type="text/javascript" src='polynomial1.js'></script>
 	<style>
 		output { margin: 50px; }
@@ -33,28 +31,40 @@
 		body, input { font-family: 'Serif', 'Arial Unicode MS' }					/*	+2022.7	*/
 	</style>
 	<script>
-		function go() {
-			var s = new wholeplacevalue($('#i').val().split(',').map(new rational().parse));
-			var p = new polynomial1('x',s);
-			var sinverse = new wholeplacevalue().parse(1).divideleft(s);
-			var pinverse = new polynomial1('x',sinverse);
-			$('#i').html(s.tohtml());
+		//function go() {	//	-2023.8
+		//	var s = new wholeplacevalue($('#i').val().split(',').map(new rational().parse));
+		//	var p = new polynomial1('x',s);
+		//	var sinverse = new wholeplacevalue().parse(1).divideleft(s);
+		//	var pinverse = new polynomial1('x',sinverse);
+		//	$('#i').html(s.tohtml());
+		//	$('#s').html(s.toString());
+		//	$('#p').html(p.toString());
+		//	$('#s2').html(s.is1() ? '1' : '1 / ' + sinverse.toString());
+		//	$('#p2').html(s.is1() ? '1' : '1 / ' + pinverse.toString());
+		//}
+		function go() {		//	+2023.8
+			var s = new placevalueratio(new wholeplacevalue($('#i').val().split(',').map(new rational().parse)));
+			var p = new polynomialratio1('x',s);
 			$('#s').html(s.toString());
 			$('#p').html(p.toString());
-			$('#s2').html(s.is1() ? '1' : '1 / ' + sinverse.toString());
-			$('#p2').html(s.is1() ? '1' : '1 / ' + pinverse.toString());
+			$('#s2').html(s.factor().toString());
+			$('#p2').html(p.factor().toString());
 		}
 	</script>
 </head>
 <body>
 	<center>
 		<h1>Generating Functions</h1>
-		<input id='i' value="1,1,1,1,1" style='position:absolute;width:100px'>
+		<!--<input id='i' value="1,1,1,1,1" style='position:absolute;width:100px'>-->	<!--	-2023.8	-->
+		<input id='i' value="1,1,1,1,1,1" style='position:absolute;width:100px'>		<!--	+2023.8	-->
 		<select onchange="$('#i').val(this.value)" style='width:150px'>
-			<option>1,1,1,1,1</option>
-			<option>1,2,3,4,5</option>
+			<!--<option>1,1,1,1,1</option>-->	<!--	-2023.8	-->
+			<option>1,1,1,1,1,1</option>		<!--	+2023.8	-->
+			<!--<option>1,2,3,4,5</option>-->	<!--	-2023.8	-->
+			<option>1,2,3,4,5,6</option>		<!--	+2023.8	-->
 			<option>1,2,4,8,16</option>
-			<option>1,1,2,3,5</option>
+			<!--<option>1,1,2,3,5</option>-->	<!--	-2023.8	-->
+			<option>1,1,2,3,5,8</option>		<!--	+2023.8	-->
 			<option>1,0,0,0,0</option>
 			<option>1,-1,0,0,0</option>
 		</select>
