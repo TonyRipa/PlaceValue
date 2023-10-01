@@ -1,6 +1,6 @@
 ﻿
 // Author:  Anthony John Ripa
-// Date:    7/31/2022
+// Date:    9/30/2023
 // SparsePolynomial1: a datatype for representing sparse polynomials; an application of the SparsePlaceValue1 datatype
 
 class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
@@ -53,6 +53,11 @@ class sparsepolynomial1 extends abstractpolynomial {    //  2018.4
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 			}
 			return c
+		} else if (node.type == 'FunctionNode') {		//	+2023.9
+			var fn = node.name;
+			var arg = this.parse(node.args[0]).toString();
+			if (fn == 'ln') return this.parse(`i*(${arg})^(-i) - i*(${arg})^i - (1/2)*i*(${arg})^(-2i) + (1/2)*i*(${arg})^(2i) + (1/3)*i*(${arg})^(-3i) - (1/3)*i*(${arg})^(3i)`);
+			alert('Syntax Error: sparsepolynomial1 expects input like 1, x, x*x, x^3, 2*x^2, 1+x, or ln(x) but found ' + node.name + '.');
 		} else if (node.type == 'ConstantNode') {
 			console.log('ConstantNode: ' + node.value)
 			//alert(JSON.stringify(this.pv.points))

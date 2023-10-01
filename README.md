@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 8/31/2023
+Date : 9/30/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -111,6 +111,8 @@ If SparsePolynomial1 wants to calculate (x^.5 + 1)^2, then it asks SparsePlaceVa
 (1E.5 + 1) ^ 2 = 1E1 + 2E.5 + 1
 
 SparsePolynomial1 then formats SparsePlaceValue1's result as x + 2x^.5 + 1.
+
+Since SparsePolynomial1 uses SparsePlaceValue1, it allows for arbitrary powers including imaginary. While Taylor Series allows expressing sin(x) as a polynomial (sums of integer powers of x), functions like ln(x) cannot be so expressed. When imaginary powers are allowed ln(x) can be expressed. ln(x) = ix^-i - ix^i - ½ix^-2i + ½ix^2i + ⅓ix^-3i - ⅓ix^3i + … . This formula can be found from using the complex Fourier Series for x. x = ie^-ix - ie^ix - ½ie^-2ix + ½ie^2ix + ⅓ie^-3ix - ⅓ie^3ix + … . Then replace all instances of x with ln(x), and simplify. This appears to mean that if we allow sums of the form x^z for complex z, then restricting z to reals (the real axis) yields a smaller space of functions (polynomial series or analytic functions) whereas restricting z to pure imaginaries (the imaginary axis) yields a larger space of functions (Fourier series or beyond analytic).
 
 PolynomialRatio1
 -------------

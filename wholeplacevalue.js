@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2023
+// Date:	9/30/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -240,6 +240,8 @@ class wholeplacevalue {	//	+2020.11
 	is0() { this.check(); return this.equals(this.parse(0)); }      //  2016.5
 	is1() { this.check(); return this.equals(this.parse(1)); }      //  2016.5
 	is1hi() { this.check(); return this.slice(-1)[0].is1() && this.slice(0,-1).every(x=>x.is0()); }	//	+2021.5
+	is1term() { this.check(); return !this.slice(-1)[0].is0() && this.slice(0,-1).every(x=>x.is0()); }	//	+2023.9
+	terms() { this.check(); return this.mantisa.filter(x=>!x.is0()).length }	//	+2023.9
 	isNaN() { this.check(); return this.equals(this.parse('%')); }  //  2018.3
 
 	above(other) { this.check(other); return this.get(0).above(other.get(0)) }	//	2017.7
@@ -291,7 +293,6 @@ class wholeplacevalue {	//	+2020.11
 		if (!(power instanceof wholeplacevalue)) power = new wholeplacevalue([new this.datatype().parse(power)]);
 		this.check(power);
 		if (power.mantisa.length <= 1) {						//	+2020.11
-			//if(power.get(0).toreal()!= Math.round(power.get(0).toreal())) { alert('WPV .Bad Exponent = ' +power.tohtml());return wholeplacevalue.parse('%')}//-2020.11
 			//if (power.get(0).toreal() != Math.round(power.get(0).toreal())){alert('WPV .Bad Exponent = ' + power.tohtml());return this.parse('%') }//+2020.11//-2021.1
 			if (!power.get(0).isint()) {	//	+2021.1
 				//if (power.get(0).toreal() == .5) return this.sqrt();								//	-2021.9

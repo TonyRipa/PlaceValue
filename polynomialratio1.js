@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	8/31/2023
+// Date:	9/30/2023
 // PolynomialRatio1: a datatype for representing rational expressions; an application of the PlaceValueRatio datatype
 
 class polynomialratio1 extends abstractpolynomial {	//	+2023.8
@@ -41,8 +41,6 @@ class polynomialratio1 extends abstractpolynomial {	//	+2023.8
 		var node = (strornode instanceof String || typeof (strornode) == 'string') ? math.parse(strornode.replace('NaN', '(0/0)')) : strornode;
 		if (node.type == 'SymbolNode') {
 			console.log('SymbolNode')
-			//var base = node.name;
-			//var pv = 10;
 			if (node.name.match(this.pv.num.datatype.regexfull())) {    //  2018.2
 				var base = 1;
 				var pv = this.pv.parse(node.name);
@@ -67,6 +65,10 @@ class polynomialratio1 extends abstractpolynomial {	//	+2023.8
 			return c
 		} else if (node.type == 'ConstantNode') {
 			return new polynomialratio1(1, new placevalueratio(this.pv.num.parse('(' + Number(node.value) + ')'), this.pv.num.parse(1)));    //  2018.2
+		} else if (node.type == 'ParenthesisNode') {	//	+2023.9
+			return this.parse(node.content);
+		} else {										//	+2023.9
+			alert('othertype')
 		}
 	}
 
