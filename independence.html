@@ -1,0 +1,72 @@
+
+<!--
+	Author:	Anthony John Ripa
+	Date:	10/31/2023
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Independence</title>
+		<script src='https://code.jquery.com/jquery-latest.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.0/math.min.js"></script>
+		<script src='digit.js'></script>
+		<script src='rational.js'></script>
+		<script src='complex.js'></script>
+		<script src='rationalcomplex.js'></script>
+		<script src='wholeplacevalue.js'></script>
+		<script src='sparseplacevalue.js'></script>
+	</head>
+	<body>
+		<select id="kind" onchange="select1()" size="2"><option selected>PlaceValue</option><option>Classical</option></select>
+		<center>
+			<h1>Independence</h1>
+			<table border>
+				<tr>
+					<td>
+						<svg width="200px" height="200px" xmlns="http://www.w3.org/2000/svg">
+							<rect x ="000" width="200" height="200" style="fill:gray" />
+							<line x1="050" y1="100" x2="150" y2="100" style="stroke:cyan" />
+							<circle cx="050" cy="100" r="1" style="stroke:white" />
+							<circle cx="150" cy="100" r="1" style="stroke:white" />
+						</svg>
+					</td>
+					<td>
+						<select id="top" onchange="select1()"><option>Left Endpoint</option><option>Endpoint</option><option>Line Segment</option></select>
+						⫫
+						<select id="bot" onchange="select1()"><option>Left Endpoint</option><option>Endpoint</option><option>Line Segment</option></select>
+					</td>
+					<td id='tv' style='text-align:center;'>
+					</td>
+				</tr>
+			</table>
+		</center>
+		<script>
+			var f = sparseplacevalue;
+			function select1() {
+				var shapes = [['1E-1', '2E-1', '1'],['0', '0', '1']][$('#kind')[0].selectedIndex]
+				shapes = shapes.map(x=>new f().parse(x));
+				var event1 = shapes[$('#top')[0].selectedIndex]
+				var event2 = shapes[$('#bot')[0].selectedIndex]
+				var intersection = intersect(event1,event2)
+				independent(event1,event2,intersection)
+			}
+			function intersect(a,b) { return a.sub(b).isneg() ? a : b }
+			function independent(a,b,ab) {
+				$('#tv').html('')
+				$('#tv').append('P(A) * P(B) ≟ P(A ∩ B)')
+				$('#tv').append('<br>')
+				$('#tv').append(`${a} * ${b} ≟ ${ab}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`${a.times(b)} ≟ ${ab}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`${a.times(b).equals(ab) ? 'True' : 'False'}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`∴`)
+				$('#tv').append('<br>')
+				$('#tv').append(`${a.times(b).equals(ab) ? 'Independent' : 'Dependent'}`)
+			}
+		</script>
+	</body>
+</html>

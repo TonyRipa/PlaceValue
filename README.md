@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 9/30/2023
+Date : 10/31/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -453,6 +453,24 @@ PlaceValue being larger avoids these rounding errors. Using PlaceValue we can mo
 Negative powers are also useful, and come up frequently. Any time we want to talk about "per unit-length" it comes up. One per unit-length is .1 . One per unit-area is .01 . In general, One per unit-n-dimensional object is 10^-n.
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in measure.html we demonstrate that Bayes' Theorem continues to hold even in cases which are classically indeterminate forms (i.e. expressions which classically reduce to the form 0/0 or 0\*∞).
+
+Independence
+------------
+<i>independence.html</i> demonstrates an application of PlaceValue to the problem of independence in probability theory. In Classical Probability, two events A and B are said to be Independent if P(A) * P(B) = P(A ∩ B). Otherwise, the events are said to be dependent. All probabilities are assigned a compatible real number that represents the likelihood of that event. However, since there are only a relatively small amount of real numbers, this poses problems. For example, many different sets of many different sizes are all labeled as a set of measure zero.
+
+If we assign a measure of 1 to the unit-line-segment, then we are forced not only to label its left end-point as having a measure of 0, but we are also forced to label the measure of the set of both end-points as having measure 0.
+
+Consider event A of choosing the left end-point of the unit-line-segment. Consider event B of choosing either end-point of the unit-line-segment. We can test for independence using the above test for independence. P(A) * P(B) ≟ P(A ∩ B) . 0 * 0 ≟ 0 . 0 ≟ 0 . True ∴ Independent .
+
+This result is unsatisfying. Event A is selecting the left end-point from a unit-line-segment. The probability of event A happening is P(A) = 0. Event B is selecting either end-point from a unit-line-segment. These events should not be independent because if we have selected either end-point then the probability that the point that we selected is the left end-point is larger than P(A) = 0.
+
+Let's redo the above example using PlaceValue.
+
+The probability of A is the measure of the left end-point divided by the measure of the unit-line-segment. P(A) = 1 / 10 = 0.1 . This is one point per unit-length. Alternatively, we may write this using E-notation as 1E-1. This indicates that the magnitude is 1, while the size-scale is -1. Similarly, the probability of B is the measure of the both end-points divided by the measure of the unit-line-segment. P(A) = 2 / 10 = 0.2 . This is two points per unit-length. Alternatively, we may write this using E-notation as 2E-1. This indicates that the magnitude is 2, while the size-scale is -1. We now test for independence. P(A) * P(B) ≟ P(A ∩ B) . 1E-1 * 2E-1 ≟ 1E-1 . 2E-2 ≟ 1E-1 . False ∴ Dependent
+
+We got the right answer using PlaceValue, whereas we got the wrong answer using Classical techniques.
+
+The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in independence.html we demonstrate that the independence test P(A) * P(B) ≟ P(A ∩ B) continues to hold even in cases which fail classically.
 
 Borel's Paradox
 ------------
