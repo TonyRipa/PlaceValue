@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 10/31/2023
+Date : 11/30/2023
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -570,6 +570,16 @@ Furthermore, it seems like ratios may preserve information better than sequences
 However, there is an issue. Consider the probability of odd given even. We can't just do 010101… / 101010… = 10/10<s>1</s> / 1/10<s>1</s> = 10 / 1 = 10. Then 10|1 = 1. 1 is the wrong answer. This is because P(A|B) = P(A&B)/P(B) . So, we do 010101…⊗101010… / 101010… = 000000… / 101010… = 0. 0 is the right answer. The probability of drawing an odd from an even is 0. Here we use ⊗ to calculate the conjunction (and). If we cannot find a way to perform conjunction without sequences, then at least for the time being we are forced to keep them. However, we are still not forced to distribute | over every operator (this is a false entensional assumption).
 
 It is not entirely clear where to place the blame of the information loss. It does appear that PlaceValue Ratios contain the same amount of information as repeating PlaceValues, similar to how fractions and decimal expansions have the same information. Perhaps it is the | operator that is destroying the information. Perhaps no information is destroyed when translating between ratios and expansions. This seems right, given all the examples that we've seen. It seems that all of the examples that we have seen (from the simple to the complex) are examples of configurations that correspond to some PlaceValue Ratio (or equivalently PlaceValue Expansion) and that the | operator projects some distinct configurations to the same object thereby destroying information.
+
+Another important point of note is that while it may seem that the ratio form is good because it converges, it should be noted that the sequence form always comes in pairs (an increasing sequence and a decreasing sequence). While it may be the case that both diverge, it may not. The ratio 1/21 can produce the divergent alternating sequence …<s>㉜</s>⑯<s>8</s>4<s>2</s>1. We know from evaluating the ratio that the answer is 1/3, meaning that the sequence sum must also be 1/3. We can also produce the sequence .½<s>¼</s>⅛<s>⑯</s>⁻¹㉜⁻¹<s>64</s>⁻¹… . The sum of this sequence is convergent and does converge to 1/3. It is handy to be able to translate between ratio, and left and right division, and know that they must be equal.
+
+<table>
+<tr><td>…<s>1</s>1<s>1</s>1<s>1</s>1</td><td> = </td><td>1 / 11</td><td> = </td><td>.1<s>1</s>1<s>1</s>1<s>1</s>… </td></tr>
+<tr><td>…111111</td><td> = </td><td>1 / 1<s>1</s></td><td> = </td><td>.111111… </td></tr>
+<tr><td>…<s>㉜</s>⑯<s>8</s>4<s>2</s>1</td><td> = </td><td>1 / 21</td><td> = </td><td>.½<s>¼</s>⅛<s>⑯</s>⁻¹㉜⁻¹<s>64</s>⁻¹… </td></tr>
+<tr><td>…<s>64</s>⁻¹㉜⁻¹<s>⑯</s>⁻¹⅛<s>¼</s>½</td><td> = </td><td>1 / 12</td><td> = </td><td>.1<s>2</s>4<s>8</s>⑯<s>㉜</s>… </td></tr>
+</table>
+
 
 Dirac Delta Function
 --------------------
