@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/23/2023
+// Date:    12/31/2023
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -147,15 +147,11 @@ class placevalueratio {					//	+2023.5
 		return new placevalueratio(first.pointadd(second), this.num.parse(1));
 	}
 
-	//placevalueratio.prototype.pointtimes = function (other) {	//	-2023.5
-	//	var first = this.num.div10s(this.den.mantisa.length - 1);
-	//	var second = other.num.div10s(other.den.mantisa.length - 1);
-	//	return new placevalueratio(first.pointtimes(second), this.num.parse(1));
-	//}
-
 	pointtimes(other) {	//	+2023.5
-		var first = this.num.divideleft(this.den);
-		var second = other.num.divideleft(other.den);
+		//var first = this.num.divideleft(this.den);		//	-2023.12
+		//var second = other.num.divideleft(other.den);		//	-2023.12
+		var first = this.num.divideleft(this.den, 11);		//	+2023.12
+		var second = other.num.divideleft(other.den, 11);	//	+2023.12
 		return new placevalueratio(first.pointtimes(second), this.num.parse(1)).factor();
 	}
 
@@ -243,7 +239,8 @@ class placevalueratio {					//	+2023.5
 		let n = this.num.clone()
 		let d = this.den.clone()
 		let power = 0
-		while (n.get(0).is0()) {
+		//while (n.get(0).is0()) {				//	-2023.12
+		while (n.len()>1 && n.get(0).is0()) {	//	+2023.12
 			n.div10()
 			power++
 		}
@@ -251,8 +248,11 @@ class placevalueratio {					//	+2023.5
 		if (d.len() > 1) return this.clone()
 		let r = n.reciprocal()
 		let q = n.divide(d)
-		if (r.len() <= 4) return this.parse('('+q.get(0)+')E'+power+'/('+q.get(1).times(q.get(1)).divide(q.get(0)).sub(q.get(2)).divide(q.get(0))+')('+q.get(1).divide(q.get(0)).negate()+')(1)')
+		if (r.len() <= 4) return this.parse('('+'1'+')E'+power+'/'+r.toString())	//	+2023.12
+		//if (r.len() <= 4) return this.parse('('+q.get(0)+')E'+power+'/('+q.get(1).times(q.get(1)).divide(q.get(0)).sub(q.get(2)).divide(q.get(0))+')('+q.get(1).divide(q.get(0)).negate()+')(1)')	//	-2023.12
+		if (r.len() <= 7) return this.parse('('+q.get(0)+')E'+power+'/'+r.toString())	//	+2023.12
 		if (f1(this,q)) return f1(this,q)	//	+2023.11
+		if (f2(this,q)) return f2(this,q)	//	+2023.12
 		return this.clone()
 		function f1(me, q) {				//	+2023.11
 			//	a + c/(1-bx)
@@ -265,6 +265,19 @@ class placevalueratio {					//	+2023.5
 			let a = q.get(0).sub(c)
 			let n = q.parse('('+a.times(b).negate()+')('+a.add(c)+')')
 			let d = q.parse('('+b.negate()         +')(1)')
+			return new me.constructor(n,d)
+		}
+		function f2(me, q) {				//	+2023.12
+			//	1/(1-r1x) + 1/(1-r2x)
+			let len = q.len()
+			if (len<3) return false
+			let [a,b,c] = [q.get(0),q.get(1),q.get(2)]
+			if (!a.equals(a.parse(2))) return false
+			let pseudodiscriminant = a.times(b.times(b)).sub(b.times(b).scale(4)).add(c.scale(4)).divide(a).sqrt()
+			let r1 = b.add(pseudodiscriminant).unscale(2)
+			let r2 = b.sub(pseudodiscriminant).unscale(2)
+			let n = q.parse(                  '('+r1.add(r2).negate()+')(2)')
+			let d = q.parse('('+r1.times(r2)+')('+r1.add(r2).negate()+')(1)')
 			return new me.constructor(n,d)
 		}
 	}

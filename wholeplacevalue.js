@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	9/30/2023
+// Date:	12/31/2023
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -341,7 +341,6 @@ class wholeplacevalue {	//	+2020.11
 	times10() { this.check(); this.mantisa.unshift(new this.datatype()) }	//	Caller can pad w/out knowing L2R or R2L  2015.7
 	//div10s(s) { this.check(); me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }  // 2017.6    clone	//	-2021.1
 	div10s(s) { this.check(); var me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }					//	+2021.1
-	//times10s(s){this.check(); if(s<0) return this.div10s(-s); me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;}//2017.6 -2020.11
 	times10s(s) {this.check(); if(s < 0) return this.div10s(-s); var me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;} //	+2020.11
 
 	times(top) {
@@ -479,12 +478,13 @@ class wholeplacevalue {	//	+2020.11
 		return { 'deg': 0, 'val': this.get(0) };
 	}
 
-	divideleft(den) { // 2016.3
+	//divideleft(den) { // 2016.3	//	-2023.12
+	divideleft(den, iter = 7) {		//	+2023.12
 		this.check(den);
 		var num = this;
 		//var iter = 5//num.mantisa.length;	//	-2023.5
 		//var iter = 6						//	+2023.5	//	-2023.7
-		var iter = 7									//	+2023.7
+		//var iter = 7									//	+2023.7	//	-2023.12
 		var quotient = divideh(num, den, iter);
 		//quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error	//	-2023.5
 		//quotient.mantisa = quotient.mantisa.slice(0,6);								//	+2023.5	//	-2023.7
@@ -510,8 +510,13 @@ class wholeplacevalue {	//	+2020.11
 		}
 	}
 
-	reciprocal() {		//	+2023.5
-		return this.parse(1).divideleft(this)
+	// reciprocal() {	//	+2023.5	//	-2023.12
+	// 	return this.parse(1).divideleft(this)
+	// }
+
+	reciprocal(iter) {		//	+2023.12
+		if (iter == undefined) iter = this.len() + 1
+		return this.parse(1).divideleft(this, iter)
 	}
 
 	dividemiddle(den) {   // 2016.3
