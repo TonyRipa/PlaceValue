@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	12/31/2023
+// Date:	1/31/2024
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -197,7 +197,6 @@ class wholeplacevalue {	//	+2020.11
 				}
 		}
 		var w = this.mantisa.length * 50;
-		//var h = (math.max(1,this.mantisa.map(y=>y.toreal()))) * 50;			//	-2020.12
 		//var y1 = (math.min(0,arr.map(y=>y.toreal()))) * 50;					//	+2021.10	//	-2022.7
 		//var y2 = (math.max(1,arr.map(y=>y.toreal()))) * 50;					//	+2021.10	//	-2022.7
 		var y1 = (math.min(0,...arr.map(y=>y.toreal()))) * 50;									//	+2022.7
@@ -248,6 +247,7 @@ class wholeplacevalue {	//	+2020.11
 	//isneg() { this.check(); return this.parse(0).above(this) == 1 }			//	2019.5	Added	//	-2022.6
 	isneg() { this.check(); return this.parse(0).comparebig(this) == 1 }							//	+2022.6
 
+	inc() { return this.add(new this.constructor().parse('1')) }	//	+2024.1
 	add(other) { this.check(other); return this.f(function (x, y) { return x.add(y) }, other); }
 	sub(other) { this.check(other); return this.f((x, y)=>x.sub(y),other);}	//	2018.12
 	pointequal(other) { this.check(other); return this.f((x, y)=>x.equal(y),other);}												//	+2020.11
@@ -489,7 +489,8 @@ class wholeplacevalue {	//	+2020.11
 		//quotient.mantisa = quotient.mantisa.slice(0,5)	//	2018.10	Discard Error	//	-2023.5
 		//quotient.mantisa = quotient.mantisa.slice(0,6);								//	+2023.5	//	-2023.7
 		quotient.mantisa = quotient.mantisa.slice(0,iter-1);										//	+2023.7
-		return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros
+		//return new wholeplacevalue(quotient.mantisa);	//	2018.10	Clean zeros	//	-2024.1
+		return new wholeplacevalue(quotient.mantisa, this.datatype);			//	+2024.1
 		function divideh(num, den, c) {
 			num.check(den);
 			if (c == 0) return new wholeplacevalue([new num.datatype()]);											//	2020.1	Added

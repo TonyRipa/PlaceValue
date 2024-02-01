@@ -1,17 +1,15 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2023
+// Date:    1/31/2024
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
 
-	//function placevalueratio(arg) {	//	-2023.5
 	constructor(arg) {					//	+2023.5
 		var num, den;
 		if (arguments.length == 0)[num, den] = [new wholeplacevalue(rational), new wholeplacevalue(rational).parse(1)];                 //  2018.2
 		if (arguments.length == 1) {
 			if (arg === rational || arg === rationalcomplex)[num, den] = [new wholeplacevalue(arg), new wholeplacevalue(arg).parse(1)]; //  2018.2 rationalcomplex
-			//else[num, den] = [arg, new wholeplacevalue(arg.datatype)];			//	-2023.5
 			else [num, den] = [arg, new wholeplacevalue(arg.datatype).parse(1)];	//	+2023.5
 		}
 		if (arguments.length == 2)[num, den] = arguments;
@@ -147,12 +145,41 @@ class placevalueratio {					//	+2023.5
 		return new placevalueratio(first.pointadd(second), this.num.parse(1));
 	}
 
+/*	//	-2024.1
 	pointtimes(other) {	//	+2023.5
 		//var first = this.num.divideleft(this.den);		//	-2023.12
 		//var second = other.num.divideleft(other.den);		//	-2023.12
 		var first = this.num.divideleft(this.den, 11);		//	+2023.12
 		var second = other.num.divideleft(other.den, 11);	//	+2023.12
 		return new placevalueratio(first.pointtimes(second), this.num.parse(1)).factor();
+	}
+*/
+
+	pointtimes(other) {	//	+2024.1
+		return intension.bind(this)(other) ?? extension.bind(this)(other)
+		function intension(other) {
+			let span1 = span(this.den)
+			let span2 = span(other.den)
+			if (span1 == -1 || span2 == -1) return null
+			let s = math.lcm(span1,span2)
+			let den = this.den.parse(`(-1)E${s}`).inc()
+			let num1 = this.num.divideleft(this.den, s+1)
+			let num2 = other.num.divideleft(other.den, s+1)
+			let num = num1.pointtimes(num2)
+			return new this.constructor(num,den)
+			function span(whole) {
+				if (whole.terms() != 2) return -1
+				if (!whole.get(0).is1()) return -1
+				let degree = whole.getDegree()
+				if (!degree.val.negate().is1()) return -1
+				return degree.deg
+			}
+		}
+		function extension(other) {
+			var first = this.num.divideleft(this.den, 11)
+			var second = other.num.divideleft(other.den, 11)
+			return new placevalueratio(first.pointtimes(second), this.num.parse(1)).factor()
+		}
 	}
 
 	pointdivide(other) {
@@ -171,7 +198,7 @@ class placevalueratio {					//	+2023.5
 		if (power instanceof placevalueratio) power = power.num;
 		if (!(power instanceof wholeplacevalue)) power = this.num.parse('(' + power + ')');  // 2015.11
 		var pow = power.get(0).abs();	//	-2020.5
-		var pow = power;				//	+2020.5
+		//var pow = power;				//	+2020.5	//	-2024.1
 		if (power.get(0).ispos()) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
 		return new placevalueratio(this.den.pow(pow), this.num.pow(pow));
 		//if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
@@ -250,9 +277,10 @@ class placevalueratio {					//	+2023.5
 		let q = n.divide(d)
 		if (r.len() <= 4) return this.parse('('+'1'+')E'+power+'/'+r.toString())	//	+2023.12
 		//if (r.len() <= 4) return this.parse('('+q.get(0)+')E'+power+'/('+q.get(1).times(q.get(1)).divide(q.get(0)).sub(q.get(2)).divide(q.get(0))+')('+q.get(1).divide(q.get(0)).negate()+')(1)')	//	-2023.12
-		if (r.len() <= 7) return this.parse('('+q.get(0)+')E'+power+'/'+r.toString())	//	+2023.12
+		//if (r.len() <= 7) return this.parse('('+q.get(0)+')E'+power+'/'+r.toString())	//	+2023.12	//	-2024.1
 		if (f1(this,q)) return f1(this,q)	//	+2023.11
 		if (f2(this,q)) return f2(this,q)	//	+2023.12
+		if (f3.bind(this)(q)) return f3.bind(this)(q)	//	+2024.1
 		return this.clone()
 		function f1(me, q) {				//	+2023.11
 			//	a + c/(1-bx)
@@ -279,6 +307,14 @@ class placevalueratio {					//	+2023.5
 			let n = q.parse(                  '('+r1.add(r2).negate()+')(2)')
 			let d = q.parse('('+r1.times(r2)+')('+r1.add(r2).negate()+')(1)')
 			return new me.constructor(n,d)
+		}
+		function f3(q) {				//	+2024.1
+			let n = this.num.clone()
+			let r = n.reciprocal()
+			let candidate = this.parse('('+q.get(0)+')E'+power+'/'+r.toString())
+			let candrecip = candidate.den.reciprocal()
+			if (!(n.equals(candrecip))) return false
+			return candidate
 		}
 	}
 
