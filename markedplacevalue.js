@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    10/31/2023
+// Date:    2/28/2024
 // MarkedPlaceValue: a datatype for representing base-agnostic arithmetic
 
 //class placevalue {			//	-2022.05
@@ -36,7 +36,6 @@ class markedplacevalue {		//	+2022.05
 			exp = man.exp;      // get exp from man before
 			man = man.whole;    // man overwrites self 2015.8
 		}
-		//var whole = this.whole.parse((typeof man == 'string') ? man.replace(/\.(?![^\(]*\))/g, '') : man);//	2018.6	//	-2022.01
 		var whole = this.whole.parse((typeof man == 'string') ? getcoef(man.replace(/\.(?![^\(]*\))/g, '')) : man);		//	+2022.01
 		return new this.constructor(whole, exp + getexp(man));													//	2018.6
 		function getcoef(x) {	//	+2022.01
@@ -68,6 +67,11 @@ class markedplacevalue {		//	+2022.05
 
 	get(i) {       // 2015.11
 		return this.whole.get(i - this.exp);
+	}
+
+	set(i, v) {	//	+2024.2
+		this.check()
+		return this.whole.set(i - this.exp, v)
 	}
 
 	getreal(i) { return this.whole.getreal(i - this.exp) }		//	2018.6	laplace
@@ -222,8 +226,17 @@ class markedplacevalue {		//	+2022.05
 	}
 
 	scale(scalar) {   // 2015.11
-		var whole = this.whole.scale(scalar);
-		return new this.constructor(whole, this.exp);
+		if (arguments.length == 0) {	//	+2024.2
+			let ret = this.clone()
+			for (let i = 0; i < this.whole.len(); i++) {
+				let p = i + this.exp
+				ret.set(p, this.get(p).scale(p))
+			}
+			return ret
+		} else {
+			var whole = this.whole.scale(scalar);
+			return new this.constructor(whole, this.exp);			
+		}
 	}
 
 	unscale(scalar) {   // 2016.7
