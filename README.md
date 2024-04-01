@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 2/28/2024
+Date : 3/31/2024
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -471,6 +471,20 @@ The probability of A is the measure of the left end-point divided by the measure
 We got the right answer using PlaceValue, whereas we got the wrong answer using Classical techniques.
 
 The PlaceValue data-type is particularly well-suited to problems associated with sets of measure zero. In fact, in independence.html we demonstrate that the independence test P(A) * P(B) ≟ P(A ∩ B) continues to hold even in cases which fail classically.
+
+Conditional
+------------
+<i>conditional.html</i> demonstrates an application of PlaceValue to the problem of conditional in probability theory.
+
+Consider Pearl 2014 Probability & Statistics. Pearl distinguishes between two kinds of frameworks: extensional & intensional. In extensional systems, probability is in some sense distributive; P(A & B) is always f(P(A),P(B)) for some f. In intensional systems, probability is not distributive; there is not always some f such that P(A & B) is f(P(A),P(B)). Probability theory is not intensional because there is not always some f such that P(A & B) is f(P(A),P(B)). This does not preclude the possibility that in some cases there is some f such that P(A & B) is f(P(A),P(B)). For example, when event A is independent of event B, we may take f to be multiplication, yielding P(A & B) = P(A) * P(B). Extensional systems work (when they don't fail) by making such simplifying assumptions a permanent feature of the system.
+
+In Probability Theory, P(A & B) is calculated by representing events as sets of primitive independent events (elementary events). For example, we may take the set of all possible elementary events U = {e₁,e₂,e₃}. Our event A may be {e₁,e₂}. Our event B may be {e₂,e₃}. We perform A & B with set intersection A & B = {e₁,e₂} ∩ {e₂,e₃} = {e₂}. So, P(A & B) = P({e₂}). Assuming that we know the probability of all the elementary events, then we now know P(A & B).
+
+Pearl continues with the concept of P(A|B). Pearl describes the "|B" as meaning "given that I know B". So, P(A|B) is the probability of A given that I know B. Pearl notes that P(A|B) has been alternately defined as P(A|B) = P(A&B)/P(B). However, Pearl prefers "|B" as meaning "given that I know B" because he believes it's more fundamental than P(A&B)/P(B). Pearl's approach may be more fundamental, but P(A|B) = P(A&B)/P(B) gives an actual algorithm for calculating P(A|B). Unfortunately, the algorithm fails when P(B)=0.
+
+We provide a compromise. P(A|B) ≝ Odds(A&B : B) . The advantage is two-fold. Firstly, this definition provides a calculation as easy as P(A|B) = P(A&B)/P(B) whenever it's defined. Secondly, it works in situations where P(A&B) and/or P(B) are not available. This ameliorates some of Pearl's concern. We retain a mathematical formalism without abandoning principle.
+
+One way to formalize why this works is that we avoided an extensional definition, or defining P(A|B) in terms of probabilities of parts. Much like how the intensionality of Probability Theory requires P(A&B) not to be defined in terms of probabilities of parts (instead opting for operating on the parts themselves before calculating a probability) we did the same with P(A|B). Defining P(A|B) = P(A&B)/P(B) is an extensional definition, and therefore it is fragile. P(A|B) = Odds(A&B : B) is an intensional definition allowing for robustness.
 
 Borel's Paradox
 ------------

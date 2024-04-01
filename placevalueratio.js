@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    1/31/2024
+// Date:    3/10/2024
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -62,7 +62,6 @@ class placevalueratio {					//	+2023.5
 
 	tohtml(short) {       // Long and Short HTML  2015.11
 		if (short) return this.toString(true);
-		//return this.num.toString(true) + ' / ' + this.den;      // Replaces toStringInternal 2015.7	//	-2023.5
 		//return this.num.toString(true) + ' / ' + this.den + ' = ' + this.num.divideleft(this.den);	//	+2023.5	//	-2023.11
 		return  this.num.divideleft(this.den) + ' = ' + this.num.toString(true) + ' / ' + this.den + ' = ' + new markedplacevalue(this.num).divide(new markedplacevalue(this.den));	//	+2023.11
 	}
@@ -207,6 +206,8 @@ class placevalueratio {					//	+2023.5
 		//return new placevalueratio(num, den);
 	}
 
+	times10s(s) { return new this.constructor(this.num.times10s(s), this.den) } //	+2024.3
+
 	times(top) {
 		return new placevalueratio(this.num.times(top.num), this.den.times(top.den))
 	}
@@ -236,10 +237,16 @@ class placevalueratio {					//	+2023.5
 		return new placevalueratio(this.num.clone(), this.den.clone());
 	}
 
+	/*	//	-2024.03
 	reciprocal() {
 		var temp = this.num;
 		this.num = this.den;
 		this.den = temp;
+	}
+	*/
+
+	reciprocal() {	//	+2024.3
+		return new this.constructor(this.den,this.num)
 	}
 
 	eval(base) {
@@ -273,17 +280,22 @@ class placevalueratio {					//	+2023.5
 		}
 		if (n.len() < 4) return this.clone()
 		if (d.len() > 1) return this.clone()
-		let r = n.reciprocal()
-		let q = n.divide(d)
-		if (r.len() <= 4) return this.parse('('+'1'+')E'+power+'/'+r.toString())	//	+2023.12
+		//let r = n.reciprocal()																	//	-2024.3
+		//let q = n.divide(d)																		//	-2024.3
+		//if (r.len() <= 4) return this.parse('('+'1'+')E'+power+'/'+r.toString())	//	+2023.12	//	-2024.3
 		//if (r.len() <= 4) return this.parse('('+q.get(0)+')E'+power+'/('+q.get(1).times(q.get(1)).divide(q.get(0)).sub(q.get(2)).divide(q.get(0))+')('+q.get(1).divide(q.get(0)).negate()+')(1)')	//	-2023.12
 		//if (r.len() <= 7) return this.parse('('+q.get(0)+')E'+power+'/'+r.toString())	//	+2023.12	//	-2024.1
-		if (f1(this,q)) return f1(this,q)	//	+2023.11
-		if (f2(this,q)) return f2(this,q)	//	+2023.12
-		if (f3.bind(this)(q)) return f3.bind(this)(q)	//	+2024.1
+		//if (f1(this,q)) return f1(this,q)	//	+2023.11			//	-2024.3
+		//if (f2(this,q)) return f2(this,q)	//	+2023.12			//	-2024.3
+		//if (f3.bind(this)(q)) return f3.bind(this)(q)	//	+2024.1	//	-2024.3
+		if (f1(this)) return f1(this)								//	+2024.3
+		if (f2(this)) return f2(this)								//	+2024.3
+		if (f3(this)) return f3(this)								//	+2024.3
 		return this.clone()
-		function f1(me, q) {				//	+2023.11
+		//function f1(me, q) {				//	+2023.11	//	-2024.3
+		function f1(me) {									//	+2024.3
 			//	a + c/(1-bx)
+			let q = me.quotient()							//	+2024.3
 			let len = q.len()
 			if (len<3) return false
 			let b = q.get(2).divide(q.get(1))
@@ -295,8 +307,10 @@ class placevalueratio {					//	+2023.5
 			let d = q.parse('('+b.negate()         +')(1)')
 			return new me.constructor(n,d)
 		}
-		function f2(me, q) {				//	+2023.12
+		//function f2(me, q) {				//	+2023.12	//	-2024.3
+		function f2(me) {									//	+2024.3
 			//	1/(1-r1x) + 1/(1-r2x)
+			let q = me.quotient()							//	+2024.3
 			let len = q.len()
 			if (len<3) return false
 			let [a,b,c] = [q.get(0),q.get(1),q.get(2)]
@@ -308,6 +322,7 @@ class placevalueratio {					//	+2023.5
 			let d = q.parse('('+r1.times(r2)+')('+r1.add(r2).negate()+')(1)')
 			return new me.constructor(n,d)
 		}
+		/*													//	-2024.3
 		function f3(q) {				//	+2024.1
 			let n = this.num.clone()
 			let r = n.reciprocal()
@@ -316,7 +331,22 @@ class placevalueratio {					//	+2023.5
 			if (!(n.equals(candrecip))) return false
 			return candidate
 		}
+		*/
+		function f3(me) {									//	+2024.3
+			let q = me.series3().div10s(power)
+			let r = q.reciprocal(6+1)
+			let candidate = me.parse('1/'+r.toString())
+			let candrecip = candidate.series3()
+			if (!(q.equals(candrecip))) return false
+			return candidate.times10s(power)
+		}
 	}
+
+	series1() { return this.num.clone().divide(this.den.clone(),6+1) }		//	+2024.3
+	series2() { return this.den.clone().divide(this.num.clone(),6+1) }		//	+2024.3
+	series3() { return this.num.clone().divideleft(this.den.clone(),6+1) }	//	+2024.3
+	series4() { return this.den.clone().divideleft(this.num.clone(),6+1) }	//	+2024.3
+	quotient() { return this.series3() }									//	+2024.3
 
 /*	//	-2023.11
 	factor() {	//	+2023.5

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    6/30/2023
+// Date:    3/31/2024
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -579,6 +579,9 @@ class sparseplacevalue {			//	2019.4	Added
 		}
 	}
 
+	/*
+						//	-2024.3
+
 	evalfull(base) {	// +2023.6
 		if (base instanceof sparseplacevalue) base = base.points[0][1].is0() ? base.points[0][0] : base.points[0][1].mantisa
 		if (!Array.isArray(base)) base = [base]
@@ -588,6 +591,26 @@ class sparseplacevalue {			//	2019.4	Added
 			ret = ret.eval(b)
 		return ret.points[0][0]
 	}
+	*/
+
+	evalfull(base) {	//	+2024.3
+		var mytype = this.check();
+		if (base instanceof sparseplacevalue) base = base.points[0][0];
+		if (!Array.isArray(base)) base = [base]
+		base = base.map(b => math.typeOf(b).toLowerCase() == 'number' ? this.datatype.parse(b) : b)
+		return new sparseplacevalue(eva(this.points, base)).points[0][0]
+		function eva(points, base) {
+			var maxlen = points.reduce(function (agr, cur) { return Math.max(agr, cur[1].mantisa.length) }, 0);
+			return points.map(function (point) { return eval1(point, base, maxlen) });
+			function eval1(point, base, maxlen) {
+				var man = point[0];
+				var pows = point[1].mantisa;
+				for (let i = 0; i < pows.length; i++ )
+					man = man.times(base[i].pow(pows[i]))
+				return [man, new wholeplacevalue(mytype)]
+			}
+		}
+	}
 
 	iterator(options = {}) {	//	+2023.6
 		this.check()
@@ -596,7 +619,6 @@ class sparseplacevalue {			//	2019.4	Added
 		if (options.dir == undefined) options.dir = 'asc'
 		if (options.by.includes('weight') && options.base == undefined) alert('wholeplacevalue2.sort by weight requires base')
 		for (let point of this.points) {
-			//point = [...point]
 			if (!point[0].is0()) {
 				let x
 				if (options.by == 'val') x = point[0]

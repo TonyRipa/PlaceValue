@@ -1,0 +1,97 @@
+
+<!--
+	Author:	Anthony John Ripa
+	Date:	3/31/2024
+	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
+-->
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Condition</title>
+		<script src='https://code.jquery.com/jquery-latest.js'></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/9.4.0/math.min.js"></script>
+		<script src='digit.js'></script>
+		<script src='rational.js'></script>
+		<script src='complex.js'></script>
+		<script src='rationalcomplex.js'></script>
+		<script src='wholeplacevalue.js'></script>
+		<script src='sparseplacevalue.js'></script>
+		<script src='sparseplacevalueratio.js'></script>
+	</head>
+	<body>
+		<select id="kind" onchange="select1()" size="2"><option selected>PlaceValue</option><option>Classical</option></select>
+		<center>
+			<h1>Condition</h1>
+			<table border>
+				<tr>
+					<td>
+						<table border>
+							<tr><th>Disjoint Events</th><th>P(Event)</th></tr>
+							<tr><td>Event1</td><td>1/2</td></tr>
+							<tr><td>Event2</td><td>1/2</td></tr>
+							<tr><td>Event3</td><td>0</td></tr>
+							<tr><td>Event4</td><td>0</td></tr>
+						</table>
+					</td>
+					<td>
+						P(<select id="top" onchange="select1()"><option>Event1</option><option>Event2</option><option>Event3</option><option>Event4</option><option>Event1 or Event2</option><option>Event3 or Event4</option></select>
+						|
+						<select id="bot" onchange="select1()"><option>Event1</option><option>Event2</option><option>Event3</option><option>Event4</option><option>Event1 or Event2</option><option>Event3 or Event4</option></select>)
+					</td>
+					<td id='tv' style='text-align:center;'>
+					</td>
+				</tr>
+			</table>
+		</center>
+		<script>
+			var f = sparseplacevalueratio;
+			function select1() {
+				if ($('#kind')[0].selectedIndex == 0) return computepv()
+				if ($('#kind')[0].selectedIndex == 1) return computeclassical()
+			}
+			function computepv() {
+				var vals = [.5,.5,0,0]
+				var shapes = ['1E1', '1E0,1', '1E0,0,1', '1E0,0,0,1', '1E1+1E0,1', '1E0,0,1+1E0,0,0,1']
+				shapes = shapes.map(x=>new f(rational).parse(x));
+				var e1 = shapes[$('#top')[0].selectedIndex]
+				var e2 = shapes[$('#bot')[0].selectedIndex]
+				var intersection = intersect(e1,e2)
+				var likelihood = given(e1,e2)
+				$('#tv').html('')
+				$('#tv').append('P(A|B) = P(A ⊗ B / B)')
+				$('#tv').append('<br>')
+				$('#tv').append(`A ⊗ B = ${e1} ⊗ ${e2} = ${intersection}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`A⊗B / B = ${intersection} / ${e2} = ${likelihood}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`P(A⊗B / B) = ${likelihood.evalfull(vals)}`)
+				function intersect(a,b) { return a.pointtimes(b) }
+				function given(a,b) { return intersect(a,b).divide(b) }
+			}
+			function computeclassical() {
+				var shapes = [[0], [1], [2], [3], [0,1], [2,3]]
+				var vals = ['.5', '.5', '0', '0']
+				var e1 = $('#top')[0].selectedIndex
+				var e2 = $('#bot')[0].selectedIndex
+				var intersection = intersect(shapes[e1],shapes[e2])
+				var b = shapes[e2]
+				var likelihood = P(intersection) / P(b)
+				$('#tv').html('')
+				$('#tv').append('P(A|B) = P(A ∩ B) / P(B)')
+				$('#tv').append('<br>')
+				$('#tv').append(`A ∩ B = {${intersection.map(e=>'Event'+(e+1))}}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`P(A ∩ B) = ${P(intersection)}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`B = {${b.map(e=>'Event'+(e+1))}}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`P(B) = ${P(b)}`)
+				$('#tv').append('<br>')
+				$('#tv').append(`P(A ∩ B) / P(B) = ${P(intersection)}/${P(b)} = ${likelihood}`)
+				function intersect(a,b) { return a.filter(e=>b.includes(e)) }
+				function P(set) { return math.sum(set.map(e=>vals[e])) }
+			}
+		</script>
+	</body>
+</html>
