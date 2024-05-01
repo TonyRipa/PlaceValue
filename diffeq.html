@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2023
+	Date:	4/30/2024
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -17,8 +17,10 @@
 	<script type="text/javascript">
 		window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js'><" + "/script>")
 	</script>																																				-2022.7	-->
-	<script src='../js/math3.js'></script>																											<!--	+2022.7	-->
-	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>	<!--	+2022.7	-->
+	<!-- <script src='../js/math3.js'></script>
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>						-2024.4	-->
+	<script src='../js/math5.js'></script> <!--	+2024.4	-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/5.0.0/math.min.js'><" + "/script>")</script>				<!--	+2024.4	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script type="text/javascript" src='rational.js'></script>
 	<script type="text/javascript" src='complex.js'></script>
@@ -27,8 +29,8 @@
 	<script type="text/javascript" src='complexplacevalue.js'></script>
 	<script type="text/javascript" src='complexlaurent.js'></script>
 	<script type="text/javascript" src='complexexponential.js'></script>
-	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='abstractpolynomial.js'></script>		<!--	2018.6	Added	-->
+	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='laplace.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
 	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
@@ -67,7 +69,8 @@
 		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><!--<button onclick="moveanswer('#c','#func')">↑</button>--></td><td id="co"></td></tr>
 	</table>
 	<script type="text/javascript">
-		function diffeq() {
+		/*
+		function diffeq() {	//	-2024.4
 			$('#sup').html($(d).val())
 			var k = $('#k').val();
 			$('#k2').html(k);
@@ -92,6 +95,34 @@
 			if (f == laplace) $('#op').val('/'); else $('#op').val('⊘');
 			compute();
 		}
+		*/
+		function diffeq() {	//	+2024.4
+			$('#sup').html($(d).val())
+			var k = $('#k').val()
+			$('#k2').html(k)
+			var n = $('#d').val()
+			f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex]
+			let s = calc_s(f)
+			var sn_k = (f == laplace)
+				? s.base + '^' + n + '+' + k
+				: s.pointpow(n).pointadd(k)
+			if (f != laplace) $('#num').val(0)
+			$('#a').val($('#num').val())
+			$('#b').val(sn_k.toString(true))
+			$('#op').val(f==laplace ? '/' : '⊘')
+			compute()
+			function calc_s(f) {
+				var s = new exponential().parse('exp(x)').pointeval().toString()
+				if (f == fourier) s = s.replace(/cosh\((\w*)\)/g,"(exp($1)+exp(-$1))/2")
+				if (f == fourier) s = s.replace(/sinh\((\w*)\)/g,"(exp($1)-exp(-$1))/2")
+				if (f == fourier) s = s.replace(/exp/g, 'i*cis')
+				var s1 = '(exp(2x)+exp(x)+1+exp(-x)+exp(-2x))(2i*cis(2x)+i*cis(x)-i*cis(-x)-2i*cis(-2x))'
+				var s2 = '(cis(2x)+cis(x)+1+cis(-x)+cis(-2x))(2*exp(2x)+exp(x)-exp(-x)-2*exp(-2x))'
+				if (f == complexexponential) s = s1 + '+' + s2
+				if (f == laplace) s = 's'
+				return new f().parse(s)
+			}
+		}
 		function compute() {
 			f = [exponential, fourier, complexexponential, laplace][$('#f')[0].selectedIndex];   // Add Laurent Multinomial  2015.10
 			var a = getinput('#a');
@@ -106,7 +137,7 @@
 				showInternal(a, '#ao');
 				showInternal(b, '#bo');
 				showInternal(c, '#co');
-				function showInternal(pv, elem) { $(elem).html(pv.tohtml()); } // multinomials need <br>.  2015.7
+				function showInternal(pv, elem) { $(elem).html(pv.tohtml()); }
 			}
 			eval();
 		}

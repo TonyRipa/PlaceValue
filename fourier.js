@@ -1,9 +1,10 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/22/2022
+// Date:    4/30/2024
 // Fourier: a datatype for representing Imaginary Exponentials; an application of the MarkedPlaceValue datatype
 
-class fourier {
+//class fourier {							//	-2024.4
+class fourier extends abstractpolynomial{	//	+2024.4
 
 	//function fourier(base, pv) {	//	-2022.02
 	constructor(base, pv) {			//	+2022.02
@@ -11,6 +12,7 @@ class fourier {
 		if (arguments.length < 2) pv = new markedplacevalue(complex);	//  +2022.05
 		if (Array.isArray(base)) alert('fourier expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
 		if (!(pv instanceof markedplacevalue)) { var s = 'fourier expects arg2 to be MarkedPlaceValue(Complex) not ' + typeof pv + " : " + JSON.stringify(pv); alert(s); throw new Error(s); }
+		super()
 		this.base = base
 		this.pv = pv;
 	}
@@ -47,7 +49,6 @@ class fourier {
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 			}
 			return c;
-			//me.pv = c.pv;
 		} else if (node.type == 'FunctionNode') {
 			console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
 			console.log(node)
@@ -123,6 +124,7 @@ class fourier {
 	}
 
 	pointadd(other) {
+		if (!(other instanceof this.constructor)) other = this.parse(other)	//	+2024.4
 		this.align(other);
 		return new fourier(this.base, this.pv.pointadd(other.pv));
 	}
@@ -153,6 +155,7 @@ class fourier {
 	}
 
 	pointpow(other) { // 2015.12
+		if (!(other instanceof this.constructor)) other = this.parse(other)	//	+2024.4
 		return new fourier(this.base, this.pv.pointpow(other.pv));
 	}
 

@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2024
+Date : 4/30/2024
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -426,7 +426,7 @@ The NaN is not a mistake. It's a spectacular success. The pointwise division of 
 DiffEq
 ---------------
 
-<i>diffeq.html</i> solves differential equations of the form D<sup>n</sup>f(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
+<i>diffeq.html</i> solves differential equations of the form Dⁿf(x) + kf(x) = 0. Dividing both sides by D<sup>n</sup> + k it solves f(x) = 0 / D<sup>n</sup> + k. Or more precisely f(x) = 0 ⊘ ( D<sup>n</sup> ⊕ k ). But it doesn't get f(x) = 0.
 For example, D<sup>2</sup>f(x) + -1f(x) = 0. f(x) = 0 ⊘ D<sup>2</sup> ⊕ -1. f(x) = 0 ⊘ 4210.124 ⊕ -1. f(x) = 0 ⊘ 310<s>1</s>.013. f(x) = %0.% base e<sup>x</sup>. f(x) = NaN * exp(x) + NaN * exp(-x). Meaning an arbitrary constant times exp(x) plus an arbitrary constant times exp(-x). With slight modification, diffeq.html also supports Fourier, ComplexExponential, and Laplace solution.
 
 Determinant

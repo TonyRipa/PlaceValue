@@ -1,15 +1,17 @@
 
 // Author:  Anthony John Ripa
-// Date:    05/31/2022
+// Date:    04/30/2024
 // Exponential : a datatype for representing Exponentials; an application of the MarkedPlaceValue datatype
 
-class exponential {						//	+2022.01
+//class exponential {					//	+2022.01	//	-2024.4
+class exponential extends abstractpolynomial{			//	+2024.4
 
 	constructor(base, pv) {				//	+2022.01
 		//if (arguments.length < 2) pv = new placevalue();		//	-2022.05
 		if (arguments.length < 2) pv = new markedplacevalue();	//	+2022.05
 		if (Array.isArray(base)) alert('exponential expects argument 1 (base) to be StringOrNumber but found ' + typeof base);
 		if (!(pv instanceof markedplacevalue)) { var s = 'exponential expects arg2 (pv) to be a markedplacevalue not ' + typeof pv + ' : ' + pv; alert(s); throw new Error(s); }
+		super()	//	+2024.4
 		this.base = base
 		this.pv = pv;
 		return;
@@ -53,12 +55,6 @@ class exponential {						//	+2022.01
 			var kidaspoly = new laurent().parse(kids[0])
 			//alert(kidaspoly)
 			var base = kidaspoly.base;
-			//var ten = placevalue.parse(10);
-			//var tens = kidaspoly.pv.get(1).toreal();
-			//var ones = kidaspoly.pv.get(0).toreal();
-			//var exp = ten.pow(tens)
-			//if (ones) exp = exp.scale(Math.exp(ones));
-			//var exp = new placevalue().parse('(2.718)').pow(kidaspoly.pv) //  2017.5	//	-2020.5
 			var exp = kidaspoly.pv.exponential();										//	+2020.5
 			//var exp2 = ten.pow(-tens)
 			//var exp2 = placevalue.parse('(2.718)').pow(kidaspoly.pv.negate())   //  2017.5
@@ -88,6 +84,7 @@ class exponential {						//	+2022.01
 		return exponential.toStringCosh(this.pv, this.base);
 	}
 
+	/*	//	-2024.4
 	add(other) {
 		this.align(other);
 		return new exponential(this.base, this.pv.add(other.pv));
@@ -142,6 +139,7 @@ class exponential {						//	+2022.01
 		this.align(other);
 		return new exponential(this.base, this.pv.pointdivide(other.pv));
 	}
+	*/
 
 	align(other) {    // Consolidate alignment    2015.9
 		if (this.pv.whole.mantisa.length == 1 && this.pv.exp == 0) this.base = other.base;
@@ -149,6 +147,7 @@ class exponential {						//	+2022.01
 		if (this.base != other.base) { alert('Different bases : ' + JSON.stringify(this.base) + ' & ' + JSON.stringify(other.base)); return new exponential(1, new this.pv.constructor(new wholeplacevalue(['%']), 0)) }
 	}
 
+	/*	//	-2024.4
 	pow(other) { // 2015.6
 		return new exponential(this.base, this.pv.pow(other.pv));
 	}
@@ -156,6 +155,7 @@ class exponential {						//	+2022.01
 	pointpow(other) { // 2015.12
 		return new exponential(this.base, this.pv.pointpow(other.pv));
 	}
+	*/
 
 	static toStringCosh(pv, base) { // 2015.11
 		var s = pv.clone();
