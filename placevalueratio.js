@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/10/2024
+// Date:    5/31/2024
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -58,6 +58,10 @@ class placevalueratio {					//	+2023.5
 			}
 			return -1;
 		}
+	}
+
+	get(i) {	//	+2024.5
+		return this.quotient().get(i)
 	}
 
 	tohtml(short) {       // Long and Short HTML  2015.11
@@ -200,10 +204,6 @@ class placevalueratio {					//	+2023.5
 		//var pow = power;				//	+2020.5	//	-2024.1
 		if (power.get(0).ispos()) return new placevalueratio(this.num.pow(pow), this.den.pow(pow));
 		return new placevalueratio(this.den.pow(pow), this.num.pow(pow));
-		//if (power.get(0).isneg()) return (new placevalueratio(wholeplacevalue.parse(1), 0)).divide(this.pow(new placevalueratio(new wholeplacevalue([power.get(0).negate()]), 0))); // 2015.8 //  Add '(' for 2 digit power   2015.12
-		//var num = this.num.pow(power);
-		//var den = this.den.pow(power);
-		//return new placevalueratio(num, den);
 	}
 
 	times10s(s) { return new this.constructor(this.num.times10s(s), this.den) } //	+2024.3
@@ -263,11 +263,14 @@ class placevalueratio {					//	+2023.5
 		return num.divide(den);
 	}
 
+	/*
+	//	-2024.5
 	evalfull(base) {	//	+2023.7
 		let eva = this.eval(base)
 		let ratio = eva.num.divide(eva.den)
 		return ratio.get(0)
 	}
+	*/
 
 	factor() {	//	+2023.11
 		let n = this.num.clone()

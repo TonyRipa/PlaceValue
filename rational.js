@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	6/30/2023
+// Date:	5/31/2024
 // Rational: A data-type for representing Rational Numbers
 
 class rational extends digit {				//	2019.11.Added
@@ -16,7 +16,6 @@ class rational extends digit {				//	2019.11.Added
 		function pulloutcommonconstants(me) {
 			if (Math.abs(me.n) == 1 / 0 && Math.abs(me.d) == 1 / 0) { me.n = 0; me.d = 0; }
 			if (me.n == 0 && me.d == 0) return;
-			//if (me.n == 0 || me.n == Infinity || me.n == -Infinity) { me.d = 1; return }	//	-2021.7
 			if (me.d == 0) { me.n = Math.sign(me.n); return }
 			//if (me.d == Infinity || me.d == -Infinity) { me.n = 0; me.d = 1; return }		//	-2021.7
 			if (me.d == Infinity || me.d == -Infinity) { me.n /= me.d; me.d = 1; return }	//	+2021.7
@@ -238,6 +237,7 @@ class rational extends digit {				//	2019.11.Added
 	exp() { return new rational(Math.exp(this.toreal()), 1); }   //  2017.11
 	sin() { return new rational(Math.sin(this.toreal()), 1); }   //  2017.11
 	cos() { return new rational(Math.cos(this.toreal()), 1); }   //  2017.11
+	acos() { return new rational(Math.acos(this.toreal()), 1); }	//	+2024.5
 
 	pow(other) {//alert('rational.pow: ' + other)
 		if (typeof other == 'number' && other == -1) return new rational(this.d, this.n);	//	+2020.12

@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2023
+	Date:	5/31/2024
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -27,6 +27,7 @@
 	<script type="text/javascript" src='complexplacevalue.js'></script>
 	<script type="text/javascript" src='complexlaurent.js'></script>
 	<script type="text/javascript" src='complexexponential.js'></script>
+	<script src='abstractpolynomial.js'></script>	<!--	~2024.5		-->
 	<script type="text/javascript" src='fourier.js'></script>
 	<script type="text/javascript" src='wholeplacevalue.js'></script>
 	<!--<script type="text/javascript" src='placevalue.js'></script>-->	<!--	-2022.05	-->
@@ -34,7 +35,6 @@
 	<script src='wholeplacevalue2.js'></script>
 	<script src='polynomial2.js'></script>
 	<script src='markedplacevalue2.js'></script>	<!--	+2023.6		-->
-	<script src='abstractpolynomial.js'></script>	<!--	~2023.6		-->
 	<script src='laurent2.js'></script>
 	<script src='laurent.js'></script>
 	<script src='exponential.js'></script>
@@ -105,7 +105,6 @@
 			compute();
 		}
 		function differentiate() {
-			//f=[polynomial2,laurent2,sparsepolynomial,exponential,fourier,complexexponential][$('#f')[0].selectedIndex];// Establish f before dexp( 2015.12 //	-2020.11
 			switch ($('#f')[0].selectedIndex) {	//	+2020.11
 				case 2: f = new sparsepolynomial(rational); break;
 				default: f = new [polynomial2, laurent2, sparsepolynomial, exponential, fourier, complexexponential][$('#f')[0].selectedIndex]();

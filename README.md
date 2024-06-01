@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 4/30/2024
+Date : 5/31/2024
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -212,6 +212,8 @@ is represented as the SparsePlaceValue2: 5E2,1 .
 SparsePlaceValue
 ------------------------
 <i>SparsePlaceValue.js</i> is a data-type optimized for sparse PlaceValues. Whereas, SparsePlaceValue1 can handle 1D situations such as 1E2, and SparsePlaceValue2 can handle 2D situations such as 1E2,3 , SparsePlaceValue can handle an arbitrary number of dimensions such as 1E2,3,4 . SparsePlaceValue accepts Rational, Complex, or RationalComplex digits.
+
+Evaluation can be done can be done along any dimension (x,y,z,...) or even across dimensions (x/y,y/z,x\*y,...).
 
 SparsePolynomial
 ------------------------

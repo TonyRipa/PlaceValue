@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    3/31/2024
+// Date:    5/31/2024
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -610,6 +610,17 @@ class sparseplacevalue {			//	2019.4	Added
 				return [man, new wholeplacevalue(mytype)]
 			}
 		}
+	}
+
+	evalplace(base) {	//	+2024.5
+		var mytype = this.check(base)
+		if (this.points.length!=1 || base.points.length!=1) return this.parse('%')
+		let coef  = this.points[0][0]
+		let pows  = this.points[0][1]
+		let val   = base.points[0][0]
+		let place = base.points[0][1]
+		if (!pows.equals(place)) return this.parse('%')
+		return this.parse(coef.times(val).toString())
 	}
 
 	iterator(options = {}) {	//	+2023.6

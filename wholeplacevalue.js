@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	2/28/2024
+// Date:	5/31/2024
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -540,15 +540,12 @@ class wholeplacevalue {	//	+2020.11
 		var At = math.transpose(A);									//	+2022.7
 		var AtA = math.multiply(At, A);
 		var Atb = math.multiply(At, b);
-		//var I = math.matrix([[1, 0, 0], [0, 1, 0], [0, 0, 1]]);	//	-2020.12
 		try {
 			//var AtAinv = math.divide(I, AtA);						//	-2020.12
 			var x = math.divide(math.transpose(Atb),AtA);			//	+2020.12
 		} catch (e) {
 			return this.parse('%0');
 		}
-		//var x = math.multiply(AtAinv, Atb);						//	-2020.12
-		//x = x.transpose().valueOf()[0];							//	-2020.12
 		//x = x.transpose().valueOf();								//	+2020.12	//	-2022.7
 		x = math.transpose(x).valueOf();											//	+2022.7
 		x.reverse();
@@ -604,6 +601,7 @@ class wholeplacevalue {	//	+2020.11
 		return new wholeplacevalue([0,1,2,3,4].map(base => this.eval(this.parse(base)).mantisa[0]));
 	}
 
+	/*				//	-2024.5
 	unpointeval() {	//	+2020.12
 		var man = this.mantisa.map(x=>x.toreal());
 		var n = man.length;
@@ -616,6 +614,24 @@ class wholeplacevalue {	//	+2020.11
 		}
 		var x = math.divide(man, math.transpose(matrix));
 		return new wholeplacevalue(x.map(e=>new this.datatype(e).round()));
+	}
+	*/
+
+	unpointeval() {	//	+2024.5
+		var man = this.mantisa.map(x=>x.toreal())
+		var n = man.length
+		var fman = man.filter(x=>!isNaN(x*0))
+		var fn = fman.length
+		var matrix = [];
+		for (let r = 0; r < n; r++) {
+			if (isNaN(man[r]*0)) continue
+			var row = []
+			for (let c = 0; c < fn; c++)
+				row.push(math.pow(r,c))
+			matrix.push(row)
+		}
+		var x = math.divide(fman, math.transpose(matrix))
+		return new wholeplacevalue(x.map(e=>new this.datatype(e).round()))
 	}
 
 	regroup(base) {	//	+2022.6

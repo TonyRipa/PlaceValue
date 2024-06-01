@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	6/30/2023
+	Date:	5/31/2024
 	Demo for PlaceValue : a datatype for representing base agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -20,9 +20,9 @@
 	<script src='rational.js'></script>
 	<script src='complex.js'></script>
 	<script src='rationalcomplex.js'></script>
-	<script src='fourier.js'></script>
+	<!-- <script src='fourier.js'></script> -->	<!--	-2024.5	-->
 	<script src='wholeplacevalue.js'></script>
-	<script src='placevalue.js'></script>
+	<!-- <script src='placevalue.js'></script> --> <!--	-2024.5	-->
 	<script src='wholeplacevalue2.js'></script>
 	<script src='polynomial2.js'></script>
 	<script src='markedplacevalue2.js'></script>	<!--	~2023.6	-->
@@ -90,7 +90,8 @@
 	</table>
 	<script type="text/javascript">
 		function differentiate() {
-			f = [polynomial2, laurent2, exponential, fourier][$('#f')[0].selectedIndex];
+			//f = [polynomial2, laurent2, exponential, fourier][$('#f')[0].selectedIndex];	//	-2024.5
+			f = [polynomial2, laurent2, exponential][$('#f')[0].selectedIndex];				//	+2024.5
 			if ($('#f')[0].selectedIndex >= 2) dexp($('#f')[0].selectedIndex == 3); else dpoly();
 			function dpoly() {
 				console.log('diffpoly');
@@ -101,7 +102,8 @@
 			}
 		}
 		function compute() {
-			f = [polynomial2, laurent2, exponential, fourier][$('#f')[0].selectedIndex];
+			//f = [polynomial2, laurent2, exponential, fourier][$('#f')[0].selectedIndex];	//	-2024.5
+			f = [polynomial2, laurent2, exponential][$('#f')[0].selectedIndex];				//	+2024.5
 			var a = getinput('#a');
 			var b = getinput('#b');
 			var c = [a.add, a.sub, a.times, a.divide, a.eval, a.pointtimes, a.pointdivide, a.pointsub, a.pointadd][$('#op')[0].selectedIndex].call(a, b);

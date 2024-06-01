@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	11/30/2023
+	Date:	5/31/2024
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -12,7 +12,8 @@
 	<script src='../js/jquery.js'></script>
 	<script>window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")</script>
 	<script src='../js/math12.js'></script>
-	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.0.0/math.min.js'><" + "/script>")</script>
+	<!--<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.0.0/math.min.js'><" + "/script>")</script>--> <!--2024.5-->
+	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/12.4.3/math.min.js'><" + "/script>")</script> <!-- +2024.5 -->
 	<script src='digit.js'></script>
 	<script src='rational.js'></script>
 	<script src='complex.js'></script>
@@ -58,7 +59,8 @@
 			var shapes = ['1/11', '-1/11', '1/111', '1/121', '-1/121', '1/21'].map(x=>new f().parse(x));
 			$('#b').val(1)
 			var [op1,op2] = [shapes[$('#top')[0].selectedIndex], new f().parse($('#b').val())]
-			$('#p').text(compute(op1, op2).evalfull(op2).toString(false,true));
+			//$('#p').text(compute(op1, op2).evalfull(op2).toString(false,true));	//	-2024.5
+			$('#p').text(compute(op1, op2).get(0).toString(false,true))				//	+2024.5
 		}
 		function compute(a,b) {
 			var c = a.eval(b);
