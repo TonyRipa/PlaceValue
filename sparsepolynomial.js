@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    7/31/2022
+// Date:    6/30/2024
 // SparsePolynomial : a datatype for representing sparse polynomials; an application of the sparseplacevalue datatype
 
 class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
@@ -72,6 +72,7 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 		alignmulti2base(this, base);
 		alignmulti2base(other, base);
 		this.pv = new sparseplacevalue(this.pv.points);     //  2017.2  Clean this's zeros
+		other.pv = new sparseplacevalue(other.pv.points);	//	2024.6	Sort other's terms
 		function alignmulti2base(multi, basenew) {
 			for (var i = 0; i < multi.pv.points.length; i++)
 				alignmultidigit2base(multi, i, basenew);
@@ -108,7 +109,6 @@ class sparsepolynomial extends abstractpolynomial {	//	2018.10	Rename
 			if (digit != 0) {									//	+2021.9
 				ret += '+';
 				if (power.is0())
-					//ret += digit.toString(false, true);	//	-2020.5
 					//ret += digit.toString(false);			//	+2020.5	//	-2021.9
 					ret += digit;										//	+2021.9
 				else {
