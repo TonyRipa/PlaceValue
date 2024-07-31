@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 5/31/2024
+Date : 7/31/2024
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -313,7 +313,9 @@ Laplace
 
 Laplace then formats MarkedPlaceValue(Complex)'s result as exp(-x) .
 
-Viewing the Laplace transform of exp(-x) [ which is 1/(s+1) ] as the fraction 1 / 11 has advantages. Specifically, viewing the 1/11 in the expanded form 0.1<s>1</s>1<s>1</s> . We can see from the expanded form what appear to be the Taylor Coefficients of the Taylor expansion of exp(-x) [ however without the factorial denominators ] . Specifically, what we are seeing is the derivatives of the function exp(-x) , since the Taylor coefficients are the derivatives including the factorials. Another (though perhaps not best) way to say this for those familiar with generating functions, is that the Laplace Transform is the generating function of the derivatives. Without PlaceValue, this nature of the Laplace Transform would be more difficult to see (partly because of the overhead of placeholder variables). Furthermore, we can see why the Laplace Transform should be capable of representing a function: because having all the derivatives of a function at point is enough to represent a typical function, as one familiar with Taylor Series knows. Note: it should be noted that Laplace seems to have chosen a different sign convention than generating functions, further obscuring the symmetry.
+Viewing the Laplace transform of exp(-x) [ which is 1/(s+1) ] as the fraction 1 / 11 has advantages. Specifically, viewing the 1/11 in the expanded form 0.1<s>1</s>1<s>1</s> . We can see from the expanded form what appear to be the Taylor Coefficients of the Taylor expansion of exp(-x) [ however without the factorial denominators ] . Specifically, what we are seeing is the derivatives of the function exp(-x) , since the Taylor coefficients are the derivatives including the factorials. Another (though perhaps not best) way to say this for those familiar with generating functions, is that the Laplace Transform is the generating function of the derivatives. Without PlaceValue, this nature of the Laplace Transform would be more difficult to see (partly because of the overhead of placeholder variables). Furthermore, we can see why the Laplace Transform should be capable of representing a function: because having all the derivatives of a function at point is enough to represent a typical function (we say typical instead of analytic because Laplace can represent Dirac Delta), as one familiar with Taylor Series knows. Note: it should be noted that Laplace seems to have chosen a different sign convention than generating functions, further obscuring the symmetry.
+
+Note that Laplace transforms are convenient for linear differential equations, because addition and constant multiplication work as expected irrespective of the (un)seen factorial factors. Full support for multiplication requires more care than is typically convenient. To that end, we have added factorial-arithmetic to WholePlaceValue. 
 
 WholePlaceValueComplex2
 ------------------------

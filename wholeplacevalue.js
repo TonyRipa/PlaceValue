@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/31/2024
+// Date:	7/31/2024
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -370,13 +370,44 @@ class wholeplacevalue {	//	+2020.11
 		return ret;
 	}
 
-	unscale(scalar, trace) {  //  2016.5
-		this.check(); 
-		if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);
-		var ret = this.clone(trace + ' wholeplacevalue.prototype.unscale >');
-		ret.mantisa = ret.mantisa.map(function (x) { return x.divide(scalar) });
-		return ret;
+	unscale(scalar) {	//	+2024.7
+		this.check()
+		var ret = this.clone()
+		if (arguments.length == 0) {
+			ret.mantisa = ret.mantisa.map((e,i) => e.unscale(i))
+		} else {
+			if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar)
+			ret.mantisa = ret.mantisa.map(x => x.divide(scalar))
+		}
+		return ret
 	}
+
+	// unscale(scalar, trace) {  //  2016.5	//	-2024.7
+	// 	this.check(); 
+	// 	if (!(scalar instanceof this.datatype)) scalar = new this.datatype().parse(scalar);
+	// 	var ret = this.clone(trace + ' wholeplacevalue.prototype.unscale >');
+	// 	ret.mantisa = ret.mantisa.map(function (x) { return x.divide(scalar) });
+	// 	return ret;
+	// }
+
+	factorial() {	//	+2024.7
+		this.check()
+		var ret = this.clone()
+		ret.mantisa = ret.mantisa.map((e,i) => e.scale(math.factorial(i)))
+		return ret
+	}
+
+	unfactorial() {	//	+2024.7
+		this.check()
+		var ret = this.clone()
+		ret.mantisa = ret.mantisa.map((e,i) => e.unscale(math.factorial(i)))
+		return ret
+	}
+
+	factorialadd(other) { return this.add(other) }	//	+2024.7
+	factorialsub(other) { return this.sub(other) }	//	+2024.7
+	factorialtimes(other) { this.check(other); return this.unfactorial().times (other.unfactorial()).factorial() } // +2024.7
+	factorialdivide(other){ this.check(other); return this.unfactorial().divide(other.unfactorial()).factorial() } // +2024.7
 
 	//sqrt() {	//	+2021.1	//	-2021.7
 	//	var rad = this.clone();
@@ -541,7 +572,6 @@ class wholeplacevalue {	//	+2020.11
 		var AtA = math.multiply(At, A);
 		var Atb = math.multiply(At, b);
 		try {
-			//var AtAinv = math.divide(I, AtA);						//	-2020.12
 			var x = math.divide(math.transpose(Atb),AtA);			//	+2020.12
 		} catch (e) {
 			return this.parse('%0');
