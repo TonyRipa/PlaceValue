@@ -1,7 +1,7 @@
 
 // Author:	Anthony John Ripa
-// Date:	4/30/2024
-// AbstractPolynomial : Base Class for SparsePolynomial
+// Date:	8/3/2024
+// AbstractPolynomial : Base Class for Polynomial
 
 class abstractpolynomial {
 
@@ -87,6 +87,10 @@ class abstractpolynomial {
 		if (!(other instanceof this.constructor)) other = this.parse(other)	//	+2024.4
 		this.align(other);
 		return new this.constructor(this.base, this.pv.pointpow(other.pv));
+	}
+
+	factorial() {		//	+2024.8
+		return new this.constructor(this.base, this.pv.factorial());
 	}
 
 	round() {		//	2019.4	Added

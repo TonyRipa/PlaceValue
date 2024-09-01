@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	6/30/2022
+// Date:	8/31/2024
 // Complex:	A data-type for representing Complex Numbers
 
 class complex extends digit {		//	2019.11	Added
@@ -120,7 +120,6 @@ class complex extends digit {		//	2019.11	Added
 		var imag = digit[1];
 		var a = Math.round(real * 1000) / 1000
 		var b = Math.round(imag * 1000) / 1000
-		//if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, true);	//	-2020.5
 		if (-.01 < imag && imag < .01) return long ? a : this.digithelp(real, NEGBEG, NEGEND, long);	//	+2020.5
 		if (real == 0) {
 			if (long == 'medium') return b == 1 ? 'i' : '(' + a + ',' + b + ')';   //  2017.4  medium
@@ -148,6 +147,9 @@ class complex extends digit {		//	2019.11	Added
 	ispos() { return this.above0() }														//	2022.6
 	isint() { return this.isreal() && Number.isInteger(this.r); }							//	2017.10
 
+	dec() { return new this.constructor(this.r - 1, this.i) }								//	+2024.8
+	inc() { return new this.constructor(this.r + 1, this.i) }								//	+2024.8
+	fact() { return new this.constructor(math.factorial(this.r), 0) }						//	+2024.8
 	min(other) { return (this.below(other) ? this : other).clone() }						//	2019.5	Added
 	add(other) { return new complex(this.r + other.r, this.i + other.i); }
 	sub(other) { return new complex(this.r - other.r, this.i - other.i); }
@@ -167,7 +169,6 @@ class complex extends digit {		//	2019.11	Added
 	remainder(den) { return this.sub(this.divide(den).times(den)); } //  2019.4  Added
 
 	times(y) {
-		//if (!(y instanceof complex) && typeof y.r != 'undefined' && typeof y.i != 'undefined') y = new complex(y.r, y.i);   // 2017.5	// 2019.9 Removed
 		if (!(y instanceof complex)) y = complex.parse(y);	//	2019.9	Added
 		if (!(y instanceof complex)) { var s = 'complex.times expects argument (y) to be a Complex but found ' + typeof y + ' ' + JSON.stringify(y); alert(s); throw new Error(s); }    //  2017.5
 		var x = this;

@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    5/31/2024
+// Date:    8/31/2024
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -217,6 +217,28 @@ class placevalueratio {					//	+2023.5
 		return new placevalueratio(num, this.den);
 	}
 
+	unscale(scalar) { return new this.constructor(this.num.unscale(scalar), this.den) }	//	+2024.8
+
+	laplaceadd(other) { return this.add(other) }	//	+2024.8
+	laplacesub(other) { return this.sub(other) }	//	+2024.8
+	laplacetimes(other) {							//	+2024.8
+		if (other.num.is0())                           return mul(other,this)
+		if (other.toString()=='1/10')                  return mul(other,this)
+		if (other.toString()=='1/11')                  return mul(other,this)
+		if (other.toString()=='1/100')                 return mul(other,this)
+		if (other.num.length == 1 && !other.num.is1()) return mul(other,this)
+		return mul(this,other)
+		function mul(a,b) {
+			if (a.num.is0()) return a
+			if (a.toString()=='1/10') return b
+			if (a.toString()=='1/11') return b.eval(a.reciprocal())
+			if (a.toString()=='1/100') return new polynomialratio1().parse(math.simplify('-'+math.derivative(new polynomialratio1('s',b).toString(),'s').toString())).pv
+			if (a.num.len() == 1 && !a.num.is1()) return a.unscale(a.num.get(0)).laplacetimes(b).scale(a.num.get(0))
+			alert('PlaceValueRatio.LaplaceTimes: Error')
+			return new placevalueratio().parse('0/0')
+		}
+	}
+
 	divide(denominator) {
 		return new placevalueratio(this.num.times(denominator.den), this.den.times(denominator.num));
 	}
@@ -350,19 +372,5 @@ class placevalueratio {					//	+2023.5
 	series3() { return this.num.clone().divideleft(this.den.clone(),6+1) }	//	+2024.3
 	series4() { return this.den.clone().divideleft(this.num.clone(),6+1) }	//	+2024.3
 	quotient() { return this.series3() }									//	+2024.3
-
-/*	//	-2023.11
-	factor() {	//	+2023.5
-		//if (this.num.len() < 5) return this.clone()										//	-2023.7
-		if (this.num.len() < 4) return this.clone()											//	+2023.7
-		if (this.den.len() > 1) return this.clone()
-		let r = this.num.reciprocal()
-		//if (r.len() <= 3 && !r.is0()) return new placevalueratio(this.num.parse(1 ),r)	//	-2023.7
-		if (r.len() <= 4 && !r.is0()) return new placevalueratio(this.num.parse(1 ),r)		//	+2023.7
-		r = this.num.parse(10).divideleft(this.num)
-		if (r.len() <= 3 && !r.is0()) return new placevalueratio(this.num.parse(10),r)
-		return this.clone()
-	}
-*/
 
 }
