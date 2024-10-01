@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	03/01/2023
+// Date:	9/30/2024
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -49,7 +49,6 @@ class laplace extends abstractpolynomial {
 				var c = (node.op == '+') ? a.add(b) : (node.op == '-') ? a.sub(b) : (node.op == '*') ? a.times(b) : (node.op == '/') ? a.divide(b) : (node.op == '|') ? a.eval(b) : a.pow(b);
 			}
 			return c;
-			//me.pv = c.pv;
 		} else if (node.type == 'FunctionNode') {
 			console.log('FunctionNode: ' + node.type + " : " + JSON.stringify(node));
 			console.log(node)
@@ -119,7 +118,8 @@ class laplace extends abstractpolynomial {
 			//var c = 1;	//	2019.11	Removed
 			var c;			//	2019.11	Added
 			var k = 1;
-			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }
+			//if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }	//	-2024.9
+			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + coef(c) + "δ(x)"; sub([0, 0, 0, 0, 0, 0, 0, c]); }//	+2024.9
 			//if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1	//	-2021.12
 			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, 0, 0, 0, 0, 0, c, 0]); }							//	+2021.12
 			//if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Removed
