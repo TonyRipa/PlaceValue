@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2022
+	Date:	10/31/2024
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -13,10 +13,6 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='../js/jquery.js'><" + "/script>")
 	</script>
-	<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/1.7.0/math.min.js"></script>
-	<script type="text/javascript">
-		window.math || document.write("<script src='../js/math.js'><" + "/script>")
-	</script>																																					 -2022.7	-->
 	<script src='../js/math3.js'></script>																													<!-- +2022.7	-->
 	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.18.0/math.min.js'><" + "/script>")</script>			<!-- +2022.7	-->
 	<script type="text/javascript" src='digit.js'></script>
@@ -60,7 +56,8 @@
 				</td>
 				<td style='text-align: center'>←</td>
 				<td rowspan='2'>
-					<table>
+					<!--<table>							-2024.10	-->
+					<table cellpadding="10">	<!--	+2024.10	-->
 						<tr>
 							<td></td>
 							<td><input id='c' readonly></td>
@@ -80,8 +77,10 @@
 	<script type="text/javascript">
 		var f = wholeplacevalue;
 		function go() {
-			var top = new wholeplacevalue().parse($('#n2').val() + '('+$('#n1').val() + ')('+$('#n0').val()+')');
-			var bot = new wholeplacevalue().parse($('#d1').val() + '('+$('#d0').val()+')');
+			//var top = new wholeplacevalue().parse($('#n2').val() + '('+$('#n1').val() + ')('+$('#n0').val()+')');				//	-2024.10
+			//var bot = new wholeplacevalue().parse($('#d1').val() + '('+$('#d0').val()+')');									//	-2024.10
+			var top = new wholeplacevalue().parse('(' + $('#n2').val() + ')(' + $('#n1').val() + ')(' + $('#n0').val() + ')')	//	+2024.10
+			var bot = new wholeplacevalue().parse('(' + $('#d1').val() + ')(' + $('#d0').val() + ')')							//	+2024.10
 			pop(top, bot);
 		}
 		function pop(top, bot) {
