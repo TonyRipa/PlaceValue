@@ -1,6 +1,6 @@
 ﻿
 // Author:	Anthony John Ripa
-// Date:	11/30/2021
+// Date:	12/31/2024
 // Digit:	Base Class for Rational
 
 class digit {
@@ -15,7 +15,8 @@ class digit {
 		var num = { 10: '⑩', 11: '⑪', 12: '⑫', 13: '⑬', 14: '⑭', 15: '⑮', 16: '⑯', 17: '⑰', 18: '⑱', 19: '⑲', 20: '⑳', 21: '㉑', 22: '㉒', 23: '㉓', 24: '㉔', 25: '㉕', 26: '㉖', 27: '㉗', 28: '㉘', 29: '㉙', 30: '㉚', 31: '㉛', 32: '㉜', 33: '㉝', 34: '㉞', 35: '㉟', 36: '㊱', 37: '㊲', 38: '㊳', 39: '㊴', 40: '㊵', 41: '㊶', 42: '㊷', 43: '㊸', 44: '㊹', 45: '㊺', 46: '㊻', 47: '㊼', 48: '㊽', 49: '㊾', 50: '㊿' }
 		if (typeof (digit) == 'string') return digit;
 		//var rounddigit = digit == Infinity ? digit : Math.round(digit * 1000) / 1000;	//	+2021.7	//	-2021.11
-		var rounddigit = (isNaN(digit) || digit == Infinity) ? digit : math.round(digit, long?5:3);	//	+2021.11
+		//var rounddigit = (isNaN(digit) || digit == Infinity) ? digit : math.round(digit, long?5:3);	//	+2021.11	//	-2024.12
+		var rounddigit = (isNaN(digit) || digit == Infinity) ? digit : math.round(digit, long?6:3);						//	+2024.12
 		if (isNaN(digit)) return '%';
 		if (digit == -Infinity) return NEGBEG + '∞' + NEGEND;	//	+2021.7
 		if (!long && num[-digit]) return NEGBEG + num[-digit] + NEGEND;
@@ -44,7 +45,6 @@ class digit {
 		if (0 < digit && digit <= 9) return (digit == Math.round(digit)) ? Math.trunc(digit) : '(' + rounddigit + ')';	//	+2021.6
 		if (!long) if (num[digit]) return num[digit]
 		if (9 < digit && isFinite(digit)) return '(' + rounddigit + ')';
-		//if (digit == 1 / 0) return '∞';	//	-2021.7
 		if (digit == Infinity) return '∞';	//	+2021.7
 		return 'x';
 	}

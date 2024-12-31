@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 11/30/2024
+Date : 12/31/2024
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -773,7 +773,7 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 
 Future Work
 ------------
-Consider a list of whole numbers. It would look something like this : [0,1,2,3,…] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the ... being at the end meaning they continue in 'this' way (the word 'this' here is a backward reference to the sequence already read, and so already recognized). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in 'this' way (the word 'this' here is a forward reference to the sequence not yet read, and so not yet recognized).
+Consider a list of whole numbers. It would look something like this : [0,1,2,3,…] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the … being at the end meaning they continue in 'this' way (the word 'this' here is a backward reference to the sequence already read, and so already recognized). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in 'this' way (the word 'this' here is a forward reference to the sequence not yet read, and so not yet recognized).
 
 When the list is laid out in the same order as the reading order there are good outcomes; when it is not there are bad outcomes. This may seem so obvious as not to mention. I wouldn't write the word duck as kcud because then I have to scan forward to pronounced the d first then scan backward to pronounce the rest. Some things are so obvious they go without saying, until you see someone break the convention, then we are forced to talk about it.
 
