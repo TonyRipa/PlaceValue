@@ -1,10 +1,10 @@
-﻿
+
 PlaceValue: A data-type for base-agnostic arithmetic
 =====================================================
 
 Author : Anthony John Ripa
 
-Date : 12/31/2024
+Date : 1/31/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -470,7 +470,7 @@ This result is unsatisfying. Event A is selecting the left end-point from a unit
 
 Let's redo the above example using PlaceValue.
 
-The probability of A is the measure of the left end-point divided by the measure of the unit-line-segment. P(A) = 1 / 10 = 0.1 . This is one point per unit-length. Alternatively, we may write this using E-notation as 1E-1. This indicates that the magnitude is 1, while the size-scale is -1. Similarly, the probability of B is the measure of the both end-points divided by the measure of the unit-line-segment. P(A) = 2 / 10 = 0.2 . This is two points per unit-length. Alternatively, we may write this using E-notation as 2E-1. This indicates that the magnitude is 2, while the size-scale is -1. We now test for independence. P(A) * P(B) ≟ P(A ∩ B) . 1E-1 * 2E-1 ≟ 1E-1 . 2E-2 ≟ 1E-1 . False ∴ Dependent
+The probability of A is the measure of the left end-point divided by the measure of the unit-line-segment. P(A) = 1 / 10 = 0.1 . This is one point per unit-length. Alternatively, we may write this using E-notation as 1E-1. This indicates that the magnitude is 1, while the size-scale is -1. Similarly, the probability of B is the measure of the pair of end-points divided by the measure of the unit-line-segment. P(A) = 2 / 10 = 0.2 . This is two points per unit-length. Alternatively, we may write this using E-notation as 2E-1. This indicates that the magnitude is 2, while the size-scale is -1. We now test for independence. P(A) * P(B) ≟ P(A ∩ B) . 1E-1 * 2E-1 ≟ 1E-1 . 2E-2 ≟ 1E-1 . False ∴ Dependent
 
 We got the right answer using PlaceValue, whereas we got the wrong answer using Classical techniques.
 

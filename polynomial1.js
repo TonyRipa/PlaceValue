@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2022
+// Date:	1/31/2025
 // Polynomial1: a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
@@ -84,7 +84,6 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		//var str = x//.toString().replace('.', '');	//	-2021.7
 		var maxbase = x.length - 1
 		for (var power = maxbase; power >= 0; power--) {					//	power is index because whole is L2R	2015.7
-			//var digit = Math.round(1000 * str[power].toreal()) / 1000;	//	toreal	2016.7 
 			//var digit = str[power].toString(false, true);		//	-2020.5
 			//var digit = str[power].toString(false,'medium');	//	+2020.5	//	-2021.7
 			var digit = x[power].toString(false,'medium');					//	+2021.7
@@ -111,6 +110,75 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 			if (x == 1) return '';
 			return '^' + x;
 		}
+	}
+
+	tosvg() {
+
+		let length = 30
+		let l = length
+		let marginx = l / 2
+		let mx = marginx
+		let my = marginx
+		let x = mx
+		let content = ''
+		content += do_n(cube,this.pv.get(3),l,my)
+		content += do_n(box,this.pv.get(2),l,my)
+		content += do_n(stick,this.pv.get(1),l,my)
+		content += do_n(dot,this.pv.get(0),l,my)
+		let width = x + mx
+		let height = my + l + my
+		let ret = `<svg width='${width}' height='${height}'><g stroke='black'>` + content + `</g></svg>`
+		return ret
+
+		function cube(l,my,last) {
+			let ret =	`<line x1='${1+x		}' x2='${1+x		}' y1='${my		+my/2}' y2='${my+l	+my/2}' />` +
+						`<line x1='${1+x		}' x2='${1+x+l		}' y1='${my		+my/2}' y2='${my	+my/2}' />` +
+						`<line x1='${1+x		}' x2='${1+x+l		}' y1='${my+l	+my/2}' y2='${my+l	+my/2}' />` +
+						`<line x1='${1+x		}' x2='${1+x+my		}' y1='${my		+my/2}' y2='${1		+my/2}' />` +
+						`<line x1='${1+x+my		}' x2='${1+x+l+my	}' y1='${1		+my/2}' y2='${1		+my/2}' />`
+			if (last) {
+				ret +=	`<line x1='${1+x+l+my	}' x2='${1+x+l		}' y1='${1		+my/2}' y2='${my	+my/2}' />` +
+						`<line x1='${1+x+l+my	}' x2='${1+x+l+my	}' y1='${1		+my/2}' y2='${l		+my/2}' />` +
+						`<line x1='${1+x+l		}' x2='${1+x+l		}' y1='${my		+my/2}' y2='${my+l	+my/2}' />` +
+						`<line x1='${1+x+l+my	}' x2='${1+x+l		}' y1='${l		+my/2}' y2='${my+l	+my/2}' />`
+				x += l
+			}
+			x += l
+			return ret
+		}
+
+		function box(l,my,last) {
+			let ret =	`<line x1='${x+1	}' x2='${x+1	}' y1='${my		}' y2='${my+l	}' />` +
+						`<line x1='${x+1	}' x2='${x+l+1	}' y1='${my		}' y2='${my		}' />` +
+						`<line x1='${x+1	}' x2='${x+l+1	}' y1='${my+l	}' y2='${my+l	}' />`
+			if (last) {
+				ret +=	`<line x1='${x+l+1	}' x2='${x+l+1	}' y1='${my		}' y2='${my+l	}' />`
+				x += mx
+			}
+			x += l
+			return ret
+		}
+
+		function stick(l,my) {
+			let ret = `<line x1='${x+1}' x2='${x+1}' y1='${my}' y2='${my+l}' />`
+			x += l/2
+			return ret
+		}
+
+		function dot(l,my) {
+			let ret = `<circle r='1' cx='${x+1}' cy='${my+l/2}' />`
+			x += l/2
+			return ret
+		}
+
+		function do_n(f,n,l,my) {
+			let ret = ''
+			for (let i = 0 ; i < n ; i++) {
+				ret += f(l,my,i==n-1)
+			}
+			return ret
+		}
+
 	}
 
 }
