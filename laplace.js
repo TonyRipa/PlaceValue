@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	9/30/2024
+// Date:	2/28/2025
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -119,7 +119,8 @@ class laplace extends abstractpolynomial {
 			var c;			//	2019.11	Added
 			var k = 1;
 			//if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + c + "δ'(x)"; sub([c, 0, 0, 0, 0, 0, 0, 0]); }	//	-2024.9
-			if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + coef(c) + "δ(x)"; sub([0, 0, 0, 0, 0, 0, 0, c]); }//	+2024.9
+			//if (s0 != 0 && s1 == 0 && s2 == 0) { c = s0; ret += '+' + coef(c) + "δ(x)"; sub([0, 0, 0, 0, 0, 0, 0, c]); }//	+2024.9	//	-2025.2
+			if (s0 != 0 && s1 == 0) { c = s0; ret += '+' + coef(c) + "δ(x)"; sub([0, 0, 0, 0, 0, 0, 0, c]); }							//	+2025.2
 			//if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, c, 0, 0, 0, 0, 0, 0]); }	//	2018.11	1/s -> 1	//	-2021.12
 			if (s0 == 0 && s1 != 0 && s2 == 0 && s3 == 0) { c = s1; ret += '+' + c; sub([0, 0, 0, 0, 0, 0, c, 0]); }							//	+2021.12
 			//if (s1 != 0 && (s2 / s1 == s3 / s2)) { c = s1; k = s2 / s1; ret += '+' + c + 'exp(' + k + 'x)'; sub([0, 0, c * k * k * k * k, c * k * k * k, c * k * k, c * k, c]); }	//	2019.11	Removed
@@ -133,14 +134,19 @@ class laplace extends abstractpolynomial {
 			if (s1 == 0 && s2 != 0 && s4 != 0 && s4 * s2 > 0 && (s2 / 2) * (s6 / 6) == (s4 / 4) * (s4 / 4)) { c = (s2 / 2); k = +(s4 / 4) / (s2 / 2); ret += '+' + rnd(c / root(k)) + '(sinh(' + root(k) + 'x)' + '+' + root(k) + 'xcosh(' + root(k) + 'x))'; sub([0, 6 * c * k * k, 0, +4 * c * k, 0, 2 * c, 0]); }
 			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && s2 * s6 == s4 * s4) { c = s2; k = -s4 / s2; ret += '+' + rnd(c / root(k)) + 'sin(' + root(k) + 'x)'; sub([0, c * k * k, 0, -c * k, 0, c, 0]); }
 			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 > 0 && s2 * s6 == s4 * s4) { c = s2; k = +s4 / s2; ret += '+' + c + 'sinh(' + root(k) + 'x)'; sub([0,0, 0, c * k, 0, c, 0]); }
-			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = -(s4 / 3) / (s2 / 1); ret += '+' + c + 'xcos(' + root(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * -c * k, 0, c, 0]); }
-			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 > 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = +(s4 / 3) / (s2 / 1); ret += '+' + c + 'xcosh(' + root(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * +c * k, 0, c, 0]); }
-			if (s1 != 0 && s2 == 0 && s3 * s1 < 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = -(s3 / 3) / (s1 / 1); ret += '+' + c + '(cos(' + root(k) + 'x)-' + root(k) + 'xsin(' + root(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * -c * k, 0, c]); }
-			if (s1 != 0 && s2 == 0 && s3 * s1 > 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = +(s3 / 3) / (s1 / 1); ret += '+' + c + '(cosh(' + root(k) + 'x)+' + root(k) + 'xsinh(' + root(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * +c * k, 0, c]); }
+			// if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = -(s4 / 3) / (s2 / 1); ret += '+' + c + 'xcos(' + root(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * -c * k, 0, c, 0]); }								//	-2025.2
+			// if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 > 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = +(s4 / 3) / (s2 / 1); ret += '+' + c + 'xcosh(' + root(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * +c * k, 0, c, 0]); }								//	-2025.2
+			// if (s1 != 0 && s2 == 0 && s3 * s1 < 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = -(s3 / 3) / (s1 / 1); ret += '+' + c + '(cos(' + root(k) + 'x)-' + root(k) + 'xsin(' + root(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * -c * k, 0, c]); }	//	-2025.2
+			// if (s1 != 0 && s2 == 0 && s3 * s1 > 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = +(s3 / 3) / (s1 / 1); ret += '+' + c + '(cosh(' + root(k) + 'x)+' + root(k) + 'xsinh(' + root(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * +c * k, 0, c]); }	//	-2025.2
+			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 < 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = -(s4 / 3) / (s2 / 1); ret += '+' + coef(c) + 'x*cos(' + rot(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * -c * k, 0, c, 0]); }								//	+2025.2
+			if (s1 == 0 && s2 != 0 && s3 == 0 && s4 * s2 > 0 && (s2 / 1) * (s6 / 5) == (s4 / 3) * (s4 / 3)) { c = s2; k = +(s4 / 3) / (s2 / 1); ret += '+' + coef(c) + 'x*cosh(' + rot(k) + 'x)'; sub([0, 5 * c * k * k, 0, 3 * +c * k, 0, c, 0]); }							//	+2025.2
+			if (s1 != 0 && s2 == 0 && s3 * s1 < 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = -(s3 / 3) / (s1 / 1); ret += '+' + coef(c) + '(cos(' + rot(k) + 'x)-' + rot(k) + 'x*sin(' + rot(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * -c * k, 0, c]); }	//	+2025.2
+			if (s1 != 0 && s2 == 0 && s3 * s1 > 0 && (s1 / 1) * (s5 / 5) == (s3 / 3) * (s3 / 3)) { c = s1; k = +(s3 / 3) / (s1 / 1); ret += '+' + coef(c) + '(cosh(' + rot(k) + 'x)+' + rot(k) + 'x*sinh(' + rot(k) + 'x))'; sub([0, 0, 5 * c * k * k, 0, 3 * +c * k, 0, c]); }	//	+2025.2
 			ret = ret.replace('+-', '-');
 			return [s, ret];
 			function rnd(num) { return Math.round(num * 1000) / 1000 }
 			function root(num) { return Math.round(Math.sqrt(num) * 1000) / 1000 }
+			function rot(num) { return coef(root(num)) }	//	+2025.2
 			function sub(array) { s = s.sub(new markedplacevalue(new wholeplacevalue(array.map(function (x) { return new complex(x);})), -7));[s0, s1, s2, s3, s4, s5, s6, s7] = [s.getreal(0), s.getreal(-1), s.getreal(-2), s.getreal(-3), s.getreal(-4), s.getreal(-5), s.getreal(-6), s.getreal(-7)]; }
 			function coef(x) { return x==1 ? '' : x }	//	2019.11	Added
 		}
@@ -173,7 +179,6 @@ class laplace extends abstractpolynomial {
 				if (coef == 'NaN') coef += '*';
 				//alert(JSON.stringify([digit, new placevaluecomplex([digit]), new placevaluecomplex([digit]).toString(true), new placevaluecomplex([digit]).tohtml(true)]));
 				var exp1 = ''; if (pow != 0) exp1 = 'x^' + pow; if (pow == 1) exp1 = 'x'; if (pow == -1) exp1 = '-' + base;	//	2018.10	added var cause strict
-				//exp2 = '';
 				ret += '+';
 				ret += exp1 ? (coef + exp1) : coef ? coef : '1';
 			}
