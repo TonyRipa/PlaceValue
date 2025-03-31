@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    11/27/2024
+// Date:    3/31/2025
 // PlaceValueRatio: a datatype for representing base agnostic arithmetic via ratios of WholePlaceValues
 
 class placevalueratio {					//	+2023.5
@@ -60,13 +60,28 @@ class placevalueratio {					//	+2023.5
 		}
 	}
 
+	check(other) {	//	+2025.3
+		if (!(this instanceof placevalueratio)) throw new Error("PlaceValueRatio.Check 1 Fail : This isn't PlaceValueRatio")
+		var translate = x => x == rational ? 'rational' : x == complex ? 'complex' : x == rationalcomplex ? 'rationalcomplex' : 'other'
+		if (arguments.length === 0) {
+			var numtype = this.num.check()
+			var dentype = this.den.check()
+			if (numtype != dentype) throw new Error(`PlaceValueRatio.Check 1a Fail: numtype(${translate(numtype)}) , dentype(${translate(dentype)})`)
+			return numtype
+		}
+		if (!(other instanceof placevalueratio)) throw new Error("PlaceValueRatio.Check 2 Fail : Other isn't PlaceValueRatio")
+		var othertype = other.check()
+		var mytype = this.check()
+		if (mytype != othertype) throw new Error(`PlaceValueRatio.Check 2 Fail: mytype(${translate(mytype)}) , othertype(${translate(othertype)})`)
+		return mytype;
+	}
+
 	get(i) {	//	+2024.5
 		return this.quotient().get(i)
 	}
 
 	tohtml(short) {       // Long and Short HTML  2015.11
 		if (short) return this.toString(true);
-		//return this.num.toString(true) + ' / ' + this.den + ' = ' + this.num.divideleft(this.den);	//	+2023.5	//	-2023.11
 		return  this.num.divideleft(this.den) + ' = ' + this.num.toString(true) + ' / ' + this.den + ' = ' + new markedplacevalue(this.num).divide(new markedplacevalue(this.den));	//	+2023.11
 	}
 
@@ -127,6 +142,7 @@ class placevalueratio {					//	+2023.5
 
 	isconst() { return this.num.isconst() && this.den.isconst(); }	//	+2023.8
 	isNaN() { return this.num.isNaN() || this.den.isNaN(); }  //  2018.3
+	isneg() { return this.num.isneg() != this.den.isneg() }		//	2025.3
 
 	add(addend) {
 		if (!(this.num.datatype == addend.num.datatype)) { var s = "placevalueratio.add's arg (placevalueratio) different digit datatype\n" + this.num.datatype + '\n' + addend.num.datatype; alert(s); throw new Error(s); } //  2018.2
@@ -218,6 +234,12 @@ class placevalueratio {					//	+2023.5
 		return new placevalueratio(num, this.den);
 	}
 
+	negate() {	//	+2025.3
+		this.check()
+		if (this.den.isneg()) return new this.constructor(this.num,this.den.negate())
+		return new this.constructor(this.num.negate(),this.den)
+	}
+
 	unscale(scalar) { return new this.constructor(this.num.unscale(scalar), this.den) }	//	+2024.8
 
 	laplaceadd(other) { return this.add(other) }	//	+2024.8
@@ -294,6 +316,10 @@ class placevalueratio {					//	+2023.5
 		return ratio.get(0)
 	}
 	*/
+
+	regroup(base) {	//	+2025.3
+		return new this.constructor(this.num.regroup(base), this.den.regroup(base))
+	}
 
 	factor() {	//	+2023.11
 		let n = this.num.clone()
