@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 3/31/2025
+Date : 4/30/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -85,6 +85,12 @@ The PlaceValue data-type is particularly well-suited to arithmetic in different 
 BasedMarkedPlaceValue
 -------------
 <i>basedmarkedplacevalue.js</i> is a 1D datatype for representing PlaceValues that have a base; an application of the MarkedPlaceValue datatype.
+
+The PlaceValue data-type is particularly well-suited to arithmetic in different bases. Based arithmetic works for a particular base. PlaceValue arithmetic works for all bases.
+
+RepeatingBasedMarkedPlaceValue
+-------------
+<i>basedmarkedplacevalue.js</i> is a 1D datatype for representing PlaceValues that have a base; an application of the BasedMarkedPlaceValue datatype.
 
 The PlaceValue data-type is particularly well-suited to arithmetic in different bases. Based arithmetic works for a particular base. PlaceValue arithmetic works for all bases.
 
