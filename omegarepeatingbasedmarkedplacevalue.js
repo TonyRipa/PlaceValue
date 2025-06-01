@@ -1,9 +1,9 @@
 
 // Author:	Anthony John Ripa
 // Date:	5/30/2025
-// RepeatingBasedMarkedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the BasedMarkedPlaceValue datatype
+// OmegaRepeatingBasedMarkedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the BasedMarkedPlaceValue datatype
 
-class repeatingbasedmarkedplacevalue extends basedmarkedplacevalue {
+class omegarepeatingbasedmarkedplacevalue extends basedmarkedplacevalue {
 
 	toString() {
 
@@ -16,10 +16,9 @@ class repeatingbasedmarkedplacevalue extends basedmarkedplacevalue {
 					let seq = modquo2seq(modquo)
 				let rest = whole.clone()
 					rest.set(0,modquo.quos[0])
-					let prefix = new markedplacevalue(rest,exp).toString()	//	+2025.5
+					let prefix = new markedplacevalue(rest,exp).toString()
 
-		//return rest.toString() + '.' + (seq.startsWith('[') ? seq : seq.slice(1)) + ' Base ' + base	//	-2025.5
-		return prefix + (prefix.includes('.')?'':'.') + (seq.startsWith('[') ? seq : seq.slice(1)) + ' Base ' + base	//	+2025.5
+		return prefix + (prefix.includes('.')?'':'.') + (seq.startsWith('[') ? seq : seq.slice(1)) + modquo.mods.slice(-1)[0].todigit() + ' Base ' + base
 
 		function modquo2seq(modquo) {
 			let {mods,quos} = modquo
