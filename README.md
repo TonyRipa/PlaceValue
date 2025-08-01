@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 6/30/2025
+Date : 7/31/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -631,6 +631,10 @@ We start with a more mundane example. As we saw in measure.html, PlaceValue can 
 
 As we saw in measure.html, PlaceValue can accommodate different size-scales e.g. points, lines, planes, without overflow or underflow. This is particularly handy for the Dirac Delta Function. The Dirac Delta Function is supposed to have such a large value at x=0 that integrating past x=0 contributes a unit amount of area, even though the width is only that of a point. This is difficult if you are stuck working with a data-type such as real numbers. This is not a problem for the relatively larger data-type of PlaceValue. For PlaceValue, a point may be represented by the PlaceValue 1, a unit-line-segment by the PlaceValue 10, and a unit-square by the PlaceValue 100. If you want the product to be a unit-area i.e. 100, while the width is a point i.e. 1, then you set the height to be 100.
 The Dirac Delta Function is 0 everywhere, except at x=0, where the value is the PlaceValue 100.
+
+LC Circuits
+----------------------
+<i>circuit.html</i> models LC Circuits using the PlaceValue datatype, instead of real functions. It is analogous to Laplace solution of differential equations, or operational calculus.
 
 PlaceValue Mechanics
 ----------------------

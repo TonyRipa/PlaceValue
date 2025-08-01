@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	9/30/2024
+// Date:	7/31/2025
 // WholePlaceValue: a datatype for representing base-agnostic arithmetic via whole numbers
 
 var P = JSON.parse; JSON.parse = function (s) { return P(s, function (k, v) { return (v == '∞') ? 1 / 0 : (v == '-∞') ? -1 / 0 : (v == '%') ? NaN : v }) }
@@ -17,6 +17,7 @@ class wholeplacevalue {	//	+2020.11
 			if (Array.isArray(arg)) {																		//	2017.11
 				man = arg;
 				if (man.length==0) throw new Error('notype')												//	2019.5	Added
+				if (Array.isArray(man[0])) throw new Error('Error: Wholeplacevalue nested array')			//	+2025.6
 				datatype = (man.length > 0) ? man[0].constructor : rational;
 			}
 		}
@@ -338,7 +339,6 @@ class wholeplacevalue {	//	+2020.11
 
 	div10() { this.check(); this.mantisa.shift() }							//	2018.6	Caller can unpad w/out knowing L2R or R2L
 	times10() { this.check(); this.mantisa.unshift(new this.datatype()) }	//	Caller can pad w/out knowing L2R or R2L  2015.7
-	//div10s(s) { this.check(); me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }  // 2017.6    clone	//	-2021.1
 	div10s(s) { this.check(); var me = this.clone(); while (s-- > 0) me.mantisa.shift(); return me.clone(); }					//	+2021.1
 	times10s(s) {this.check(); if(s < 0) return this.div10s(-s); var me = this.clone(); while (s-- > 0) me.mantisa.unshift(new this.datatype()); return me;} //	+2020.11
 

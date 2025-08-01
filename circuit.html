@@ -1,0 +1,86 @@
+﻿
+<!--
+	Author:	Anthony John Ripa
+	Date:	7/31/2025
+	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the MarkedPlaceValue(Complex) datatype
+-->
+
+<html>
+<head>
+	<title>PlaceValue Circuit</title>
+	<script src='../js/jquery.js'></script>
+	<script>        
+		window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
+	</script>
+	<script>
+		window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.0/math.min.js'><" + "/script>")
+	</script>
+	<script src='digit.js'></script>
+	<script src='rational.js'></script>
+	<script src='complex.js'></script>
+	<script src='rationalcomplex.js'></script>
+	<script src='wholeplacevalue.js'></script>
+	<script src='abstractpolynomial.js'></script>
+	<script src='laplace.js'></script>
+	<script src='markedplacevalue.js'></script>
+	<style>
+		h1 { text-align: center; }
+		body, input { font-family: "Arial Unicode MS" }
+		#main { border-spacing: 0; float: left; margin: 10px; }
+		#col3 { width: 100px }
+		#ao, #bo, #co { min-width: 150px; text-align: right }
+		#augend:nth-child(1) td { color: green; }
+		#base>td { border-bottom: 1pt solid black; color: blue; }
+		input { text-align: right; }
+	</style>
+</head>
+<body>
+	<h1>LC Circuit Equation: V = L<math><mfrac><mi>d</mi>dt</mfrac></math>i+<math><mfrac><mi>1</mi>C</mfrac></math>∫i dt</h1>
+	<p>
+		L = <input id="L" value="1" /><br>
+		<math><mfrac><mi>1</mi>C</mfrac></math> = <input id="C" value="1" /><br>
+		V = <input id="V" value="1" /><button onclick='diffeq()'>DiffEQ</button><br>
+	<p>V/s  = L*s*I(s) + (1/C)*I(s)/s<br>
+	   V = I(s) * (L * s^2 + (1/C))<br>
+	   I(s) = V / (L * s^2 + (1/C))<br>
+	   I(s) = <span id="num">1</span> / (<span id="L2">1</span>s<sup id="sup">2</sup> + <span id="C2">1</span>)</p>
+	<table id="main">
+		<tr id="augend"><td></td><td><input id='a' value='' onchange="$(this).removeAttr('data-val')" /></td><td id="col3"></td><td id="ao"></td></tr>
+		<tr id="base"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option></select></td><td><input id='b' value='' onchange="$(this).removeAttr('data-val')"></td><td></td><td id="bo">&nbsp;</td></tr>
+		<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td></td><td id="co"></td></tr>
+	</table>
+	<script>
+		function diffeq() {
+			var L = $('#L').val()
+			$('#L2').html(L)
+			var C = $('#C').val()
+			$('#C2').html(C)
+			var n = '2'
+			var num = $('#V').val()
+			$('#num').html(num)
+			var f = laplace
+			var s = L + '*s^' + n + '+' + C;
+			$('#a').val(num);
+			$('#b').val(s)
+			$('#op').val('/')
+			compute();
+		}
+		function compute() {
+			f = laplace
+			var a = getinput('#a');
+			var b = getinput('#b');
+			var c = [a.add, a.sub, a.times, a.divide][$('#op')[0].selectedIndex].call(a, b);
+			output(a, b, c);
+			function getinput(elem) { return new f().parse($(elem).attr('data-val') || $(elem).val()); }
+			function output(a, b, c) {
+				$('#c').attr('data-val', JSON.stringify(c));
+				$('#c').val(c.toString());
+				showInternal(a, '#ao');
+				showInternal(b, '#bo');
+				showInternal(c, '#co');
+				function showInternal(pv, elem) { $(elem).html(pv.tohtml()); }
+			}
+		}
+	</script>
+</body>
+</html>

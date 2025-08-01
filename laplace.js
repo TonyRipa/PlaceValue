@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	2/28/2025
+// Date:	7/31/2025
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -77,10 +77,6 @@ class laplace extends abstractpolynomial {
 			alert('othertype')
 		}
 	}
-
-	//tohtml() {                                // Replacement for toStringInternal 2015.7
-	//	return this.pv.tohtml(true) + ' base ' + this.base;    // tohtml(true) includes <s>    2015.11
-	//}
 
 	toString() {
 		return laplace.toStringCosh(this.pv, this.base);    // 2015.11
@@ -161,7 +157,8 @@ class laplace extends abstractpolynomial {
 		if (x[x.length - 1] == 0 && x.length > 1) {     // Replace 0 w x.length-1 because L2R 2015.7
 			x.pop();                                    // Replace shift with pop because L2R 2015.7
 			if (x.length == 0) x = [new this.pv.whole.datatype()];  //  2018.6
-			return laplace.toStringXbase(new markedplacevalue(new wholeplacevalue([x]), 0), base);  // added namespace  2015.7
+			return laplace.toStringXbase(new markedplacevalue(new wholeplacevalue(x), 0), base)	//	+2025.7
+			//return laplace.toStringXbase(new markedplacevalue(new wholeplacevalue([x]), 0), base);  // added namespace  2015.7	//	-2025.7
 		}
 		var ret = '';
 		var str = x//.toString().replace('.', '');
