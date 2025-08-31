@@ -4,7 +4,7 @@ PlaceValue: A data-type for base-agnostic arithmetic
 
 Author : Anthony John Ripa
 
-Date : 7/31/2025
+Date : 8/31/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -12,21 +12,21 @@ Live Demo at <a target='_blank' href='http://tonyripa.github.io/PlaceValue/'>htt
 
 Abstract
 -----------
-This project is a refactoring of arithmetic, via a new data-type (PlaceValue) which represents base-agnostic arithmetic via numbers whose digits are real. The effects of this refactoring are manifold.
+PlaceValue refactors arithmetic via a new data type that models base-agnostic computation using real-valued digits. The implications are manifold.
 
-Mathematical computations can be thought of as coming in two varieties: numerical and symbolic. Numerical has an advantage of being simple. Symbolic has an advantage of addressing a larger class of objects. The PlaceValue data-type (having characteristics of each of these varieties) manifests both advantages.
+Mathematical computation broadly comes in two varieties: numerical and symbolic. Numerical methods are simple; symbolic methods address a larger class of objects. PlaceValue (combining characteristics of both) aims to retain both advantages.
 
-In much the same way that Heaviside with his Operational Calculus was able to reduce calculus to algebra, PlaceValue reduces algebra to arithmetic. By transitivity, calculus is reduced to arithmetic. Given that there are actually multiple reduction avenues available for each step, this transitive reduction turns out to be robust.
+Analogous to Heaviside’s operational calculus (reducing differential operators to algebra), PlaceValue reduces algebra to arithmetic; consequently many routine calculus manipulations reduce to arithmetic. Multiple independent reduction avenues at each step make the overall reduction robust. We demonstrate this with worked examples (e.g., polynomial long-division as PlaceValue division, and Laplace-style differentiation as pointwise multiplication), emphasizing that no ad hoc limits or placeholder variables are required.
 
-The reduction of differential equations comes with little effort. Quantum mechanics, with its two standard formulations of wave mechanics & matrix mechanics, admits a corresponding third formulation PlaceValue Mechanics.
+Differential equations follow with little additional machinery. Quantum mechanics, with its standard wave and matrix formulations, suggests a complementary perspective we call “PlaceValue mechanics.”
 
-For machine learning, convolutional networks (at least any convolutional layer of them) can be reduced to a single instance of a PlaceValue. Given that one of the four basic arithmetic operators * is essentially a convolution, this also comes with little surprise. Training this layer (i.e. deconvolution) quickly reduces to PlaceValue division.
+In machine learning, a convolutional layer can be represented as a single PlaceValue instance, since one of the four basic arithmetic operators (\*) is essentially a convolution. Training (deconvolution) then reduces to PlaceValue division.
 
-One of the happiest gains afforded by the PlaceValue data-type is in its formulation of Measure Theory. Measure Theory has traditionally been rather limited by its reliance on measures as real numbers. Extensions relaxing this constraint have not gained wide acceptance. Using PlaceValue, the Borel-Kolmogorov paradox is quickly resolved as it was essentially an unfortunate (but necessary) consequence of a lossy type cast from PlaceValue to real.
+Measure theory also benefits. Classical approaches are constrained by representing measures solely as real numbers. Using PlaceValue, the coordinate-dependence behind the Borel–Kolmogorov paradox is avoided: the paradox arises from a lossy cast from PlaceValue to reals. By keeping scale explicitly in the representation (point, line, area, volume correspond to successive powers of a base), conditional and independence calculations remain well-posed even when classical treatments collapse to 0/0 or ∞/∞.
 
-The ease with which this data-type (including its corresponding functions and above applications) can and has been implemented in computer software can be thought of as stemming from formal language theory and PlaceValue’s underlying grammar type. Numerical types can be thought of as regular grammars, and instances of those types (numbers) can be regarded as regular expressions. Symbolic expressions, on the other hand, generally cannot and so are handled by the more complex context-free grammars, which are a superset of regular grammars. PlaceValue can be considered a regular grammar, and so admits a simple computational approach.
+Implementation is straightforward. Viewed through formal-language theory, traditional numeric types behave like regular grammars (numbers as regular expressions), symbolic expressions typically require context-free grammars (a strict superset of regular), and PlaceValue remains regular—hence simple and efficient.
 
-As all classical computation is as true for silicon hardware as it is for bio hardware, the same efficiency gains also hold for both mental and hand computations.
+Because the model is computational rather than hardware-specific, the same efficiency gains extend to mental, manual, and silicon computation alike.
 
 Introduction
 ------------

@@ -1,24 +1,58 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/30/2025
+// Date:	8/31/2025
 // RepeatingBasedMarkedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the BasedMarkedPlaceValue datatype
 
 class repeatingbasedmarkedplacevalue extends basedmarkedplacevalue {
+
+	parse(str) {	//	+2025.8
+		if (!str.includes('[')) return super.parse(str)
+		str = str.toString();
+		if (str instanceof String || typeof (str) == 'string') if (str.includes('mantisa')) {
+			var a = JSON.parse(str);
+			return new this.constructor(a.base, this.pv.parse(JSON.stringify(a.pv)));
+		}
+		let base, pv;
+		if (str.toUpperCase().includes('BASE')) {
+			let i = str.toUpperCase().indexOf('BASE');
+			let left = str.slice(0, i).trim();
+			let right = str.slice(i + 4).trim();
+			pv = this.pv.parse(left);
+			base = Number(right);
+		} else {
+			base = 10;
+			pv = split(str,this.pv,base)
+		}
+		return new this.constructor(base, pv);			
+		function split(str,pv,base) {
+			if (!str.includes('[')) alert('Split expects [')
+			let [prefix,repetend] = str.split('[')
+			prefix = pv.parse(prefix)
+			let exp = prefix.exp
+			repetend = repetend.slice(0,-1)
+			repetend = pv.parse(repetend).unscale(base**repetend.length-1)
+			repetend.exp = exp
+			let sum = prefix.add(repetend)
+			return sum
+		}
+	}
 
 	toString() {
 
 		let base = this.base
 		let mpv = this.pv
-			let exp = mpv.exp
-			let whole = mpv.whole
+			// let exp = mpv.exp		//	-2025.8
+			// let whole = mpv.whole	//	-2025.8
+			let whole = mpv.whole.scale(base ** mpv.exp)	//	+2025.8
+			let exp = 0										//	+2025.8
 				let last = whole.get(0)
 					let modquo = regroup(last)
 					let seq = modquo2seq(modquo)
 				let rest = whole.clone()
 					rest.set(0,modquo.quos[0])
-					let prefix = new markedplacevalue(rest,exp).toString()	//	+2025.5
+					//let prefix = new markedplacevalue(rest,exp).toString()	//	+2025.5	//	-2025.8
+					let prefix = new markedplacevalue(rest,exp).regroup(base).toString()	//	+2025.8
 
-		//return rest.toString() + '.' + (seq.startsWith('[') ? seq : seq.slice(1)) + ' Base ' + base	//	-2025.5
 		return prefix + (prefix.includes('.')?'':'.') + (seq.startsWith('[') ? seq : seq.slice(1)) + ' Base ' + base	//	+2025.5
 
 		function modquo2seq(modquo) {
