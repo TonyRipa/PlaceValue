@@ -1,9 +1,41 @@
 
 // Author:	Anthony John Ripa
-// Date:	5/30/2025
+// Date:	9/27/2025
 // OmegaRepeatingBasedMarkedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the BasedMarkedPlaceValue datatype
 
 class omegarepeatingbasedmarkedplacevalue extends basedmarkedplacevalue {
+
+	parse(str) {	//	+2025.9
+		if (!str.includes('[')) return super.parse(str)
+		str = str.toString();
+		if (str instanceof String || typeof (str) == 'string') if (str.includes('mantisa')) {
+			var a = JSON.parse(str);
+			return new this.constructor(a.base, this.pv.parse(JSON.stringify(a.pv)));
+		}
+		let base, pv;
+		if (str.toUpperCase().includes('BASE')) {
+			let i = str.toUpperCase().indexOf('BASE');
+			let left = str.slice(0, i).trim();
+			let right = str.slice(i + 4).trim();
+			pv = this.pv.parse(left);
+			base = Number(right);
+		} else {
+			base = 10;
+			pv = split(str,this.pv,base)
+		}
+		return new this.constructor(base, pv);			
+		function split(str,pv,base) {
+			if (!str.includes('[')) alert('Split expects [')
+			let [prefix,repetend] = str.split('[')
+			repetend = repetend.split(']')[0]
+			prefix = pv.parse(prefix)
+			let exp = prefix.exp
+			repetend = pv.parse(repetend).unscale(base**repetend.length-1)
+			repetend.exp = exp
+			let sum = prefix.add(repetend)
+			return sum
+		}
+	}
 
 	toString() {
 
