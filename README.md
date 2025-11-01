@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 9/30/2025
+Date : 10/31/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -40,6 +40,14 @@ In MATLAB, we may represent the variable x as something like [0,1,2,3,4,5,6,7,8,
 PlaceValue offers an alternate approach. We may represent MATLAB's x = [0,1,2,3,4,5,6,7,8,9] by a Fourier-type Transform of x = [0, 1]. PlaceValue can calculate x\*x by calculating [0, 1] \* [0, 1] = [0, 0, 1]. This is nothing more than 10 \* 10 = 100.
 
 By building a data-type whose base operations are constructed to take advantage of such efficiencies, many applications which are handled in an otherwise convoluted manner may now be handled in an elegant manner.
+
+### Related Work
+
+The closest related works appear to be Moore 1962, and Wildberger 2010.
+
+In "Convolution Products and Quotients and Algebraic Derivatives of Sequences", Moore discusses sequences, written like $\{0,0,2,6,12,20,...\}$, and operations on them. He uses the familiar convolutional product $\{e_0,e_1,e_2,e_3,...\}\{n_0,n_1,n_2,n_3,...\} = \{e_0n_0,e_0n_1+e_1n_0,e_0n_2+e_1n_1+e_2n_0,...\}$. He notes $\{0,0,0,...\}$ and $\{1,0,0,0,...\}$ function as the zero and unit elements respectively. He denotes the sequence $\tau = \{0,1,0,...\}$. He notes $\tau^n = \{\underbrace{0,...,0}_{\text{n zeros}},1,0,...\}$.  This allows us to express the sequence $\{e_0,e_1,e_2,e_3,...\}$ as the sum $e_0+e_1\tau+e_2\tau^2+\cdots$ . He notes that the class of sequences with ordinary addition and convolutional product forms a commutative ring with no non-zero divisors (i.e. an integral domain). He notes the integral domain can be used to create a field of ordered pairs. He notes a special case called the summing operator $\frac{1}{1-\tau}=\{1,1,1,...\}$ . He notes the sequence $\{n\}$ (or in greek $\{\nu\}$) is $\frac{\tau}{(1-\tau)^2}$ . He defines the derivative operator as $D\{e_n\}=\{(n+1)e_{n+1}\}=\{e_1,2e_2,3e_3,...\}$ .
+
+In [Math Foundations](http://youtube.com/watch?v=91c5Ti6Ddio&list=PLIljB45xT85DGxj1x_dyaSggbauAgrB6R), Wildberger creates an entire course (compatible with Moore 1962) where he fills out an entire field of study based on objects he calls polynumbers. These polynumbers are like Moore's sequences, but are written vertically. For example, $\substack{\sqcap\\1\\2}+\substack{\sqcap\\3}=\substack{\sqcap\\4\\2}$ . These caps distinguish the integer 1 from the polynumber $\substack{\sqcap\\1}$ . Also Wildberger calls the special polynumber $\alpha = \substack{\sqcap\\0\\1}$ , which is like Moore's $\tau$ .
 
 ## 2. Core Data Types (1D)
 

@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2022
+// Date:	10/31/2025
 // BasedPlaceValue: a datatype for representing base-gnostic arithmetic; an application of the WholePlaceValue datatype
 
 class basedplacevalue extends abstractpolynomial {
@@ -43,8 +43,7 @@ class basedplacevalue extends abstractpolynomial {
 
 	align(other) {
 		this.check(other);
-		//if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new this.constructor(10, this.pv.parse('%')) }	//	-2022.7
-		if (this.base != other.base) {																															//	+2022.7
+		if (this.base != other.base) {													//	+2022.7
 			let temp = other.regroup(this.base);
 			other.pv = temp.pv;
 			other.base = temp.base;
@@ -54,7 +53,9 @@ class basedplacevalue extends abstractpolynomial {
 	toString() {
 		let sign = this.pv.isneg() ? '-' : '';
 		let pv = this.pv.isneg() ? this.pv.negate() : this.pv;
-		return sign + pv.toString() + ' Base ' + this.base;
+		//return sign + pv.toString() + ' Base ' + this.base;											//	-2025.10
+		let base = math.typeOf(this.base)=='number' ? this.base : this.base.get(0).toString(true,true)	//	+2025.10
+		return sign + pv.toString() + ' Base ' + base													//	+2025.10
 	}
 
 	comparebig(other) { this.check(other); return this.pv.comparebig(other.pv); }		//	+2022.7
