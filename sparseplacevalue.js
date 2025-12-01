@@ -1,6 +1,6 @@
 
 // Author:  Anthony John Ripa
-// Date:    12/31/2024
+// Date:    11/30/2025
 // SparsePlaceValue: a datatype for representing base-agnostic arithmetic via sparse numbers
 
 class sparseplacevalue {			//	2019.4	Added
@@ -86,7 +86,6 @@ class sparseplacevalue {			//	2019.4	Added
 			if (terms.length == 0) return ret;
 			if (terms[0] != '-' && terms[0] != '+') terms = '+' + terms;							//	2020.1	Added
 			var num = datatype.regex(); //  2017.6
-			//var reg = new RegExp(num + '(E' + num + '(,' + num + ')*' + ')?', 'g');	//	2017.7	//	2020.1	Removed
 			var reg = new RegExp('[\+\-]' + num + '(E' + num + '(,' + num + ')*' + ')?', 'g');		//	2020.1	Added
 			var term;
 			while (term = reg.exec(terms))
@@ -260,7 +259,8 @@ class sparseplacevalue {			//	2019.4	Added
 		this.check();
 		var digit = i < 0 ? new this.datatype.parse(0) : this.points[this.points.length - 1 - i];    //  R2L  2015.7
 		//var a = digit[0].toString(false, true);	//	-2020.5
-		var a = digit[0].toString(false);			//	+2020.5
+		//var a = digit[0].toString(false);			//	+2020.5	//	-2025.11
+		var a = digit[0].toString(false, true);					//	+2025.11	long=true makes neg prefix
 		var b = digit[1];
 		if (b.is0()) return a;             //  Every 2017.1
 		return a + 'E' + b.mantisa.map(x=>x.toString(false,true));                 //  2017.7  map
