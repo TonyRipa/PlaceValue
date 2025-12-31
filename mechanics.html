@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	5/31/2024
+	Date:	12/31/2025
 	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the MarkedPlaceValue(Complex) datatype
 -->
 
@@ -150,11 +150,13 @@
 				if ($('#mom')[0].selectedIndex) {
 					$('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always i by Heisenberg Uncertainty</a>");
 					$('#momx').html("i0 * xΨ");	//	+2020.4
-					return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('i0'), 0))); //  parse is implementation independent 2017.4
+					//return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('i0'), 0))); //  parse is implementation independent 2017.4	//	-2025.12
+					return state.slope().times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('i'), 0)))	//	+2025.12
 				}
 				$('#d').html("<a href='http://wikipedia.org/wiki/Canonical_commutation_relation'>← Always 1 by Heisenberg Uncertainty</a>");
 				$('#momx').html("10 * xΨ");	//	+2020.4
-				return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('10'), 0)));     //  2017.11   WholePlaceValue
+				//return state.times(new laplace("s", new markedplacevalue(new wholeplacevalue(complex).parse('10'), 0)));	//  2017.11   WholePlaceValue	// -2025.12
+				return state.slope()	//	+2025.12
 			}
 			eval();
 		}

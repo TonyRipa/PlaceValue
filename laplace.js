@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	7/31/2025
+// Date:	12/31/2025
 // Laplace:	a datatype for representing the Laplace Transform; an application of the MarkedPlaceValue(Complex) datatype
 
 class laplace extends abstractpolynomial {
@@ -92,9 +92,14 @@ class laplace extends abstractpolynomial {
 		if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return laplace.parse('0/0') }
 	}
 
+	slope() {	//	+2025.12
+		let shift = this.times(new laplace(this.base, new markedplacevalue(new wholeplacevalue(complex).parse('10'), 0)))
+		let f0 = shift.pv.get(0)
+		return shift.sub(new laplace(this.base, new markedplacevalue(new wholeplacevalue([f0]), 0)))
+	}
+
 	static toStringCosh(pv, base) { // 2015.11
 		var s = pv.clone();
-		//var extra = new placevaluecomplex(new wholeplacevalue([0]), -1);
 		var trigreal = '';
 		var trigimag = '';
 		//alert(JSON.stringify(s))

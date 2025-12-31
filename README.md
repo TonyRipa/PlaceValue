@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 11/30/2025
+Date : 12/31/2025
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -348,7 +348,7 @@ Laplace then formats MarkedPlaceValue(Complex)'s result as exp(-x) .
 
 Viewing the Laplace transform of exp(-x) [ which is 1/(s+1) ] as the fraction 1 / 11 has advantages. Specifically, viewing the 1/11 in the expanded form 0.1<s>1</s>1<s>1</s> . We can see from the expanded form what appear to be the Taylor Coefficients of the Taylor expansion of exp(-x) [ however without the factorial denominators ] . Specifically, what we are seeing is the derivatives of the function exp(-x) , since the Taylor coefficients are the derivatives including the factorials. Another (though perhaps not best) way to say this for those familiar with generating functions, is that the Laplace Transform is the generating function of the derivatives. Without PlaceValue, this nature of the Laplace Transform would be more difficult to see (partly because of the overhead of placeholder variables). Furthermore, we can see why the Laplace Transform should be capable of representing a function: because having all the derivatives of a function at point is enough to represent a typical function (we say typical instead of analytic because Laplace can represent Dirac Delta), as one familiar with Taylor Series knows. Note: it should be noted that Laplace seems to have chosen a different sign convention than generating functions, further obscuring the symmetry.
 
-Ordinarily differentiating loses information because the derivative of any constant is 0. Applying the anti-derivative recovers most of the function, except the lost constant. One benefit of this approach of representing a function as sequence .f(0)f'(0)f"(0)... is that differentiation is shifting. And shifting is invertible, if the endpoint is retained. If we differentiate .f(0)f'(0)f"(0)... by shifting to f(0).f'(0)f"(0)... then we can shift back to .f(0)f'(0)f"(0)... . However, if we do a lossy shift from .f(0)f'(0)f"(0)... to .f'(0)f"(0)... then shifting back cannot recover. Traditional differentiation can be seen as lossy shifting. This approach allows for non-lossy shifting.
+Ordinarily differentiating loses information because the derivative of any constant is 0. Applying the anti-derivative recovers most of the function, except the lost constant. One benefit of this approach of representing a function as sequence .f(0)f'(0)f"(0)... is that differentiation is shifting. And shifting is invertible, if the endpoint is retained. If we differentiate .f(0)f'(0)f"(0)... by shifting to f(0).f'(0)f"(0)... then we can shift back to .f(0)f'(0)f"(0)... . However, if we do a lossy shift from .f(0)f'(0)f"(0)... to .f'(0)f"(0)... then shifting back cannot recover. Traditional differentiation can be seen as lossy shifting. This approach allows for non-lossy shifting. This is exemplified by the classic Laplace derivative formula f'(t)=sF(s)-f(0).
 
 Note that Laplace transforms are convenient for linear differential equations, because addition and constant multiplication work as expected irrespective of the (un)seen factorial factors. Full support for multiplication requires more care than is typically convenient. To that end, we have added factorial-arithmetic to WholePlaceValue. 
 
