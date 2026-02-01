@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 12/31/2025
+Date : 1/31/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -79,7 +79,7 @@ ___
 
 #### Complex
 
-<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValue can use Complex to represent WholePlaceValue's digits. For example: ii * 2 = 2́2́. Imaginary digits look like regular digits but with a dot on top. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
+<i>complex.js</i> is a datatype for representing complex numbers. WholePlaceValue can use Complex to represent WholePlaceValue's digits. For example: $ii * 2 = \overset{.}{2}\overset{.}{2}$. Imaginary digits look like regular digits but with a dot on top. Complex.js is basically implemented as a pair of numeric instance variables (for real and imaginary components) with instance functions appropriately defined to manipulate (carry out complex arithmetic on) its instance variables.
 
 #### RationalComplex
 
