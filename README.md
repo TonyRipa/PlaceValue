@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 1/31/2026
+Date : 2/28/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -849,15 +849,27 @@ PlaceValue is an intuitive and powerful data-type that can handle a wide range o
 
 ### Future Work
 
-Consider a list of whole numbers. It would look something like this : [0,1,2,3,…] . There is a naturalness to the fact that the first number that you encounter when reading the list also happens to be the first whole number. There is also a naturalness to the … being at the end meaning they continue in 'this' way (the word 'this' here is a backward reference to the sequence already read, and so already recognized). Alternatively we could write [...,3,2,1,0]. There is an unnaturalness to the fact that the last number that you encounter when reading the list happens to be the first whole number. There is also an unnaturalness to the ... being at the beginning meaning they continue in 'this' way (the word 'this' here is a forward reference to the sequence not yet read, and so not yet recognized).
+Consider a list of whole numbers. Written in the usual direction, it looks like
 
-When the list is laid out in the same order as the reading order there are good outcomes; when it is not there are bad outcomes. This may seem so obvious as not to mention. I wouldn't write the word duck as kcud because then I have to scan forward to pronounced the d first then scan backward to pronounce the rest. Some things are so obvious they go without saying, until you see someone break the convention, then we are forced to talk about it.
+`[0, 1, 2, 3, …]`.
 
-Apparently we inherited our number system from Arabs. They followed the convention of writing the numbers in the same order that they read in. As it happens, they read in a different order, but this shouldn't matter. Unfortunately, due to broken convention during translation, now it matters a lot. When translating out of Arabic, the word order was correctly translated, but the number order was not translated. This had the unfortunate effect of reversing the number order. Whereas, the number twelve should have been translated to 21 (first the smallest digit, then the next smallest, ...) it was wrongly translated as 12. Written as 21 you know immediate the weight of the value 2 and move on. With the mistranslation, you have to read ahead just to find the weight of each digit. Also instead of starting with the bounded sized end we start with the unbounded sized end.
+There is a natural alignment here: the **first** item you encounter is also the **first** element of the sequence. Likewise, the ellipsis at the end means “continue in *this* way,” where *this* refers backward to a pattern you have already seen and recognized.
 
-I have kept this bizarre mistranslation convention in my work so the number twelve is written as 12. This has made coding inelegant, by forcing me to break the symmetry of my code with intermittent calls to the reverse() function (as well as writing some for-loops backwards), diverting my attention off the task at hand with this constant mental overhead, of broken translation. This is all to serve the user, who I assume has likely grown up with a backwards convention.
+Now reverse the presentation:
 
-For future work, I would clean the code by removing the overhead of intermittent calls to the reverse() function (as well as rewriting backwards for-loops). This would present the number twelve as 21, which is better in the long run.
+`[…, 3, 2, 1, 0]`.
+
+This is cognitively awkward in two ways. First, the **first** element of the mathematical object appears **last** in the reading stream. Second, the ellipsis now points forward: “continue in *this* way,” where *this* refers to structure you have not yet seen.
+
+When a representation runs *with* the reading stream, good outcomes follow; when it runs *against* it, needless overhead follows. This is so basic that it usually goes unmentioned—until someone violates it. I would not write “duck” as “kcud,” because then I must scan ahead to find the leading character and then scan back to assemble the word.
+
+This same issue appears in our inherited numeral convention. We inherited positional numerals from Arabic practice, where the digits were written in the same order they were read. Since Arabic reading order differs from modern left-to-right scripts, this difference should not have mattered—except that it did, because the convention was broken at the point of transfer. When translating out of Arabic, the **word order** was correctly adapted to the new reading direction, but the **digit order** was not. The result was an effective reversal of numeral order relative to encounter order.
+
+In particular: on the correct encounter-order convention, the number twelve should have been written as **21** (smallest place first, then the next place, and so on). Instead it was carried over as **12**. Written as 21, you immediately know the weight of each digit as you encounter it and proceed locally. Written as 12, you must read ahead to determine the weight of each digit. Worse, you begin from the unbounded end (new higher places may always appear), instead of beginning from the bounded end.
+
+I have kept this mistranslation convention in my work—writing twelve as 12—because users have grown up with it. But it makes the implementation inelegant: it forces intermittent `reverse()` calls and backward loops, breaking symmetry and imposing constant, irrelevant overhead.
+
+For future work, I would remove this overhead by adopting the natural encounter-order convention throughout the codebase—representing twelve as **21**—and eliminating the need for repeated reversals (and the corresponding backward loops). This yields a cleaner, more symmetric implementation, and is better in the long run.
 
 ## Appendices
 
