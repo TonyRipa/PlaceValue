@@ -1,6 +1,6 @@
 
 // Author:	Anthony John Ripa
-// Date:	1/31/2025
+// Date:	3/31/2026
 // Polynomial1: a 1-D datatype for representing polynomials; an application of the WholePlaceValue datatype
 
 class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
@@ -20,7 +20,8 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		this.pv = pv;
 	}
 
-	parse(strornode) { //  2017.9
+	//parse(strornode) {	//	2017.9	//	-2026.3
+	parse(strornode, quiet) {			//	+2026.3
 		console.log('<strornode>')
 		console.log(strornode)
 		console.log('</strornode>')
@@ -58,7 +59,8 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		} else if (node.type == 'ParenthesisNode') {	//	+2022.7
 			return this.parse(node.content);
 		} else {										//	+2022.7
-			alert('othertype')
+			if (!quiet)									//	+2026.3
+				alert('othertype')
 		}
 	}
 
@@ -66,7 +68,6 @@ class polynomial1 extends abstractpolynomial {  //  2018.5  Rename polynomial
 		this.check(other);	//	2019.2	Added Check
 		if (this.pv.mantisa.length == 1) this.base = other.base;
 		if (other.pv.mantisa.length == 1) other.base = this.base;
-		//if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial1(1, new wholeplacevalue(['%'])) }	//	2019.2	Removed
 		if (this.base != other.base) { alert('Different bases : ' + this.base + ' & ' + other.base); return new polynomial1(1, this.pv.parse('%')) }			//	2019.2	this.pv
 	}
 

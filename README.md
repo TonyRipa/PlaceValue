@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 2/28/2026
+Date : 3/31/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -23,7 +23,7 @@ Differential equations follow with little additional machinery. Quantum mechanic
 
 In machine learning, a convolutional layer can be represented as a single PlaceValue instance, since one of the four basic arithmetic operators (\*) is essentially a convolution. Training (deconvolution) then reduces to PlaceValue division.
 
-Measure theory also benefits. Classical approaches are constrained by representing measures solely as real numbers. Using PlaceValue, the coordinate-dependence behind the Borel–Kolmogorov paradox is avoided: the paradox arises from a lossy cast from PlaceValue to reals. By keeping scale explicitly in the representation (point, line, area, volume correspond to successive powers of a base), conditional and independence calculations remain well-posed even when classical treatments collapse to 0/0 or ∞/∞.
+PlaceValue also provides a way to retain scale information explicitly in measure-theoretic and probabilistic calculations. In examples involving points, lines, areas, and volumes, this allows conditional and independence calculations to remain informative in cases where classical real-valued reductions collapse to indeterminate forms such as $0/0$ or $\infty/\infty$. We discuss this viewpoint in connection with coordinate-sensitive conditionalization phenomena, including the Borel–Kolmogorov paradox.
 
 Implementation is straightforward. Viewed through formal-language theory, traditional numeric types behave like regular grammars (numbers as regular expressions), symbolic expressions typically require context-free grammars (a strict superset of regular), and PlaceValue remains regular—hence simple and efficient.
 
@@ -853,7 +853,7 @@ Consider a list of whole numbers. Written in the usual direction, it looks like
 
 `[0, 1, 2, 3, …]`.
 
-There is a natural alignment here: the **first** item you encounter is also the **first** element of the sequence. Likewise, the ellipsis at the end means “continue in *this* way,” where *this* refers backward to a pattern you have already seen and recognized.
+There is a natural alignment here: the first* item you encounter is also the first* element of the sequence. Likewise, the ellipsis at the end means “continue in *this* way,” where *this* refers backward to a pattern you have already seen and recognized.
 
 Now reverse the presentation:
 
