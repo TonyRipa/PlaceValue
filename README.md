@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 3/31/2026
+Date : 4/30/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -560,6 +560,8 @@ Pearl continues with the concept of P(A|B). Pearl describes the "|B" as meaning 
 We provide a compromise. P(A|B) ≝ Odds(A&B : B) . The advantage is two-fold. Firstly, this definition provides a calculation as easy as P(A|B) = P(A&B)/P(B) whenever it's defined. Secondly, it works in situations where P(A&B) and/or P(B) are not available. This ameliorates some of Pearl's concern. We retain a mathematical formalism without abandoning principle.
 
 One way to formalize why this works is that we avoided an extensional definition, or defining P(A|B) in terms of probabilities of parts. Much like how the intensionality of Probability Theory requires P(A&B) not to be defined in terms of probabilities of parts (instead opting for operating on the parts themselves before calculating a probability) we did the same with P(A|B). Defining P(A|B) = P(A&B)/P(B) is an extensional definition, and therefore it is fragile. P(A|B) = Odds(A&B : B) is an intensional definition allowing for robustness.
+
+One alternative approach is to reject the intensional vs extensional framing. The intensional/extensional framing cast be cast as functions. We are interested in whether the functions are structure preserving. Earlier, we saw the claim that probability is not distributive; there is not always some f such that P(A & B) is f(P(A),P(B)). This may be true if probability is constructed functions that don't preserve structure. This doesn't mean that all probability must be constructed in this way. Though it does appear that classical probability is constructed this way. The probability functions operate on the relatively large space of events, and transform them to the relatively small space of the unit interval [0,1]. We have already considered extending the range of the probability function from the small range of [0,1] to the relatively larger range of PlaceValue. The expansion of the range of the probaiblity function addressed at least some of the problems seemingly inherant in the extensional/intensional framing. The extensions instead of being forced to be only in [0,1] were now allowed to be part of a larger set. The problem is not that intensions are mapped to extensions, but that some extensions are too small to fully encode the intensions. We can expand the size of the extension (which is really nothing but a representation) to the point that it correctly represents the intension. For example, we may take P(A)=A . In other words, probability is the identity function. Now the previous claim "probability is not distributive; there is not always some f such that P(A & B) is f(P(A),P(B))" is false. First consider the left-hand-side. If P is the identity function then P(A&B)=A&B. Consider the right-hand-side. Take f to be &. With f=& then f(P(A),P(B)) becomes &(P(A),P(B)), or in infix notation P(A)&P(B). With P as identity, this reduces to A&B. Both the left and right hand-side are A&B. Therefore, they can be made equal, in an extensional system.
 
 #### Borel's Paradox
 

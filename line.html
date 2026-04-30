@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	5/31/2023
+	Date:	4/30/2026
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic via numbers whose digits are real
 -->
 
@@ -53,15 +53,16 @@
 			<td>
 				<table class="measuretable">
 					<tr><td></td><td><input id='a' value='1E1,1' onchange="$(this).removeAttr('data-val')" /></td><td><output id="ao"></output></td></tr>
-					<!-- <tr class="line"><td><select id='op'><option>+</option><option>-</option><option>x</option><option selected>/</option><option>⊗</option><option>⊘</option><option>⊖</option></select></td><td><input id='b' value='1E1,1' onchange="$(this).removeAttr('data-val')"></td><td><output id="bo"></output></td></tr>	-2023.5	-->
-					<tr class="line"><td><select id='op'><option>x</option><option selected>/</option></select></td><td><input id='b' value='1E1,1'></td><td><output id="bo"></output></td></tr>											<!--	+2023.5	-->
-					<tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>
+					<tr class="line"><td><select id='op'><option>x</option><option selected>/</option></select></td><td><input id='b' value='1E1,1'></td><td><output id="bo"></output></td></tr>	<!--	+2023.5	-->
+					<!-- <tr><td><button onclick="compute()">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>	-2026.4	-->
+					<tr><td><button onclick="compute(getinput('#a'),getinput('#b'))">=</button></td><td><input id='c' /></td><td><output id="co"></output></td></tr>	<!--	+2026.4	-->
 				</table>
 			</td>
 		</tr>
 	</table>
 	<script type="text/javascript">
 		var f = sparseplacevalue;
+		function getinput(id) { return new f().parse($(id).val()); }//	+2026.4
 		function select1() {										//	+2023.5
 			$('#td1').css('background-color', '#EEEEEE');
 			$('#td2').css('background-color', 'white');
