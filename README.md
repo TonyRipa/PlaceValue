@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 4/30/2026
+Date : 5/31/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -754,11 +754,11 @@ For example, the PlaceValue 421 (in big-endian) would look like this:
 
 This is relatively normal. However, we may rethink of the concept of graphing (or plotting) not as a different mode for visualizing the data, but really just a different way of representing the digits.
 
-For example, in Chinese the digit 1 is _ , the digit 2 is =, and the digit 3 is ≡. Instead of writing 123, I can write \_=≡. If we stop and think about it, plotting a sequence of data is not a data visualization approach, it is a different number system, or merely different digit.
+For example, in Chinese the digit 1 is 一 , the digit 2 is 二 , and the digit 3 is 三 . Instead of writing 123, I can write 一二三. If we stop and think about it, plotting a sequence of data is not a data visualization approach, it is a different number system, or merely different digit.
 
 123
 
-\_=≡
+一二三
 
 <pre>
   *
