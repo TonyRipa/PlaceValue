@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 6/30/2026
+Date : 7/31/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -329,7 +329,7 @@ Exponentials are nothing more than a veneer for MarkedPlaceValue.
 
 ### Fourier
 
-<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the MarkedPlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying MarkedPlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.½̉  base e^xi, and renders on demand as sin(x).
+<i>fourier.js</i> is a datatype for representing complex exponentials; an application of the MarkedPlaceValue(Complex) datatype. Fouriers are like polynomials (specifically Laurent Polynomials) whose base instead of being like x or y, would be e^ix or e^iy. Fourier.js is little more than a complex exponential (or circular trigonometric) looking skin for an underlying MarkedPlaceValue datatype. Fourier takes an input like cis(2x) and stores it as 100 base e^ix. It can then render it on demand in the complex exponential looking form cis(2x). Fourier also recognizes circular trig functions like cos(x), which it stores as ½0.½ base e^ix, and renders on demand as cos(x). Likewise sin(x), which it stores as <s>½</s>̉0.$\overset{.}{½}$ base e^xi, and renders on demand as sin(x).
 If Fourier wants to calculate sin(x)\*cos(x), then it asks MarkedPlaceValue to calculate:
 
 <s>½</s>̉0.½̉  * ½0.½ = <s>¼</s>̉00.0¼̉ 

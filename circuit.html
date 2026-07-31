@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	7/31/2025
+	Date:	7/31/2026
 	Demo for Laplace : a datatype for representing Complex Exponentials; an application of the MarkedPlaceValue(Complex) datatype
 -->
 
@@ -35,10 +35,12 @@
 	</style>
 </head>
 <body>
-	<h1>LC Circuit Equation: V = L<math><mfrac><mi>d</mi>dt</mfrac></math>i+<math><mfrac><mi>1</mi>C</mfrac></math>∫i dt</h1>
+	<!--<h1>LC Circuit Equation: V = L<math><mfrac><mi>d</mi>dt</mfrac></math>i+<math><mfrac><mi>1</mi>C</mfrac></math>∫i dt</h1>-->			<!--	-2026.7	-->
+	<h1>LC Circuit Equation: V = L<math><mfrac><mi>d</mi><mi>dt</mi></mfrac></math>i+<math><mfrac><mi>1</mi><mi>C</mi></mfrac></math>∫i dt</h1>	<!--	+2026.7	-->
 	<p>
 		L = <input id="L" value="1" /><br>
-		<math><mfrac><mi>1</mi>C</mfrac></math> = <input id="C" value="1" /><br>
+		<!--<math><mfrac><mi>1</mi>C</mfrac></math> = <input id="C" value="1" /><br>-->		<!--	-2026.7	-->
+		<math><mfrac><mi>1</mi><mi>C</mi></mfrac></math> = <input id="C" value="1" /><br>	<!--	+2026.7	-->
 		V = <input id="V" value="1" /><button onclick='diffeq()'>DiffEQ</button><br>
 	<p>V/s  = L*s*I(s) + (1/C)*I(s)/s<br>
 	   V = I(s) * (L * s^2 + (1/C))<br>
