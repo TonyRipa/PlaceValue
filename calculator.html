@@ -1,7 +1,7 @@
 ﻿
 <!--
 	Author:	Anthony John Ripa
-	Date:	5/31/2026
+	Date:	9/30/2026
 	Demo for PlaceValue : a datatype for representing base-agnostic arithmetic
 -->
 
@@ -14,7 +14,6 @@
 	<script type="text/javascript">
 		window.jQuery || document.write("<script src='https://code.jquery.com/jquery-latest.js'><" + "/script>")
 	</script>
-	<!--<script src='../js/math3.js'></script>-->	<!-- +2022.7	-->	<!--	-2023.7	-->
 	<script>window.math || document.write("<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjs/4.0.0/math.min.js'><" + "/script>")</script>	<!-- +2023.7	-->
 	<script src='digit.js'></script>	<!--	2019.11	Added	-->
 	<script src='rational.js'></script>
@@ -95,115 +94,115 @@
 	</select>-->
 	<select id="f1" onchange="clean()">
 		<optgroup label="PlaceValues">
-			<option value="14">SparsePlaceValue2</option>
+			<option>SparsePlaceValue2</option>
 		</optgroup>
 		<optgroup label="Applications">
-			<option value="48">Polynomial2</option>					<!-- 45->48 ~2026.5 -->
+			<option>Polynomial2</option>					<!-- 45->48 ~2026.5 -->
 			<!--<option value="46">Laurent Multinomial</option>-->	<!-- -2026.5 -->
-			<option value="49">Laurent 2</option>					<!-- +2026.5 -->
+			<option>Laurent 2</option>					<!-- +2026.5 -->
 		</optgroup>
 	</select>
 	<select id="f2" onchange="clean()">
 		<optgroup label="Primitives">
-			<option value="0">Rational</option>
+			<option>Rational</option>
 		</optgroup>
 		<optgroup label="PlaceValues">
-			<option value="3">WholePlaceValue</option>
-			<option value="6">MarkedPlaceValue</option>
-			<option value="9">PlaceValueRatio</option>
-			<option value="11">SparsePlaceValue1</option>
-			<option value="15">SparsePlaceValueRatio1</option>
-			<option value="17">SparsePlaceValue</option>
-			<option value="20">SparsePlaceValueRatio</option>
+			<option>WholePlaceValue</option>
+			<option>MarkedPlaceValue</option>
+			<option>PlaceValueRatio</option>
+			<option>SparsePlaceValue1</option>
+			<option>SparsePlaceValueRatio1</option>
+			<option>SparsePlaceValue</option>
+			<option>SparsePlaceValueRatio</option>
 		</optgroup>
 		<optgroup label="Applications">
-			<option value="22">BasedPlaceValue</option>
-			<option value="25">BasedMarkedPlaceValue</option>
-			<option value="28">BasedPlaceValueRatio</option>
-			<option value="31">RepeatingBasedMarkedPlaceValue</option>
-			<option value="34">OmegaRepeatingBasedMarkedPlaceValue</option>
-			<option value="37">Polynomial 1</option>
-			<option value="40">Sparse Polynomial 1</option>
-			<option value="43">Polynomial Ratio 1</option>
-			<option value="45">Sparse Polynomial Ratio 1</option>
+			<option>BasedPlaceValue</option>
+			<option>BasedMarkedPlaceValue</option>
+			<option>BasedPlaceValueRatio</option>
+			<option>RepeatingBasedMarkedPlaceValue</option>
+			<option>OmegaRepeatingBasedMarkedPlaceValue</option>
+			<option>Polynomial 1</option>
+			<option>Sparse Polynomial 1</option>
+			<option>Polynomial Ratio 1</option>
+			<option>Sparse Polynomial Ratio 1</option>
 			<!--<option value="47">Laurent Polynomial</option>-->	<!--	-2026.5	-->
-			<option value="47">Laurent</option>						<!--	+2026.5	-->
-			<option value="50">Sparse Polynomial</option>
-			<option value="53">Sparse Polynomial Ratio</option>
-			<option value="56">Exponential</option>
-			<option value="57">Sparse Exponential 1</option>
-			<option value="60">Sparse Exponential Ratio 1</option>
-			<option value="65">Sparse Exponential</option>
-			<option value="68">Sparse Exponential Ratio</option>
-			<option value="70">Sparse Expression 1</option>
-			<option value="73">Sparse Expression Ratio 1</option>
-			<option value="75">Sparse Expression</option>
-			<option value="78">Sparse Expression Ratio</option>
+			<option>Laurent</option>						<!--	+2026.5	-->
+			<option>Sparse Polynomial</option>
+			<option>Sparse Polynomial Ratio</option>
+			<option>Exponential</option>
+			<option>Sparse Exponential 1</option>
+			<option>Sparse Exponential Ratio 1</option>
+			<option>Sparse Exponential</option>
+			<option>Sparse Exponential Ratio</option>
+			<option>Sparse Expression 1</option>
+			<option>Sparse Expression Ratio 1</option>
+			<option>Sparse Expression</option>
+			<option>Sparse Expression Ratio</option>
 		</optgroup>
 	</select>
 	<select id="f3" onchange="clean()">
 		<optgroup label="Primitives">
-			<option value="1">Complex</option>
+			<option>Complex</option>
 		</optgroup>
 		<optgroup label="PlaceValues">
-			<option value="4">WholePlaceValue</option>
-			<option value="7">MarkedPlaceValue</option>
-			<option value="12">SparsePlaceValue1</option>
-			<option value="18">SparsePlaceValue</option>
+			<option>WholePlaceValue</option>
+			<option>MarkedPlaceValue</option>
+			<option>SparsePlaceValue1</option>
+			<option>SparsePlaceValue</option>
 		</optgroup>
 		<optgroup label="Applications">
-			<option value="23">BasedPlaceValue</option>
-			<option value="26">BasedMarkedPlaceValue</option>
+			<option>BasedPlaceValue</option>
+			<option>BasedMarkedPlaceValue</option>
 			<!--<option value="29">BasedPlaceValueRatio</option>-->	<!--	-2026.5	-->
-			<option value="32">RepeatingBasedMarkedPlaceValue</option>
-			<option value="35">OmegaRepeatingBasedMarkedPlaceValue</option>
-			<option value="38">Polynomial 1</option>
-			<option value="41">Sparse Polynomial 1</option>
-			<option value="51">Sparse Polynomial</option>
-			<option value="55">Laurent</option>
-			<option value="58">Sparse Exponential 1</option>
-			<option value="62">Fourier</option>
-			<option value="63">Fourier2</option>
+			<option>RepeatingBasedMarkedPlaceValue</option>
+			<option>OmegaRepeatingBasedMarkedPlaceValue</option>
+			<option>Polynomial 1</option>
+			<option>Sparse Polynomial 1</option>
+			<option>Sparse Polynomial</option>
+			<option>Laurent</option>
+			<option>Sparse Exponential 1</option>
+			<option>Fourier</option>
+			<option>Fourier2</option>
 			<!--<option value="64">Exponential</option>-->	<!--	-2026.5	-->
-			<option value="64">Complex Exponential</option>	<!--	+2026.5	-->
-			<option value="66">Sparse Exponential</option>
-			<option value="71">Sparse Expression 1</option>
-			<option value="76">Sparse Expression</option>
+			<option>Complex Exponential</option>	<!--	+2026.5	-->
+			<option>Sparse Exponential</option>
+			<option>Sparse Expression 1</option>
+			<option>Sparse Expression</option>
 		</optgroup>
 	</select>
 	<select id="f4" onchange="clean()">
 		<optgroup label="Primitives">
-			<option value="2">RationalComplex</option>
+			<option>RationalComplex</option>
 		</optgroup>
 		<optgroup label="PlaceValues">
-			<option value="5">WholePlaceValue</option>
-			<option value="8">MarkedPlaceValue</option>
-			<option value="10">PlaceValueRatio</option>
-			<option value="13">SparsePlaceValue1</option>
-			<option value="16">SparsePlaceValueRatio1</option>
-			<option value="19">SparsePlaceValue</option>
-			<option value="21">SparsePlaceValueRatio</option>
+			<option>WholePlaceValue</option>
+			<option>MarkedPlaceValue</option>
+			<option>PlaceValueRatio</option>
+			<option>SparsePlaceValue1</option>
+			<option>SparsePlaceValueRatio1</option>
+			<option>SparsePlaceValue</option>
+			<option>SparsePlaceValueRatio</option>
 		</optgroup>
 		<optgroup label="Applications">
-			<option value="24">BasedPlaceValue</option>
-			<option value="27">BasedMarkedPlaceValue</option>
-			<option value="30">BasedPlaceValueRatio</option>
-			<option value="33">RepeatingBasedMarkedPlaceValue</option>
-			<option value="36">OmegaRepeatingBasedMarkedPlaceValue</option>
-			<option value="39">Polynomial 1</option>
-			<option value="42">Sparse Polynomial 1</option>
-			<option value="44">Polynomial Ratio 1</option>
-			<option value="46">Sparse Polynomial Ratio 1</option>
-			<option value="52">Sparse Polynomial</option>
-			<option value="54">Sparse Polynomial Ratio</option>	<!-- 55->54 ~2026.5 -->
-			<option value="59">Sparse Exponential 1</option>
-			<option value="61">Sparse Exponential Ratio 1</option>
-			<option value="67">Sparse Exponential</option>
-			<option value="69">Sparse Exponential Ratio</option>
-			<option value="72">Sparse Expression 1</option>
-			<option value="74">Sparse Expression Ratio 1</option>
-			<option value="77">Sparse Expression</option>
-			<option value="79">Sparse Expression Ratio</option>
+			<option>BasedPlaceValue</option>
+			<option>BasedMarkedPlaceValue</option>
+			<option>BasedPlaceValueRatio</option>
+			<option>RepeatingBasedMarkedPlaceValue</option>
+			<option>OmegaRepeatingBasedMarkedPlaceValue</option>
+			<option>Polynomial 1</option>
+			<option>Sparse Polynomial 1</option>
+			<option>Polynomial Ratio 1</option>
+			<option>Sparse Polynomial Ratio 1</option>
+			<option>Sparse Polynomial</option>
+			<option>Sparse Polynomial Ratio</option>	<!-- 55->54 ~2026.5 -->
+			<option>Sparse Exponential 1</option>
+			<option>Sparse Exponential Ratio 1</option>
+			<option>Sparse Exponential</option>
+			<option>Sparse Exponential Ratio</option>
+			<option>Sparse Expression 1</option>
+			<option>Sparse Expression Ratio 1</option>
+			<option>Sparse Expression</option>
+			<option>Sparse Expression Ratio</option>
 		</optgroup>
 </select>
 	<select id='f' onchange="clean()">

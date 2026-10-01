@@ -3,7 +3,7 @@
 
 Author : Anthony John Ripa
 
-Date : 8/31/2026
+Date : 9/30/2026
 
 <a href='https://github.com/TonyRipa/PlaceValue'>https://github.com/TonyRipa/PlaceValue</a>
 
@@ -842,6 +842,61 @@ Given these 3 proofs, it may seem that just accepting that indeterminates give t
 What is the upshot of all this? The upshot is perhaps just because the indeterminates were an integral domain doesn't mean the problem they were modeling is. The problem they were modeling is an integral domain. Continuous functions can be canceled, because the cancellation property holds. The real analyst provides a justification for this. Shape reasoning provides provides an alternate and independent justification. There is also the idea of a function hypothesis, and assuming a space of continuous functions. Indeterminates divide simply. This can be used for calculus. Why this is so depends on who you ask.
 
 PlaceValues are right-sized for this type of problem. They can model continuous (not point-discontinuous) functions. They seem isomorphic to polynomial rings. They don't need the syntax x of an indeterminate. Instead the PlaceValue 10 corresponds to the indeterminate x. When working with PlaceValue you don't have the distraction of looking at a symbol x, wondering what it is, and worrying if it is 0. This is the case for WholePlaceValue. For SparsePlaceValue instead of writing 10 we write 1E1. This is like 1x¹. When we see 1E1 we don't concern ourselves worrying what the E is, and if it is 0. The E separates the coefficient from the power (if we think of them as polynomials). Alternately, thinking about WholePlaceValue 500 means we have a 5 in the 2's place. We can instead represent this like a dictionary data-type as in JSON {2:5} where 2 is the key and 5 is the value. Similarly, we can write 5E2. The E separates the Key from the Value. Revisiting indeterminates, when we see 5x², then we can think of the x as a syntax separating the Key from the Value. x and E and : are all the same. They are syntax separators. We don't ask if they are 0. That doesn't make sense.
+
+##### Lim & Con
+
+Another way to look at the problem is via introducing an operator that is in some sense dual to the limit operator: a continuity operator. For the limit operator, we write $\lim_{x\to c}f(x)$ . Similarly, for the continuity operator, we write $\operatorname*{\mathrm{con}}_{x\to c}f(x)$ . As they are dual, they are inter-definable. We may define:
+
+$$
+\operatorname*{\mathrm{con}}_{x\to c}f(x)=\begin{cases}
+f(x) & \text{if } x \neq c, \\
+\lim_{x \to c} f(x) & \text{if } x = c
+\end{cases}
+$$
+
+and/or
+
+$$
+\lim_{x\to c}f(x) = \left. \left( \operatorname*{\mathrm{con}}_{x\to c}f(x) \right) \right|_{x=c}
+$$
+
+Alternatively, we may define both via $\epsilon - \delta$ , or via open or closed sets, etc. . In that case, we may consider the above two relations to be theorems: perhaps the fundamental theorem(s) of limits and/or continuity.
+
+With this in mind we may see that limits really always come in two different kinds, which require 2 different approaches to solve them. We write:
+
+$$
+\lim_{x\to c}f(x) = \left. \left( \operatorname*{\mathrm{con}}_{x\to c}f(x) \right) \right|_{x=c}
+$$
+
+and the first thing we always have to do is simplfy what is in the parentheses first (i.e. the con). When we simplify the con, there are exactly 2 different things that can happen. Firstly, it may be that the $\operatorname*{\mathrm{con}}_{x\to c}f(x) = f(x)$ , in which case we effectively merely erase the con operator, and are left with $\lim_{x\to c}f(x) = f(x)|_{x=c}$ .  We see that in the case that $\operatorname*{\mathrm{con}}_{x\to c}f(x) = f(x)$ (i.e. f is continuous) then finding the limit reduces to evaluation . Secondly, finding lim in the case when $\operatorname*{\mathrm{con}}_{x\to c}f(x) \neq f(x)$ requires removing the discontinuity. We typically replace the discontinuous $f(x)$ with a continuous $g(x)$ so that:
+
+$$
+f(x)=\begin{cases}
+g(x) & \text{if } x \neq c
+\end{cases}
+$$
+
+Then $\lim_{x\to c}f(x) = g(x)|_{x=c}$ .
+
+An example of the first case is $\lim_{x\to 0}x^2 = x^2|_{x=0}=0$ .
+
+An example of the second case is $\lim_{x\to 0}\frac{x}{x} = \lim_{x\to 0}1,x\neq0 = \lim_{x\to 0}1 = 1$ .
+
+This lim/con construction can be considered an alternate explanation of indeterminates. In some sense, indeterminates are doing the con step of $\lim_{x\to c}f(x) = \left. \left( \operatorname*{\mathrm{con}}_{x\to c}f(x) \right) \right|_{x=c}$ .  So, that limits may always be taken simply by evaluating.
+
+###### Carathéodory
+
+As something of an after-thought, the con operator also allows for a somewhat more succinct version of Carathéodory's definition of derivative.
+
+Recall Carathéodory's definition:
+
+$$
+f'(c)=q(c) \text{ where } q(x) \text{ is the function, continuous at } c, \text{ satisfying } f(x)-f(c)=(x-c)q(x)
+$$
+
+With the con operator, it can be stated succinctly:
+
+$$f'(c)=\left. \left( \operatorname*{\mathrm{con}}_{x\to c}Q(x) \right) \right|_{x=c} \iff f(x)-f(c)=(x-c)\operatorname*{\mathrm{con}}_{x\to c}Q(x)$$
 
 ## Summary & Future Work
 
